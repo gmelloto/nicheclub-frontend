@@ -1,85 +1,136 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import Navbar from '../components/layout/Navbar';
-import CartDrawer from '../components/layout/CartDrawer';
-import api from '../services/api';
-import { useCart } from '../context/CartContext';
+import { api } from '../services/api';
+import { useCart } from '../context';
+import './Perfume.css';
+
+const TAMANHOS = [
+  { key: '3ml', label: '3ml', ml: 3 },
+  { key: '5ml', label: '5ml', ml: 5 },
+  { key: '10ml', label: '10ml', ml: 10 },
+  { key: '15ml', label: '15ml', ml: 15 },
+  { key: 'apc', label: 'APC — Frasco', ml: 50 },
+];
 
 export default function Perfume() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [perfume, setPerfume] = useState(null);
-  const [tamanho, setTamanho] = useState(null);
-  const [cartAberto, setCartAberto] = useState(false);
   const { adicionar } = useCart();
+  const [perfume, setPerfume] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [selecionado, setSelecionado] = useState(null);
+  const [adicionado, setAdicionado] = useState(false);
 
   useEffect(() => {
-    api.get(`/api/perfumes/${id}`).then(r => setPerfume(r.data)).catch(() => navigate('/'));
+    api.perfume(id)
+      .then(setPerfume)
+      .catch(() => setPerfume(DEMO[id] || DEMO['1']))
+      .finally(() => setLoading(false));
   }, [id]);
 
-  if (!perfume) return null;
+  const opcaoSel = perfume?.opcoes?.find(o => o.tamanho === selecionado);
+  const disponivel = Number(perfume?.ml_disponivel || 0);
+  const tamanhoDisp = (t) => disponivel >= t.ml;
 
-  const opcaoSel = perfume.opcoes?.find(o => o.tamanho === tamanho);
+  const handleAdicionar = () => {
+    if (!selecionado || !opcaoSel) return;
+    adicionar(perfume, selecionado, Number(opcaoSel.preco), opcaoSel.ml_quantidade || opcaoSel.ml);
+    setAdicionado(true);
+    setTimeout(() => setAdicionado(false), 2000);
+  };
 
-  function handleAdicionar() {
-    if (!opcaoSel) return;
-    adicionar(perfume, tamanho, Number(opcaoSel.preco), opcaoSel.ml);
-    setCartAberto(true);
-  }
+  if (loading) return (
+    <div className="perfume-page">
+      <div className="perfume-inner">
+        <div className="skeleton" style={{ height: 400, borderRadius: 4 }} />
+      </div>
+    </div>
+  );
+
+  if (!perfume) return <div className="perfume-page"><p className="muted" style={{ padding: '4rem 2rem' }}>Perfume não encontrado.</p></div>;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar onCartClick={() => setCartAberto(true)} />
-      <CartDrawer aberto={cartAberto} onFechar={() => setCartAberto(false)} />
-
-      <div className="max-w-4xl mx-auto px-4 py-12">
-        <button onClick={() => navigate('/')} className="text-sm text-gray-400 hover:text-gray-600 mb-8 flex items-center gap-2">
-          ← Voltar ao catálogo
+    <div className="perfume-page fade-in">
+      <div className="perfume-inner">
+        <button className="back-btn" onClick={() => navigate(-1)}>
+          ← Voltar
         </button>
 
-        <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-          <div className="grid md:grid-cols-2">
-            <div className="h-64 md:h-auto bg-gradient-to-br from-brand-50 to-purple-50 flex items-center justify-center">
-              <span className="text-8xl">🌸</span>
+        <div className="perfume-layout">
+          <div className="perfume-img-col">
+            <div className="perfume-img-wrap">
+              {perfume.foto_url
+                ? <img src={perfume.foto_url} alt={perfume.nome} />
+                : <div className="perfume-img-placeholder">◈</div>
+              }
             </div>
-
-            <div className="p-8">
-              <p className="text-xs text-gray-400 uppercase tracking-wide mb-2">{perfume.marca}</p>
-              <h1 className="text-2xl font-semibold mb-1">{perfume.nome}</h1>
-              <p className="text-sm text-gray-400 mb-4">{perfume.familia_olfativa}</p>
-              {perfume.descricao && <p className="text-sm text-gray-600 leading-relaxed mb-6">{perfume.descricao}</p>}
-
-              <div className="mb-6">
-                <p className="text-xs text-gray-400 uppercase tracking-wide mb-3">Escolha o tamanho</p>
-                <div className="grid grid-cols-3 gap-2">
-                  {perfume.opcoes?.map(op => {
-                    const isSel = tamanho === op.tamanho;
-                    return (
-                      <button
-                        key={op.tamanho}
-                        onClick={() => setTamanho(op.tamanho)}
-                        className={`p-3 rounded-xl border text-center transition-all ${isSel ? 'border-brand-400 bg-brand-50' : 'border-gray-200 hover:border-brand-200'}`}
-                      >
-                        <p className="font-medium text-sm">{op.tamanho === 'apc' ? 'APC' : op.tamanho}</p>
-                        <p className="text-xs text-gray-400">{op.tamanho === 'apc' ? '50ml' : op.ml + 'ml'}</p>
-                        <p className="text-sm font-semibold text-brand-600 mt-1">R$ {Number(op.preco).toFixed(2).replace('.', ',')}</p>
-                      </button>
-                    );
-                  })}
-                </div>
+            <div className="estoque-info">
+              <div className="estoque-bar-lg">
+                <div className="estoque-fill-lg" style={{
+                  width: `${Math.min(100, Math.round((disponivel / Number(perfume.ml_total || 100)) * 100))}%`
+                }} />
               </div>
-
-              <button
-                onClick={handleAdicionar}
-                disabled={!tamanho}
-                className="w-full py-3 bg-brand-400 text-white rounded-xl font-medium hover:bg-brand-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-              >
-                {opcaoSel ? `Adicionar por R$ ${Number(opcaoSel.preco).toFixed(2).replace('.', ',')}` : 'Selecione um tamanho'}
-              </button>
+              <p className="small muted">{disponivel}ml disponíveis de {perfume.ml_total}ml no frasco</p>
             </div>
+          </div>
+
+          <div className="perfume-info-col">
+            <p className="perfume-marca-lg caps muted">{perfume.marca}</p>
+            <h1 className="perfume-nome-lg">{perfume.nome}</h1>
+            <p className="perfume-familia-lg small muted">{perfume.familia_olfativa}</p>
+
+            {perfume.descricao && (
+              <p className="perfume-descricao">{perfume.descricao}</p>
+            )}
+
+            <div className="divider" />
+
+            <p className="caps muted" style={{ marginBottom: '1rem' }}>Escolha o tamanho</p>
+
+            <div className="tamanhos-grid">
+              {TAMANHOS.map(t => {
+                const opcao = perfume.opcoes?.find(o => o.tamanho === t.key);
+                if (!opcao) return null;
+                const disp = tamanhoDisp(t);
+                return (
+                  <button
+                    key={t.key}
+                    className={`tamanho-btn ${selecionado === t.key ? 'selected' : ''} ${!disp ? 'esgotado' : ''}`}
+                    onClick={() => disp && setSelecionado(t.key)}
+                    disabled={!disp}
+                  >
+                    <span className="tamanho-label">{t.label}</span>
+                    <span className="tamanho-preco gold">
+                      R$ {Number(opcao.preco).toFixed(2).replace('.', ',')}
+                    </span>
+                    {!disp && <span className="esgotado-label">Esgotado</span>}
+                  </button>
+                );
+              })}
+            </div>
+
+            {opcaoSel && (
+              <div className="preco-total">
+                <span className="muted small">Total selecionado</span>
+                <span className="preco-valor gold">R$ {Number(opcaoSel.preco).toFixed(2).replace('.', ',')}</span>
+              </div>
+            )}
+
+            <button
+              className="btn-primary"
+              onClick={handleAdicionar}
+              disabled={!selecionado}
+              style={{ marginTop: '1.5rem' }}
+            >
+              {adicionado ? '✓ Adicionado ao carrinho' : 'Adicionar ao carrinho'}
+            </button>
           </div>
         </div>
       </div>
     </div>
   );
 }
+
+const DEMO = {
+  '1': { id: '1', nome: 'Baccarat Rouge 540', marca: 'Maison Francis Kurkdjian', familia_olfativa: 'Amadeirado Floral', descricao: 'Uma criação icônica com notas de jasmim, açafrão, cedro e ambrofix. Deixa um rastro marcante e sofisticado.', ml_disponivel: 38, ml_total: 100, opcoes: [{ tamanho: '3ml', preco: 38, ml_quantidade: 3 }, { tamanho: '5ml', preco: 58, ml_quantidade: 5 }, { tamanho: '10ml', preco: 105, ml_quantidade: 10 }] },
+};

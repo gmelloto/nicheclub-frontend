@@ -1,132 +1,109 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/layout/Navbar';
-import CartDrawer from '../components/layout/CartDrawer';
-import api from '../services/api';
-import { useCart } from '../context/CartContext';
-
-const EMOJIS = ['🟡', '🟤', '🟠', '🌸', '🟢', '⚪', '🔵', '🟣'];
+import { Link } from 'react-router-dom';
+import { api } from '../services/api';
+import './Catalogo.css';
 
 export default function Catalogo() {
   const [perfumes, setPerfumes] = useState([]);
-  const [carregando, setCarregando] = useState(true);
-  const [cartAberto, setCartAberto] = useState(false);
-  const [selecionados, setSelecionados] = useState({});
-  const { adicionar } = useCart();
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [busca, setBusca] = useState('');
 
   useEffect(() => {
-    api.get('/api/perfumes')
-      .then(r => setPerfumes(r.data))
-      .catch(() => setPerfumes([]))
-      .finally(() => setCarregando(false));
+    api.perfumes()
+      .then(setPerfumes)
+      .catch(() => setPerfumes(DEMO))
+      .finally(() => setLoading(false));
   }, []);
 
-  function selecionarTamanho(perfumeId, tamanho) {
-    setSelecionados(prev => ({ ...prev, [perfumeId]: tamanho }));
-  }
-
-  function adicionarAoCarrinho(perfume) {
-    const tamanho = selecionados[perfume.id];
-    if (!tamanho) return;
-    const opcao = perfume.opcoes?.find(o => o.tamanho === tamanho);
-    if (!opcao) return;
-    adicionar(perfume, tamanho, Number(opcao.preco), opcao.ml);
-    setSelecionados(prev => ({ ...prev, [perfume.id]: null }));
-    setCartAberto(true);
-  }
+  const filtrados = perfumes.filter(p =>
+    p.nome.toLowerCase().includes(busca.toLowerCase()) ||
+    p.marca.toLowerCase().includes(busca.toLowerCase())
+  );
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar onCartClick={() => setCartAberto(true)} />
-      <CartDrawer aberto={cartAberto} onFechar={() => setCartAberto(false)} />
+    <div className="catalogo-page">
+      <div className="catalogo-hero">
+        <p className="hero-eyebrow caps gold">Perfumaria de nicho</p>
+        <h1 className="hero-title">Experiências<br /><em>em frações</em></h1>
+        <p className="hero-sub muted">Explore os maiores nomes da perfumaria mundial em doses de 3ml a 15ml — ou adquira o frasco completo.</p>
+      </div>
 
-      <div className="max-w-6xl mx-auto px-4 py-12">
-        <div className="mb-10">
-          <h1 className="text-3xl font-semibold mb-2">Catálogo</h1>
-          <p className="text-gray-400">Perfumes de nicho fracionados em 3ml, 5ml, 10ml, 15ml ou frasco completo</p>
+      <div className="catalogo-body">
+        <div className="catalogo-toolbar">
+          <input
+            type="text"
+            placeholder="Buscar perfume ou marca..."
+            value={busca}
+            onChange={e => setBusca(e.target.value)}
+            className="busca-input"
+          />
+          <span className="muted small">{filtrados.length} fragrâncias</span>
         </div>
 
-        {carregando ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {loading ? (
+          <div className="perfume-grid">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-white rounded-2xl p-5 animate-pulse h-72" />
+              <div key={i} className="perfume-card-skeleton">
+                <div className="skeleton" style={{ height: 200, marginBottom: 16 }} />
+                <div className="skeleton" style={{ height: 12, width: '60%', marginBottom: 8 }} />
+                <div className="skeleton" style={{ height: 18, width: '80%' }} />
+              </div>
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {perfumes.map((p, i) => {
-              const disponivel = Number(p.ml_disponivel);
-              const total = Number(p.ml_total);
-              const pct = total > 0 ? Math.round((disponivel / total) * 100) : 0;
-              const sel = selecionados[p.id];
-              const opcaoSel = p.opcoes?.find(o => o.tamanho === sel);
-
-              return (
-                <div key={p.id} className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:border-brand-100 transition-colors">
-                  <div
-                    className="h-32 bg-gradient-to-br from-brand-50 to-purple-50 flex items-center justify-center cursor-pointer relative"
-                    onClick={() => navigate(`/perfume/${p.id}`)}
-                  >
-                    <span className="text-5xl">{EMOJIS[i % EMOJIS.length]}</span>
-                    <div className="absolute bottom-3 left-4 right-4">
-                      <div className="flex justify-between text-xs text-brand-600 mb-1">
-                        <span>{disponivel.toFixed(0)}ml disponíveis</span>
-                        <span>{pct}%</span>
-                      </div>
-                      <div className="h-1.5 bg-white/60 rounded-full">
-                        <div
-                          className="h-1.5 bg-brand-400 rounded-full transition-all"
-                          style={{ width: `${100 - pct}%` }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="p-5">
-                    <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">{p.marca}</p>
-                    <h3 className="font-semibold mb-1 cursor-pointer hover:text-brand-600" onClick={() => navigate(`/perfume/${p.id}`)}>{p.nome}</h3>
-                    <p className="text-xs text-gray-400 mb-4">{p.familia_olfativa}</p>
-
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {p.opcoes?.map(op => {
-                        const mlOp = Number(op.ml);
-                        const ok = disponivel >= mlOp;
-                        const isSel = sel === op.tamanho;
-                        return (
-                          <button
-                            key={op.tamanho}
-                            onClick={() => ok && selecionarTamanho(p.id, op.tamanho)}
-                            className={`px-3 py-1.5 rounded-full text-xs border transition-all
-                              ${!ok ? 'opacity-30 line-through cursor-not-allowed border-gray-200 text-gray-400' :
-                              isSel ? 'bg-brand-50 border-brand-400 text-brand-600 font-medium' :
-                              'border-gray-200 text-gray-600 hover:border-brand-300'}`}
-                          >
-                            {op.tamanho === 'apc' ? 'APC' : op.tamanho}
-                          </button>
-                        );
-                      })}
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <span className="font-semibold text-gray-800">
-                        {opcaoSel ? `R$ ${Number(opcaoSel.preco).toFixed(2).replace('.', ',')}` : 'Selecione'}
-                      </span>
-                      <button
-                        onClick={() => adicionarAoCarrinho(p)}
-                        disabled={!sel}
-                        className="px-4 py-2 bg-brand-400 text-white rounded-xl text-sm font-medium hover:bg-brand-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                      >
-                        Adicionar
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+          <div className="perfume-grid">
+            {filtrados.map((p, i) => (
+              <PerfumeCard key={p.id} perfume={p} delay={i * 60} />
+            ))}
           </div>
         )}
       </div>
     </div>
   );
 }
+
+function PerfumeCard({ perfume, delay }) {
+  const disponivel = Number(perfume.ml_disponivel || 0);
+  const total = Number(perfume.ml_total || 100);
+  const pct = Math.min(100, Math.round((disponivel / total) * 100));
+  const precoMin = perfume.opcoes?.[0]?.preco;
+
+  return (
+    <Link
+      to={`/perfume/${perfume.id}`}
+      className="perfume-card fade-in"
+      style={{ animationDelay: `${delay}ms` }}
+    >
+      <div className="perfume-card-img">
+        {perfume.foto_url
+          ? <img src={perfume.foto_url} alt={perfume.nome} />
+          : <div className="perfume-placeholder">◈</div>
+        }
+        <div className="estoque-bar">
+          <div className="estoque-fill" style={{ width: `${pct}%` }} />
+        </div>
+        <div className="estoque-label small">{disponivel}ml disponíveis</div>
+      </div>
+      <div className="perfume-card-body">
+        <p className="perfume-marca caps muted">{perfume.marca}</p>
+        <h3 className="perfume-nome">{perfume.nome}</h3>
+        <p className="perfume-familia small muted">{perfume.familia_olfativa}</p>
+        {precoMin && (
+          <p className="perfume-preco">
+            <span className="muted small">a partir de </span>
+            <span className="gold">R$ {Number(precoMin).toFixed(2).replace('.', ',')}</span>
+          </p>
+        )}
+      </div>
+    </Link>
+  );
+}
+
+const DEMO = [
+  { id: '1', nome: 'Baccarat Rouge 540', marca: 'Maison Francis Kurkdjian', familia_olfativa: 'Amadeirado Floral', ml_disponivel: 38, ml_total: 100, opcoes: [{ preco: 38 }] },
+  { id: '2', nome: 'Oud Wood', marca: 'Tom Ford', familia_olfativa: 'Amadeirado Oriental', ml_disponivel: 220, ml_total: 250, opcoes: [{ preco: 42 }] },
+  { id: '3', nome: 'Neroli Portofino', marca: 'Tom Ford', familia_olfativa: 'Cítrico Aromático', ml_disponivel: 12, ml_total: 100, opcoes: [{ preco: 35 }] },
+  { id: '4', nome: 'Rose Prick', marca: 'Tom Ford', familia_olfativa: 'Floral', ml_disponivel: 105, ml_total: 150, opcoes: [{ preco: 40 }] },
+  { id: '5', nome: 'Santal 33', marca: 'Le Labo', familia_olfativa: 'Amadeirado', ml_disponivel: 80, ml_total: 100, opcoes: [{ preco: 36 }] },
+  { id: '6', nome: 'Another 13', marca: 'Le Labo', familia_olfativa: 'Almíscar', ml_disponivel: 25, ml_total: 100, opcoes: [{ preco: 38 }] },
+];
