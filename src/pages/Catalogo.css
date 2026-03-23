@@ -1,0 +1,149 @@
+.catalogo-page { min-height: 100vh; }
+
+.catalogo-hero {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 5rem 2rem 3rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.hero-eyebrow {
+  margin-bottom: 1rem;
+}
+
+.hero-title {
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  font-weight: 300;
+  line-height: 1.05;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+.hero-title em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.hero-sub {
+  max-width: 480px;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.catalogo-body {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem 4rem;
+}
+
+.catalogo-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.busca-input {
+  max-width: 320px;
+  background: var(--bg2);
+}
+
+.perfume-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.perfume-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  text-decoration: none;
+  transition: border-color 0.25s, transform 0.25s;
+  display: block;
+  opacity: 0;
+}
+
+.perfume-card:hover {
+  border-color: var(--border2);
+  transform: translateY(-3px);
+}
+
+.perfume-card-img {
+  position: relative;
+  height: 200px;
+  background: var(--bg3);
+  overflow: hidden;
+}
+
+.perfume-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.perfume-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: var(--border2);
+}
+
+.estoque-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255,255,255,0.08);
+}
+
+.estoque-fill {
+  height: 100%;
+  background: var(--gold);
+  transition: width 0.5s;
+}
+
+.estoque-label {
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
+  color: var(--text2);
+  background: rgba(10,10,10,0.7);
+  padding: 2px 6px;
+  border-radius: 2px;
+}
+
+.perfume-card-body {
+  padding: 1.25rem;
+}
+
+.perfume-marca {
+  margin-bottom: 4px;
+}
+
+.perfume-nome {
+  font-size: 1.15rem;
+  margin-bottom: 4px;
+}
+
+.perfume-familia {
+  margin-bottom: 12px;
+}
+
+.perfume-preco {
+  font-size: 14px;
+}
+
+.perfume-card-skeleton {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  overflow: hidden;
+}

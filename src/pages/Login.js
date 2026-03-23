@@ -1,0 +1,54 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context';
+import { api } from '../services/api';
+
+export default function Login() {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [erro, setErro] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setErro('');
+    try {
+      const { token, usuario } = await api.login(email, senha);
+      login(token, usuario);
+      navigate('/admin');
+    } catch (err) {
+      setErro(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+      <div style={{ width: '100%', maxWidth: 380 }}>
+        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+          <p style={{ fontSize: '2rem', color: 'var(--gold)', marginBottom: '1rem' }}>◈</p>
+          <h1 style={{ fontSize: '1.8rem', fontWeight: 300 }}>Niche Club</h1>
+          <p className="muted small caps" style={{ marginTop: 8 }}>Painel Admin</p>
+        </div>
+        <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div>
+            <label style={{ fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text2)', display: 'block', marginBottom: 6 }}>E-mail</label>
+            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="admin@nicheclub.com" required />
+          </div>
+          <div>
+            <label style={{ fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text2)', display: 'block', marginBottom: 6 }}>Senha</label>
+            <input type="password" value={senha} onChange={e => setSenha(e.target.value)} placeholder="••••••••" required />
+          </div>
+          {erro && <p style={{ color: 'var(--danger)', fontSize: 13 }}>{erro}</p>}
+          <button type="submit" className="btn-primary" disabled={loading} style={{ marginTop: '0.5rem' }}>
+            {loading ? 'Entrando...' : 'Entrar'}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}

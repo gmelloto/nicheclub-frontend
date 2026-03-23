@@ -1,0 +1,35 @@
+.carrinho-page { min-height: 100vh; padding: 2rem; }
+.carrinho-inner { max-width: 1000px; margin: 0 auto; }
+.carrinho-vazio { text-align: center; padding: 6rem 2rem; }
+.checkout-steps { display: flex; gap: 0; margin-bottom: 3rem; }
+.checkout-step { display: flex; align-items: center; gap: 8px; flex: 1; }
+.checkout-step::after { content: ''; flex: 1; height: 1px; background: var(--border); margin: 0 12px; }
+.checkout-step:last-child::after { display: none; }
+.step-num { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--text3); flex-shrink: 0; }
+.checkout-step.active .step-num { border-color: var(--gold); color: var(--gold); }
+.step-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); }
+.checkout-step.active .step-label { color: var(--text); }
+.checkout-layout { display: grid; grid-template-columns: 1fr 340px; gap: 3rem; align-items: start; }
+@media (max-width: 768px) { .checkout-layout { grid-template-columns: 1fr; } }
+.cart-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid var(--border); }
+.cart-item-nome { font-size: 15px; margin: 2px 0; }
+.cart-item-actions { display: flex; align-items: center; gap: 1rem; }
+.remove-btn { color: var(--text3); font-size: 18px; line-height: 1; background: none; border: none; cursor: pointer; transition: color 0.2s; }
+.remove-btn:hover { color: var(--danger); }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-field { display: flex; flex-direction: column; gap: 6px; }
+.form-field.full { grid-column: 1 / -1; }
+.form-field label { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text2); }
+.metodos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.metodo-btn { display: flex; align-items: center; gap: 14px; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg2); cursor: pointer; text-align: left; transition: border-color 0.2s; }
+.metodo-btn:hover { border-color: var(--border2); }
+.metodo-btn.active { border-color: var(--gold); background: rgba(201,169,110,0.04); }
+.metodo-icon { font-size: 1.5rem; color: var(--gold); }
+.metodo-nome { font-size: 14px; color: var(--text); margin-bottom: 2px; }
+.summary-line { display: flex; justify-content: space-between; padding: 5px 0; }
+.summary-total { display: flex; justify-content: space-between; align-items: baseline; }
+.erro-msg { color: var(--danger); font-size: 13px; margin-top: 1rem; padding: 10px; border: 1px solid rgba(224,85,85,0.3); border-radius: var(--radius); background: rgba(224,85,85,0.05); }
+.confirmacao-box { max-width: 480px; margin: 4rem auto; text-align: center; }
+.confirmacao-icon { font-size: 3rem; color: var(--gold); margin-bottom: 1.5rem; }
+.pix-box { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; text-align: left; }
+.pix-code { font-size: 11px; font-family: monospace; color: var(--text2); word-break: break-all; margin-top: 6px; }
