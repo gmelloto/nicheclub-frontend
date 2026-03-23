@@ -6,7 +6,6 @@ export default function Catalogo() {
   const [perfumes, setPerfumes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [busca, setBusca] = useState('');
-  const [tab, setTab] = useState('decants');
 
   useEffect(() => {
     api.perfumes()
@@ -21,135 +20,98 @@ export default function Catalogo() {
   );
 
   return (
-    <div style={{ minHeight: '100vh' }}>
-
-      {/* Hero */}
-      <div style={{ background: 'var(--bg2)', borderBottom: '1px solid var(--border)' }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '5rem 2rem 4rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
-          <div>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(79,110,247,0.08)', border: '1px solid rgba(79,110,247,0.15)', borderRadius: 20, padding: '6px 14px', marginBottom: '1.5rem' }}>
-              <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#22c55e' }} />
-              <span style={{ fontSize: 12, color: 'var(--blue)', fontWeight: 500 }}>Perfumaria de nicho fracionada</span>
-            </div>
-            <h1 style={{ fontSize: 'clamp(2.8rem, 5vw, 4.5rem)', fontWeight: 800, lineHeight: 1.1, marginBottom: '1.5rem', letterSpacing: '-0.02em', color: 'var(--text)' }}>
-              Descubra as melhores<br />
-              <span style={{ background: 'var(--grad)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-                fragrâncias do mundo
-              </span>
-            </h1>
-            <p style={{ color: 'var(--text2)', maxWidth: 480, lineHeight: 1.8, marginBottom: '2.5rem', fontSize: 16, fontWeight: 300 }}>
-              Explore os maiores nomes da perfumaria mundial em doses de 3ml a 15ml — sem compromisso, com toda a experiência.
-            </p>
-            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-              <a href="#catalogo" style={{ padding: '13px 28px', background: 'var(--grad)', color: '#fff', borderRadius: 'var(--radius)', fontSize: 14, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 8, boxShadow: '0 4px 16px rgba(79,110,247,0.3)' }}>
-                Ver catálogo →
-              </a>
-              <Link to="/" style={{ padding: '12px 28px', border: '1px solid var(--border2)', color: 'var(--text2)', borderRadius: 'var(--radius)', fontSize: 14, fontWeight: 400, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-                Como funciona
-              </Link>
-            </div>
-            <div style={{ display: 'flex', gap: '2.5rem', marginTop: '2.5rem', paddingTop: '2.5rem', borderTop: '1px solid var(--border)' }}>
-              {[{ n: '+200', l: 'Fragrâncias' }, { n: '3ml', l: 'Menor dose' }, { n: '100%', l: 'Originais' }].map(s => (
-                <div key={s.n}>
-                  <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--text)', lineHeight: 1 }}>{s.n}</div>
-                  <div style={{ fontSize: 12, color: 'var(--text2)', marginTop: 4 }}>{s.l}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Cards flutuantes */}
-          <div style={{ position: 'relative', height: 400, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ position: 'absolute', top: 20, right: 10, background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', padding: '1rem 1.25rem', minWidth: 210, boxShadow: 'var(--shadow-lg)' }}>
-              <div style={{ fontSize: 11, color: 'var(--text2)', marginBottom: 6 }}>Mais vendido hoje</div>
-              <div style={{ fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>Baccarat Rouge 540</div>
-              <div style={{ fontSize: 12, color: 'var(--blue)' }}>MFK · 5ml · R$ 58,00</div>
-            </div>
-            <div style={{ position: 'absolute', bottom: 40, left: 0, background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', padding: '1rem 1.25rem', minWidth: 200, boxShadow: 'var(--shadow-lg)' }}>
-              <div style={{ fontSize: 11, color: 'var(--text2)', marginBottom: 6 }}>Estoque limitado</div>
-              <div style={{ fontWeight: 700, color: 'var(--text)', marginBottom: 8 }}>Neroli Portofino</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{ flex: 1, height: 5, background: 'var(--bg3)', borderRadius: 3 }}>
-                  <div style={{ width: '12%', height: '100%', background: '#dc2626', borderRadius: 3 }} />
-                </div>
-                <span style={{ fontSize: 11, color: '#dc2626', fontWeight: 500 }}>12ml</span>
-              </div>
-            </div>
-            <div style={{ width: 260, height: 340, background: 'linear-gradient(160deg, var(--bg3), var(--bg2))', borderRadius: 'var(--radius-xl)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'var(--shadow-lg)' }}>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ width: 64, height: 64, borderRadius: 16, background: 'var(--grad)', margin: '0 auto 12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, fontWeight: 800, color: '#fff', boxShadow: '0 8px 24px rgba(79,110,247,0.3)' }}>N</div>
-                <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)' }}>Niche Club</div>
-                <div style={{ fontSize: 12, color: 'var(--text2)', marginTop: 4 }}>Luxury Perfumes</div>
-              </div>
-            </div>
-          </div>
+    <div>
+      {/* Hero full screen */}
+      <div style={{ position: 'relative', height: '100vh', background: '#1a1612', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(10,8,6,0.3) 0%, rgba(10,8,6,0.5) 60%, rgba(10,8,6,0.85) 100%)' }} />
+        {/* Padrão de fundo sutil */}
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle at 30% 50%, rgba(154,125,58,0.08) 0%, transparent 60%), radial-gradient(circle at 70% 30%, rgba(154,125,58,0.05) 0%, transparent 50%)' }} />
+        <div style={{ position: 'relative', textAlign: 'center', padding: '0 2rem', maxWidth: 800 }}>
+          <p style={{ fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', color: 'rgba(201,168,80,0.9)', marginBottom: '2rem', fontFamily: "'Montserrat', sans-serif", fontWeight: 400 }}>
+            Perfumaria de Nicho Fracionada
+          </p>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(3.5rem, 8vw, 7rem)', fontWeight: 300, color: '#fff', lineHeight: 1.05, letterSpacing: '0.05em', marginBottom: '2rem' }}>
+            A Arte das<br /><em style={{ fontStyle: 'italic', color: 'rgba(201,168,80,0.9)' }}>Fragrâncias</em>
+          </h1>
+          <p style={{ fontSize: 12, letterSpacing: '0.1em', color: 'rgba(255,255,255,0.6)', marginBottom: '3rem', maxWidth: 480, margin: '0 auto 3rem', lineHeight: 1.9 }}>
+            Explore os maiores nomes da perfumaria mundial em doses de 3ml a 15ml
+          </p>
+          <a href="#colecao" style={{ display: 'inline-flex', alignItems: 'center', gap: 12, fontSize: 10, letterSpacing: '0.25em', textTransform: 'uppercase', color: '#fff', borderBottom: '1px solid rgba(255,255,255,0.4)', paddingBottom: 4, transition: 'border-color 0.3s' }}>
+            Descobrir a Coleção
+            <span style={{ fontSize: 14 }}>↓</span>
+          </a>
+        </div>
+        {/* Scroll indicator */}
+        <div style={{ position: 'absolute', bottom: '2.5rem', left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+          <div style={{ width: 1, height: 48, background: 'rgba(255,255,255,0.3)' }} />
+          <p style={{ fontSize: 9, letterSpacing: '0.3em', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Role</p>
         </div>
       </div>
 
-      {/* Catálogo */}
-      <div id="catalogo" style={{ maxWidth: 1280, margin: '0 auto', padding: '3rem 2rem 5rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
-          <div style={{ display: 'flex', gap: 4, background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 4 }}>
-            {[{ key: 'decants', label: 'Decants' }, { key: 'lacrados', label: 'Perfumes Lacrados' }].map(t => (
-              <button key={t.key} onClick={() => setTab(t.key)} style={{
-                padding: '8px 18px', fontSize: 13, fontWeight: 500, borderRadius: 6,
-                border: 'none', cursor: 'pointer', transition: 'all 0.2s',
-                background: tab === t.key ? 'var(--grad)' : 'transparent',
-                color: tab === t.key ? '#fff' : 'var(--text2)',
-                boxShadow: tab === t.key ? '0 2px 8px rgba(79,110,247,0.3)' : 'none',
-              }}>{t.label}</button>
-            ))}
+      {/* Intro section */}
+      <div style={{ background: 'var(--bg2)', padding: '6rem 2rem', textAlign: 'center' }}>
+        <div style={{ maxWidth: 640, margin: '0 auto' }}>
+          <p style={{ fontSize: 9, letterSpacing: '0.4em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: '1.5rem' }}>Nossa Filosofia</p>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 300, lineHeight: 1.2, marginBottom: '2rem' }}>
+            Cada fragrância conta<br />uma história única
+          </h2>
+          <p style={{ fontSize: 13, color: 'var(--text2)', lineHeight: 2, maxWidth: 480, margin: '0 auto' }}>
+            Acreditamos que descobrir um perfume é uma experiência íntima. Por isso oferecemos doses exclusivas dos maiores criadores do mundo — sem compromisso, com toda a sofisticação.
+          </p>
+          <div style={{ width: 40, height: 1, background: 'var(--gold)', margin: '3rem auto 0' }} />
+        </div>
+      </div>
+
+      {/* Coleção */}
+      <div id="colecao" style={{ padding: '6rem 3rem', maxWidth: 1400, margin: '0 auto' }}>
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '4rem', borderBottom: '1px solid var(--border)', paddingBottom: '2rem' }}>
+          <div>
+            <p style={{ fontSize: 9, letterSpacing: '0.4em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: '0.75rem' }}>A Coleção</p>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(2rem, 3vw, 3rem)', fontWeight: 300 }}>Nossas Fragrâncias</h2>
           </div>
-          <input value={busca} onChange={e => setBusca(e.target.value)}
-            placeholder="Buscar perfume ou marca..."
-            style={{ maxWidth: 280, padding: '9px 14px', fontSize: 13 }}
-          />
-          <span style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--text2)' }}>{filtrados.length} fragrâncias disponíveis</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <input value={busca} onChange={e => setBusca(e.target.value)}
+              placeholder="Pesquisar"
+              style={{ maxWidth: 220, borderBottom: '1px solid var(--border2)', padding: '8px 0', fontSize: 11, letterSpacing: '0.1em', background: 'transparent', border: 'none', borderBottom: '1px solid var(--border2)', outline: 'none', color: 'var(--text)' }}
+            />
+            <span style={{ fontSize: 11, color: 'var(--text3)', letterSpacing: '0.05em' }}>{filtrados.length} fragrâncias</span>
+          </div>
         </div>
 
         {loading ? (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1.25rem' }}>
-            {[...Array(6)].map((_, i) => (
-              <div key={i} style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--border)', background: 'var(--bg2)' }}>
-                <div className="skeleton" style={{ height: 280 }} />
-                <div style={{ padding: '1.25rem' }}>
-                  <div className="skeleton" style={{ height: 11, width: '50%', marginBottom: 10 }} />
-                  <div className="skeleton" style={{ height: 20, width: '75%' }} />
-                </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '3rem' }}>
+            {[...Array(4)].map((_, i) => (
+              <div key={i}>
+                <div className="skeleton" style={{ paddingBottom: '140%', marginBottom: '1.5rem' }} />
+                <div className="skeleton" style={{ height: 11, width: '40%', marginBottom: 10 }} />
+                <div className="skeleton" style={{ height: 18, width: '70%' }} />
               </div>
             ))}
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1.25rem' }}>
-            {filtrados.map((p, i) => <PerfumeCard key={p.id} perfume={p} delay={i * 50} />)}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '3rem 2rem' }}>
+            {filtrados.map((p, i) => <PerfumeCard key={p.id} perfume={p} delay={i * 80} />)}
           </div>
         )}
       </div>
 
-      {/* Como funciona */}
-      <div style={{ background: 'var(--bg2)', borderTop: '1px solid var(--border)', padding: '5rem 2rem' }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(139,108,247,0.08)', border: '1px solid rgba(139,108,247,0.15)', borderRadius: 20, padding: '6px 14px', marginBottom: '1rem' }}>
-              <span style={{ fontSize: 12, color: 'var(--purple)', fontWeight: 500 }}>Simples como deve ser</span>
-            </div>
-            <h2 style={{ fontSize: 'clamp(2rem, 3vw, 3rem)', fontWeight: 800, letterSpacing: '-0.02em' }}>Como funciona</h2>
-            <p style={{ color: 'var(--text2)', marginTop: '0.75rem', fontSize: 15 }}>Três passos simples para descobrir sua próxima fragrância favorita</p>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem' }}>
+      {/* Banner editorial */}
+      <div style={{ background: 'var(--black)', padding: '8rem 3rem', textAlign: 'center' }}>
+        <div style={{ maxWidth: 700, margin: '0 auto' }}>
+          <p style={{ fontSize: 9, letterSpacing: '0.4em', textTransform: 'uppercase', color: 'rgba(201,168,80,0.7)', marginBottom: '2rem' }}>Como Funciona</p>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(2.5rem, 5vw, 5rem)', fontWeight: 300, color: '#fff', lineHeight: 1.1, marginBottom: '4rem' }}>
+            Simples como<br /><em style={{ fontStyle: 'italic', color: 'rgba(201,168,80,0.8)' }}>deve ser</em>
+          </h2>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '5rem', flexWrap: 'wrap' }}>
             {[
-              { n: '01', icon: '🛍️', t: 'Escolha o perfume', d: 'Navegue pelo catálogo e selecione o perfume e o tamanho — de 3ml a 15ml ou o frasco completo.', color: 'rgba(79,110,247,0.08)', border: 'rgba(79,110,247,0.15)', label: 'var(--blue)' },
-              { n: '02', icon: '💳', t: 'Pague com segurança', d: 'Pix com aprovação imediata ou cartão de crédito em até 12x com total segurança via PagSeguro.', color: 'rgba(139,108,247,0.08)', border: 'rgba(139,108,247,0.15)', label: 'var(--purple)' },
-              { n: '03', icon: '📦', t: 'Receba em casa', d: 'Enviamos em até 24h para todo o Brasil. Você recebe atualizações pelo WhatsApp.', color: 'rgba(22,163,74,0.06)', border: 'rgba(22,163,74,0.15)', label: '#16a34a' },
+              { n: 'I', t: 'Escolha', d: 'Selecione o perfume e o tamanho desejado' },
+              { n: 'II', t: 'Pague', d: 'Pix ou cartão com total segurança' },
+              { n: 'III', t: 'Receba', d: 'Enviamos em até 24h para todo o Brasil' },
             ].map(s => (
-              <div key={s.n} style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', padding: '2rem', transition: 'box-shadow 0.2s, transform 0.2s' }}
-                onMouseEnter={e => { e.currentTarget.style.boxShadow = 'var(--shadow-lg)'; e.currentTarget.style.transform = 'translateY(-3px)'; }}
-                onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)'; }}
-              >
-                <div style={{ width: 48, height: 48, borderRadius: 12, background: s.color, border: `1px solid ${s.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', marginBottom: '1.25rem' }}>{s.icon}</div>
-                <div style={{ fontSize: 11, color: s.label, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>Passo {s.n}</div>
-                <h3 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: '0.75rem' }}>{s.t}</h3>
-                <p style={{ fontSize: 14, color: 'var(--text2)', lineHeight: 1.7, fontWeight: 300 }}>{s.d}</p>
+              <div key={s.n} style={{ textAlign: 'center', maxWidth: 180 }}>
+                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '2rem', color: 'rgba(201,168,80,0.6)', marginBottom: '1rem', fontStyle: 'italic', fontWeight: 300 }}>{s.n}</div>
+                <div style={{ fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#fff', marginBottom: '0.75rem', fontWeight: 400 }}>{s.t}</div>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', lineHeight: 1.8 }}>{s.d}</div>
               </div>
             ))}
           </div>
@@ -164,46 +126,40 @@ function PerfumeCard({ perfume, delay }) {
   const total = Number(perfume.ml_total || 100);
   const pct = Math.min(100, Math.round((disponivel / total) * 100));
   const precoMin = perfume.opcoes?.[0]?.preco;
-  const esgotando = pct >= 70;
+  const esgotando = pct >= 75;
+  const [hovered, setHovered] = useState(false);
 
   return (
-    <Link to={`/perfume/${perfume.id}`} className="fade-in" style={{
-      animationDelay: `${delay}ms`, opacity: 0,
-      background: 'var(--bg2)', border: '1px solid var(--border)',
-      borderRadius: 'var(--radius-lg)', overflow: 'hidden', display: 'block',
-      transition: 'border-color 0.25s, transform 0.25s, box-shadow 0.25s',
-      boxShadow: 'var(--shadow)',
-    }}
-      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = 'var(--shadow-lg)'; e.currentTarget.style.borderColor = 'rgba(79,110,247,0.3)'; }}
-      onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'var(--shadow)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
+    <Link to={`/perfume/${perfume.id}`} className="fade-in" style={{ animationDelay: `${delay}ms`, opacity: 0, display: 'block' }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
-      <div style={{ position: 'relative', height: 280, background: 'var(--bg3)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      {/* Imagem */}
+      <div style={{ position: 'relative', paddingBottom: '130%', overflow: 'hidden', background: 'var(--bg3)', marginBottom: '1.25rem' }}>
         {perfume.foto_url
-          ? <img src={perfume.foto_url} alt={perfume.nome} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          : <div style={{ fontSize: '4rem', opacity: 0.06, fontWeight: 800, color: 'var(--text)' }}>N</div>
+          ? <img src={perfume.foto_url} alt={perfume.nome} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transform: hovered ? 'scale(1.04)' : 'scale(1)', transition: 'transform 0.8s ease' }} />
+          : <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '6rem', fontWeight: 300, color: 'var(--border2)', fontStyle: 'italic' }}>N</span>
+            </div>
         }
-        <div style={{ position: 'absolute', top: 10, left: 10 }}>
-          <span style={{ background: 'rgba(79,110,247,0.1)', color: 'var(--blue)', border: '1px solid rgba(79,110,247,0.2)', padding: '3px 10px', borderRadius: 20, fontSize: 10, fontWeight: 500 }}>
-            {perfume.familia_olfativa}
-          </span>
-        </div>
         {esgotando && (
-          <div style={{ position: 'absolute', top: 10, right: 10 }}>
-            <span style={{ background: 'rgba(220,38,38,0.08)', color: '#dc2626', border: '1px solid rgba(220,38,38,0.2)', padding: '3px 10px', borderRadius: 20, fontSize: 10, fontWeight: 500 }}>
-              Últimas unidades
-            </span>
+          <div style={{ position: 'absolute', top: 16, left: 16, background: 'rgba(255,255,255,0.9)', padding: '4px 12px', fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--text)' }}>
+            Últimas Unidades
           </div>
         )}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 3, background: 'rgba(0,0,0,0.06)' }}>
-          <div style={{ height: '100%', background: esgotando ? '#dc2626' : 'var(--grad)', width: `${pct}%`, transition: 'width 0.5s' }} />
+        {/* Barra de estoque */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 2, background: 'rgba(255,255,255,0.2)' }}>
+          <div style={{ height: '100%', background: esgotando ? '#c0392b' : 'rgba(201,168,80,0.8)', width: `${pct}%` }} />
         </div>
       </div>
-      <div style={{ padding: '1.25rem' }}>
-        <p style={{ fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--text2)', marginBottom: 4, fontWeight: 500 }}>{perfume.marca}</p>
-        <h3 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: 8, color: 'var(--text)' }}>{perfume.nome}</h3>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          {precoMin && <p style={{ fontSize: 13, color: 'var(--text2)' }}>a partir de <strong style={{ color: 'var(--blue)', fontWeight: 600 }}>R$ {Number(precoMin).toFixed(2).replace('.', ',')}</strong></p>}
-          <p style={{ fontSize: 11, color: 'var(--text3)' }}>{disponivel}ml disp.</p>
+
+      {/* Info */}
+      <div>
+        <p style={{ fontSize: 9, letterSpacing: '0.25em', textTransform: 'uppercase', color: 'var(--text2)', marginBottom: 6, fontWeight: 400 }}>{perfume.marca}</p>
+        <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.35rem', fontWeight: 400, marginBottom: 6, color: 'var(--text)', letterSpacing: '0.02em', borderBottom: hovered ? '1px solid var(--text)' : '1px solid transparent', display: 'inline-block', transition: 'border-color 0.3s', paddingBottom: 2 }}>{perfume.nome}</h3>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 }}>
+          {precoMin && <p style={{ fontSize: 11, color: 'var(--text2)', letterSpacing: '0.05em' }}>A partir de <span style={{ color: 'var(--text)', fontWeight: 400 }}>R$ {Number(precoMin).toFixed(2).replace('.', ',')}</span></p>}
+          <p style={{ fontSize: 10, color: 'var(--text3)', letterSpacing: '0.05em' }}>{disponivel}ml</p>
         </div>
       </div>
     </Link>
@@ -213,8 +169,6 @@ function PerfumeCard({ perfume, delay }) {
 const DEMO = [
   { id: '1', nome: 'Baccarat Rouge 540', marca: 'Maison Francis Kurkdjian', familia_olfativa: 'Amadeirado Floral', ml_disponivel: 38, ml_total: 100, opcoes: [{ preco: 38 }] },
   { id: '2', nome: 'Oud Wood', marca: 'Tom Ford', familia_olfativa: 'Amadeirado Oriental', ml_disponivel: 220, ml_total: 250, opcoes: [{ preco: 42 }] },
-  { id: '3', nome: 'Neroli Portofino', marca: 'Tom Ford', familia_olfativa: 'Cítrico Aromático', ml_disponivel: 12, ml_total: 100, opcoes: [{ preco: 35 }] },
+  { id: '3', nome: 'Neroli Portofino', marca: 'Tom Ford', familia_olfativa: 'Cítrico', ml_disponivel: 12, ml_total: 100, opcoes: [{ preco: 35 }] },
   { id: '4', nome: 'Rose Prick', marca: 'Tom Ford', familia_olfativa: 'Floral', ml_disponivel: 105, ml_total: 150, opcoes: [{ preco: 40 }] },
-  { id: '5', nome: 'Santal 33', marca: 'Le Labo', familia_olfativa: 'Amadeirado', ml_disponivel: 80, ml_total: 100, opcoes: [{ preco: 36 }] },
-  { id: '6', nome: 'Another 13', marca: 'Le Labo', familia_olfativa: 'Almíscar', ml_disponivel: 25, ml_total: 100, opcoes: [{ preco: 38 }] },
 ];
