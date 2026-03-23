@@ -1,26 +1,35 @@
-import axios from 'axios';
+const BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000',
-});
+async function req(method, path, body, token) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  const res = await fetch(`${BASE}/api${path}`, {
+    method,
+    headers,
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.erro || 'Erro na requisição');
+  return data;
+}
 
-// Injeta token JWT automaticamente em todas as requisições
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('nc_token');
-  if (token) config.headers.Authorization = `Bearer ${token}`;
-  return config;
-});
-
-// Redireciona para login se token expirar
-api.interceptors.response.use(
-  (res) => res,
-  (err) => {
-    if (err.response?.status === 401) {
-      localStorage.removeItem('nc_token');
-      window.location.href = '/admin/login';
-    }
-    return Promise.reject(err);
-  }
-);
-
-export default api;
+export const api = {
+  login: (email, senha) => req('POST', '/auth/login', { email, senha }),
+  perfumes: () => req('GET', '/perfumes'),
+  perfume: (id) => req('GET', `/perfumes/${id}`),
+  criarPedido: (payload) => req('POST', '/pedidos', payload),
+  buscarPedido: (numero) => req('GET', `/pedidos/${numero}`),
+  listarPedidos: (token, status) => req('GET', `/pedidos${status ? `?status=${status}` : ''}`, null, token),
+  atualizarStatus: (token, id, status, rastreio) =>
+    req('PATCH', `/pedidos/${id}/status`, { status, codigo_rastreio: rastreio }, token),
+  estoque: (token) => req('GET', '/estoque', null, token),
+  adicionarPerfume: (token, data) => req('POST', '/perfumes', data, token),
+  adicionarFrasco: (token, id, ml, lote) =>
+    req('POST', `/perfumes/${id}/frascos`, { ml_total: ml, lote }, token),
+  conversas: (token) => req('GET', '/whatsapp/conversas', null, token),
+  mensagens: (token, id) => req('GET', `/whatsapp/conversas/${id}/mensagens`, null, token),
+  enviarMensagem: (token, id, texto) =>
+    req('POST', `/whatsapp/conversas/${id}/mensagens`, { texto }, token),
+  broadcast: (token, mensagem, destino) =>
+    req('POST', '/whatsapp/broadcast', { mensagem, destino }, token),
+};

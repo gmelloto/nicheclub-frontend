@@ -1,11 +1,11 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { CartProvider, AuthProvider } from './context';
-import Navbar from './components/layout/Navbar';
-import Catalogo from './pages/Catalogo';
-import Perfume from './pages/Perfume';
-import Carrinho from './pages/Carrinho';
-import Admin from './pages/Admin';
-import Login from './pages/Login';
+import { CartProvider, AuthProvider } from './context/index.jsx';
+import Navbar from './components/layout/Navbar.jsx';
+import Catalogo from './pages/Catalogo.jsx';
+import Perfume from './pages/Perfume.jsx';
+import Carrinho from './pages/Carrinho.jsx';
+import Admin from './pages/Admin.jsx';
+import Login from './pages/Login.jsx';
 import './index.css';
 
 export default function App() {
