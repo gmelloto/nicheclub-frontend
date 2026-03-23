@@ -1,21 +1,25 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;1,400&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #fafaf8;
-  --bg2: #ffffff;
-  --bg3: #f4f4f1;
-  --gold: #b8973a;
-  --gold2: #d4ac45;
-  --text: #1a1a18;
-  --text2: #6b6b66;
-  --text3: #b0b0aa;
-  --border: #e8e8e4;
-  --border2: #d0d0c8;
-  --radius: 4px;
-  --radius-lg: 8px;
-  --radius-xl: 16px;
+  --bg: #0f1623;
+  --bg2: #151d2e;
+  --bg3: #1a2236;
+  --bg4: #202840;
+  --blue: #4f8ef7;
+  --blue2: #6fa3ff;
+  --purple: #a78bfa;
+  --grad: linear-gradient(135deg, #4f8ef7, #a78bfa);
+  --gold: #f0c040;
+  --text: #f0f4ff;
+  --text2: #8896b3;
+  --text3: #4a5568;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.14);
+  --radius: 8px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
 }
 
 html { scroll-behavior: smooth; }
@@ -23,8 +27,8 @@ html { scroll-behavior: smooth; }
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 300;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
   font-size: 15px;
   line-height: 1.6;
   min-height: 100vh;
@@ -32,20 +36,20 @@ body {
 }
 
 h1, h2, h3, h4 {
-  font-family: 'Playfair Display', serif;
-  font-weight: 400;
-  line-height: 1.2;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  line-height: 1.15;
   color: var(--text);
 }
 
 a { color: inherit; text-decoration: none; }
-button { font-family: 'DM Sans', sans-serif; cursor: pointer; border: none; background: none; }
+button { font-family: 'Inter', sans-serif; cursor: pointer; border: none; background: none; }
 
 input, select, textarea {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 14px;
-  background: var(--bg2);
-  border: 1px solid var(--border);
+  background: var(--bg3);
+  border: 1px solid var(--border2);
   color: var(--text);
   padding: 11px 14px;
   border-radius: var(--radius);
@@ -53,32 +57,31 @@ input, select, textarea {
   outline: none;
   transition: border-color 0.2s;
 }
-input:focus, select:focus, textarea:focus { border-color: var(--gold); }
+input:focus, select:focus, textarea:focus { border-color: var(--blue); }
 input::placeholder, textarea::placeholder { color: var(--text3); }
 
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 2px; }
 
 .btn-primary {
-  background: var(--text);
+  background: var(--grad);
   color: #fff;
   padding: 13px 28px;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
   border-radius: var(--radius);
   border: none;
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
+  transition: opacity 0.2s, transform 0.1s;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   width: 100%;
 }
-.btn-primary:hover { background: #333; }
+.btn-primary:hover { opacity: 0.9; }
 .btn-primary:active { transform: scale(0.99); }
 .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
 
@@ -86,10 +89,8 @@ input::placeholder, textarea::placeholder { color: var(--text3); }
   background: transparent;
   color: var(--text);
   padding: 12px 28px;
-  font-size: 12px;
-  font-weight: 400;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 500;
   border-radius: var(--radius);
   border: 1px solid var(--border2);
   cursor: pointer;
@@ -99,7 +100,7 @@ input::placeholder, textarea::placeholder { color: var(--text3); }
   justify-content: center;
   width: 100%;
 }
-.btn-outline:hover { border-color: var(--text); }
+.btn-outline:hover { border-color: var(--blue); color: var(--blue); }
 
 .card {
   background: var(--bg2);
@@ -112,19 +113,26 @@ input::placeholder, textarea::placeholder { color: var(--text3); }
 
 .badge {
   display: inline-block;
-  padding: 3px 10px;
-  font-size: 10px;
+  padding: 4px 12px;
+  font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.04em;
   border-radius: 20px;
 }
-.badge-gold { background: #fdf6e3; color: var(--gold); border: 1px solid #f0e0a0; }
-.badge-green { background: #f0faf4; color: #2d7d4f; border: 1px solid #b0dfc0; }
-.badge-red { background: #fdf0f0; color: #c0392b; border: 1px solid #f0c0bc; }
+.badge-blue { background: rgba(79,142,247,0.15); color: var(--blue2); border: 1px solid rgba(79,142,247,0.25); }
+.badge-purple { background: rgba(167,139,250,0.15); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.badge-gold { background: rgba(240,192,64,0.12); color: var(--gold); border: 1px solid rgba(240,192,64,0.25); }
+.badge-green { background: rgba(52,211,153,0.12); color: #34d399; border: 1px solid rgba(52,211,153,0.25); }
+.badge-red { background: rgba(248,113,113,0.12); color: #f87171; border: 1px solid rgba(248,113,113,0.25); }
 .badge-gray { background: var(--bg3); color: var(--text2); border: 1px solid var(--border); }
 
-.gold { color: var(--gold); }
+.grad-text {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 .muted { color: var(--text2); }
 .small { font-size: 12px; }
 .caps { text-transform: uppercase; letter-spacing: 0.1em; font-size: 11px; }
@@ -140,7 +148,7 @@ input::placeholder, textarea::placeholder { color: var(--text3); }
   100% { background-position: 200% 0; }
 }
 .skeleton {
-  background: linear-gradient(90deg, var(--bg3) 25%, var(--border) 50%, var(--bg3) 75%);
+  background: linear-gradient(90deg, var(--bg3) 25%, var(--bg4) 50%, var(--bg3) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: var(--radius);
