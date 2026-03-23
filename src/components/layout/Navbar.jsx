@@ -1,78 +1,63 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart, useAuth } from '../../context/index.jsx';
 
 export default function Navbar() {
   const { items } = useCart();
   const { usuario, logout } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-  const [scrolled, setScrolled] = useState(false);
-
-  const isHome = location.pathname === '/';
+  const [bg, setBg] = useState('rgba(255,255,255,0.72)');
 
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 60);
+    const handler = () => {
+      setBg(window.scrollY > 10 ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.72)');
+    };
     window.addEventListener('scroll', handler);
     return () => window.removeEventListener('scroll', handler);
   }, []);
 
-  const transparent = isHome && !scrolled;
+  const navLink = { fontSize: 12, color: '#1d1d1f', opacity: 0.8, letterSpacing: 0, fontWeight: 400, transition: 'opacity 0.2s', padding: '0 8px' };
 
   return (
-    <nav style={{
-      position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
-      background: transparent ? 'transparent' : 'rgba(255,255,255,0.96)',
-      backdropFilter: transparent ? 'none' : 'blur(12px)',
-      borderBottom: transparent ? 'none' : '1px solid var(--border)',
-      transition: 'all 0.4s ease',
-    }}>
-      <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 3rem', height: 72, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+    <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: bg, backdropFilter: 'saturate(180%) blur(20px)', WebkitBackdropFilter: 'saturate(180%) blur(20px)', borderBottom: '1px solid rgba(0,0,0,0.08)', height: 44, display: 'flex', alignItems: 'center' }}>
+      <div style={{ maxWidth: 1024, margin: '0 auto', padding: '0 1rem', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
 
-        {/* Links esquerda */}
-        <div style={{ display: 'flex', gap: '2.5rem', flex: 1 }}>
-          {[['/', 'Catálogo'], ['/', 'Como Funciona'], ['/', 'FAQ']].map(([to, label]) => (
-            <Link key={label} to={to} style={{
-              fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase',
-              color: transparent ? 'rgba(255,255,255,0.85)' : 'var(--text2)',
-              fontWeight: 400, transition: 'color 0.3s',
-            }}
-              onMouseEnter={e => e.target.style.color = transparent ? '#fff' : 'var(--text)'}
-              onMouseLeave={e => e.target.style.color = transparent ? 'rgba(255,255,255,0.85)' : 'var(--text2)'}
-            >{label}</Link>
-          ))}
-        </div>
-
-        {/* Logo centro */}
-        <Link to="/" style={{ textAlign: 'center', flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <span style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 22, fontWeight: 400, letterSpacing: '0.25em',
-            color: transparent ? '#fff' : 'var(--text)',
-            textTransform: 'uppercase', lineHeight: 1,
-            transition: 'color 0.4s',
-          }}>Niche Club</span>
-          <span style={{
-            fontSize: 9, letterSpacing: '0.4em', textTransform: 'uppercase',
-            color: transparent ? 'rgba(255,255,255,0.6)' : 'var(--gold)',
-            fontWeight: 400, marginTop: 3, transition: 'color 0.4s',
-          }}>Luxury Perfumes</span>
+        {/* Logo Apple-style */}
+        <Link to="/" style={{ fontSize: 18, color: '#1d1d1f', lineHeight: 1, display: 'flex', alignItems: 'center' }}>
+          ◈
         </Link>
 
-        {/* Ações direita */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '2rem', flex: 1 }}>
+        {/* Nav links centralizados */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
+          {[['/', 'Loja'], ['/', 'Catálogo'], ['/', 'Como Funciona'], ['/', 'FAQ']].map(([to, label]) => (
+            <Link key={label} to={to} style={navLink}
+              onMouseEnter={e => e.target.style.opacity = '1'}
+              onMouseLeave={e => e.target.style.opacity = '0.8'}
+            >{label}</Link>
+          ))}
+          {usuario && <Link to="/admin" style={navLink}>Admin</Link>}
+        </div>
+
+        {/* Ações */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           {usuario ? (
-            <>
-              <Link to="/admin" style={{ fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: transparent ? 'rgba(255,255,255,0.85)' : 'var(--text2)' }}>Admin</Link>
-              <button onClick={() => { logout(); navigate('/'); }} style={{ fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: transparent ? 'rgba(255,255,255,0.85)' : 'var(--text2)', background: 'none', border: 'none', cursor: 'pointer' }}>Sair</button>
-            </>
+            <button onClick={() => { logout(); navigate('/'); }} style={{ ...navLink, background: 'none', border: 'none', cursor: 'pointer', padding: '0 8px' }}>Sair</button>
           ) : (
-            <Link to="/admin/login" style={{ fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: transparent ? 'rgba(255,255,255,0.85)' : 'var(--text2)' }}>Login</Link>
+            <Link to="/admin/login" style={navLink}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ opacity: 0.8 }}>
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </Link>
           )}
-          <Link to="/carrinho" style={{ position: 'relative', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: transparent ? 'rgba(255,255,255,0.85)' : 'var(--text2)', display: 'flex', alignItems: 'center', gap: 8 }}>
-            Carrinho
+          <Link to="/carrinho" style={{ ...navLink, position: 'relative', padding: '0 8px' }}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ opacity: 0.8 }}>
+              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 01-8 0"/>
+            </svg>
             {items.length > 0 && (
-              <span style={{ width: 16, height: 16, borderRadius: '50%', background: 'var(--gold)', color: '#fff', fontSize: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 500 }}>{items.length}</span>
+              <span style={{ position: 'absolute', top: -5, right: 0, background: '#0071e3', color: '#fff', width: 14, height: 14, borderRadius: '50%', fontSize: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600 }}>{items.length}</span>
             )}
           </Link>
         </div>
