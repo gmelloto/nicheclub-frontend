@@ -4,8 +4,7 @@ async function req(method, path, body, token) {
   const headers = { 'Content-Type': 'application/json' };
   if (token) headers['Authorization'] = `Bearer ${token}`;
   const res = await fetch(`${BASE}/api${path}`, {
-    method,
-    headers,
+    method, headers,
     body: body ? JSON.stringify(body) : undefined,
   });
   const data = await res.json();
@@ -15,7 +14,10 @@ async function req(method, path, body, token) {
 
 export const api = {
   login: (email, senha) => req('POST', '/auth/login', { email, senha }),
-  perfumes: () => req('GET', '/perfumes'),
+  perfumes: (params = {}) => {
+    const q = new URLSearchParams(params).toString();
+    return req('GET', `/perfumes${q ? '?' + q : ''}`);
+  },
   perfume: (id) => req('GET', `/perfumes/${id}`),
   criarPedido: (payload) => req('POST', '/pedidos', payload),
   buscarPedido: (numero) => req('GET', `/pedidos/${numero}`),

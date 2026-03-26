@@ -17,21 +17,45 @@ const S = {
 export default function Catalogo() {
   const [perfumes, setPerfumes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [busca, setBusca] = useState('');
+  const [buscaInput, setBuscaInput] = useState('');
   const [tab, setTab] = useState('decants');
   const [faqAberto, setFaqAberto] = useState(null);
+  const [pagina, setPagina] = useState(1);
+  const [total, setTotal] = useState(0);
+  const LIMITE = 24;
 
+  const carregarPerfumes = async (pag = 1, buscaTermo = busca, reset = false) => {
+    if (pag === 1) setLoading(true); else setLoadingMore(true);
+    try {
+      const res = await api.perfumes({ pagina: pag, limite: LIMITE, busca: buscaTermo });
+      const lista = res.perfumes || res;
+      if (reset || pag === 1) setPerfumes(lista);
+      else setPerfumes(prev => [...prev, ...lista]);
+      setTotal(res.total || lista.length);
+      setPagina(pag);
+    } catch {
+      if (pag === 1) setPerfumes(DEMO);
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
+    }
+  };
+
+  useEffect(() => { carregarPerfumes(1, '', true); }, []);
+
+  // Debounce busca
   useEffect(() => {
-    api.perfumes()
-      .then(setPerfumes)
-      .catch(() => setPerfumes(DEMO))
-      .finally(() => setLoading(false));
-  }, []);
+    const t = setTimeout(() => {
+      setBusca(buscaInput);
+      carregarPerfumes(1, buscaInput, true);
+    }, 400);
+    return () => clearTimeout(t);
+  }, [buscaInput]);
 
-  const filtrados = perfumes.filter(p =>
-    p.nome.toLowerCase().includes(busca.toLowerCase()) ||
-    p.marca.toLowerCase().includes(busca.toLowerCase())
-  );
+  const temMais = perfumes.length < total;
+  const filtrados = perfumes;
 
   const faqs = [
     { q: 'O que é um decant?', r: 'Decant é uma amostra fracionada de um perfume original, transferida para um frasco menor. É a maneira ideal de experimentar fragrâncias de alto padrão antes de investir no frasco completo.' },
@@ -83,7 +107,7 @@ export default function Catalogo() {
 
           {/* Busca */}
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2.5rem' }}>
-            <input value={busca} onChange={e => setBusca(e.target.value)} placeholder="Buscar perfume ou marca..."
+            <input value={buscaInput} onChange={e => setBuscaInput(e.target.value)} placeholder="Buscar perfume ou marca..."
               style={{ width: 320, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(201,168,76,0.2)', color: S.text, padding: '10px 16px', fontSize: 13, outline: 'none', letterSpacing: '0.05em' }}
             />
           </div>
@@ -100,6 +124,22 @@ export default function Catalogo() {
               {filtrados.map((p, i) => <PerfumeCard key={p.id} perfume={p} delay={i * 60} />)}
             </div>
           )}
+
+          {/* Carregar mais */}
+          {temMais && !loading && (
+            <div style={{ textAlign: 'center', marginTop: '3rem' }}>
+              <button onClick={() => carregarPerfumes(pagina + 1, busca)} disabled={loadingMore}
+                style={{ background: 'transparent', border: '1px solid rgba(201,168,76,0.4)', color: '#c9a84c', padding: '12px 36px', fontSize: 12, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'pointer' }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(201,168,76,0.08)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+              >
+                {loadingMore ? 'Carregando...' : 'Carregar mais'}
+              </button>
+            </div>
+          )}
+          <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+            <p style={{ fontSize: 12, color: 'rgba(240,236,224,0.25)' }}>{perfumes.length} de {total} fragrâncias</p>
+          </div>
         </div>
       </div>
 
