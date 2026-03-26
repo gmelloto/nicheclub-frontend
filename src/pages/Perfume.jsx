@@ -21,6 +21,7 @@ export default function Perfume() {
   const [adicionado, setAdicionado] = useState(false);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     api.perfume(id)
       .then(setPerfume)
       .catch(() => setPerfume(DEMO))

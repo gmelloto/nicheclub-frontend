@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import { CartProvider, AuthProvider } from './context/index.jsx';
 import Navbar from './components/layout/Navbar.jsx';
 import Catalogo from './pages/Catalogo.jsx';
@@ -8,11 +9,18 @@ import Admin from './pages/Admin.jsx';
 import Login from './pages/Login.jsx';
 import './index.css';
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+}
+
 export default function App() {
   return (
     <AuthProvider>
       <CartProvider>
         <BrowserRouter>
+          <ScrollToTop />
           <Navbar />
           <Routes>
             <Route path="/" element={<Catalogo />} />
