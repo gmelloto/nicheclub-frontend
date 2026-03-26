@@ -11,6 +11,18 @@ const TAMANHOS = [
   { key: '15ml', label: '15ml', ml: 15 },
 ];
 
+const C = {
+  bg: '#ffffff',
+  bg2: '#f8f7f4',
+  border: '#e8e4dc',
+  text: '#0d0b07',
+  text2: '#5a5550',
+  text3: '#9a9080',
+  gold: '#8a6a10',
+  goldLight: '#c9a84c',
+  goldBg: '#fdf8ee',
+};
+
 export default function Perfume() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -42,15 +54,15 @@ export default function Perfume() {
   };
 
   if (loading) return (
-    <div style={{ minHeight: '100vh', background: '#0a0905', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ width: 32, height: 32, border: '2px solid rgba(201,168,76,0.2)', borderTop: '2px solid #c9a84c', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+    <div style={{ minHeight: '100vh', background: C.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ width: 32, height: 32, border: `2px solid ${C.border}`, borderTop: `2px solid ${C.goldLight}`, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 
   if (!perfume) return (
-    <div style={{ minHeight: '100vh', background: '#0a0905', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <p style={{ color: 'rgba(240,236,224,0.4)', fontSize: 14, letterSpacing: '0.1em' }}>Perfume não encontrado.</p>
+    <div style={{ minHeight: '100vh', background: C.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <p style={{ color: C.text3, fontSize: 14 }}>Perfume não encontrado.</p>
     </div>
   );
 
@@ -60,69 +72,65 @@ export default function Perfume() {
   const acordes = [perfume.acorde1, perfume.acorde2, perfume.acorde3, perfume.acorde4, perfume.acorde5].filter(Boolean);
 
   return (
-    <div style={{ minHeight: '100vh', background: '#ffffff', color: '#0d0b07' }}>
+    <div style={{ minHeight: '100vh', background: C.bg, color: C.text }}>
 
       {/* Voltar */}
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0.75rem 2.5rem' }}>
-        <button onClick={() => navigate(-1)} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#9a9080', background: 'none', border: 'none', cursor: 'pointer', transition: 'color 0.2s' }}
-          onMouseEnter={e => e.currentTarget.style.color = '#c9a84c'}
-          onMouseLeave={e => e.currentTarget.style.color = 'rgba(240,236,224,0.5)'}
-        >
-          ← Voltar
-        </button>
+        <button onClick={() => navigate(-1)} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: C.text3, background: 'none', border: 'none', cursor: 'pointer' }}
+          onMouseEnter={e => e.currentTarget.style.color = C.gold}
+          onMouseLeave={e => e.currentTarget.style.color = C.text3}
+        >← Voltar</button>
       </div>
 
-      {/* Header — marca, nome e rating acima da foto */}
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 2.5rem 1.25rem', borderBottom: '1px solid #e8e4dc' }}>
-        <p style={{ fontSize: 11, letterSpacing: '0.25em', textTransform: 'uppercase', color: '#7a6020', marginBottom: '0.5rem', fontWeight: 500 }}>{perfume?.marca}</p>
-        <h1 style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 700, lineHeight: 1.1, marginBottom: '0.75rem', letterSpacing: '-0.02em' }}>{perfume?.nome}</h1>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
-          {perfume?.genero && <span style={{ fontSize: 12, color: 'rgba(240,236,224,0.45)', letterSpacing: '-0.01em' }}>{perfume.genero}</span>}
-          {perfume?.ano && <><span style={{ color: '#d0c8b8' }}>·</span><span style={{ fontSize: 12, color: 'rgba(240,236,224,0.45)' }}>{perfume.ano}</span></>}
-          {perfume?.pais && <><span style={{ color: '#d0c8b8' }}>·</span><span style={{ fontSize: 12, color: 'rgba(240,236,224,0.45)' }}>{perfume.pais}</span></>}
-          {perfume?.rating_valor && <><span style={{ color: '#d0c8b8' }}>·</span><span style={{ fontSize: 12, color: '#7a6020' }}>★ {Number(perfume.rating_valor).toFixed(2)} <span style={{ color: '#a09880' }}>({perfume.rating_count?.toLocaleString()})</span></span></>}
+      {/* Header — título acima das colunas */}
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 2.5rem 1.25rem', borderBottom: `1px solid ${C.border}` }}>
+        <p style={{ fontSize: 11, letterSpacing: '0.25em', textTransform: 'uppercase', color: C.gold, marginBottom: '0.4rem', fontWeight: 600 }}>{perfume.marca}</p>
+        <h1 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 3rem)', fontWeight: 700, lineHeight: 1.1, marginBottom: '0.6rem', letterSpacing: '-0.02em', color: C.text }}>{perfume.nome}</h1>
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          {perfume.genero && <span style={{ fontSize: 12, color: C.text2 }}>{perfume.genero}</span>}
+          {perfume.ano && <><span style={{ color: C.border }}>·</span><span style={{ fontSize: 12, color: C.text2 }}>{perfume.ano}</span></>}
+          {perfume.pais && <><span style={{ color: C.border }}>·</span><span style={{ fontSize: 12, color: C.text2 }}>{perfume.pais}</span></>}
+          {perfume.rating_valor && <><span style={{ color: C.border }}>·</span><span style={{ fontSize: 12, color: C.gold }}>★ {Number(perfume.rating_valor).toFixed(2)} <span style={{ color: C.text3 }}>({perfume.rating_count?.toLocaleString()})</span></span></>}
         </div>
       </div>
 
-      {/* Layout principal */}
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 2.5rem 2rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 400px), 1fr))', gap: '1.5rem', alignItems: 'start' }}>
+      {/* Layout 50/50 */}
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '1.5rem 2.5rem 3rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 400px), 1fr))', gap: '2rem', alignItems: 'start' }}>
 
         {/* Coluna esquerda — imagem */}
         <div>
-          <div style={{ position: 'relative', background: '#ffffff', borderRadius: 4, overflow: 'hidden', height: 'min(75vh, 480px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            {perfume.foto_url
-              ? <img src={perfume.foto_url} alt={perfume.nome} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '12px' }} />
-              : <img src="/frasco.jpeg" alt={perfume.nome} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '12px', filter: 'brightness(0.8)' }} />
-            }
-            {/* Overlay sutil */}
-            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,9,5,0.4) 0%, transparent 50%)' }} />
+          <div style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: 4, overflow: 'hidden', height: 'min(70vh, 480px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <img
+              src={perfume.foto_url || '/frasco.jpeg'}
+              alt={perfume.nome}
+              style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 16 }}
+            />
           </div>
 
-          {/* Pirâmide Olfativa */}
+          {/* Pirâmide olfativa */}
           {(notas_topo.length > 0 || notas_coracao.length > 0 || notas_base.length > 0) && (
-            <div style={{ marginTop: '1.5rem', background: '#fafaf8', border: '1px solid #e8e4dc', borderRadius: 4, padding: '1.75rem' }}>
-              <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: '1.3rem', fontWeight: 700, marginBottom: '0.75rem', color: '#f0ece0' }}>Pirâmide Olfativa</h3>
-
+            <div style={{ marginTop: '1rem', background: C.bg2, border: `1px solid ${C.border}`, borderRadius: 4, padding: '1.5rem' }}>
+              <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1.25rem', color: C.text }}>Pirâmide Olfativa</h3>
               {notas_topo.length > 0 && (
-                <div style={{ marginBottom: '1.25rem' }}>
-                  <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c9a84c', marginBottom: '0.6rem' }}>Topo</p>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                <div style={{ marginBottom: '1rem' }}>
+                  <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: C.gold, marginBottom: '0.5rem' }}>Topo</p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                     {notas_topo.map(n => <NotaBadge key={n} nota={n} />)}
                   </div>
                 </div>
               )}
               {notas_coracao.length > 0 && (
-                <div style={{ marginBottom: '1.25rem' }}>
-                  <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c9a84c', marginBottom: '0.6rem' }}>Coração</p>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                <div style={{ marginBottom: '1rem' }}>
+                  <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: C.gold, marginBottom: '0.5rem' }}>Coração</p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                     {notas_coracao.map(n => <NotaBadge key={n} nota={n} />)}
                   </div>
                 </div>
               )}
               {notas_base.length > 0 && (
                 <div>
-                  <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c9a84c', marginBottom: '0.6rem' }}>Base</p>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                  <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: C.gold, marginBottom: '0.5rem' }}>Base</p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                     {notas_base.map(n => <NotaBadge key={n} nota={n} />)}
                   </div>
                 </div>
@@ -130,52 +138,44 @@ export default function Perfume() {
             </div>
           )}
 
-          {/* Acordes principais */}
+          {/* Acordes */}
           {acordes.length > 0 && (
-            <div style={{ marginTop: '1rem', background: '#111009', border: '1px solid rgba(201,168,76,0.12)', borderRadius: 4, padding: '1.5rem' }}>
-              <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c9a84c', marginBottom: '0.4rem' }}>Principais Acordes</p>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            <div style={{ marginTop: '1rem', background: C.bg2, border: `1px solid ${C.border}`, borderRadius: 4, padding: '1.25rem' }}>
+              <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: C.gold, marginBottom: '0.75rem' }}>Principais Acordes</p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                 {acordes.map(a => <NotaBadge key={a} nota={a} gold />)}
               </div>
             </div>
           )}
         </div>
 
-        {/* Coluna direita — info + compra */}
-        <div style={{ paddingTop: '0.5rem' }}>
+        {/* Coluna direita */}
+        <div>
 
-
-
-          {/* Descrição */}
+          {/* Descricao */}
           {perfume.descricao && (
-            <p style={{ fontSize: 14, color: '#6b6460', lineHeight: 1.9, marginBottom: '0.75rem', maxWidth: 520 }}>{perfume.descricao}</p>
+            <p style={{ fontSize: 14, color: C.text2, lineHeight: 1.8, marginBottom: '1.25rem' }}>{perfume.descricao}</p>
           )}
 
-          <div style={{ height: 1, background: '#e8e4dc', marginBottom: '0.75rem' }} />
+          <div style={{ height: 1, background: C.border, marginBottom: '1.25rem' }} />
 
-          {/* Barra de disponibilidade */}
-          <div style={{ background: '#fafaf8', border: '1px solid #e8e4dc', borderRadius: 4, padding: '0.85rem 1.25rem', marginBottom: '1rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
+          {/* Disponibilidade */}
+          <div style={{ background: C.bg2, border: `1px solid ${C.border}`, borderRadius: 4, padding: '1rem 1.25rem', marginBottom: '1.25rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{ width: 8, height: 8, borderRadius: '50%', background: esgotado ? '#c0392b' : '#c9a84c' }} />
-                <span style={{ fontSize: 13, fontWeight: 500, letterSpacing: '-0.01em', color: esgotado ? '#c0392b' : '#0d0b07' }}>
-                  {esgotado ? 'Esgotado' : 'Disponível'}
-                </span>
+                <div style={{ width: 8, height: 8, borderRadius: '50%', background: esgotado ? '#c0392b' : C.goldLight }} />
+                <span style={{ fontSize: 13, fontWeight: 600, color: esgotado ? '#c0392b' : C.text }}>{esgotado ? 'Esgotado' : 'Disponível'}</span>
               </div>
-              <span style={{ fontSize: 13, color: '#c9a84c', fontWeight: 500 }}>{disponivel}ml de {total}ml</span>
+              <span style={{ fontSize: 13, color: C.gold, fontWeight: 500 }}>{disponivel}ml de {total}ml</span>
             </div>
-            <div style={{ height: 4, background: '#e8e4dc', borderRadius: 2 }}>
-              <div style={{ height: '100%', background: 'linear-gradient(90deg,#c9a84c,#e8c870)', borderRadius: 2, width: `${pct}%`, transition: 'width 0.5s' }} />
+            <div style={{ height: 4, background: C.border, borderRadius: 2 }}>
+              <div style={{ height: '100%', background: `linear-gradient(90deg,${C.goldLight},#e8c870)`, borderRadius: 2, width: `${100 - pct}%` }} />
             </div>
-            {perfume.ml_vendido > 0 && (
-              <p style={{ fontSize: 11, color: '#a09880', marginTop: '0.5rem', textAlign: 'right' }}>{perfume.ml_vendido}ml vendidos</p>
-            )}
           </div>
 
-          {/* Escolha de tamanho */}
-          <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#9a9080', marginBottom: '1rem' }}>Escolha sua opção</p>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: '0.75rem' }}>
+          {/* Tamanhos */}
+          <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: C.text3, marginBottom: '0.75rem' }}>Escolha sua opção</p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: '1.25rem' }}>
             {TAMANHOS.map(t => {
               const opcao = perfume.opcoes?.find(o => o.tamanho === t.key);
               if (!opcao) return null;
@@ -183,60 +183,41 @@ export default function Perfume() {
               const sel = selecionado === t.key;
               return (
                 <button key={t.key} onClick={() => disp && setSelecionado(t.key)} disabled={!disp}
-                  style={{
-                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                    padding: '0.7rem 1rem', borderRadius: 4,
-                    border: sel ? '1px solid #c9a84c' : '1px solid rgba(201,168,76,0.12)',
-                    background: sel ? 'rgba(201,168,76,0.08)' : 'rgba(255,255,255,0.02)',
-                    cursor: disp ? 'pointer' : 'not-allowed',
-                    opacity: disp ? 1 : 0.4,
-                    transition: 'all 0.2s',
-                  }}
-                  onMouseEnter={e => { if (disp && !sel) e.currentTarget.style.borderColor = '#c9a84c'; }}
-                  onMouseLeave={e => { if (!sel) e.currentTarget.style.borderColor = '#e8e4dc'; }}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem 1rem', borderRadius: 4, border: sel ? `1px solid ${C.goldLight}` : `1px solid ${C.border}`, background: sel ? C.goldBg : C.bg, cursor: disp ? 'pointer' : 'not-allowed', opacity: disp ? 1 : 0.45, transition: 'all 0.2s' }}
+                  onMouseEnter={e => { if (disp && !sel) e.currentTarget.style.borderColor = C.goldLight; }}
+                  onMouseLeave={e => { if (!sel) e.currentTarget.style.borderColor = C.border; }}
                 >
-                  <span style={{ fontSize: 14, color: disp ? '#0d0b07' : '#c0b8a8', letterSpacing: '0.03em' }}>
-                    {t.label}{!disp && <span style={{ fontSize: 11, color: '#a09880', marginLeft: 8 }}>— indisponível</span>}
+                  <span style={{ fontSize: 14, color: C.text, fontWeight: sel ? 600 : 400 }}>
+                    {t.label}{!disp && <span style={{ fontSize: 11, color: C.text3, marginLeft: 8 }}>— indisponível</span>}
                   </span>
-                  <span style={{ fontSize: 14, color: '#c9a84c', fontWeight: 500 }}>
-                    R$ {Number(opcao.preco).toFixed(2).replace('.', ',')}
-                  </span>
+                  <span style={{ fontSize: 14, color: C.gold, fontWeight: 600 }}>R$ {Number(opcao.preco).toFixed(2).replace('.', ',')}</span>
                 </button>
               );
             })}
           </div>
 
-          {/* Botão comprar */}
+          {/* Botão comprar / esgotado */}
           {esgotado ? (
-            <div style={{ background: '#fafaf8', border: '1px solid #e8e4dc', borderRadius: 4, padding: '16px', textAlign: 'center' }}>
-              <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c9a84c', marginBottom: '1rem' }}>Esgotado</p>
+            <div style={{ background: C.bg2, border: `1px solid ${C.border}`, borderRadius: 4, padding: '1.25rem' }}>
+              <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: C.gold, marginBottom: '0.75rem', textAlign: 'center' }}>Esgotado — Avise-me</p>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-                <input placeholder="Seu nome" style={{ padding: '10px 14px', background: '#fff', border: '1px solid #e8e4dc', borderRadius: 4, color: '#0d0b07', fontSize: 13 }} />
-                <input placeholder="Telefone" style={{ padding: '10px 14px', background: '#fff', border: '1px solid #e8e4dc', borderRadius: 4, color: '#0d0b07', fontSize: 13 }} />
+                <input placeholder="Seu nome" style={{ padding: '10px 12px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: 4, color: C.text, fontSize: 13, outline: 'none' }} />
+                <input placeholder="Telefone" style={{ padding: '10px 12px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: 4, color: C.text, fontSize: 13, outline: 'none' }} />
               </div>
             </div>
           ) : (
             <button onClick={handleAdicionar} disabled={!selecionado}
-              style={{
-                width: '100%', padding: '12px', borderRadius: 4,
-                background: selecionado ? 'linear-gradient(135deg,#c9a84c,#e8c870)' : 'rgba(201,168,76,0.1)',
-                border: 'none', cursor: selecionado ? 'pointer' : 'not-allowed',
-                fontSize: 12, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase',
-                color: selecionado ? '#0a0905' : 'rgba(201,168,76,0.3)',
-                transition: 'all 0.2s',
-              }}
+              style={{ width: '100%', padding: '14px', borderRadius: 4, background: selecionado ? `linear-gradient(135deg,${C.goldLight},#e8c870)` : C.bg2, border: `1px solid ${selecionado ? C.goldLight : C.border}`, cursor: selecionado ? 'pointer' : 'not-allowed', fontSize: 12, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: selecionado ? '#0d0b07' : C.text3, transition: 'all 0.2s' }}
             >
-              {adicionado ? '✓ Adicionado ao carrinho' : selecionado ? `Adicionar ao Carrinho — R$ ${Number(opcaoSel?.preco || 0).toFixed(2).replace('.', ',')}` : 'Selecione um tamanho'}
+              {adicionado ? '✓ Adicionado!' : selecionado ? `Adicionar — R$ ${Number(opcaoSel?.preco || 0).toFixed(2).replace('.', ',')}` : 'Selecione um tamanho'}
             </button>
           )}
 
-          {/* Perfumistas */}
+          {/* Perfumista */}
           {(perfume.perfumista1 || perfume.perfumista2) && (
-            <div style={{ marginTop: '2rem', padding: '1.25rem', background: '#fafaf8', border: '1px solid #e8e4dc', borderRadius: 4 }}>
-              <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#a09880', marginBottom: '0.5rem' }}>Perfumista</p>
-              <p style={{ fontSize: 14, color: '#4a4440' }}>
-                {[perfume.perfumista1, perfume.perfumista2].filter(Boolean).join(' & ')}
-              </p>
+            <div style={{ marginTop: '1rem', padding: '1rem', background: C.bg2, border: `1px solid ${C.border}`, borderRadius: 4 }}>
+              <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: C.text3, marginBottom: '0.4rem' }}>Perfumista</p>
+              <p style={{ fontSize: 14, color: C.text2 }}>{[perfume.perfumista1, perfume.perfumista2].filter(Boolean).join(' & ')}</p>
             </div>
           )}
         </div>
@@ -247,13 +228,7 @@ export default function Perfume() {
 
 function NotaBadge({ nota, gold }) {
   return (
-    <span style={{
-      padding: '5px 14px', borderRadius: 2,
-      background: gold ? 'rgba(201,168,76,0.08)' : 'rgba(255,255,255,0.05)',
-      border: `1px solid ${gold ? 'rgba(201,168,76,0.25)' : 'rgba(255,255,255,0.08)'}`,
-      fontSize: 12, color: gold ? '#c9a84c' : 'rgba(240,236,224,0.7)',
-      letterSpacing: '0.03em', fontWeight: gold ? 500 : 300,
-    }}>
+    <span style={{ padding: '4px 12px', borderRadius: 2, background: gold ? '#fdf8ee' : '#f0ede8', border: `1px solid ${gold ? '#c9a84c' : '#e0d8c8'}`, fontSize: 12, color: gold ? '#8a6a10' : '#4a4440', fontWeight: gold ? 600 : 400 }}>
       {nota}
     </span>
   );
@@ -263,16 +238,13 @@ const DEMO = {
   id: '1', nome: 'Baccarat Rouge 540', marca: 'Maison Francis Kurkdjian',
   familia_olfativa: 'Amadeirado Floral', genero: 'Unissex', pais: 'França',
   ano: 2015, rating_valor: 4.75, rating_count: 12500,
-  descricao: 'Uma criação icônica com notas de jasmim, açafrão, cedro e ambrofix. Deixa um rastro marcante e sofisticado, perfeito para ocasiões especiais.',
-  ml_disponivel: 62, ml_total: 100, ml_vendido: 38,
+  descricao: 'Uma criação icônica com notas de jasmim, açafrão, cedro e ambrofix.',
+  ml_disponivel: 62, ml_total: 100,
   notas_topo: 'açafrão, jasmim', notas_coracao: 'ambrofix, fava tonka', notas_base: 'cedro, resina',
-  acorde1: 'Floral', acorde2: 'Amadeirado', acorde3: 'Adocicado', acorde4: 'Almiscarado', acorde5: null,
-  perfumista1: 'Francis Kurkdjian', perfumista2: null,
+  acorde1: 'Floral', acorde2: 'Amadeirado', acorde3: 'Adocicado',
+  perfumista1: 'Francis Kurkdjian',
   opcoes: [
-    { tamanho: 'apc', preco: 320, ml_quantidade: 50 },
-    { tamanho: '3ml', preco: 38, ml_quantidade: 3 },
-    { tamanho: '5ml', preco: 58, ml_quantidade: 5 },
-    { tamanho: '10ml', preco: 105, ml_quantidade: 10 },
-    { tamanho: '15ml', preco: 148, ml_quantidade: 15 },
+    { tamanho: 'apc', preco: 320 }, { tamanho: '3ml', preco: 38 },
+    { tamanho: '5ml', preco: 58 }, { tamanho: '10ml', preco: 105 }, { tamanho: '15ml', preco: 148 },
   ],
 };
