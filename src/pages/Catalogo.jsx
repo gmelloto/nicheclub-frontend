@@ -252,7 +252,7 @@ function PerfumeCard({ perfume, delay }) {
       onMouseLeave={() => setHovered(false)}
     >
       {/* Imagem */}
-      <div style={{ position: 'relative', paddingBottom: '100%', overflow: 'hidden', background: '#f5f3ee' }}>
+      <div style={{ position: 'relative', paddingBottom: '100%', overflow: 'hidden', background: '#ffffff' }}>
         {perfume.foto_url
           ? <img src={perfume.foto_url} alt={perfume.nome} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', padding: '8px', transform: hovered ? 'scale(1.03)' : 'scale(1)', transition: 'transform 0.5s ease' }} />
           : <img src="/frasco.jpeg" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', padding: '8px', transform: hovered ? 'scale(1.03)' : 'scale(1)', transition: 'transform 0.5s ease', filter: 'brightness(0.7)' }} />
