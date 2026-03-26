@@ -74,7 +74,7 @@ export default function Catalogo() {
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(13,11,7,0.9) 40%, rgba(13,11,7,0.3) 100%)' }} />
         <div style={{ position: 'relative', maxWidth: 1280, margin: '0 auto', padding: '3rem 2.5rem', width: '100%' }}>
           <p style={{ fontSize: 11, letterSpacing: '0.35em', textTransform: 'uppercase', color: S.gold, marginBottom: '1rem', fontWeight: 500 }}>Fragrâncias Exclusivas</p>
-          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 600, lineHeight: 1.1, marginBottom: '1.25rem', maxWidth: 560 }}>
+          <h1 style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 600, lineHeight: 1.1, marginBottom: '1.25rem', maxWidth: 560 }}>
             Descubra sua<br /><span style={{ color: S.gold }}>essência</span>
           </h1>
           <p style={{ fontSize: 15, color: S.text2, maxWidth: 420, lineHeight: 1.8, marginBottom: '2.5rem' }}>
@@ -91,7 +91,7 @@ export default function Catalogo() {
         <div style={{ maxWidth: 1280, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
             <p style={{ fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', color: S.gold, marginBottom: '0.75rem', fontWeight: 500 }}>Nossa Coleção</p>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(2.2rem, 4vw, 3.5rem)', fontWeight: 600, marginBottom: '0.75rem' }}>Catálogo</h2>
+            <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(2.2rem, 4vw, 3.5rem)', fontWeight: 600, marginBottom: '0.75rem' }}>Catálogo</h2>
             <p style={{ fontSize: 14, color: S.text2 }}>Selecione um perfume para escolher o tamanho e fazer sua reserva.</p>
           </div>
 
@@ -108,7 +108,7 @@ export default function Catalogo() {
           {/* Busca */}
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2.5rem' }}>
             <input value={buscaInput} onChange={e => setBuscaInput(e.target.value)} placeholder="Buscar perfume ou marca..."
-              style={{ width: 320, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(201,168,76,0.2)', color: S.text, padding: '10px 16px', fontSize: 13, outline: 'none', letterSpacing: '0.05em' }}
+              style={{ width: 320, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(201,168,76,0.2)', color: S.text, padding: '10px 16px', fontSize: 13, outline: 'none', letterSpacing: '-0.01em' }}
             />
           </div>
 
@@ -146,7 +146,7 @@ export default function Catalogo() {
       {/* ─── COMO FUNCIONA ────────────────────────────────────────────────── */}
       <div id="como-funciona" style={{ background: S.black2, borderTop: `1px solid ${S.border}`, borderBottom: `1px solid ${S.border}`, padding: '5rem 2.5rem' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', textAlign: 'center' }}>
-          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, marginBottom: '3.5rem' }}>Como Funciona</h2>
+          <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, marginBottom: '3.5rem' }}>Como Funciona</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '2rem' }}>
             {[
               { n: '01', t: 'Escolha', d: 'Navegue pelo catálogo e selecione o perfume desejado.' },
@@ -154,8 +154,8 @@ export default function Catalogo() {
               { n: '03', t: 'Receba', d: 'Finalize o pedido e receba seu decant em casa.' },
             ].map(s => (
               <div key={s.n} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-                <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '3.5rem', fontWeight: 600, color: S.gold, lineHeight: 1 }}>{s.n}</span>
-                <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.4rem', fontWeight: 600 }}>{s.t}</h3>
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '3.5rem', fontWeight: 600, color: S.gold, lineHeight: 1 }}>{s.n}</span>
+                <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: '1.4rem', fontWeight: 600 }}>{s.t}</h3>
                 <p style={{ fontSize: 14, color: S.text2, lineHeight: 1.7, maxWidth: 220 }}>{s.d}</p>
               </div>
             ))}
@@ -167,7 +167,7 @@ export default function Catalogo() {
       <div style={{ padding: '5rem 2.5rem' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', textAlign: 'center' }}>
           <p style={{ fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', color: S.gold, marginBottom: '0.75rem', fontWeight: 500 }}>Entregas</p>
-          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, marginBottom: '3rem' }}>Prazo de Entrega</h2>
+          <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, marginBottom: '3rem' }}>Prazo de Entrega</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '1.25rem' }}>
             {[
               { icon: '📦', t: 'Preparação', d: 'Seu pedido é preparado com cuidado em até 2 dias úteis.' },
@@ -176,7 +176,7 @@ export default function Catalogo() {
             ].map(s => (
               <div key={s.t} style={{ background: S.black2, border: `1px solid ${S.border}`, padding: '2.5rem 2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
                 <span style={{ fontSize: 36 }}>{s.icon}</span>
-                <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.3rem', fontWeight: 600 }}>{s.t}</h3>
+                <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: '1.3rem', fontWeight: 600 }}>{s.t}</h3>
                 <p style={{ fontSize: 14, color: S.text2, lineHeight: 1.7, whiteSpace: 'pre-line', textAlign: 'center' }}>{s.d}</p>
               </div>
             ))}
@@ -189,7 +189,7 @@ export default function Catalogo() {
         <div style={{ maxWidth: 800, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <p style={{ fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', color: S.gold, marginBottom: '0.75rem', fontWeight: 500 }}>Dúvidas</p>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600 }}>Perguntas Frequentes</h2>
+            <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600 }}>Perguntas Frequentes</h2>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {faqs.map((f, i) => (
@@ -211,7 +211,7 @@ export default function Catalogo() {
       <div id="quem-somos" style={{ borderTop: `1px solid ${S.border}`, padding: '6rem 2.5rem' }}>
         <div style={{ maxWidth: 800, margin: '0 auto', textAlign: 'center' }}>
           <p style={{ fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', color: S.gold, marginBottom: '1rem', fontWeight: 500 }}>Nossa História</p>
-          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, marginBottom: '2rem' }}>Quem Somos</h2>
+          <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, marginBottom: '2rem' }}>Quem Somos</h2>
           <p style={{ fontSize: 15, color: S.text2, lineHeight: 1.9, marginBottom: '1.5rem' }}>
             A <strong style={{ color: S.text, fontWeight: 600 }}>Niche Club</strong> nasceu da paixão por perfumaria de nicho e do desejo de tornar fragrâncias exclusivas acessíveis a todos. Acreditamos que todo mundo merece experimentar o melhor da perfumaria mundial sem precisar investir em um frasco completo.
           </p>
@@ -276,7 +276,7 @@ function PerfumeCard({ perfume, delay }) {
       {/* Info */}
       <div style={{ padding: '1.25rem' }}>
         <p style={{ fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(201,168,76,0.6)', marginBottom: 5, fontWeight: 500 }}>{perfume.marca}</p>
-        <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.25rem', fontWeight: 500, color: hovered ? '#c9a84c' : '#f0ece0', transition: 'color 0.3s', marginBottom: 6, lineHeight: 1.2 }}>{perfume.nome}</h3>
+        <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: '1.25rem', fontWeight: 500, color: hovered ? '#c9a84c' : '#f0ece0', transition: 'color 0.3s', marginBottom: 6, lineHeight: 1.2 }}>{perfume.nome}</h3>
         {perfume.familia_olfativa && (
           <p style={{ fontSize: 11, color: 'rgba(240,236,224,0.35)', marginBottom: 12, fontStyle: 'italic' }}>{perfume.familia_olfativa}</p>
         )}

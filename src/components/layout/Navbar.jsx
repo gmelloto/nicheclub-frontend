@@ -21,7 +21,7 @@ export default function Navbar() {
               <img src="/logo.jpeg" alt="Niche Club" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 17, fontWeight: 600, color: '#c9a84c', letterSpacing: '0.08em', lineHeight: 1.1 }}>NICHE CLUB</span>
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 17, fontWeight: 600, color: '#c9a84c', letterSpacing: '0.08em', lineHeight: 1.1 }}>NICHE CLUB</span>
               <span style={{ fontSize: 8, letterSpacing: '0.3em', color: 'rgba(201,168,76,0.5)', textTransform: 'uppercase' }}>Luxury Perfumes</span>
             </div>
           </Link>

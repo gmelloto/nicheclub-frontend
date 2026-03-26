@@ -75,9 +75,9 @@ export default function Perfume() {
       {/* Header — marca, nome e rating acima da foto */}
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 2.5rem 1.25rem', borderBottom: '1px solid rgba(201,168,76,0.1)' }}>
         <p style={{ fontSize: 11, letterSpacing: '0.25em', textTransform: 'uppercase', color: '#c9a84c', marginBottom: '0.5rem', fontWeight: 500 }}>{perfume?.marca}</p>
-        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 400, lineHeight: 1.1, marginBottom: '0.75rem', letterSpacing: '0.02em' }}>{perfume?.nome}</h1>
+        <h1 style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 700, lineHeight: 1.1, marginBottom: '0.75rem', letterSpacing: '-0.02em' }}>{perfume?.nome}</h1>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
-          {perfume?.genero && <span style={{ fontSize: 12, color: 'rgba(240,236,224,0.45)', letterSpacing: '0.05em' }}>{perfume.genero}</span>}
+          {perfume?.genero && <span style={{ fontSize: 12, color: 'rgba(240,236,224,0.45)', letterSpacing: '-0.01em' }}>{perfume.genero}</span>}
           {perfume?.ano && <><span style={{ color: 'rgba(201,168,76,0.3)' }}>·</span><span style={{ fontSize: 12, color: 'rgba(240,236,224,0.45)' }}>{perfume.ano}</span></>}
           {perfume?.pais && <><span style={{ color: 'rgba(201,168,76,0.3)' }}>·</span><span style={{ fontSize: 12, color: 'rgba(240,236,224,0.45)' }}>{perfume.pais}</span></>}
           {perfume?.rating_valor && <><span style={{ color: 'rgba(201,168,76,0.3)' }}>·</span><span style={{ fontSize: 12, color: '#c9a84c' }}>★ {Number(perfume.rating_valor).toFixed(2)} <span style={{ color: 'rgba(240,236,224,0.3)' }}>({perfume.rating_count?.toLocaleString()})</span></span></>}
@@ -101,7 +101,7 @@ export default function Perfume() {
           {/* Pirâmide Olfativa */}
           {(notas_topo.length > 0 || notas_coracao.length > 0 || notas_base.length > 0) && (
             <div style={{ marginTop: '1.5rem', background: '#111009', border: '1px solid rgba(201,168,76,0.12)', borderRadius: 4, padding: '1.75rem' }}>
-              <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.3rem', fontWeight: 400, marginBottom: '0.75rem', color: '#f0ece0' }}>Pirâmide Olfativa</h3>
+              <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: '1.3rem', fontWeight: 700, marginBottom: '0.75rem', color: '#f0ece0' }}>Pirâmide Olfativa</h3>
 
               {notas_topo.length > 0 && (
                 <div style={{ marginBottom: '1.25rem' }}>
@@ -158,7 +158,7 @@ export default function Perfume() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <div style={{ width: 8, height: 8, borderRadius: '50%', background: esgotado ? '#c0392b' : '#c9a84c' }} />
-                <span style={{ fontSize: 13, fontWeight: 500, letterSpacing: '0.05em', color: esgotado ? '#c0392b' : '#f0ece0' }}>
+                <span style={{ fontSize: 13, fontWeight: 500, letterSpacing: '-0.01em', color: esgotado ? '#c0392b' : '#f0ece0' }}>
                   {esgotado ? 'Esgotado' : 'Disponível'}
                 </span>
               </div>
