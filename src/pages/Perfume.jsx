@@ -60,11 +60,11 @@ export default function Perfume() {
   const acordes = [perfume.acorde1, perfume.acorde2, perfume.acorde3, perfume.acorde4, perfume.acorde5].filter(Boolean);
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0a0905', color: '#f0ece0' }}>
+    <div style={{ minHeight: '100vh', background: '#ffffff', color: '#0d0b07' }}>
 
       {/* Voltar */}
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0.75rem 2.5rem' }}>
-        <button onClick={() => navigate(-1)} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'rgba(240,236,224,0.5)', background: 'none', border: 'none', cursor: 'pointer', transition: 'color 0.2s' }}
+        <button onClick={() => navigate(-1)} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#9a9080', background: 'none', border: 'none', cursor: 'pointer', transition: 'color 0.2s' }}
           onMouseEnter={e => e.currentTarget.style.color = '#c9a84c'}
           onMouseLeave={e => e.currentTarget.style.color = 'rgba(240,236,224,0.5)'}
         >
@@ -73,14 +73,14 @@ export default function Perfume() {
       </div>
 
       {/* Header — marca, nome e rating acima da foto */}
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 2.5rem 1.25rem', borderBottom: '1px solid rgba(201,168,76,0.1)' }}>
-        <p style={{ fontSize: 11, letterSpacing: '0.25em', textTransform: 'uppercase', color: '#c9a84c', marginBottom: '0.5rem', fontWeight: 500 }}>{perfume?.marca}</p>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 2.5rem 1.25rem', borderBottom: '1px solid #e8e4dc' }}>
+        <p style={{ fontSize: 11, letterSpacing: '0.25em', textTransform: 'uppercase', color: '#7a6020', marginBottom: '0.5rem', fontWeight: 500 }}>{perfume?.marca}</p>
         <h1 style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 700, lineHeight: 1.1, marginBottom: '0.75rem', letterSpacing: '-0.02em' }}>{perfume?.nome}</h1>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
           {perfume?.genero && <span style={{ fontSize: 12, color: 'rgba(240,236,224,0.45)', letterSpacing: '-0.01em' }}>{perfume.genero}</span>}
-          {perfume?.ano && <><span style={{ color: 'rgba(201,168,76,0.3)' }}>·</span><span style={{ fontSize: 12, color: 'rgba(240,236,224,0.45)' }}>{perfume.ano}</span></>}
-          {perfume?.pais && <><span style={{ color: 'rgba(201,168,76,0.3)' }}>·</span><span style={{ fontSize: 12, color: 'rgba(240,236,224,0.45)' }}>{perfume.pais}</span></>}
-          {perfume?.rating_valor && <><span style={{ color: 'rgba(201,168,76,0.3)' }}>·</span><span style={{ fontSize: 12, color: '#c9a84c' }}>★ {Number(perfume.rating_valor).toFixed(2)} <span style={{ color: 'rgba(240,236,224,0.3)' }}>({perfume.rating_count?.toLocaleString()})</span></span></>}
+          {perfume?.ano && <><span style={{ color: '#d0c8b8' }}>·</span><span style={{ fontSize: 12, color: 'rgba(240,236,224,0.45)' }}>{perfume.ano}</span></>}
+          {perfume?.pais && <><span style={{ color: '#d0c8b8' }}>·</span><span style={{ fontSize: 12, color: 'rgba(240,236,224,0.45)' }}>{perfume.pais}</span></>}
+          {perfume?.rating_valor && <><span style={{ color: '#d0c8b8' }}>·</span><span style={{ fontSize: 12, color: '#7a6020' }}>★ {Number(perfume.rating_valor).toFixed(2)} <span style={{ color: '#a09880' }}>({perfume.rating_count?.toLocaleString()})</span></span></>}
         </div>
       </div>
 
@@ -100,7 +100,7 @@ export default function Perfume() {
 
           {/* Pirâmide Olfativa */}
           {(notas_topo.length > 0 || notas_coracao.length > 0 || notas_base.length > 0) && (
-            <div style={{ marginTop: '1.5rem', background: '#111009', border: '1px solid rgba(201,168,76,0.12)', borderRadius: 4, padding: '1.75rem' }}>
+            <div style={{ marginTop: '1.5rem', background: '#fafaf8', border: '1px solid #e8e4dc', borderRadius: 4, padding: '1.75rem' }}>
               <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: '1.3rem', fontWeight: 700, marginBottom: '0.75rem', color: '#f0ece0' }}>Pirâmide Olfativa</h3>
 
               {notas_topo.length > 0 && (
@@ -148,32 +148,32 @@ export default function Perfume() {
 
           {/* Descrição */}
           {perfume.descricao && (
-            <p style={{ fontSize: 14, color: 'rgba(240,236,224,0.6)', lineHeight: 1.9, marginBottom: '0.75rem', maxWidth: 520 }}>{perfume.descricao}</p>
+            <p style={{ fontSize: 14, color: '#6b6460', lineHeight: 1.9, marginBottom: '0.75rem', maxWidth: 520 }}>{perfume.descricao}</p>
           )}
 
-          <div style={{ height: 1, background: 'rgba(201,168,76,0.1)', marginBottom: '0.75rem' }} />
+          <div style={{ height: 1, background: '#e8e4dc', marginBottom: '0.75rem' }} />
 
           {/* Barra de disponibilidade */}
-          <div style={{ background: '#111009', border: '1px solid rgba(201,168,76,0.15)', borderRadius: 4, padding: '0.85rem 1.25rem', marginBottom: '1rem' }}>
+          <div style={{ background: '#fafaf8', border: '1px solid #e8e4dc', borderRadius: 4, padding: '0.85rem 1.25rem', marginBottom: '1rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <div style={{ width: 8, height: 8, borderRadius: '50%', background: esgotado ? '#c0392b' : '#c9a84c' }} />
-                <span style={{ fontSize: 13, fontWeight: 500, letterSpacing: '-0.01em', color: esgotado ? '#c0392b' : '#f0ece0' }}>
+                <span style={{ fontSize: 13, fontWeight: 500, letterSpacing: '-0.01em', color: esgotado ? '#c0392b' : '#0d0b07' }}>
                   {esgotado ? 'Esgotado' : 'Disponível'}
                 </span>
               </div>
               <span style={{ fontSize: 13, color: '#c9a84c', fontWeight: 500 }}>{disponivel}ml de {total}ml</span>
             </div>
-            <div style={{ height: 4, background: 'rgba(255,255,255,0.06)', borderRadius: 2 }}>
-              <div style={{ height: '100%', background: esgotado ? '#c0392b' : 'linear-gradient(90deg,#c9a84c,#e8c870)', borderRadius: 2, width: `${pct}%`, transition: 'width 0.5s' }} />
+            <div style={{ height: 4, background: '#e8e4dc', borderRadius: 2 }}>
+              <div style={{ height: '100%', background: 'linear-gradient(90deg,#c9a84c,#e8c870)', borderRadius: 2, width: `${pct}%`, transition: 'width 0.5s' }} />
             </div>
             {perfume.ml_vendido > 0 && (
-              <p style={{ fontSize: 11, color: 'rgba(240,236,224,0.3)', marginTop: '0.5rem', textAlign: 'right' }}>{perfume.ml_vendido}ml vendidos</p>
+              <p style={{ fontSize: 11, color: '#a09880', marginTop: '0.5rem', textAlign: 'right' }}>{perfume.ml_vendido}ml vendidos</p>
             )}
           </div>
 
           {/* Escolha de tamanho */}
-          <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(240,236,224,0.5)', marginBottom: '1rem' }}>Escolha sua opção</p>
+          <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#9a9080', marginBottom: '1rem' }}>Escolha sua opção</p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: '0.75rem' }}>
             {TAMANHOS.map(t => {
@@ -192,11 +192,11 @@ export default function Perfume() {
                     opacity: disp ? 1 : 0.4,
                     transition: 'all 0.2s',
                   }}
-                  onMouseEnter={e => { if (disp && !sel) e.currentTarget.style.borderColor = 'rgba(201,168,76,0.4)'; }}
-                  onMouseLeave={e => { if (!sel) e.currentTarget.style.borderColor = 'rgba(201,168,76,0.12)'; }}
+                  onMouseEnter={e => { if (disp && !sel) e.currentTarget.style.borderColor = '#c9a84c'; }}
+                  onMouseLeave={e => { if (!sel) e.currentTarget.style.borderColor = '#e8e4dc'; }}
                 >
-                  <span style={{ fontSize: 14, color: disp ? '#f0ece0' : 'rgba(240,236,224,0.4)', letterSpacing: '0.03em' }}>
-                    {t.label}{!disp && <span style={{ fontSize: 11, color: 'rgba(240,236,224,0.3)', marginLeft: 8 }}>— indisponível</span>}
+                  <span style={{ fontSize: 14, color: disp ? '#0d0b07' : '#c0b8a8', letterSpacing: '0.03em' }}>
+                    {t.label}{!disp && <span style={{ fontSize: 11, color: '#a09880', marginLeft: 8 }}>— indisponível</span>}
                   </span>
                   <span style={{ fontSize: 14, color: '#c9a84c', fontWeight: 500 }}>
                     R$ {Number(opcao.preco).toFixed(2).replace('.', ',')}
@@ -208,11 +208,11 @@ export default function Perfume() {
 
           {/* Botão comprar */}
           {esgotado ? (
-            <div style={{ background: 'rgba(201,168,76,0.15)', border: '1px solid rgba(201,168,76,0.3)', borderRadius: 4, padding: '16px', textAlign: 'center' }}>
+            <div style={{ background: '#fafaf8', border: '1px solid #e8e4dc', borderRadius: 4, padding: '16px', textAlign: 'center' }}>
               <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c9a84c', marginBottom: '1rem' }}>Esgotado</p>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-                <input placeholder="Seu nome" style={{ padding: '10px 14px', background: '#111009', border: '1px solid rgba(201,168,76,0.2)', borderRadius: 4, color: '#f0ece0', fontSize: 13 }} />
-                <input placeholder="Telefone" style={{ padding: '10px 14px', background: '#111009', border: '1px solid rgba(201,168,76,0.2)', borderRadius: 4, color: '#f0ece0', fontSize: 13 }} />
+                <input placeholder="Seu nome" style={{ padding: '10px 14px', background: '#fff', border: '1px solid #e8e4dc', borderRadius: 4, color: '#0d0b07', fontSize: 13 }} />
+                <input placeholder="Telefone" style={{ padding: '10px 14px', background: '#fff', border: '1px solid #e8e4dc', borderRadius: 4, color: '#0d0b07', fontSize: 13 }} />
               </div>
             </div>
           ) : (
@@ -232,9 +232,9 @@ export default function Perfume() {
 
           {/* Perfumistas */}
           {(perfume.perfumista1 || perfume.perfumista2) && (
-            <div style={{ marginTop: '2rem', padding: '1.25rem', background: '#111009', border: '1px solid rgba(201,168,76,0.08)', borderRadius: 4 }}>
-              <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(240,236,224,0.3)', marginBottom: '0.5rem' }}>Perfumista</p>
-              <p style={{ fontSize: 14, color: 'rgba(240,236,224,0.7)' }}>
+            <div style={{ marginTop: '2rem', padding: '1.25rem', background: '#fafaf8', border: '1px solid #e8e4dc', borderRadius: 4 }}>
+              <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#a09880', marginBottom: '0.5rem' }}>Perfumista</p>
+              <p style={{ fontSize: 14, color: '#4a4440' }}>
                 {[perfume.perfumista1, perfume.perfumista2].filter(Boolean).join(' & ')}
               </p>
             </div>
