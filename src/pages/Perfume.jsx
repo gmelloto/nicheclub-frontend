@@ -72,6 +72,18 @@ export default function Perfume() {
         </button>
       </div>
 
+      {/* Header — marca, nome e rating acima da foto */}
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 2.5rem 1.25rem', borderBottom: '1px solid rgba(201,168,76,0.1)' }}>
+        <p style={{ fontSize: 11, letterSpacing: '0.25em', textTransform: 'uppercase', color: '#c9a84c', marginBottom: '0.5rem', fontWeight: 500 }}>{perfume?.marca}</p>
+        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 400, lineHeight: 1.1, marginBottom: '0.75rem', letterSpacing: '0.02em' }}>{perfume?.nome}</h1>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          {perfume?.genero && <span style={{ fontSize: 12, color: 'rgba(240,236,224,0.45)', letterSpacing: '0.05em' }}>{perfume.genero}</span>}
+          {perfume?.ano && <><span style={{ color: 'rgba(201,168,76,0.3)' }}>·</span><span style={{ fontSize: 12, color: 'rgba(240,236,224,0.45)' }}>{perfume.ano}</span></>}
+          {perfume?.pais && <><span style={{ color: 'rgba(201,168,76,0.3)' }}>·</span><span style={{ fontSize: 12, color: 'rgba(240,236,224,0.45)' }}>{perfume.pais}</span></>}
+          {perfume?.rating_valor && <><span style={{ color: 'rgba(201,168,76,0.3)' }}>·</span><span style={{ fontSize: 12, color: '#c9a84c' }}>★ {Number(perfume.rating_valor).toFixed(2)} <span style={{ color: 'rgba(240,236,224,0.3)' }}>({perfume.rating_count?.toLocaleString()})</span></span></>}
+        </div>
+      </div>
+
       {/* Layout principal */}
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 2.5rem 2rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 400px), 1fr))', gap: '1.5rem', alignItems: 'start' }}>
 
@@ -132,22 +144,7 @@ export default function Perfume() {
         {/* Coluna direita — info + compra */}
         <div style={{ paddingTop: '0.5rem' }}>
 
-          {/* Marca */}
-          <p style={{ fontSize: 11, letterSpacing: '0.25em', textTransform: 'uppercase', color: '#c9a84c', marginBottom: '0.4rem', fontWeight: 500 }}>{perfume.marca}</p>
 
-          {/* Nome */}
-          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(1.6rem, 2.5vw, 2.4rem)', fontWeight: 400, lineHeight: 1.1, marginBottom: '0.5rem', letterSpacing: '0.02em' }}>{perfume.nome}</h1>
-
-          {/* Info linha */}
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
-            {perfume.genero && <span style={{ fontSize: 12, color: 'rgba(240,236,224,0.45)', letterSpacing: '0.05em' }}>{perfume.genero}</span>}
-            {perfume.ano && <><span style={{ color: 'rgba(201,168,76,0.3)' }}>·</span><span style={{ fontSize: 12, color: 'rgba(240,236,224,0.45)' }}>{perfume.ano}</span></>}
-            {perfume.pais && <><span style={{ color: 'rgba(201,168,76,0.3)' }}>·</span><span style={{ fontSize: 12, color: 'rgba(240,236,224,0.45)' }}>{perfume.pais}</span></>}
-            {perfume.rating_valor && (
-              <><span style={{ color: 'rgba(201,168,76,0.3)' }}>·</span>
-              <span style={{ fontSize: 12, color: '#c9a84c' }}>★ {Number(perfume.rating_valor).toFixed(2)} <span style={{ color: 'rgba(240,236,224,0.3)' }}>({perfume.rating_count?.toLocaleString()})</span></span></>
-            )}
-          </div>
 
           {/* Descrição */}
           {perfume.descricao && (
