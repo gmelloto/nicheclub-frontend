@@ -114,13 +114,13 @@ export default function Catalogo() {
 
           {/* Grid */}
           {loading ? (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '1.25rem' }}>
               {[...Array(6)].map((_, i) => (
                 <div key={i} style={{ background: S.black3, height: 480, borderRadius: 2 }} />
               ))}
             </div>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 260px), 1fr))', gap: '1.5rem' }}>
               {filtrados.map((p, i) => <PerfumeCard key={p.id} perfume={p} delay={i * 60} />)}
             </div>
           )}
@@ -147,7 +147,7 @@ export default function Catalogo() {
       <div id="como-funciona" style={{ background: S.black2, borderTop: `1px solid ${S.border}`, borderBottom: `1px solid ${S.border}`, padding: '5rem 2.5rem' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', textAlign: 'center' }}>
           <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, marginBottom: '3.5rem' }}>Como Funciona</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '3rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '2rem' }}>
             {[
               { n: '01', t: 'Escolha', d: 'Navegue pelo catálogo e selecione o perfume desejado.' },
               { n: '02', t: 'Reserve', d: 'Escolha o tamanho do decant e faça sua reserva.' },
@@ -168,7 +168,7 @@ export default function Catalogo() {
         <div style={{ maxWidth: 1280, margin: '0 auto', textAlign: 'center' }}>
           <p style={{ fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', color: S.gold, marginBottom: '0.75rem', fontWeight: 500 }}>Entregas</p>
           <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, marginBottom: '3rem' }}>Prazo de Entrega</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '1.25rem' }}>
             {[
               { icon: '📦', t: 'Preparação', d: 'Seu pedido é preparado com cuidado em até 2 dias úteis.' },
               { icon: '🚚', t: 'Envio', d: 'Enviamos para todo o Brasil via transportadora rastreável.' },

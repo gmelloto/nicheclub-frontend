@@ -139,3 +139,59 @@ input::placeholder { color: var(--text3); letter-spacing: 0.1em; }
   background-size: 200% 100%;
   animation: shimmer 1.8s infinite;
 }
+
+/* ─── Responsivo Mobile ──────────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Perfume page */
+  .perfume-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Padding geral */
+  .page-padding {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* Hero texto menor */
+  h1 { font-size: clamp(1.8rem, 7vw, 3rem) !important; }
+  h2 { font-size: clamp(1.5rem, 6vw, 2.5rem) !important; }
+
+  /* Cards de produto — 2 colunas no mobile */
+  .produto-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.75rem !important;
+  }
+
+  /* Botões lado a lado */
+  .hero-buttons {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  /* Pirâmide olfativa compacta */
+  .piramide-card {
+    margin-top: 1rem !important;
+  }
+
+  /* Tabs catálogo */
+  .catalogo-tabs {
+    flex-wrap: wrap !important;
+  }
+
+  /* Seção editorial — empilha */
+  .editorial-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .editorial-grid img {
+    max-height: 300px !important;
+    object-fit: cover !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Mobile pequeno — 1 coluna */
+  .produto-grid {
+    grid-template-columns: 1fr !important;
+  }
+}

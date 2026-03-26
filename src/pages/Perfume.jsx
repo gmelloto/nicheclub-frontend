@@ -73,11 +73,11 @@ export default function Perfume() {
       </div>
 
       {/* Layout principal */}
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 2.5rem 2rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2.5rem', alignItems: 'start' }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 2.5rem 2rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 400px), 1fr))', gap: '1.5rem', alignItems: 'start' }}>
 
         {/* Coluna esquerda — imagem */}
         <div>
-          <div style={{ position: 'relative', background: '#111009', borderRadius: 4, overflow: 'hidden', height: '75vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ position: 'relative', background: '#111009', borderRadius: 4, overflow: 'hidden', height: 'min(75vh, 480px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {perfume.foto_url
               ? <img src={perfume.foto_url} alt={perfume.nome} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '12px' }} />
               : <img src="/frasco.jpeg" alt={perfume.nome} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '12px', filter: 'brightness(0.8)' }} />
@@ -130,7 +130,7 @@ export default function Perfume() {
         </div>
 
         {/* Coluna direita — info + compra */}
-        <div style={{ paddingTop: '0.5rem', overflowY: 'auto', maxHeight: '75vh' }}>
+        <div style={{ paddingTop: '0.5rem' }}>
 
           {/* Marca */}
           <p style={{ fontSize: 11, letterSpacing: '0.25em', textTransform: 'uppercase', color: '#c9a84c', marginBottom: '0.4rem', fontWeight: 500 }}>{perfume.marca}</p>
