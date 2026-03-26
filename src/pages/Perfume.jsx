@@ -73,11 +73,11 @@ export default function Perfume() {
       </div>
 
       {/* Layout principal */}
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 2.5rem 2rem', display: 'grid', gridTemplateColumns: '420px 1fr', gap: '2.5rem', alignItems: 'start' }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 2.5rem 2rem', display: 'grid', gridTemplateColumns: '360px 1fr', gap: '2.5rem', alignItems: 'start' }}>
 
         {/* Coluna esquerda — imagem */}
         <div>
-          <div style={{ position: 'relative', background: '#111009', borderRadius: 4, overflow: 'hidden', height: 420, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ position: 'relative', background: '#111009', borderRadius: 4, overflow: 'hidden', height: 360, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {perfume.foto_url
               ? <img src={perfume.foto_url} alt={perfume.nome} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               : <img src="/frasco.jpeg" alt={perfume.nome} style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.8)' }} />
