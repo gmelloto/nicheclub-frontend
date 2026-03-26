@@ -63,7 +63,7 @@ export default function Perfume() {
     <div style={{ minHeight: '100vh', background: '#0a0905', color: '#f0ece0' }}>
 
       {/* Voltar */}
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '1.5rem 2.5rem' }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0.75rem 2.5rem' }}>
         <button onClick={() => navigate(-1)} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'rgba(240,236,224,0.5)', background: 'none', border: 'none', cursor: 'pointer', transition: 'color 0.2s' }}
           onMouseEnter={e => e.currentTarget.style.color = '#c9a84c'}
           onMouseLeave={e => e.currentTarget.style.color = 'rgba(240,236,224,0.5)'}
@@ -73,11 +73,11 @@ export default function Perfume() {
       </div>
 
       {/* Layout principal */}
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 2.5rem 5rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'start' }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 2.5rem 2rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2.5rem', alignItems: 'start' }}>
 
         {/* Coluna esquerda — imagem */}
         <div>
-          <div style={{ position: 'relative', background: '#111009', borderRadius: 4, overflow: 'hidden', aspectRatio: '3/4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ position: 'relative', background: '#111009', borderRadius: 4, overflow: 'hidden', aspectRatio: '4/5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {perfume.foto_url
               ? <img src={perfume.foto_url} alt={perfume.nome} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               : <img src="/frasco.jpeg" alt={perfume.nome} style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.8)' }} />
@@ -89,7 +89,7 @@ export default function Perfume() {
           {/* Pirâmide Olfativa */}
           {(notas_topo.length > 0 || notas_coracao.length > 0 || notas_base.length > 0) && (
             <div style={{ marginTop: '1.5rem', background: '#111009', border: '1px solid rgba(201,168,76,0.12)', borderRadius: 4, padding: '1.75rem' }}>
-              <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.3rem', fontWeight: 400, marginBottom: '1.5rem', color: '#f0ece0' }}>Pirâmide Olfativa</h3>
+              <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.3rem', fontWeight: 400, marginBottom: '0.75rem', color: '#f0ece0' }}>Pirâmide Olfativa</h3>
 
               {notas_topo.length > 0 && (
                 <div style={{ marginBottom: '1.25rem' }}>
@@ -121,7 +121,7 @@ export default function Perfume() {
           {/* Acordes principais */}
           {acordes.length > 0 && (
             <div style={{ marginTop: '1rem', background: '#111009', border: '1px solid rgba(201,168,76,0.12)', borderRadius: 4, padding: '1.5rem' }}>
-              <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c9a84c', marginBottom: '0.75rem' }}>Principais Acordes</p>
+              <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c9a84c', marginBottom: '0.4rem' }}>Principais Acordes</p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                 {acordes.map(a => <NotaBadge key={a} nota={a} gold />)}
               </div>
@@ -133,13 +133,13 @@ export default function Perfume() {
         <div style={{ paddingTop: '0.5rem' }}>
 
           {/* Marca */}
-          <p style={{ fontSize: 11, letterSpacing: '0.25em', textTransform: 'uppercase', color: '#c9a84c', marginBottom: '0.75rem', fontWeight: 500 }}>{perfume.marca}</p>
+          <p style={{ fontSize: 11, letterSpacing: '0.25em', textTransform: 'uppercase', color: '#c9a84c', marginBottom: '0.4rem', fontWeight: 500 }}>{perfume.marca}</p>
 
           {/* Nome */}
-          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(2.5rem, 4vw, 3.8rem)', fontWeight: 400, lineHeight: 1.1, marginBottom: '0.5rem', letterSpacing: '0.02em' }}>{perfume.nome}</h1>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(1.6rem, 2.5vw, 2.4rem)', fontWeight: 400, lineHeight: 1.1, marginBottom: '0.5rem', letterSpacing: '0.02em' }}>{perfume.nome}</h1>
 
           {/* Info linha */}
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
             {perfume.genero && <span style={{ fontSize: 12, color: 'rgba(240,236,224,0.45)', letterSpacing: '0.05em' }}>{perfume.genero}</span>}
             {perfume.ano && <><span style={{ color: 'rgba(201,168,76,0.3)' }}>·</span><span style={{ fontSize: 12, color: 'rgba(240,236,224,0.45)' }}>{perfume.ano}</span></>}
             {perfume.pais && <><span style={{ color: 'rgba(201,168,76,0.3)' }}>·</span><span style={{ fontSize: 12, color: 'rgba(240,236,224,0.45)' }}>{perfume.pais}</span></>}
@@ -151,14 +151,14 @@ export default function Perfume() {
 
           {/* Descrição */}
           {perfume.descricao && (
-            <p style={{ fontSize: 14, color: 'rgba(240,236,224,0.6)', lineHeight: 1.9, marginBottom: '2rem', maxWidth: 520 }}>{perfume.descricao}</p>
+            <p style={{ fontSize: 14, color: 'rgba(240,236,224,0.6)', lineHeight: 1.9, marginBottom: '0.75rem', maxWidth: 520 }}>{perfume.descricao}</p>
           )}
 
-          <div style={{ height: 1, background: 'rgba(201,168,76,0.1)', marginBottom: '2rem' }} />
+          <div style={{ height: 1, background: 'rgba(201,168,76,0.1)', marginBottom: '0.75rem' }} />
 
           {/* Barra de disponibilidade */}
-          <div style={{ background: '#111009', border: '1px solid rgba(201,168,76,0.15)', borderRadius: 4, padding: '1.25rem 1.5rem', marginBottom: '2rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+          <div style={{ background: '#111009', border: '1px solid rgba(201,168,76,0.15)', borderRadius: 4, padding: '0.85rem 1.25rem', marginBottom: '1rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <div style={{ width: 8, height: 8, borderRadius: '50%', background: esgotado ? '#c0392b' : '#c9a84c' }} />
                 <span style={{ fontSize: 13, fontWeight: 500, letterSpacing: '0.05em', color: esgotado ? '#c0392b' : '#f0ece0' }}>
@@ -178,7 +178,7 @@ export default function Perfume() {
           {/* Escolha de tamanho */}
           <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(240,236,224,0.5)', marginBottom: '1rem' }}>Escolha sua opção</p>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: '2rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: '0.75rem' }}>
             {TAMANHOS.map(t => {
               const opcao = perfume.opcoes?.find(o => o.tamanho === t.key);
               if (!opcao) return null;
@@ -188,7 +188,7 @@ export default function Perfume() {
                 <button key={t.key} onClick={() => disp && setSelecionado(t.key)} disabled={!disp}
                   style={{
                     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                    padding: '1rem 1.25rem', borderRadius: 4,
+                    padding: '0.7rem 1rem', borderRadius: 4,
                     border: sel ? '1px solid #c9a84c' : '1px solid rgba(201,168,76,0.12)',
                     background: sel ? 'rgba(201,168,76,0.08)' : 'rgba(255,255,255,0.02)',
                     cursor: disp ? 'pointer' : 'not-allowed',
@@ -221,7 +221,7 @@ export default function Perfume() {
           ) : (
             <button onClick={handleAdicionar} disabled={!selecionado}
               style={{
-                width: '100%', padding: '16px', borderRadius: 4,
+                width: '100%', padding: '12px', borderRadius: 4,
                 background: selecionado ? 'linear-gradient(135deg,#c9a84c,#e8c870)' : 'rgba(201,168,76,0.1)',
                 border: 'none', cursor: selecionado ? 'pointer' : 'not-allowed',
                 fontSize: 12, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase',
