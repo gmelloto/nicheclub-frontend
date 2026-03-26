@@ -87,20 +87,20 @@ export default function Catalogo() {
       </div>
 
       {/* ─── CATÁLOGO ─────────────────────────────────────────────────────── */}
-      <div id="catalogo" style={{ padding: '5rem 2.5rem' }}>
+      <div id="catalogo" style={{ padding: '5rem 2.5rem', background: '#fff' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-            <p style={{ fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', color: S.gold, marginBottom: '0.75rem', fontWeight: 500 }}>Nossa Coleção</p>
+            <p style={{ fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', color: '#9a7d3a', marginBottom: '0.75rem', fontWeight: 500 }}>Nossa Coleção</p>
             <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(2.2rem, 4vw, 3.5rem)', fontWeight: 600, marginBottom: '0.75rem' }}>Catálogo</h2>
-            <p style={{ fontSize: 14, color: S.text2 }}>Selecione um perfume para escolher o tamanho e fazer sua reserva.</p>
+            <p style={{ fontSize: 14, color: '#6b6460' }}>Selecione um perfume para escolher o tamanho e fazer sua reserva.</p>
           </div>
 
           {/* Tabs */}
           <div style={{ display: 'flex', justifyContent: 'center', gap: 0, marginBottom: '3rem' }}>
-            <button onClick={() => setTab('decants')} style={{ padding: '12px 36px', fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', border: '1px solid rgba(201,168,76,0.4)', cursor: 'pointer', transition: 'all 0.2s', background: tab === 'decants' ? S.gold : 'transparent', color: tab === 'decants' ? S.black : S.text2 }}>
+            <button onClick={() => setTab('decants')} style={{ padding: '12px 36px', fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', border: '1px solid rgba(201,168,76,0.4)', cursor: 'pointer', transition: 'all 0.2s', background: tab === 'decants' ? S.gold : 'transparent', color: tab === 'decants' ? '#0d0b07' : '#6b6460' }}>
               Decants
             </button>
-            <button onClick={() => setTab('lacrados')} style={{ padding: '12px 36px', fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', border: '1px solid rgba(201,168,76,0.4)', borderLeft: 'none', cursor: 'pointer', transition: 'all 0.2s', background: tab === 'lacrados' ? S.gold : 'transparent', color: tab === 'lacrados' ? S.black : S.text2 }}>
+            <button onClick={() => setTab('lacrados')} style={{ padding: '12px 36px', fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', border: '1px solid rgba(201,168,76,0.4)', borderLeft: 'none', cursor: 'pointer', transition: 'all 0.2s', background: tab === 'lacrados' ? S.gold : 'transparent', color: tab === 'lacrados' ? '#0d0b07' : '#6b6460' }}>
               Perfumes Lacrados
             </button>
           </div>
@@ -129,7 +129,7 @@ export default function Catalogo() {
           {temMais && !loading && (
             <div style={{ textAlign: 'center', marginTop: '3rem' }}>
               <button onClick={() => carregarPerfumes(pagina + 1, busca)} disabled={loadingMore}
-                style={{ background: 'transparent', border: '1px solid rgba(201,168,76,0.4)', color: '#c9a84c', padding: '12px 36px', fontSize: 12, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'pointer' }}
+                style={{ background: 'transparent', border: '1px solid #c9a84c', color: '#9a7d3a', padding: '12px 36px', fontSize: 12, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'pointer' }}
                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(201,168,76,0.08)'}
                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
               >
@@ -240,8 +240,9 @@ function PerfumeCard({ perfume, delay }) {
   return (
     <Link to={`/perfume/${perfume.id}`} className="fade-in" style={{
       animationDelay: `${delay}ms`, opacity: 0, display: 'block',
-      background: '#111009',
-      border: '1px solid rgba(201,168,76,0.12)',
+      background: '#ffffff',
+      border: '1px solid #e8e4dc',
+      boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
       borderRadius: 4,
       overflow: 'hidden',
       transition: 'border-color 0.3s, transform 0.3s',
@@ -251,7 +252,7 @@ function PerfumeCard({ perfume, delay }) {
       onMouseLeave={() => setHovered(false)}
     >
       {/* Imagem */}
-      <div style={{ position: 'relative', paddingBottom: '100%', overflow: 'hidden', background: '#1a1810' }}>
+      <div style={{ position: 'relative', paddingBottom: '100%', overflow: 'hidden', background: '#f5f3ee' }}>
         {perfume.foto_url
           ? <img src={perfume.foto_url} alt={perfume.nome} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', padding: '8px', transform: hovered ? 'scale(1.03)' : 'scale(1)', transition: 'transform 0.5s ease' }} />
           : <img src="/frasco.jpeg" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', padding: '8px', transform: hovered ? 'scale(1.03)' : 'scale(1)', transition: 'transform 0.5s ease', filter: 'brightness(0.7)' }} />
@@ -275,17 +276,17 @@ function PerfumeCard({ perfume, delay }) {
 
       {/* Info */}
       <div style={{ padding: '1.25rem' }}>
-        <p style={{ fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(201,168,76,0.6)', marginBottom: 5, fontWeight: 500 }}>{perfume.marca}</p>
-        <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: '1.25rem', fontWeight: 500, color: hovered ? '#c9a84c' : '#f0ece0', transition: 'color 0.3s', marginBottom: 6, lineHeight: 1.2 }}>{perfume.nome}</h3>
+        <p style={{ fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#9a7d3a', marginBottom: 5, fontWeight: 500 }}>{perfume.marca}</p>
+        <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: '1.25rem', fontWeight: 500, color: hovered ? '#9a7d3a' : '#0d0b07', transition: 'color 0.3s', marginBottom: 6, lineHeight: 1.2 }}>{perfume.nome}</h3>
         {perfume.familia_olfativa && (
-          <p style={{ fontSize: 11, color: 'rgba(240,236,224,0.35)', marginBottom: 12, fontStyle: 'italic' }}>{perfume.familia_olfativa}</p>
+          <p style={{ fontSize: 11, color: '#a09880', marginBottom: 12, fontStyle: 'italic' }}>{perfume.familia_olfativa}</p>
         )}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 10, borderTop: '1px solid rgba(201,168,76,0.1)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 10, borderTop: '1px solid #ede9e0' }}>
           {precoMin
-            ? <p style={{ fontSize: 13, color: 'rgba(240,236,224,0.6)' }}>A partir de <span style={{ color: '#c9a84c', fontWeight: 500 }}>R$ {Number(precoMin).toFixed(2).replace('.', ',')}</span></p>
-            : <p style={{ fontSize: 12, color: 'rgba(240,236,224,0.3)', fontStyle: 'italic' }}>Consultar preço</p>
+            ? <p style={{ fontSize: 13, color: '#6b6460' }}>A partir de <span style={{ color: '#9a7d3a', fontWeight: 500 }}>R$ {Number(precoMin).toFixed(2).replace('.', ',')}</span></p>
+            : <p style={{ fontSize: 12, color: '#b0a888', fontStyle: 'italic' }}>Consultar preço</p>
           }
-          <span style={{ fontSize: 11, color: 'rgba(240,236,224,0.25)' }}>{disponivel}ml</span>
+          <span style={{ fontSize: 11, color: '#b0a888' }}>{disponivel}ml</span>
         </div>
       </div>
     </Link>
