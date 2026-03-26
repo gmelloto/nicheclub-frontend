@@ -79,8 +79,8 @@ export default function Perfume() {
         <div>
           <div style={{ position: 'relative', background: '#111009', borderRadius: 4, overflow: 'hidden', height: '75vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {perfume.foto_url
-              ? <img src={perfume.foto_url} alt={perfume.nome} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center' }} />
-              : <img src="/frasco.jpeg" alt={perfume.nome} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center', filter: 'brightness(0.8)' }} />
+              ? <img src={perfume.foto_url} alt={perfume.nome} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '12px' }} />
+              : <img src="/frasco.jpeg" alt={perfume.nome} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '12px', filter: 'brightness(0.8)' }} />
             }
             {/* Overlay sutil */}
             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,9,5,0.4) 0%, transparent 50%)' }} />
