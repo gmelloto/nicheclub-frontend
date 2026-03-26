@@ -1,82 +1,87 @@
 #!/bin/bash
 
 FRONTEND="$HOME/Applications/nicheclub-frontend"
-DOWNLOADS="$HOME/Downloads"
-
-echo "Atualizando Niche Club Frontend..."
-
-# index.css
-if [ -f "$DOWNLOADS/index.css" ]; then
-  rm -f "$FRONTEND/src/index.css"
-  cp "$DOWNLOADS/index.css" "$FRONTEND/src/index.css"
-  echo "index.css atualizado"
-fi
-
-# Navbar.jsx
-if [ -f "$DOWNLOADS/Navbar.jsx" ]; then
-  rm -f "$FRONTEND/src/components/layout/Navbar.jsx"
-  cp "$DOWNLOADS/Navbar.jsx" "$FRONTEND/src/components/layout/Navbar.jsx"
-  echo "Navbar.jsx atualizado"
-fi
-
-# Catalogo.jsx
-if [ -f "$DOWNLOADS/Catalogo.jsx" ]; then
-  rm -f "$FRONTEND/src/pages/Catalogo.jsx"
-  cp "$DOWNLOADS/Catalogo.jsx" "$FRONTEND/src/pages/Catalogo.jsx"
-  echo "Catalogo.jsx atualizado"
-fi
-
-# Perfume.jsx
-if [ -f "$DOWNLOADS/Perfume.jsx" ]; then
-  rm -f "$FRONTEND/src/pages/Perfume.jsx"
-  cp "$DOWNLOADS/Perfume.jsx" "$FRONTEND/src/pages/Perfume.jsx"
-  echo "Perfume.jsx atualizado"
-fi
-
-# Carrinho.jsx
-if [ -f "$DOWNLOADS/Carrinho.jsx" ]; then
-  rm -f "$FRONTEND/src/pages/Carrinho.jsx"
-  cp "$DOWNLOADS/Carrinho.jsx" "$FRONTEND/src/pages/Carrinho.jsx"
-  echo "Carrinho.jsx atualizado"
-fi
-
-# Admin.jsx
-if [ -f "$DOWNLOADS/Admin.jsx" ]; then
-  rm -f "$FRONTEND/src/pages/Admin.jsx"
-  cp "$DOWNLOADS/Admin.jsx" "$FRONTEND/src/pages/Admin.jsx"
-  echo "Admin.jsx atualizado"
-fi
-
-# Login.jsx
-if [ -f "$DOWNLOADS/Login.jsx" ]; then
-  rm -f "$FRONTEND/src/pages/Login.jsx"
-  cp "$DOWNLOADS/Login.jsx" "$FRONTEND/src/pages/Login.jsx"
-  echo "Login.jsx atualizado"
-fi
-
-# App.jsx
-if [ -f "$DOWNLOADS/App.jsx" ]; then
-  rm -f "$FRONTEND/src/App.jsx"
-  cp "$DOWNLOADS/App.jsx" "$FRONTEND/src/App.jsx"
-  echo "App.jsx atualizado"
-fi
-
-# Arquivos do backend
 BACKEND="$HOME/Applications/nicheclub"
+DOWNLOADS="$HOME/Downloads"
+BACKUP="$HOME/Applications/nicheclub-backups"
+TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
+BACKUP_DIR="$BACKUP/$TIMESTAMP"
 
-if [ -f "$DOWNLOADS/migrate_fragrantica.js" ]; then
-  rm -f "$BACKEND/src/db/migrate_fragrantica.js"
-  cp "$DOWNLOADS/migrate_fragrantica.js" "$BACKEND/src/db/migrate_fragrantica.js"
-  echo "migrate_fragrantica.js atualizado"
-fi
+mover() {
+  ARQUIVO="$1"
+  DESTINO="$2"
+  ORIGEM="$DOWNLOADS/$ARQUIVO"
 
-if [ -f "$DOWNLOADS/import_fragrantica.js" ]; then
-  rm -f "$BACKEND/src/db/import_fragrantica.js"
-  cp "$DOWNLOADS/import_fragrantica.js" "$BACKEND/src/db/import_fragrantica.js"
-  echo "import_fragrantica.js atualizado"
+  if [ ! -f "$ORIGEM" ]; then
+    return
+  fi
+
+  mkdir -p "$BACKUP_DIR"
+
+  if [ -f "$DESTINO" ]; then
+    cp "$DESTINO" "$BACKUP_DIR/$ARQUIVO"
+    echo "  backup:     $ARQUIVO"
+  fi
+
+  cp "$ORIGEM" "$DESTINO"
+  rm "$ORIGEM"
+  echo "  atualizado: $ARQUIVO"
+  ATUALIZOU=true
+}
+
+ATUALIZOU=false
+FRONTEND_MUDOU=false
+
+echo "Verificando arquivos..."
+echo ""
+
+# Frontend
+for f in index.css Navbar.jsx Catalogo.jsx Perfume.jsx Carrinho.jsx Admin.jsx Login.jsx App.jsx api.js; do
+  if [ -f "$DOWNLOADS/$f" ]; then
+    case "$f" in
+      index.css) mover "$f" "$FRONTEND/src/index.css" ;;
+      Navbar.jsx) mover "$f" "$FRONTEND/src/components/layout/Navbar.jsx" ;;
+      Catalogo.jsx) mover "$f" "$FRONTEND/src/pages/Catalogo.jsx" ;;
+      Perfume.jsx) mover "$f" "$FRONTEND/src/pages/Perfume.jsx" ;;
+      Carrinho.jsx) mover "$f" "$FRONTEND/src/pages/Carrinho.jsx" ;;
+      Admin.jsx) mover "$f" "$FRONTEND/src/pages/Admin.jsx" ;;
+      Login.jsx) mover "$f" "$FRONTEND/src/pages/Login.jsx" ;;
+      App.jsx) mover "$f" "$FRONTEND/src/App.jsx" ;;
+      api.js) mover "$f" "$FRONTEND/src/services/api.js" ;;
+    esac
+    FRONTEND_MUDOU=true
+  fi
+done
+
+# Backend
+for f in estoque.js index.js migrate_fragrantica.js import_fragrantica.js; do
+  if [ -f "$DOWNLOADS/$f" ]; then
+    case "$f" in
+      estoque.js) mover "$f" "$BACKEND/src/services/estoque.js" ;;
+      index.js) mover "$f" "$BACKEND/src/routes/index.js" ;;
+      migrate_fragrantica.js) mover "$f" "$BACKEND/src/db/migrate_fragrantica.js" ;;
+      import_fragrantica.js) mover "$f" "$BACKEND/src/db/import_fragrantica.js" ;;
+    esac
+  fi
+done
+
+if [ "$ATUALIZOU" = false ]; then
+  echo "Nenhum arquivo encontrado na pasta Downloads. Nada a fazer."
+  exit 0
 fi
 
 echo ""
-echo "Pronto! Fazendo build e deploy..."
-cd "$FRONTEND"
-npm run build && git add . && git commit -m "update: arquivos atualizados" && git push && vercel --prod
+echo "---"
+
+if [ "$FRONTEND_MUDOU" = true ]; then
+  echo "Fazendo build e deploy do frontend..."
+  echo ""
+  cd "$FRONTEND"
+  npm run build && \
+  git add . && \
+  git commit -m "update: $TIMESTAMP" && \
+  git push && \
+  vercel --prod
+else
+  echo "Apenas backend atualizado. Rode 'railway redeploy' se necessário."
+fi

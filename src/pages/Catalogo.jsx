@@ -70,7 +70,7 @@ export default function Catalogo() {
 
       {/* ─── HERO ─────────────────────────────────────────────────────────── */}
       <div style={{ position: 'relative', minHeight: '55vh', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
-        <img src="/frasco.jpeg" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', filter: 'brightness(0.35)' }} />
+        <img src="/banner-hero.jpg" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', filter: 'brightness(0.45)' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(13,11,7,0.9) 40%, rgba(13,11,7,0.3) 100%)' }} />
         <div style={{ position: 'relative', maxWidth: 1280, margin: '0 auto', padding: '5rem 2.5rem', width: '100%' }}>
           <p style={{ fontSize: 11, letterSpacing: '0.35em', textTransform: 'uppercase', color: S.gold, marginBottom: '1rem', fontWeight: 500 }}>Fragrâncias Exclusivas</p>
@@ -120,7 +120,7 @@ export default function Catalogo() {
               ))}
             </div>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 2 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
               {filtrados.map((p, i) => <PerfumeCard key={p.id} perfume={p} delay={i * 60} />)}
             </div>
           )}
@@ -238,42 +238,60 @@ function PerfumeCard({ perfume, delay }) {
   const [hovered, setHovered] = useState(false);
 
   return (
-    <Link to={`/perfume/${perfume.id}`} className="fade-in" style={{ animationDelay: `${delay}ms`, opacity: 0, display: 'block', position: 'relative', overflow: 'hidden' }}
+    <Link to={`/perfume/${perfume.id}`} className="fade-in" style={{
+      animationDelay: `${delay}ms`, opacity: 0, display: 'block',
+      background: '#111009',
+      border: '1px solid rgba(201,168,76,0.12)',
+      borderRadius: 4,
+      overflow: 'hidden',
+      transition: 'border-color 0.3s, transform 0.3s',
+      transform: hovered ? 'translateY(-4px)' : 'translateY(0)',
+    }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
       {/* Imagem */}
       <div style={{ position: 'relative', paddingBottom: '130%', overflow: 'hidden', background: '#1a1810' }}>
         {perfume.foto_url
-          ? <img src={perfume.foto_url} alt={perfume.nome} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transform: hovered ? 'scale(1.05)' : 'scale(1)', transition: 'transform 0.7s ease', filter: 'brightness(0.75)' }} />
+          ? <img src={perfume.foto_url} alt={perfume.nome} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transform: hovered ? 'scale(1.05)' : 'scale(1)', transition: 'transform 0.7s ease' }} />
           : <img src="/frasco2.jpeg" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transform: hovered ? 'scale(1.05)' : 'scale(1)', transition: 'transform 0.7s ease', filter: 'brightness(0.5)' }} />
         }
-        {/* Badge família */}
+        {/* Badge família olfativa */}
         {perfume.acorde1 && (
-          <div style={{ position: 'absolute', top: 14, left: 14, background: 'rgba(13,11,7,0.8)', border: '1px solid rgba(201,168,76,0.3)', padding: '4px 12px', fontSize: 10, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#c9a84c' }}>
+          <div style={{ position: 'absolute', top: 12, left: 12, background: 'rgba(13,11,7,0.85)', border: '1px solid rgba(201,168,76,0.35)', padding: '3px 10px', fontSize: 10, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#c9a84c', backdropFilter: 'blur(4px)' }}>
             {perfume.acorde1}
           </div>
         )}
         {esgotado && (
-          <div style={{ position: 'absolute', top: 14, right: 14, background: 'rgba(180,30,30,0.85)', padding: '4px 10px', fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#fff' }}>
+          <div style={{ position: 'absolute', top: 12, right: 12, background: 'rgba(160,30,30,0.9)', padding: '3px 10px', fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#fff' }}>
             Esgotado
           </div>
         )}
-        {/* Info overlay no hover */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '2rem 1.5rem 1.5rem', background: 'linear-gradient(to top, rgba(13,11,7,0.95) 0%, transparent 100%)', transform: hovered ? 'translateY(0)' : 'translateY(20px)', opacity: hovered ? 1 : 0, transition: 'all 0.3s ease' }}>
-          <p style={{ fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c9a84c', marginBottom: 4 }}>{perfume.marca}</p>
-          <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.3rem', fontWeight: 600, color: '#f0ece0', marginBottom: 8 }}>{perfume.nome}</h3>
-          {precoMin && <p style={{ fontSize: 13, color: 'rgba(240,236,224,0.7)' }}>A partir de <span style={{ color: '#c9a84c', fontWeight: 500 }}>R$ {Number(precoMin).toFixed(2).replace('.', ',')}</span></p>}
+        {/* Barra de estoque */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 3, background: 'rgba(0,0,0,0.4)' }}>
+          <div style={{ height: '100%', background: esgotado ? '#a01e1e' : 'linear-gradient(90deg,#c9a84c,#e8c870)', width: `${100 - pct}%`, transition: 'width 0.5s' }} />
         </div>
-        {/* Info sempre visível */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '1rem 1.5rem', opacity: hovered ? 0 : 1, transition: 'opacity 0.3s' }}>
-          <p style={{ fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#c9a84c', marginBottom: 2 }}>{perfume.marca}</p>
-          <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.2rem', fontWeight: 500, color: '#f0ece0' }}>{perfume.nome}</h3>
+      </div>
+
+      {/* Info */}
+      <div style={{ padding: '1.25rem' }}>
+        <p style={{ fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(201,168,76,0.6)', marginBottom: 5, fontWeight: 500 }}>{perfume.marca}</p>
+        <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.25rem', fontWeight: 500, color: hovered ? '#c9a84c' : '#f0ece0', transition: 'color 0.3s', marginBottom: 6, lineHeight: 1.2 }}>{perfume.nome}</h3>
+        {perfume.familia_olfativa && (
+          <p style={{ fontSize: 11, color: 'rgba(240,236,224,0.35)', marginBottom: 12, fontStyle: 'italic' }}>{perfume.familia_olfativa}</p>
+        )}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 10, borderTop: '1px solid rgba(201,168,76,0.1)' }}>
+          {precoMin
+            ? <p style={{ fontSize: 13, color: 'rgba(240,236,224,0.6)' }}>A partir de <span style={{ color: '#c9a84c', fontWeight: 500 }}>R$ {Number(precoMin).toFixed(2).replace('.', ',')}</span></p>
+            : <p style={{ fontSize: 12, color: 'rgba(240,236,224,0.3)', fontStyle: 'italic' }}>Consultar preço</p>
+          }
+          <span style={{ fontSize: 11, color: 'rgba(240,236,224,0.25)' }}>{disponivel}ml</span>
         </div>
       </div>
     </Link>
   );
 }
+
 
 const DEMO = [
   { id: '1', nome: 'Baccarat Rouge 540', marca: 'Maison Francis Kurkdjian', acorde1: 'Floral', ml_disponivel: 38, ml_total: 100, opcoes: [{ preco: 38 }] },
