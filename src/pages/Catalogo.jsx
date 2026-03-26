@@ -24,7 +24,7 @@ export default function Catalogo() {
   const [faqAberto, setFaqAberto] = useState(null);
   const [pagina, setPagina] = useState(1);
   const [total, setTotal] = useState(0);
-  const LIMITE = 24;
+  const LIMITE = 12;
 
   const carregarPerfumes = async (pag = 1, buscaTermo = busca, reset = false) => {
     if (pag === 1) setLoading(true); else setLoadingMore(true);
@@ -69,18 +69,18 @@ export default function Catalogo() {
     <div style={{ background: S.black, color: S.text, fontFamily: "'Jost', sans-serif" }}>
 
       {/* ─── HERO ─────────────────────────────────────────────────────────── */}
-      <div style={{ position: 'relative', minHeight: '55vh', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
+      <div style={{ position: 'relative', minHeight: '42vh', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
         <img src="/banner-hero.jpg" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', filter: 'brightness(0.45)' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(13,11,7,0.9) 40%, rgba(13,11,7,0.3) 100%)' }} />
-        <div style={{ position: 'relative', maxWidth: 1280, margin: '0 auto', padding: '5rem 2.5rem', width: '100%' }}>
+        <div style={{ position: 'relative', maxWidth: 1280, margin: '0 auto', padding: '3rem 2.5rem', width: '100%' }}>
           <p style={{ fontSize: 11, letterSpacing: '0.35em', textTransform: 'uppercase', color: S.gold, marginBottom: '1rem', fontWeight: 500 }}>Fragrâncias Exclusivas</p>
-          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(3rem, 6vw, 5.5rem)', fontWeight: 600, lineHeight: 1.1, marginBottom: '1.25rem', maxWidth: 560 }}>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 600, lineHeight: 1.1, marginBottom: '1.25rem', maxWidth: 560 }}>
             Descubra sua<br /><span style={{ color: S.gold }}>essência</span>
           </h1>
           <p style={{ fontSize: 15, color: S.text2, maxWidth: 420, lineHeight: 1.8, marginBottom: '2.5rem' }}>
             Decants selecionados das melhores casas de perfumaria do mundo. Reserve o seu e experimente antes de investir.
           </p>
-          <a href="#catalogo" style={{ display: 'inline-block', background: S.gold, color: S.black, padding: '13px 28px', fontSize: 12, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'pointer' }}>
+          <a href="#catalogo" onClick={e => { e.preventDefault(); document.getElementById('catalogo').scrollIntoView({behavior:'smooth'}); }} style={{ display: 'inline-block', background: S.gold, color: S.black, padding: '13px 28px', fontSize: 12, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'pointer' }}>
             Ver Catálogo
           </a>
         </div>
@@ -251,7 +251,7 @@ function PerfumeCard({ perfume, delay }) {
       onMouseLeave={() => setHovered(false)}
     >
       {/* Imagem */}
-      <div style={{ position: 'relative', paddingBottom: '130%', overflow: 'hidden', background: '#1a1810' }}>
+      <div style={{ position: 'relative', paddingBottom: '100%', overflow: 'hidden', background: '#1a1810' }}>
         {perfume.foto_url
           ? <img src={perfume.foto_url} alt={perfume.nome} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transform: hovered ? 'scale(1.05)' : 'scale(1)', transition: 'transform 0.7s ease' }} />
           : <img src="/frasco.jpeg" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transform: hovered ? 'scale(1.05)' : 'scale(1)', transition: 'transform 0.7s ease', filter: 'brightness(0.7)' }} />
