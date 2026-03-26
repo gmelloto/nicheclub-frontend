@@ -9,37 +9,39 @@ export default function Navbar() {
   return (
     <nav style={{
       position: 'sticky', top: 0, zIndex: 100,
-      background: 'rgba(10,9,5,0.95)', backdropFilter: 'blur(16px)',
-      borderBottom: '1px solid rgba(201,168,76,0.12)',
+      background: 'rgba(10,9,5,0.97)', backdropFilter: 'blur(16px)',
+      borderBottom: '1px solid rgba(201,168,76,0.15)',
     }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 2.5rem', height: 72, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 2.5rem', height: 80, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
 
         {/* Links esquerda */}
         <div style={{ display: 'flex', gap: '2.5rem', flex: 1 }}>
           {[['/', 'Catálogo'], ['/', 'Como Funciona'], ['/', 'FAQ']].map(([to, l]) => (
-            <Link key={l} to={to} style={{ fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(240,236,224,0.5)', fontWeight: 400, transition: 'color 0.3s' }}
+            <Link key={l} to={to} style={{ fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(240,236,224,0.45)', fontWeight: 400, transition: 'color 0.3s' }}
               onMouseEnter={e => e.target.style.color = 'var(--gold)'}
-              onMouseLeave={e => e.target.style.color = 'rgba(240,236,224,0.5)'}
+              onMouseLeave={e => e.target.style.color = 'rgba(240,236,224,0.45)'}
             >{l}</Link>
           ))}
         </div>
 
-        {/* Logo central com imagem */}
+        {/* Logo central — maior e com fundo para visibilidade */}
         <Link to="/" style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <img src="/logo.jpeg" alt="Niche Club" style={{ height: 48, objectFit: 'contain' }} />
+          <div style={{ background: '#0a0905', border: '1px solid rgba(201,168,76,0.2)', padding: '6px 20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <img src="/logo.jpeg" alt="Niche Club" style={{ height: 56, width: 'auto', objectFit: 'contain', display: 'block' }} />
+          </div>
         </Link>
 
         {/* Ações direita */}
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '2rem' }}>
           {usuario ? (
             <>
-              <Link to="/admin" style={{ fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(240,236,224,0.5)' }}>Admin</Link>
-              <button onClick={() => { logout(); navigate('/'); }} style={{ fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(240,236,224,0.5)', background: 'none', border: 'none', cursor: 'pointer' }}>Sair</button>
+              <Link to="/admin" style={{ fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(240,236,224,0.45)' }}>Admin</Link>
+              <button onClick={() => { logout(); navigate('/'); }} style={{ fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(240,236,224,0.45)', background: 'none', border: 'none', cursor: 'pointer' }}>Sair</button>
             </>
           ) : (
-            <Link to="/admin/login" style={{ fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(240,236,224,0.5)' }}>Login</Link>
+            <Link to="/admin/login" style={{ fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(240,236,224,0.45)' }}>Login</Link>
           )}
-          <Link to="/carrinho" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '9px 20px', border: '1px solid rgba(201,168,76,0.28)', color: 'var(--gold)', fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', transition: 'background 0.3s', position: 'relative' }}
+          <Link to="/carrinho" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '9px 22px', border: '1px solid rgba(201,168,76,0.35)', color: 'var(--gold)', fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', transition: 'background 0.3s', position: 'relative' }}
             onMouseEnter={e => e.currentTarget.style.background = 'rgba(201,168,76,0.08)'}
             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
           >
