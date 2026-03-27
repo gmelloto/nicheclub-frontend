@@ -20,6 +20,10 @@ export const api = {
   },
   perfume: (id) => req('GET', `/perfumes/${id}`),
   criarPedido: (payload) => req('POST', '/pedidos', payload),
+  frascos: (params = {}) => {
+    const q = new URLSearchParams(params).toString();
+    return req('GET', `/frascos${q ? '?' + q : ''}`);
+  },
   buscarPedido: (numero) => req('GET', `/pedidos/${numero}`),
   listarPedidos: (token, status) => req('GET', `/pedidos${status ? `?status=${status}` : ''}`, null, token),
   atualizarStatus: (token, id, status, rastreio) =>
