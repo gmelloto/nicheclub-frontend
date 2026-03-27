@@ -65,7 +65,11 @@ export default function Perfume() {
       ...(perfume.notas_topo?.split(',').map(n=>n.trim()).filter(Boolean)||[]),
       ...(perfume.notas_coracao?.split(',').map(n=>n.trim()).filter(Boolean)||[]),
       ...(perfume.notas_base?.split(',').map(n=>n.trim()).filter(Boolean)||[]),
-    ];
+      // Tambem envia versao em ingles se disponivel
+      ...(perfume.notas_topo_en?.split(',').map(n=>n.trim()).filter(Boolean)||[]),
+      ...(perfume.notas_coracao_en?.split(',').map(n=>n.trim()).filter(Boolean)||[]),
+      ...(perfume.notas_base_en?.split(',').map(n=>n.trim()).filter(Boolean)||[]),
+    ].filter((v,i,a)=>a.indexOf(v)===i); // remove duplicados
     if(!notas.length) return;
     api.notasBatch(notas).then(rows=>{
       const map={};
