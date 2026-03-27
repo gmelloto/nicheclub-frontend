@@ -21,6 +21,8 @@ export const api = {
   perfume: (id) => req('GET', `/perfumes/${id}`),
   criarPedido: (payload) => req('POST', '/pedidos', payload),
   reservar: (data) => req('POST', '/reservas', data),
+  notasBatch: (nomes) => req('POST', '/notas/batch', { nomes }),
+  notas: () => req('GET', '/notas'),
   reservasPerfume: (id) => req('GET', `/reservas/${id}`),
   frascos: (params = {}) => {
     const q = new URLSearchParams(params).toString();

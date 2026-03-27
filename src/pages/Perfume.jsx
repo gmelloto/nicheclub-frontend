@@ -28,20 +28,11 @@ const COR_ACORDE = {
 
 function corAcorde(n) { return COR_ACORDE[n] || '#c9a84c'; }
 
-const NOTA_IMG = {
-  'almíscar': '/almiscar.jpg', 'almiscar': '/almiscar.jpg',
-  'âmbar': '/ambar.jpg', 'ambar': '/ambar.jpg',
-  'bergamota': '/bergamota.jpg', 'cedro': '/cedro.jpg',
-  'jasmim': '/jasmim.jpg', 'limão': '/limao.jpg', 'limao': '/limao.jpg',
-  'caramelo': '/caramelo.jpg', 'orris': '/orris.jpg',
-  'raiz de orris': '/orris.jpg', 'notas frutadas': '/notas-frutadas.jpg',
-  'notas balsâmicas': '/balsamic-notes.jpg', 'balsâmico': '/balsamic-notes.jpg',
-  'balsamic notes': '/balsamic-notes.jpg',
-};
-
-function notaImg(nota) {
-  if (!nota) return null;
-  return NOTA_IMG[nota.toLowerCase().trim()] || null;
+// notaImg agora vem do backend via perfume.notas_imagens
+function notaImg(nota, notasImagens) {
+  if (!nota || !notasImagens) return null;
+  const key = nota.toLowerCase().trim();
+  return notasImagens[key]?.img || null;
 }
 
 const C = {
@@ -67,7 +58,21 @@ export default function Perfume() {
   const [telefone, setTelefone] = useState('');
   const [reservas, setReservas] = useState([]);
   const [salvando, setSalvando] = useState(false);
+  const [notasImgs, setNotasImgs] = useState({});
   const [msg, setMsg] = useState('');
+
+  const [notasMap, setNotasMap] = useState({});
+
+  useEffect(() => {
+    api.notas().then(rows => {
+      const map = {};
+      rows.forEach(r => {
+        if (r.nota_ptb) map[r.nota_ptb.toLowerCase().trim()] = r.cloudinary_url || r.photo_url || null;
+        if (r.nota_en) map[r.nota_en.toLowerCase().trim()] = r.cloudinary_url || r.photo_url || null;
+      });
+      setNotasMap(map);
+    }).catch(() => {});
+  }, []);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -81,6 +86,25 @@ export default function Perfume() {
       .finally(() => setLoading(false));
   }, [id]);
 
+  // Busca imagens das notas do banco quando perfume carrega
+  useEffect(() => {
+    if (!perfume) return;
+    const todasNotas = [
+      ...(perfume.notas_topo?.split(',').map(n => n.trim()).filter(Boolean) || []),
+      ...(perfume.notas_coracao?.split(',').map(n => n.trim()).filter(Boolean) || []),
+      ...(perfume.notas_base?.split(',').map(n => n.trim()).filter(Boolean) || []),
+    ];
+    if (!todasNotas.length) return;
+    api.notasBatch(todasNotas).then(rows => {
+      const map = {};
+      rows.forEach(r => {
+        if (r.nota_ptb) map[r.nota_ptb.toLowerCase()] = r;
+        if (r.nota_en) map[r.nota_en.toLowerCase()] = r;
+      });
+      setNotasImgs(map);
+    }).catch(() => {});
+  }, [perfume]);
+
   const opcaoSel = perfume?.opcoes?.find(o => o.tamanho === selecionado);
   const disponivel = Number(perfume?.ml_disponivel || 0);
   const total = Number(perfume?.ml_total || 0);
@@ -89,6 +113,7 @@ export default function Perfume() {
   const precoPorMl = opcaoSel ? (Number(opcaoSel.preco) / (opcaoSel.ml_quantidade || opcaoSel.ml || 1)).toFixed(2) : null;
   const totalAvulso = mlAvulso && precoPorMl ? (Number(mlAvulso) * Number(precoPorMl)).toFixed(2) : null;
   const acordes = [perfume?.acorde1, perfume?.acorde2, perfume?.acorde3, perfume?.acorde4, perfume?.acorde5].filter(Boolean);
+  const notasImagens = perfume?.notas_imagens || {};
   const notas_topo = perfume?.notas_topo?.split(',').map(n => n.trim()).filter(Boolean) || [];
   const notas_coracao = perfume?.notas_coracao?.split(',').map(n => n.trim()).filter(Boolean) || [];
   const notas_base = perfume?.notas_base?.split(',').map(n => n.trim()).filter(Boolean) || [];
@@ -294,7 +319,7 @@ export default function Perfume() {
                 <div style={{ marginBottom: '1rem' }}>
                   <span style={LABEL}>Topo</span>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                    {notas_topo.map(n => <NotaBadge key={n} nota={n} img={notaImg(n)} />)}
+                    {notas_topo.map(n => <NotaBadge key={n} nota={n} img={notaImg(n, notasImagens)} />)}
                   </div>
                 </div>
               )}
@@ -302,7 +327,7 @@ export default function Perfume() {
                 <div style={{ marginBottom: '1rem' }}>
                   <span style={LABEL}>Coracao</span>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                    {notas_coracao.map(n => <NotaBadge key={n} nota={n} img={notaImg(n)} />)}
+                    {notas_coracao.map(n => <NotaBadge key={n} nota={n} img={notaImg(n, notasImagens)} />)}
                   </div>
                 </div>
               )}
@@ -310,7 +335,7 @@ export default function Perfume() {
                 <div>
                   <span style={LABEL}>Base</span>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                    {notas_base.map(n => <NotaBadge key={n} nota={n} img={notaImg(n)} />)}
+                    {notas_base.map(n => <NotaBadge key={n} nota={n} img={notaImg(n, notasImagens)} />)}
                   </div>
                 </div>
               )}
