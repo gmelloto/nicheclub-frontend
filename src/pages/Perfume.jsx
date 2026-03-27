@@ -26,21 +26,22 @@ const COR_ACORDE = {
 function corAcorde(n) { return COR_ACORDE[n] || '#c9a84c'; }
 
 const NOTA_IMG = {
-  // Mapeamento português -> imagem disponível
-  'almíscar': '/almíscar.jpg',
-  'almiscar': '/almíscar.jpg',
-  'âmbar': '/âmbar.jpg',
-  'ambar': '/âmbar.jpg',
+  'almíscar': '/alm%C3%ADscar.jpg',
+  'almiscar': '/alm%C3%ADscar.jpg',
+  'âmbar': '/%C3%A2mbar.jpg',
+  'ambar': '/%C3%A2mbar.jpg',
   'bergamota': '/bergamota.jpg',
   'cedro': '/cedro.jpg',
   'jasmim': '/jasmim.jpg',
-  'limão': '/limão.jpg',
+  'limão': '/lim%C3%A3o.jpg',
+  'limao': '/lim%C3%A3o.jpg',
   'caramelo': '/caramelo.jpg',
   'orris': '/orris.jpg',
   'raiz de orris': '/orris.jpg',
   'notas frutadas': '/notas-frutadas.jpg',
   'notas balsâmicas': '/balsamic-notes.jpg',
   'balsâmico': '/balsamic-notes.jpg',
+  'balsamic notes': '/balsamic-notes.jpg',
 };
 
 function notaImg(nota) {
@@ -344,9 +345,12 @@ function NotaBadge({ nota, img }) {
     );
   }
   return (
-    <span style={{ padding: '4px 12px', borderRadius: 2, background: '#f0ede8', border: '1px solid #e0d8c8', fontSize: 12, color: '#4a4440', fontWeight: 400 }}>
-      {nota}
-    </span>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, width: 72 }}>
+      <div style={{ width: 56, height: 56, borderRadius: 8, background: '#f0ede8', border: '1px solid #e0d8c8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <span style={{ fontSize: 22 }}>🌿</span>
+      </div>
+      <span style={{ fontSize: 10, color: '#4a4440', textAlign: 'center', lineHeight: 1.3, fontWeight: 500 }}>{nota}</span>
+    </div>
   );
 }
 
