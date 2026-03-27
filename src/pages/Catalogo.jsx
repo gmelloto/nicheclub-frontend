@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import BrandCarousel from '../components/BrandCarousel.jsx';
 import { api } from '../services/api';
 
 const S = {
@@ -85,6 +86,8 @@ export default function Catalogo() {
           </a>
         </div>
       </div>
+
+      <BrandCarousel />
 
       {/* ─── CATÁLOGO ─────────────────────────────────────────────────────── */}
       <div id="catalogo" style={{ padding: '5rem 2.5rem', background: '#fff' }}>
