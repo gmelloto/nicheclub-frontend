@@ -31,7 +31,7 @@ const C = {
   gold: '#8a6a10', goldLight: '#c9a84c', goldBg: '#fdf8ee',
 };
 
-const LABEL = { fontSize: 11, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: C.gold, marginBottom: '0.6rem' };
+const LABEL = { fontSize: 11, fontWeight: 600, letterSpacing: '0.25em', textTransform: 'uppercase', color: C.gold, marginBottom: '0.6rem' };
 
 export default function Perfume() {
   const { id } = useParams();
@@ -176,7 +176,7 @@ export default function Perfume() {
           <div style={{ height: 1, background: C.border, marginBottom: '1rem' }} />
 
           {/* Disponibilidade */}
-          <p style={{ ...LABEL, fontSize: 13 }}>Disponibilidade</p>
+          <p style={{ ...LABEL }}>Disponibilidade</p>
           <div style={{ background: C.bg2, border: `1px solid ${C.border}`, borderRadius: 4, padding: '0.85rem 1.25rem', marginBottom: '1rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -191,7 +191,7 @@ export default function Perfume() {
           </div>
 
           {/* Escolha sua opção */}
-          <p style={{ ...LABEL, fontSize: 13, marginBottom: '0.75rem' }}>Escolha sua opção</p>
+          <p style={{ ...LABEL, marginBottom: '0.75rem' }}>Escolha sua opção</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: '1rem' }}>
             {TAMANHOS.map(t => {
               const opcao = perfume.opcoes?.find(o => o.tamanho === t.key);
@@ -218,7 +218,7 @@ export default function Perfume() {
           </div>
 
           {/* Quantidade avulsa */}
-          <p style={{ ...LABEL, fontSize: 13, marginBottom: '0.6rem' }}>Ou escolha a quantidade avulsa</p>
+          <p style={{ ...LABEL, marginBottom: '0.6rem' }}>Ou escolha a quantidade avulsa</p>
           <div style={{ background: C.bg2, border: `1px solid ${C.border}`, borderRadius: 4, padding: '0.75rem 1rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: 12 }}>
             <input
               type="number" min="1" max={disponivel} placeholder="Quantos ml"
@@ -234,10 +234,16 @@ export default function Perfume() {
 
           {/* Nome e telefone */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: '0.75rem' }}>
-            <input placeholder="Seu nome" value={nome} onChange={e => setNome(e.target.value)}
-              style={{ padding: '10px 12px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: 4, color: C.text, fontSize: 13, outline: 'none' }} />
-            <input placeholder="Telefone" value={telefone} onChange={e => setTelefone(e.target.value)}
-              style={{ padding: '10px 12px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: 4, color: C.text, fontSize: 13, outline: 'none' }} />
+            <div>
+              <label style={{ display: 'block', fontSize: 10, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', color: C.text3, marginBottom: 4 }}>Seu nome</label>
+              <input placeholder="Ex: João Silva" value={nome} onChange={e => setNome(e.target.value)}
+                style={{ width: '100%', padding: '10px 12px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: 4, color: C.text, fontSize: 13, outline: 'none' }} />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: 10, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', color: C.text3, marginBottom: 4 }}>Telefone / WhatsApp</label>
+              <input placeholder="(11) 99999-9999" value={telefone} onChange={e => setTelefone(e.target.value)}
+                style={{ width: '100%', padding: '10px 12px', background: C.bg, border: `1px solid ${C.border}`, borderRadius: 4, color: C.text, fontSize: 13, outline: 'none' }} />
+            </div>
           </div>
 
           {/* Mensagem de feedback */}
