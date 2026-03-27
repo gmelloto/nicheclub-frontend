@@ -18,7 +18,7 @@ const COR_ACORDE = {
   'Citrico': '#e8d040', 'Fresco': '#78c8d8', 'Aromatico': '#78b890',
   'Verde': '#88c878', 'Aquatico': '#60b8d8', 'Frutado': '#e87878',
   'Couro': '#a07848', 'Terroso': '#a08868', 'Tropical': '#f0b040',
-  'Picante Fresco': '#d4a860', 'Sândalo': '#d4b896',
+  'Picante Fresco': '#d4a860', 'Sandalo': '#d4b896',
 };
 function corAcorde(n) { return COR_ACORDE[n] || '#c9a84c'; }
 
@@ -137,17 +137,17 @@ export default function Perfume() {
         <h1 style={{ fontSize: 'clamp(1.6rem, 3vw, 2.8rem)', fontWeight: 700, lineHeight: 1.1, marginBottom: '0.6rem', letterSpacing: '-0.02em' }}>{perfume.nome}</h1>
         <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
           {perfume.genero && <span style={{ fontSize: 12, color: C.text2 }}>{perfume.genero}</span>}
-          {perfume.ano && <><span style={{ color: C.border }}>·</span><span style={{ fontSize: 12, color: C.text2 }}>{perfume.ano}</span></>}
-          {perfume.pais && <><span style={{ color: C.border }}>·</span><span style={{ fontSize: 12, color: C.text2 }}>{perfume.pais}</span></>}
-          {perfume.perfumista1 && <><span style={{ color: C.border }}>·</span><span style={{ fontSize: 12, color: C.text2 }}>{perfume.perfumista1.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')}</span></>}
-          {perfume.rating_valor && <><span style={{ color: C.border }}>·</span><span style={{ fontSize: 12, color: C.gold }}>&#9733; {Number(perfume.rating_valor).toFixed(2)} <span style={{ color: C.text3 }}>({perfume.rating_count?.toLocaleString()})</span></span></>}
+          {perfume.ano && <><span style={{ color: C.border }}>&middot;</span><span style={{ fontSize: 12, color: C.text2 }}>{perfume.ano}</span></>}
+          {perfume.pais && <><span style={{ color: C.border }}>&middot;</span><span style={{ fontSize: 12, color: C.text2 }}>{perfume.pais}</span></>}
+          {perfume.perfumista1 && <><span style={{ color: C.border }}>&middot;</span><span style={{ fontSize: 12, color: C.text2 }}>{perfume.perfumista1.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')}</span></>}
+          {perfume.rating_valor && <><span style={{ color: C.border }}>&middot;</span><span style={{ fontSize: 12, color: C.gold }}>&#9733; {Number(perfume.rating_valor).toFixed(2)} <span style={{ color: C.text3 }}>({perfume.rating_count?.toLocaleString()})</span></span></>}
         </div>
       </div>
 
       {/* Grid 50/50 */}
       <div className="perfume-grid" style={{ maxWidth: 1280, margin: '0 auto', padding: '1.5rem 2.5rem 3rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', alignItems: 'start' }}>
 
-        {/* ESQUERDA: foto + acordes + piramide + disponibilidade + reserva */}
+        {/* ESQUERDA: foto + acordes */}
         <div>
           {/* Foto + acordes */}
           <div className="foto-acordes" style={{ border: '1px solid #e8e4dc', borderRadius: 4, overflow: 'hidden', display: 'grid', gridTemplateColumns: '1fr 1fr', height: 380, marginBottom: '1rem' }}>
@@ -174,37 +174,10 @@ export default function Perfume() {
             </div>
           </div>
 
-          {/* Piramide olfativa */}
-          {(notas_topo.length > 0 || notas_coracao.length > 0 || notas_base.length > 0) && (
-            <div style={{ background: C.bg2, border: '1px solid #e8e4dc', borderRadius: 4, padding: '1.25rem', marginBottom: '1rem' }}>
-              <h3 style={{ fontSize: '0.95rem', fontWeight: 700, marginBottom: '1rem', color: C.text }}>Piramide Olfativa</h3>
-              {notas_topo.length > 0 && (
-                <div style={{ marginBottom: '1rem' }}>
-                  <span style={LBL}>Topo</span>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                    {notas_topo.map(n => <NotaBadge key={n} nota={n} img={imgNota(n)} />)}
-                  </div>
-                </div>
-              )}
-              {notas_coracao.length > 0 && (
-                <div style={{ marginBottom: '1rem' }}>
-                  <span style={LBL}>Coracao</span>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                    {notas_coracao.map(n => <NotaBadge key={n} nota={n} img={imgNota(n)} />)}
-                  </div>
-                </div>
-              )}
-              {notas_base.length > 0 && (
-                <div>
-                  <span style={LBL}>Base</span>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                    {notas_base.map(n => <NotaBadge key={n} nota={n} img={imgNota(n)} />)}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
+        </div>
 
+        {/* DIREITA: disponibilidade + reserva + piramide */}
+        <div>
           {/* Disponibilidade */}
           <span style={LBL}>Disponibilidade</span>
           <div style={{ background: C.bg2, border: '1px solid #e8e4dc', borderRadius: 4, padding: '0.85rem 1.25rem', marginBottom: '1rem' }}>
@@ -299,14 +272,43 @@ export default function Perfume() {
           )}
         </div>
 
-        {/* DIREITA: descricao */}
-        <div>
+          <div style={{ height: 1, background: '#e8e4dc', margin: '1rem 0' }} />
+          {/* Piramide olfativa */}
+          {(notas_topo.length > 0 || notas_coracao.length > 0 || notas_base.length > 0) && (
+            <div style={{ background: C.bg2, border: '1px solid #e8e4dc', borderRadius: 4, padding: '1.25rem', marginBottom: '1rem' }}>
+              <h3 style={{ fontSize: '0.95rem', fontWeight: 700, marginBottom: '1rem', color: C.text }}>Piramide Olfativa</h3>
+              {notas_topo.length > 0 && (
+                <div style={{ marginBottom: '1rem' }}>
+                  <span style={LBL}>Topo</span>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    {notas_topo.map(n => <NotaBadge key={n} nota={n} img={notaImg(n)} />)}
+                  </div>
+                </div>
+              )}
+              {notas_coracao.length > 0 && (
+                <div style={{ marginBottom: '1rem' }}>
+                  <span style={LBL}>Coracao</span>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    {notas_coracao.map(n => <NotaBadge key={n} nota={n} img={notaImg(n)} />)}
+                  </div>
+                </div>
+              )}
+              {notas_base.length > 0 && (
+                <div>
+                  <span style={LBL}>Base</span>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    {notas_base.map(n => <NotaBadge key={n} nota={n} img={notaImg(n)} />)}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           {perfume.descricao && (
             <p style={{ fontSize: 14, color: C.text2, lineHeight: 1.8 }}>{perfume.descricao}</p>
           )}
         </div>
       </div>
-    </div>
   );
 }
 
