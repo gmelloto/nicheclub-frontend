@@ -70,8 +70,11 @@ export default function Perfume() {
     api.notasBatch(notas).then(rows=>{
       const map={};
       rows.forEach(r=>{
-        if(r.nota_ptb) map[r.nota_ptb.toLowerCase()]=r;
-        if(r.nota_en) map[r.nota_en.toLowerCase()]=r;
+        // Match pelo nome original que foi enviado
+        if(r.nome_original) map[r.nome_original.toLowerCase().trim()]=r;
+        // Fallback por ptb e en
+        if(r.nota_ptb) map[r.nota_ptb.toLowerCase().trim()]=r;
+        if(r.nota_en) map[r.nota_en.toLowerCase().trim()]=r;
       });
       setNotasImgs(map);
     }).catch(()=>{});
