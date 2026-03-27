@@ -162,8 +162,8 @@ export default function Perfume() {
           {perfume.genero && <span>{perfume.genero}</span>}
           {perfume.ano && <><span style={{ color: '#e8e4dc' }}>|</span><span>{perfume.ano}</span></>}
           {perfume.pais && <><span style={{ color: '#e8e4dc' }}>|</span><span>{perfume.pais}</span></>}
-          {perfume.perfumista1 && <><span style={{ color: '#e8e4dc' }}>|</span><span>{perfume.perfumista1}</span></>}
-          {perfume.rating_valor && <><span style={{ color: '#e8e4dc' }}>|</span><span style={{ color: '#8a6a10' }}>&#9733; {Number(perfume.rating_valor).toFixed(2)} <span style={{ color: '#9a9080' }}>({Number(perfume.rating_count || 0).toLocaleString()})</span></span></>}
+          {perfume.perfumista1 && <><span style={{ color: '#e8e4dc' }}>|</span><span style={{ fontStyle: 'italic' }}>{perfume.perfumista1.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')}</span></>}
+          {perfume.perfumista2 && <><span style={{ color: '#e8e4dc' }}>|</span><span style={{ fontStyle: 'italic' }}>{perfume.perfumista2.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')}</span></>}
         </div>
       </div>
 
