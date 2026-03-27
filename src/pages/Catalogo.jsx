@@ -110,8 +110,8 @@ export default function Catalogo() {
 
           {/* Busca */}
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2.5rem' }}>
-            <input value={buscaInput} onChange={e => setBuscaInput(e.target.value)} placeholder="Buscar perfume ou marca..." className="catalogo-busca"
-              style={{ width: 320, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(201,168,76,0.2)', color: S.text, padding: '10px 16px', fontSize: 13, outline: 'none', letterSpacing: '-0.01em' }}
+            <input value={buscaInput} onChange={e => setBuscaInput(e.target.value)} placeholder="Buscar perfume ou marca..."
+              style={{ width: 320, background: '#f5f4f0', border: '1px solid #c9a84c', color: '#0d0b07', padding: '10px 16px', fontSize: 13, outline: 'none', letterSpacing: '0', WebkitTextFillColor: '#0d0b07' }}
             />
           </div>
 
