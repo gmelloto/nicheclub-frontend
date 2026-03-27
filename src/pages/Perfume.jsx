@@ -22,7 +22,6 @@ const COR_ACORDE = {
   'Tropical': '#f0b040','Animal': '#c8a060','Mineral': '#a8b0b8',
   'Sandalo': '#d4b896','Picante Fresco': '#78c8b0','Picante Quente': '#d47848',
   'Almiscarado Suave': '#d8c8b8','Floral Branco': '#f0c8d8',
-  'Ambar': '#d4a040',
 };
 function corAcorde(n) { return COR_ACORDE[n] || '#c9a84c'; }
 
