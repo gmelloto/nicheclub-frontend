@@ -20,6 +20,8 @@ export const api = {
   },
   perfume: (id) => req('GET', `/perfumes/${id}`),
   criarPedido: (payload) => req('POST', '/pedidos', payload),
+  reservar: (data) => req('POST', '/reservas', data),
+  reservasPerfume: (id) => req('GET', `/reservas/${id}`),
   frascos: (params = {}) => {
     const q = new URLSearchParams(params).toString();
     return req('GET', `/frascos${q ? '?' + q : ''}`);
