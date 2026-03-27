@@ -136,18 +136,21 @@ export default function Perfume() {
     <div style={{minHeight:'100vh',background:C.bg,color:C.text}}>
       <style>{`
         .p-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;max-width:1280px;margin:0 auto;padding:1.5rem 2rem 3rem;align-items:start;}
-        .p-piramide-desktop{display:block;}
-        .p-piramide-mobile{display:none;}
         @media(max-width:860px){
-          .p-grid{grid-template-columns:1fr!important;gap:1rem;padding:1rem;}
-          .p-right{order:-1;}
-          .p-piramide-desktop{display:none!important;}
-          .p-piramide-mobile{display:block!important;}
+          .p-grid{grid-template-columns:1fr!important;gap:1.25rem;padding:1rem;}
+          .p-header{padding:0 1rem 1rem!important;}
+          .p-voltar{padding:0.75rem 1rem!important;}
+          .p-foto{height:280px!important;}
+        }
+        @media(max-width:480px){
+          .p-foto{grid-template-columns:1fr!important;height:auto!important;}
+          .p-acordes{display:none!important;}
+          .p-foto-img{height:260px!important;}
         }
       `}</style>
 
       {/* Voltar */}
-      <div style={{maxWidth:1280,margin:'0 auto',padding:'0.75rem 2rem'}}>
+      <div className="p-voltar" style={{maxWidth:1280,margin:'0 auto',padding:'0.75rem 2rem'}}>
         <button onClick={()=>navigate(-1)} style={{fontSize:13,color:C.text3,background:'none',border:'none',cursor:'pointer'}}
           onMouseEnter={e=>e.currentTarget.style.color=C.gold}
           onMouseLeave={e=>e.currentTarget.style.color=C.text3}
@@ -155,7 +158,7 @@ export default function Perfume() {
       </div>
 
       {/* Header */}
-      <div style={{maxWidth:1280,margin:'0 auto',padding:'0 2rem 1rem',borderBottom:'1px solid #e8e4dc'}}>
+      <div className="p-header" style={{maxWidth:1280,margin:'0 auto',padding:'0 2rem 1rem',borderBottom:'1px solid #e8e4dc'}}>
         <p style={{fontSize:11,letterSpacing:'0.22em',textTransform:'uppercase',color:C.gold,marginBottom:4,fontWeight:600}}>{perfume.marca}</p>
         <h1 style={{fontSize:'clamp(1.6rem,3vw,2.8rem)',fontWeight:700,lineHeight:1.1,marginBottom:8,letterSpacing:'-0.02em'}}>{perfume.nome}</h1>
         <div style={{display:'flex',gap:8,alignItems:'center',flexWrap:'wrap',fontSize:12,color:C.text2}}>
@@ -173,11 +176,11 @@ export default function Perfume() {
         {/* ESQUERDA: foto + acordes + piramide (mobile) */}
         <div>
           {/* Foto + acordes */}
-          <div style={{border:'1px solid #e8e4dc',borderRadius:4,overflow:'hidden',display:'grid',gridTemplateColumns:'1fr 1fr',height:380}}>
+          <div className="p-foto" style={{border:'1px solid #e8e4dc',borderRadius:4,overflow:'hidden',display:'grid',gridTemplateColumns:'1fr 1fr',height:380}}>
             <div style={{background:'#fff',display:'flex',alignItems:'center',justifyContent:'center',borderRight:'1px solid #e8e4dc'}}>
               <img src={perfume.foto_url||'/frasco.jpeg'} alt={perfume.nome} style={{width:'100%',height:'100%',objectFit:'contain',padding:12}}/>
             </div>
-            <div style={{background:C.bg2,padding:'1rem',display:'flex',flexDirection:'column',gap:5}}>
+            <div className="p-acordes" style={{background:C.bg2,padding:'1rem',display:'flex',flexDirection:'column',gap:5}}>
               <p style={{fontSize:9,letterSpacing:'0.2em',textTransform:'uppercase',color:C.gold,marginBottom:6,fontWeight:600}}>Acordes</p>
               {acordes.map(a=>(
                 <div key={a} style={{height:24,borderRadius:3,background:corAcorde(a),display:'flex',alignItems:'center',paddingLeft:8}}>
@@ -196,8 +199,8 @@ export default function Perfume() {
             </div>
           </div>
 
-          {/* Piramide mobile only */}
-          <div className="p-piramide-mobile"><PiramideBlock/></div>
+          {/* Piramide - always below foto */}
+          <PiramideBlock/>
         </div>
 
         {/* DIREITA: disponibilidade + reserva + piramide desktop */}
@@ -292,8 +295,6 @@ export default function Perfume() {
             </div>
           )}
 
-          {/* Piramide desktop only */}
-          <div className="p-piramide-desktop"><PiramideBlock/></div>
         </div>
       </div>
     </div>
