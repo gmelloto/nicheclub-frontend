@@ -196,3 +196,6 @@ input::placeholder { color: var(--text3); letter-spacing: 0.1em; }
     grid-template-columns: 1fr !important;
   }
 }
+
+.search-input::placeholder { color: #5a5550 !important; opacity: 1; }
+.search-input { color: #0d0b07 !important; }

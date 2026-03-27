@@ -321,13 +321,7 @@ export default function Perfume() {
             </div>
           )}
 
-          {/* Perfumista */}
-          {(perfume.perfumista1 || perfume.perfumista2) && (
-            <div style={{ marginTop: '1rem', padding: '1rem', background: C.bg2, border: `1px solid ${C.border}`, borderRadius: 4 }}>
-              <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: C.text3, marginBottom: '0.4rem' }}>Perfumista</p>
-              <p style={{ fontSize: 14, color: C.text2 }}>{[perfume.perfumista1, perfume.perfumista2].filter(Boolean).join(' & ')}</p>
-            </div>
-          )}
+
         </div>
       </div>
     </div>
