@@ -26,15 +26,15 @@ const COR_ACORDE = {
 function corAcorde(n) { return COR_ACORDE[n] || '#c9a84c'; }
 
 const NOTA_IMG = {
-  'almíscar': '/alm%C3%ADscar.jpg',
-  'almiscar': '/alm%C3%ADscar.jpg',
-  'âmbar': '/%C3%A2mbar.jpg',
-  'ambar': '/%C3%A2mbar.jpg',
+  'almíscar': '/almiscar.jpg',
+  'almiscar': '/almiscar.jpg',
+  'âmbar': '/ambar.jpg',
+  'ambar': '/ambar.jpg',
   'bergamota': '/bergamota.jpg',
   'cedro': '/cedro.jpg',
   'jasmim': '/jasmim.jpg',
-  'limão': '/lim%C3%A3o.jpg',
-  'limao': '/lim%C3%A3o.jpg',
+  'limão': '/limao.jpg',
+  'limao': '/limao.jpg',
   'caramelo': '/caramelo.jpg',
   'orris': '/orris.jpg',
   'raiz de orris': '/orris.jpg',
