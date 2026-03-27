@@ -25,6 +25,30 @@ const COR_ACORDE = {
 };
 function corAcorde(n) { return COR_ACORDE[n] || '#c9a84c'; }
 
+const NOTA_IMG = {
+  // Mapeamento português -> imagem disponível
+  'almíscar': '/almíscar.jpg',
+  'almiscar': '/almíscar.jpg',
+  'âmbar': '/âmbar.jpg',
+  'ambar': '/âmbar.jpg',
+  'bergamota': '/bergamota.jpg',
+  'cedro': '/cedro.jpg',
+  'jasmim': '/jasmim.jpg',
+  'limão': '/limão.jpg',
+  'caramelo': '/caramelo.jpg',
+  'orris': '/orris.jpg',
+  'raiz de orris': '/orris.jpg',
+  'notas frutadas': '/notas-frutadas.jpg',
+  'notas balsâmicas': '/balsamic-notes.jpg',
+  'balsâmico': '/balsamic-notes.jpg',
+};
+
+function notaImg(nota) {
+  if (!nota) return null;
+  const key = nota.toLowerCase().trim();
+  return NOTA_IMG[key] || null;
+}
+
 const C = {
   bg: '#ffffff', bg2: '#f8f7f4', border: '#e8e4dc',
   text: '#0d0b07', text2: '#5a5550', text3: '#9a9080',
@@ -162,9 +186,30 @@ export default function Perfume() {
           {(notas_topo.length > 0 || notas_coracao.length > 0 || notas_base.length > 0) && (
             <div style={{ marginTop: '1rem', background: C.bg2, border: `1px solid ${C.border}`, borderRadius: 4, padding: '1.25rem' }}>
               <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', color: C.text }}>Pirâmide Olfativa</h3>
-              {notas_topo.length > 0 && <div style={{ marginBottom: '0.75rem' }}><p style={LABEL}>Topo</p><div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>{notas_topo.map(n => <NotaBadge key={n} nota={n} />)}</div></div>}
-              {notas_coracao.length > 0 && <div style={{ marginBottom: '0.75rem' }}><p style={LABEL}>Coração</p><div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>{notas_coracao.map(n => <NotaBadge key={n} nota={n} />)}</div></div>}
-              {notas_base.length > 0 && <div><p style={LABEL}>Base</p><div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>{notas_base.map(n => <NotaBadge key={n} nota={n} />)}</div></div>}
+              {notas_topo.length > 0 && (
+                <div style={{ marginBottom: '1rem' }}>
+                  <p style={LABEL}>Topo</p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    {notas_topo.map(n => <NotaBadge key={n} nota={n} img={notaImg(n)} />)}
+                  </div>
+                </div>
+              )}
+              {notas_coracao.length > 0 && (
+                <div style={{ marginBottom: '1rem' }}>
+                  <p style={LABEL}>Coração</p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    {notas_coracao.map(n => <NotaBadge key={n} nota={n} img={notaImg(n)} />)}
+                  </div>
+                </div>
+              )}
+              {notas_base.length > 0 && (
+                <div>
+                  <p style={LABEL}>Base</p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    {notas_base.map(n => <NotaBadge key={n} nota={n} img={notaImg(n)} />)}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -287,8 +332,22 @@ export default function Perfume() {
   );
 }
 
-function NotaBadge({ nota }) {
-  return <span style={{ padding: '4px 12px', borderRadius: 2, background: '#f0ede8', border: '1px solid #e0d8c8', fontSize: 12, color: '#4a4440', fontWeight: 400 }}>{nota}</span>;
+function NotaBadge({ nota, img }) {
+  if (img) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, width: 72 }}>
+        <div style={{ width: 56, height: 56, borderRadius: 8, overflow: 'hidden', border: '1px solid #e0d8c8', background: '#fff' }}>
+          <img src={img} alt={nota} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        </div>
+        <span style={{ fontSize: 10, color: '#4a4440', textAlign: 'center', lineHeight: 1.3, fontWeight: 500 }}>{nota}</span>
+      </div>
+    );
+  }
+  return (
+    <span style={{ padding: '4px 12px', borderRadius: 2, background: '#f0ede8', border: '1px solid #e0d8c8', fontSize: 12, color: '#4a4440', fontWeight: 400 }}>
+      {nota}
+    </span>
+  );
 }
 
 const DEMO = {
