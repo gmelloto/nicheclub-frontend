@@ -158,70 +158,6 @@ export default function Perfume() {
 
         {/* Coluna esquerda */}
         <div>
-          {/* Foto + acordes */}
-          <div style={{ border: `1px solid ${C.border}`, borderRadius: 4, overflow: 'hidden', display: 'grid', gridTemplateColumns: '1fr 1fr', height: 'min(55vh, 400px)' }}>
-            <div style={{ background: C.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRight: `1px solid ${C.border}` }}>
-              <img src={perfume.foto_url || '/frasco.jpeg'} alt={perfume.nome} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 12 }} />
-            </div>
-            <div style={{ background: C.bg2, padding: '1rem', display: 'flex', flexDirection: 'column', gap: 5 }}>
-              <p style={{ ...LABEL, fontSize: 9, marginBottom: 6 }}>Principais Acordes</p>
-              {acordes.map(a => (
-                <div key={a} style={{ height: 24, borderRadius: 3, background: corAcorde(a), display: 'flex', alignItems: 'center', paddingLeft: 8 }}>
-                  <span style={{ fontSize: 10, fontWeight: 700, color: 'rgba(0,0,0,0.65)', whiteSpace: 'nowrap' }}>{a}</span>
-                </div>
-              ))}
-              {perfume.rating_valor && (
-                <div style={{ marginTop: 'auto', paddingTop: 8, borderTop: `1px solid ${C.border}` }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <span style={{ fontSize: 18, fontWeight: 700, color: C.text }}>{Number(perfume.rating_valor).toFixed(2)}</span>
-                    <div style={{ display: 'flex', gap: 1 }}>
-                      {[1,2,3,4,5].map(s => <span key={s} style={{ fontSize: 11, color: s <= Math.round(perfume.rating_valor) ? C.goldLight : C.border }}>★</span>)}
-                    </div>
-                  </div>
-                  <p style={{ fontSize: 10, color: C.text3 }}>({perfume.rating_count?.toLocaleString()} avaliações)</p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Pirâmide */}
-          {(notas_topo.length > 0 || notas_coracao.length > 0 || notas_base.length > 0) && (
-            <div style={{ marginTop: '1rem', background: C.bg2, border: `1px solid ${C.border}`, borderRadius: 4, padding: '1.25rem' }}>
-              <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', color: C.text }}>Pirâmide Olfativa</h3>
-              {notas_topo.length > 0 && (
-                <div style={{ marginBottom: '1rem' }}>
-                  <p style={LABEL}>Topo</p>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                    {notas_topo.map(n => <NotaBadge key={n} nota={n} img={notaImg(n)} />)}
-                  </div>
-                </div>
-              )}
-              {notas_coracao.length > 0 && (
-                <div style={{ marginBottom: '1rem' }}>
-                  <p style={LABEL}>Coração</p>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                    {notas_coracao.map(n => <NotaBadge key={n} nota={n} img={notaImg(n)} />)}
-                  </div>
-                </div>
-              )}
-              {notas_base.length > 0 && (
-                <div>
-                  <p style={LABEL}>Base</p>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                    {notas_base.map(n => <NotaBadge key={n} nota={n} img={notaImg(n)} />)}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Coluna direita */}
-        <div>
-          {perfume.descricao && <p style={{ fontSize: 14, color: C.text2, lineHeight: 1.8, marginBottom: '1rem' }}>{perfume.descricao}</p>}
-
-          <div style={{ height: 1, background: C.border, marginBottom: '1rem' }} />
-
           {/* Disponibilidade */}
           <p style={{ ...LABEL }}>Disponibilidade</p>
           <div style={{ background: C.bg2, border: `1px solid ${C.border}`, borderRadius: 4, padding: '0.85rem 1.25rem', marginBottom: '1rem' }}>
@@ -293,17 +229,14 @@ export default function Perfume() {
             </div>
           </div>
 
-          {/* Mensagem de feedback */}
           {msg && <p style={{ fontSize: 13, color: msg.includes('✓') || msg.includes('confirmada') ? '#2a7a2a' : '#c0392b', marginBottom: '0.75rem', fontWeight: 500 }}>{msg}</p>}
 
-          {/* Botão Reservar */}
           <button onClick={handleReservar} disabled={salvando || esgotado}
             style={{ width: '100%', padding: '14px', borderRadius: 4, background: esgotado ? C.bg2 : `linear-gradient(135deg,${C.goldLight},#e8c870)`, border: `1px solid ${esgotado ? C.border : C.goldLight}`, cursor: esgotado ? 'not-allowed' : 'pointer', fontSize: 13, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: esgotado ? C.text3 : '#0d0b07', transition: 'all 0.2s', opacity: salvando ? 0.7 : 1 }}
           >
             {salvando ? 'Reservando...' : esgotado ? 'Esgotado' : 'Reservar'}
           </button>
 
-          {/* Lista de reservas */}
           {reservas.length > 0 && (
             <div style={{ marginTop: '1.5rem' }}>
               <p style={{ ...LABEL, fontSize: 12, marginBottom: '0.75rem' }}>Reservas ({reservas.length})</p>
@@ -320,8 +253,66 @@ export default function Perfume() {
               </div>
             </div>
           )}
+        </div>
 
+        {/* Coluna direita */}
+        <div>
+          {/* Foto + acordes */}
+          <div style={{ border: `1px solid ${C.border}`, borderRadius: 4, overflow: 'hidden', display: 'grid', gridTemplateColumns: '1fr 1fr', height: 'min(55vh, 400px)' }}>
+            <div style={{ background: C.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRight: `1px solid ${C.border}` }}>
+              <img src={perfume.foto_url || '/frasco.jpeg'} alt={perfume.nome} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 12 }} />
+            </div>
+            <div style={{ background: C.bg2, padding: '1rem', display: 'flex', flexDirection: 'column', gap: 5 }}>
+              <p style={{ ...LABEL, fontSize: 9, marginBottom: 6 }}>Principais Acordes</p>
+              {acordes.map(a => (
+                <div key={a} style={{ height: 24, borderRadius: 3, background: corAcorde(a), display: 'flex', alignItems: 'center', paddingLeft: 8 }}>
+                  <span style={{ fontSize: 10, fontWeight: 700, color: 'rgba(0,0,0,0.65)', whiteSpace: 'nowrap' }}>{a}</span>
+                </div>
+              ))}
+              {perfume.rating_valor && (
+                <div style={{ marginTop: 'auto', paddingTop: 8, borderTop: `1px solid ${C.border}` }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <span style={{ fontSize: 18, fontWeight: 700, color: C.text }}>{Number(perfume.rating_valor).toFixed(2)}</span>
+                    <div style={{ display: 'flex', gap: 1 }}>
+                      {[1,2,3,4,5].map(s => <span key={s} style={{ fontSize: 11, color: s <= Math.round(perfume.rating_valor) ? C.goldLight : C.border }}>★</span>)}
+                    </div>
+                  </div>
+                  <p style={{ fontSize: 10, color: C.text3 }}>({perfume.rating_count?.toLocaleString()} avaliações)</p>
+                </div>
+              )}
+            </div>
+          </div>
 
+          {/* Pirâmide */}
+          {(notas_topo.length > 0 || notas_coracao.length > 0 || notas_base.length > 0) && (
+            <div style={{ marginTop: '1rem', background: C.bg2, border: `1px solid ${C.border}`, borderRadius: 4, padding: '1.25rem' }}>
+              <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', color: C.text }}>Pirâmide Olfativa</h3>
+              {notas_topo.length > 0 && (
+                <div style={{ marginBottom: '1rem' }}>
+                  <p style={LABEL}>Topo</p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    {notas_topo.map(n => <NotaBadge key={n} nota={n} img={notaImg(n)} />)}
+                  </div>
+                </div>
+              )}
+              {notas_coracao.length > 0 && (
+                <div style={{ marginBottom: '1rem' }}>
+                  <p style={LABEL}>Coração</p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    {notas_coracao.map(n => <NotaBadge key={n} nota={n} img={notaImg(n)} />)}
+                  </div>
+                </div>
+              )}
+              {notas_base.length > 0 && (
+                <div>
+                  <p style={LABEL}>Base</p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    {notas_base.map(n => <NotaBadge key={n} nota={n} img={notaImg(n)} />)}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
