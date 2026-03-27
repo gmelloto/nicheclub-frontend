@@ -7,6 +7,7 @@ import Perfume from './pages/Perfume.jsx';
 import Carrinho from './pages/Carrinho.jsx';
 import Admin from './pages/Admin.jsx';
 import Login from './pages/Login.jsx';
+import Frascos from './pages/Frascos.jsx';
 import './index.css';
 
 function ScrollToTop() {
@@ -28,6 +29,7 @@ export default function App() {
             <Route path="/carrinho" element={<Carrinho />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/login" element={<Login />} />
+            <Route path="/frascos" element={<Frascos />} />
           </Routes>
         </BrowserRouter>
       </CartProvider>

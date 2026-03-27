@@ -28,7 +28,7 @@ export default function Navbar() {
 
           {/* Links desktop */}
           <div className="nav-desktop" style={{ display: 'flex', gap: '2rem' }}>
-            {[['#catalogo', 'Catálogo'], ['#como-funciona', 'Como Funciona'], ['#faq', 'FAQ'], ['#quem-somos', 'Quem Somos']].map(([to, label]) => (
+            {[['/frascos', 'Frascos'], ['#catalogo', 'Catálogo'], ['#como-funciona', 'Como Funciona'], ['#faq', 'FAQ'], ['#quem-somos', 'Quem Somos']].map(([to, label]) => (
               <a key={label} href={to} style={linkStyle}
                 onMouseEnter={e => e.target.style.color = '#c9a84c'}
                 onMouseLeave={e => e.target.style.color = 'rgba(240,236,224,0.75)'}
@@ -68,7 +68,7 @@ export default function Navbar() {
         {menuAberto && (
           <div className="nav-mobile" style={{ display: 'none', background: '#0d0b07', borderTop: '1px solid rgba(201,168,76,0.15)', padding: '1rem 1.25rem' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {[['#catalogo', 'Catálogo'], ['#como-funciona', 'Como Funciona'], ['#faq', 'FAQ'], ['#quem-somos', 'Quem Somos']].map(([to, label]) => (
+              {[['/frascos', 'Frascos'], ['#catalogo', 'Catálogo'], ['#como-funciona', 'Como Funciona'], ['#faq', 'FAQ'], ['#quem-somos', 'Quem Somos']].map(([to, label]) => (
                 <a key={label} href={to} onClick={() => setMenuAberto(false)}
                   style={{ fontSize: 13, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(240,236,224,0.7)', fontWeight: 500, padding: '0.5rem 0', borderBottom: '1px solid rgba(201,168,76,0.08)' }}
                 >{label}</a>
