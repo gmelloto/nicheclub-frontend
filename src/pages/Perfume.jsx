@@ -3,6 +3,22 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
 import { useCart } from '../context/index.jsx';
 
+const COR_ACORDE = {
+  'Floral': '#e8a0b0', 'Floral Branco': '#f0c8d8', 'Rosa': '#e87090',
+  'Amadeirado': '#c8a878', 'Sândalo': '#d4b896', 'Cedro': '#b89060',
+  'Oud': '#8a6030', 'Patchouli': '#9a7850',
+  'Oriental': '#d4884c', 'Adocicado': '#e8b060', 'Baunilha': '#f0c878',
+  'Âmbar': '#d4a040', 'Almiscarado': '#c8b8a0', 'Especiado': '#c87840',
+  'Cítrico': '#e8d040', 'Fresco': '#78c8d8', 'Aromático': '#78b890',
+  'Verde': '#88c878', 'Aquático': '#60b8d8', 'Marinho': '#4898c8',
+  'Frutado': '#e87878', 'Gourmet': '#e8a060', 'Almiscarado Suave': '#d8c8b8',
+  'Couro': '#a07848', 'Defumado': '#9898a8', 'Terroso': '#a08868',
+  'Herbal': '#90b870', 'Mineral': '#a8b0b8', 'Tropical': '#f0b040',
+};
+function corAcorde(nome) {
+  return COR_ACORDE[nome] || '#c9a84c';
+}
+
 const TAMANHOS = [
   { key: 'apc', label: 'APC +50ml', ml: 50 },
   { key: '3ml', label: '3ml', ml: 3 },
@@ -99,12 +115,39 @@ export default function Perfume() {
 
         {/* Coluna esquerda — imagem */}
         <div>
-          <div style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: 4, overflow: 'hidden', height: 'min(70vh, 480px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <img
-              src={perfume.foto_url || '/frasco.jpeg'}
-              alt={perfume.nome}
-              style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 16 }}
-            />
+          <div style={{ border: `1px solid ${C.border}`, borderRadius: 4, overflow: 'hidden', display: 'grid', gridTemplateColumns: '1fr 1fr', height: 'min(60vh, 420px)' }}>
+            {/* Foto */}
+            <div style={{ background: C.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRight: `1px solid ${C.border}` }}>
+              <img
+                src={perfume.foto_url || '/frasco.jpeg'}
+                alt={perfume.nome}
+                style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 16 }}
+              />
+            </div>
+            {/* Acordes em barras */}
+            <div style={{ background: C.bg2, padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: 6, overflow: 'auto' }}>
+              <p style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: C.gold, marginBottom: 4, fontWeight: 600 }}>Principais Acordes</p>
+              {acordes.length > 0 ? acordes.map(a => (
+                <div key={a} style={{ height: 26, borderRadius: 3, background: corAcorde(a), display: 'flex', alignItems: 'center', paddingLeft: 10 }}>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: 'rgba(0,0,0,0.65)', letterSpacing: '0.02em', whiteSpace: 'nowrap' }}>{a}</span>
+                </div>
+              )) : <p style={{ fontSize: 12, color: C.text3, fontStyle: 'italic' }}>—</p>}
+
+              {/* Rating */}
+              {perfume.rating_valor && (
+                <div style={{ marginTop: 'auto', paddingTop: 8, borderTop: `1px solid ${C.border}` }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ fontSize: 20, fontWeight: 700, color: C.text }}>{Number(perfume.rating_valor).toFixed(1)}</span>
+                    <div style={{ display: 'flex', gap: 2 }}>
+                      {[1,2,3,4,5].map(s => (
+                        <span key={s} style={{ fontSize: 12, color: s <= Math.round(perfume.rating_valor) ? C.goldLight : C.border }}>★</span>
+                      ))}
+                    </div>
+                  </div>
+                  <p style={{ fontSize: 11, color: C.text3 }}>({perfume.rating_count?.toLocaleString()} avaliações)</p>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Pirâmide olfativa */}
