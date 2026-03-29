@@ -61,28 +61,10 @@ export default function Perfume() {
 
   useEffect(()=>{
     if(!perfume) return;
-    // Prioriza notas em ingles (match mais exato com notas_olfativas)
-    // Fallback para portugues se ingles nao disponivel
-    const notasTopo = perfume.notas_topo_en || perfume.notas_topo || '';
-    const notasCoracao = perfume.notas_coracao_en || perfume.notas_coracao || '';
-    const notasBase = perfume.notas_base_en || perfume.notas_base || '';
-    const notas = [
-      ...notasTopo.split(',').map(n=>n.trim()).filter(Boolean),
-      ...notasCoracao.split(',').map(n=>n.trim()).filter(Boolean),
-      ...notasBase.split(',').map(n=>n.trim()).filter(Boolean),
-    ].filter((v,i,a)=>a.indexOf(v)===i);
-    if(!notas.length) return;
-    api.notasBatch(notas).then(rows=>{
-      const map={};
-      rows.forEach(r=>{
-        // Match pelo nome original que foi enviado
-        if(r.nome_original) map[r.nome_original.toLowerCase().trim()]=r;
-        // Fallback por ptb e en
-        if(r.nota_ptb) map[r.nota_ptb.toLowerCase().trim()]=r;
-        if(r.nota_en) map[r.nota_en.toLowerCase().trim()]=r;
-      });
-      setNotasImgs(map);
-    }).catch(()=>{});
+    // Usa notas_imagens retornado diretamente pela API
+    if(perfume.notas_imagens && Object.keys(perfume.notas_imagens).length > 0) {
+      setNotasImgs(perfume.notas_imagens);
+    }
   },[perfume]);
 
   const opcaoSel = perfume?.opcoes?.find(o=>o.tamanho===selecionado);
@@ -99,8 +81,11 @@ export default function Perfume() {
 
   function imgNota(nota){
     if(!nota) return null;
-    const r = notasImgs[nota.toLowerCase().trim()];
-    return r?.cloudinary_url||r?.photo_url||null;
+    const key = nota.toLowerCase().trim();
+    const r = notasImgs[key];
+    if(!r) return null;
+    // suporta tanto {img} quanto {cloudinary_url}
+    return r.img || r.cloudinary_url || r.photo_url || null;
   }
 
   const handleReservar = async()=>{
