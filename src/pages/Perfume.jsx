@@ -3,52 +3,37 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
 
 const TAMANHOS = [
-  { key: 'apc',  label: 'APC +50ml', ml: 50 },
-  { key: '3ml',  label: '3ml',       ml: 3  },
-  { key: '5ml',  label: '5ml',       ml: 5  },
-  { key: '10ml', label: '10ml',      ml: 10 },
-  { key: '15ml', label: '15ml',      ml: 15 },
+  { key: 'apc',  label: 'APC +50ml', ml: 50  },
+  { key: '3ml',  label: '3ml',       ml: 3   },
+  { key: '5ml',  label: '5ml',       ml: 5   },
+  { key: '10ml', label: '10ml',      ml: 10  },
+  { key: '15ml', label: '15ml',      ml: 15  },
 ];
 
 const ACORDES_COR = {
-  'Floral':'#e8a0b0','Rose':'#e87090','Woody':'#c8a878','Sandalwood':'#d4b896',
-  'Cedar':'#b89060','Oud':'#8a6030','Patchouli':'#9a7850','Oriental':'#d4884c',
-  'Sweet':'#e8b060','Vanilla':'#f0c878','Amber':'#d4a040','Musky':'#c8b8a0',
-  'Spicy':'#c87840','Citrus':'#e8d040','Fresh':'#78c8d8','Aromatic':'#78b890',
-  'Green':'#88c878','Aquatic':'#60b8d8','Fruity':'#e87878','Gourmand':'#e8a060',
-  'Leather':'#a07848','Smoky':'#9898a8','Earthy':'#a08868','Herbal':'#90b870',
-  'Tropical':'#f0b040','Animal':'#c8a060','Powdery':'#e8d8c8',
-  'Amadeirado':'#c8a878','Almiscarado':'#c8b8a0','Adocicado':'#e8b060',
-  'Citrico':'#e8d040','Aromatico':'#78b890','Ambar':'#d4a040','Frutado':'#e87878',
-  'Baunilha':'#f0c878','Terroso':'#a08868','Picante Fresco':'#78c8b0',
-  'Picante Quente':'#d47848','Almiscarado Suave':'#d8c8b8',
+  'Floral':'#e8a0b0','Rosa':'#e87090','Amadeirado':'#c8a878','Cedro':'#b89060',
+  'Oud':'#8a6030','Patchouli':'#9a7850','Oriental':'#d4884c','Adocicado':'#e8b060',
+  'Baunilha':'#f0c878','Ambar':'#d4a040','Almiscarado':'#c8b8a0','Especiado':'#c87840',
+  'Citrico':'#e8d040','Fresco':'#78c8d8','Aromatico':'#78b890','Verde':'#88c878',
+  'Aquatico':'#60b8d8','Marinho':'#4898c8','Frutado':'#e87878','Gourmet':'#e8a060',
+  'Couro':'#a07848','Defumado':'#9898a8','Terroso':'#a08868','Tropical':'#f0b040',
+  'Animal':'#c8a060','Sandalo':'#d4b896','Picante Fresco':'#78c8b0',
+  'Picante Quente':'#d47848','Almiscarado Suave':'#d8c8b8','Floral Branco':'#f0c8d8',
 };
-
-function corAcorde(n) { return ACORDES_COR[n] || '#c9a84c'; }
-
-const C = {
-  bg:'#ffffff', bg2:'#f8f7f4', border:'#e8e4dc',
-  text:'#0d0b07', text2:'#5a5550', text3:'#9a9080',
-  gold:'#8a6a10', goldLight:'#c9a84c',
-};
-
-const LBL = {
-  fontSize:11, fontWeight:700, letterSpacing:'0.2em',
-  textTransform:'uppercase', color:C.gold, marginBottom:6, display:'block',
-};
+const corAcorde = n => ACORDES_COR[n] || '#c9a84c';
 
 export default function Perfume() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [perfume, setPerfume]   = useState(null);
-  const [loading, setLoading]   = useState(true);
-  const [reservas, setReservas] = useState([]);
-  const [selecionado, setSel]   = useState(null);
-  const [mlAvulso, setMlAvulso] = useState('');
-  const [nome, setNome]         = useState('');
-  const [telefone, setTelefone] = useState('');
-  const [salvando, setSalvando] = useState(false);
-  const [msg, setMsg]           = useState('');
+  const [perfume, setPerfume]     = useState(null);
+  const [loading, setLoading]     = useState(true);
+  const [reservas, setReservas]   = useState([]);
+  const [selecionado, setSel]     = useState(null);
+  const [mlAvulso, setMlAvulso]   = useState('');
+  const [nome, setNome]           = useState('');
+  const [telefone, setTelefone]   = useState('');
+  const [salvando, setSalvando]   = useState(false);
+  const [msg, setMsg]             = useState('');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -59,47 +44,44 @@ export default function Perfume() {
         return api.reservasPerfume(p.id).catch(() => []);
       })
       .then(r => setReservas(r || []))
-      .catch(() => setPerfume(null))
+      .catch(() => setLoading(false))
       .finally(() => setLoading(false));
   }, [id]);
 
   if (loading) return (
-    <div style={{ minHeight:'100vh', background:C.bg, display:'flex', alignItems:'center', justifyContent:'center' }}>
-      <div style={{ width:32, height:32, border:'2px solid #e8e4dc', borderTop:'2px solid #c9a84c', borderRadius:'50%', animation:'spin 0.8s linear infinite' }} />
+    <div style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', background:'#fff' }}>
+      <div style={{ width:32, height:32, border:'2px solid #e8e4dc', borderTop:'2px solid #c9a84c', borderRadius:'50%', animation:'spin .8s linear infinite' }} />
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   );
 
   if (!perfume) return (
-    <div style={{ minHeight:'100vh', background:C.bg, display:'flex', alignItems:'center', justifyContent:'center' }}>
-      <p style={{ color:C.text3 }}>Perfume nao encontrado.</p>
+    <div style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', background:'#fff' }}>
+      <p style={{ color:'#9a9080' }}>Perfume nao encontrado.</p>
     </div>
   );
 
-  const disponivel = Number(perfume.ml_disponivel || 0);
-  const total      = Number(perfume.ml_total || 0);
-  const pct        = total > 0 ? Math.min(100, Math.round((disponivel / total) * 100)) : 0;
-  const esgotado   = disponivel === 0;
-  const acordes    = [perfume.acorde1, perfume.acorde2, perfume.acorde3, perfume.acorde4, perfume.acorde5].filter(Boolean);
-  const notasImgs  = perfume.notas_imagens || {};
-  const notas_topo    = (perfume.notas_topo    || '').split(',').map(n => n.trim()).filter(Boolean);
-  const notas_coracao = (perfume.notas_coracao || '').split(',').map(n => n.trim()).filter(Boolean);
-  const notas_base    = (perfume.notas_base    || '').split(',').map(n => n.trim()).filter(Boolean);
-
-  function imgNota(nota) {
-    return notasImgs[nota.toLowerCase().trim()] || null;
-  }
-
-  const opcaoSel   = perfume.opcoes?.find(o => o.tamanho === selecionado);
-  const precoPorMl = opcaoSel ? (Number(opcaoSel.preco) / (Number(opcaoSel.ml_quantidade) || 1)).toFixed(2) : null;
+  const disponivel  = Number(perfume.ml_disponivel || 0);
+  const totalMl     = Number(perfume.ml_total || 0);
+  const pct         = totalMl > 0 ? Math.min(100, Math.round((disponivel / totalMl) * 100)) : 0;
+  const esgotado    = disponivel === 0;
+  const opcaoSel    = perfume.opcoes?.find(o => o.tamanho === selecionado);
+  const precoPorMl  = opcaoSel ? (Number(opcaoSel.preco) / Number(opcaoSel.ml_quantidade || 1)).toFixed(2) : null;
   const totalAvulso = mlAvulso && precoPorMl ? (Number(mlAvulso) * Number(precoPorMl)).toFixed(2) : null;
+  const acordes     = [perfume.acorde1, perfume.acorde2, perfume.acorde3, perfume.acorde4, perfume.acorde5].filter(Boolean);
+  const topoNotas   = (perfume.notas_topo    || '').split(',').map(n => n.trim()).filter(Boolean);
+  const coracaoNotas= (perfume.notas_coracao || '').split(',').map(n => n.trim()).filter(Boolean);
+  const baseNotas   = (perfume.notas_base    || '').split(',').map(n => n.trim()).filter(Boolean);
+  const notasImgs   = perfume.notas_imagens  || {};
 
-  const handleReservar = async () => {
-    if (!nome || !telefone) return setMsg('Preencha nome e telefone.');
-    if (!selecionado && !mlAvulso) return setMsg('Escolha um tamanho ou quantidade avulsa.');
+  const imgNota = nota => notasImgs[nota.toLowerCase().trim()] || null;
+
+  const reservar = async () => {
+    if (!nome || !telefone)           return setMsg('Preencha nome e telefone.');
+    if (!selecionado && !mlAvulso)    return setMsg('Escolha um tamanho ou quantidade.');
     setSalvando(true); setMsg('');
     try {
-      const res = await api.reservar({ perfume_id:perfume.id, nome, telefone, tamanho:selecionado||null, ml_avulso:mlAvulso?Number(mlAvulso):null });
+      const res = await api.reservar({ perfume_id: perfume.id, nome, telefone, tamanho: selecionado || null, ml_avulso: mlAvulso ? Number(mlAvulso) : null });
       setMsg(res.mensagem || 'Reserva confirmada!');
       setNome(''); setTelefone(''); setSel(null); setMlAvulso('');
       api.reservasPerfume(perfume.id).then(r => setReservas(r || [])).catch(() => {});
@@ -107,75 +89,81 @@ export default function Perfume() {
     finally { setSalvando(false); }
   };
 
-  const Piramide = () => (notas_topo.length > 0 || notas_coracao.length > 0 || notas_base.length > 0) ? (
-    <div style={{ background:C.bg2, border:'1px solid #e8e4dc', borderRadius:6, padding:'1.25rem', marginTop:'1rem' }}>
-      <h3 style={{ fontSize:'0.95rem', fontWeight:700, marginBottom:'1rem', color:C.text }}>Piramide Olfativa</h3>
-      {notas_topo.length > 0 && (
-        <div style={{ marginBottom:'1rem' }}>
-          <span style={LBL}>Topo</span>
-          <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
-            {notas_topo.map(n => <NotaBadge key={n} nota={n} img={imgNota(n)} />)}
+  const Piramide = () => {
+    if (!topoNotas.length && !coracaoNotas.length && !baseNotas.length) return null;
+    return (
+      <div style={{ background:'#f8f7f4', border:'1px solid #e8e4dc', borderRadius:4, padding:'1.25rem', marginTop:'1rem' }}>
+        <h3 style={{ fontSize:'0.95rem', fontWeight:700, marginBottom:'1rem', color:'#0d0b07' }}>Piramide Olfativa</h3>
+        {topoNotas.length > 0 && (
+          <div style={{ marginBottom:'1rem' }}>
+            <p style={{ fontSize:11, fontWeight:600, letterSpacing:'0.22em', textTransform:'uppercase', color:'#8a6a10', marginBottom:8 }}>Topo</p>
+            <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
+              {topoNotas.map(n => <NotaBadge key={n} nota={n} img={imgNota(n)} />)}
+            </div>
           </div>
-        </div>
-      )}
-      {notas_coracao.length > 0 && (
-        <div style={{ marginBottom:'1rem' }}>
-          <span style={LBL}>Coracao</span>
-          <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
-            {notas_coracao.map(n => <NotaBadge key={n} nota={n} img={imgNota(n)} />)}
+        )}
+        {coracaoNotas.length > 0 && (
+          <div style={{ marginBottom:'1rem' }}>
+            <p style={{ fontSize:11, fontWeight:600, letterSpacing:'0.22em', textTransform:'uppercase', color:'#8a6a10', marginBottom:8 }}>Coracao</p>
+            <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
+              {coracaoNotas.map(n => <NotaBadge key={n} nota={n} img={imgNota(n)} />)}
+            </div>
           </div>
-        </div>
-      )}
-      {notas_base.length > 0 && (
-        <div>
-          <span style={LBL}>Base</span>
-          <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
-            {notas_base.map(n => <NotaBadge key={n} nota={n} img={imgNota(n)} />)}
+        )}
+        {baseNotas.length > 0 && (
+          <div>
+            <p style={{ fontSize:11, fontWeight:600, letterSpacing:'0.22em', textTransform:'uppercase', color:'#8a6a10', marginBottom:8 }}>Base</p>
+            <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
+              {baseNotas.map(n => <NotaBadge key={n} nota={n} img={imgNota(n)} />)}
+            </div>
           </div>
-        </div>
-      )}
-    </div>
-  ) : null;
+        )}
+      </div>
+    );
+  };
 
   return (
-    <div style={{ minHeight:'100vh', background:C.bg, color:C.text }}>
+    <div style={{ minHeight:'100vh', background:'#fff', color:'#0d0b07' }}>
       <style>{`
-        .pg{display:grid;grid-template-columns:1fr 1fr;gap:2rem;max-width:1280px;margin:0 auto;padding:1.5rem 2rem 3rem;align-items:start;}
-        .pm{display:none;}
-        .pd{display:block;}
-        @media(max-width:860px){
-          .pg{grid-template-columns:1fr;padding:1rem;gap:1rem;}
-          .pm{display:block;}
-          .pd{display:none;}
-        }
+        .pg { display:grid; grid-template-columns:1fr 1fr; gap:2rem; max-width:1280px; margin:0 auto; padding:1.5rem 2rem 3rem; align-items:start; }
+        @media(max-width:860px){ .pg{ grid-template-columns:1fr; padding:1rem; gap:1rem; } }
       `}</style>
 
+      {/* Voltar */}
       <div style={{ maxWidth:1280, margin:'0 auto', padding:'0.75rem 2rem' }}>
-        <button onClick={() => navigate(-1)} style={{ fontSize:13, color:C.text3, background:'none', border:'none', cursor:'pointer' }}
-          onMouseEnter={e => e.currentTarget.style.color = C.gold}
-          onMouseLeave={e => e.currentTarget.style.color = C.text3}
+        <button onClick={() => navigate(-1)}
+          style={{ fontSize:13, color:'#9a9080', background:'none', border:'none', cursor:'pointer' }}
+          onMouseEnter={e => e.currentTarget.style.color='#c9a84c'}
+          onMouseLeave={e => e.currentTarget.style.color='#9a9080'}
         >&#8592; Voltar</button>
       </div>
 
+      {/* Header */}
       <div style={{ maxWidth:1280, margin:'0 auto', padding:'0 2rem 1rem', borderBottom:'1px solid #e8e4dc' }}>
-        <p style={{ fontSize:11, letterSpacing:'0.22em', textTransform:'uppercase', color:C.gold, marginBottom:4, fontWeight:600 }}>{perfume.marca}</p>
+        <p style={{ fontSize:11, letterSpacing:'0.22em', textTransform:'uppercase', color:'#8a6a10', marginBottom:4, fontWeight:600 }}>{perfume.marca}</p>
         <h1 style={{ fontSize:'clamp(1.6rem,3vw,2.8rem)', fontWeight:700, lineHeight:1.1, marginBottom:8, letterSpacing:'-0.02em' }}>{perfume.nome}</h1>
-        <div style={{ display:'flex', gap:8, alignItems:'center', flexWrap:'wrap', fontSize:12, color:C.text2 }}>
+        <div style={{ display:'flex', gap:8, alignItems:'center', flexWrap:'wrap', fontSize:12, color:'#5a5550' }}>
           {perfume.genero    && <span>{perfume.genero}</span>}
-          {perfume.ano       && <><span style={{ color:C.border }}>|</span><span>{perfume.ano}</span></>}
-          {perfume.pais      && <><span style={{ color:C.border }}>|</span><span>{perfume.pais}</span></>}
-          {perfume.perfumista1 && <><span style={{ color:C.border }}>|</span><span style={{ fontStyle:'italic' }}>{perfume.perfumista1}</span></>}
+          {perfume.ano       && <><span style={{color:'#e8e4dc'}}>|</span><span>{perfume.ano}</span></>}
+          {perfume.pais      && <><span style={{color:'#e8e4dc'}}>|</span><span>{perfume.pais}</span></>}
+          {perfume.perfumista1 && <><span style={{color:'#e8e4dc'}}>|</span><span style={{fontStyle:'italic'}}>{perfume.perfumista1}</span></>}
+          {perfume.perfumista2 && <><span style={{color:'#e8e4dc'}}>|</span><span style={{fontStyle:'italic'}}>{perfume.perfumista2}</span></>}
         </div>
       </div>
 
+      {/* Grid */}
       <div className="pg">
+
+        {/* ESQUERDA: foto + acordes + piramide */}
         <div>
-          <div style={{ border:'1px solid #e8e4dc', borderRadius:6, overflow:'hidden', display:'grid', gridTemplateColumns:'1fr 1fr', height:380 }}>
+          {/* Foto + acordes */}
+          <div style={{ border:'1px solid #e8e4dc', borderRadius:4, overflow:'hidden', display:'grid', gridTemplateColumns:'1fr 1fr', height:380 }}>
             <div style={{ background:'#fff', display:'flex', alignItems:'center', justifyContent:'center', borderRight:'1px solid #e8e4dc' }}>
-              <img src={perfume.foto_url || '/frasco.jpeg'} alt={perfume.nome} style={{ width:'100%', height:'100%', objectFit:'contain', padding:12 }} />
+              <img src={perfume.foto_url || '/frasco.jpeg'} alt={perfume.nome}
+                style={{ width:'100%', height:'100%', objectFit:'contain', padding:12 }} />
             </div>
-            <div style={{ background:C.bg2, padding:'1rem', display:'flex', flexDirection:'column', gap:5 }}>
-              <p style={{ fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', color:C.gold, marginBottom:6, fontWeight:600 }}>Acordes</p>
+            <div style={{ background:'#f8f7f4', padding:'1rem', display:'flex', flexDirection:'column', gap:5 }}>
+              <p style={{ fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', color:'#8a6a10', marginBottom:6, fontWeight:600 }}>Acordes</p>
               {acordes.map(a => (
                 <div key={a} style={{ height:24, borderRadius:3, background:corAcorde(a), display:'flex', alignItems:'center', paddingLeft:8 }}>
                   <span style={{ fontSize:10, fontWeight:700, color:'rgba(0,0,0,0.65)', whiteSpace:'nowrap' }}>{a}</span>
@@ -184,109 +172,125 @@ export default function Perfume() {
               {perfume.rating_valor && (
                 <div style={{ marginTop:'auto', paddingTop:8, borderTop:'1px solid #e8e4dc' }}>
                   <div style={{ display:'flex', alignItems:'center', gap:4 }}>
-                    <span style={{ fontSize:16, fontWeight:700, color:C.text }}>{Number(perfume.rating_valor).toFixed(2)}</span>
-                    <div style={{ display:'flex', gap:1 }}>
-                      {[1,2,3,4,5].map(s => <span key={s} style={{ fontSize:10, color: s <= Math.round(perfume.rating_valor) ? C.goldLight : C.border }}>&#9733;</span>)}
-                    </div>
+                    <span style={{ fontSize:16, fontWeight:700 }}>{Number(perfume.rating_valor).toFixed(2)}</span>
+                    <div>{[1,2,3,4,5].map(s => <span key={s} style={{ fontSize:10, color: s <= Math.round(perfume.rating_valor) ? '#c9a84c' : '#e8e4dc' }}>&#9733;</span>)}</div>
                   </div>
-                  <p style={{ fontSize:10, color:C.text3 }}>({perfume.rating_count?.toLocaleString()} av.)</p>
+                  <p style={{ fontSize:10, color:'#9a9080' }}>({perfume.rating_count?.toLocaleString()} av.)</p>
                 </div>
               )}
             </div>
           </div>
-          <div className="pm"><Piramide /></div>
+
+          {/* Piramide */}
+          <Piramide />
         </div>
 
+        {/* DIREITA: disponibilidade + reserva */}
         <div>
-          {perfume.descricao && <p style={{ fontSize:14, color:C.text2, lineHeight:1.8, marginBottom:'1rem' }}>{perfume.descricao}</p>}
+          {perfume.descricao && <p style={{ fontSize:14, color:'#5a5550', lineHeight:1.8, marginBottom:'1rem' }}>{perfume.descricao}</p>}
 
-          <span style={LBL}>Disponibilidade</span>
-          <div style={{ background:C.bg2, border:'1px solid #e8e4dc', borderRadius:6, padding:'0.85rem 1.25rem', marginBottom:'1rem' }}>
+          {/* Disponibilidade */}
+          <p style={{ fontSize:11, fontWeight:600, letterSpacing:'0.22em', textTransform:'uppercase', color:'#8a6a10', marginBottom:6 }}>Disponibilidade</p>
+          <div style={{ background:'#f8f7f4', border:'1px solid #e8e4dc', borderRadius:4, padding:'0.85rem 1.25rem', marginBottom:'1rem' }}>
             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
               <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                <div style={{ width:8, height:8, borderRadius:'50%', background: esgotado ? '#c0392b' : C.goldLight }} />
-                <span style={{ fontSize:13, fontWeight:600, color: esgotado ? '#c0392b' : C.text }}>{esgotado ? 'Esgotado' : 'Disponivel'}</span>
+                <div style={{ width:8, height:8, borderRadius:'50%', background: esgotado ? '#c0392b' : '#c9a84c' }} />
+                <span style={{ fontSize:13, fontWeight:600, color: esgotado ? '#c0392b' : '#0d0b07' }}>{esgotado ? 'Esgotado' : 'Disponivel'}</span>
               </div>
-              <span style={{ fontSize:13, color:C.gold, fontWeight:600 }}>{disponivel}ml de {total}ml</span>
+              <span style={{ fontSize:13, color:'#8a6a10', fontWeight:600 }}>{disponivel}ml de {totalMl}ml</span>
             </div>
-            <div style={{ height:4, background:C.border, borderRadius:2 }}>
-              <div style={{ height:'100%', background:'linear-gradient(90deg,#c9a84c,#e8c870)', borderRadius:2, width:`${100 - pct}%` }} />
+            <div style={{ height:4, background:'#e8e4dc', borderRadius:2 }}>
+              <div style={{ height:'100%', background:'linear-gradient(90deg,#c9a84c,#e8c870)', borderRadius:2, width:`${100-pct}%` }} />
             </div>
           </div>
 
-          <span style={LBL}>Escolha sua opcao</span>
+          {/* Opcoes */}
+          <p style={{ fontSize:11, fontWeight:600, letterSpacing:'0.22em', textTransform:'uppercase', color:'#8a6a10', marginBottom:8 }}>Escolha sua opcao</p>
           <div style={{ display:'flex', flexDirection:'column', gap:6, marginBottom:'1rem' }}>
             {TAMANHOS.map(t => {
-              const opcao = perfume.opcoes?.find(o => o.tamanho === t.key);
-              if (!opcao) return null;
+              const op = perfume.opcoes?.find(o => o.tamanho === t.key);
+              if (!op) return null;
               const disp = disponivel >= t.ml;
               const sel  = selecionado === t.key;
               return (
                 <button key={t.key}
                   onClick={() => { if (disp) { setSel(t.key); setMlAvulso(''); } }}
                   disabled={!disp}
-                  style={{ display:'flex', alignItems:'center', gap:12, padding:'0.75rem 1rem', borderRadius:4, border: sel ? '1px solid #c9a84c' : '1px solid #e8e4dc', background: sel ? '#fdf8ee' : '#fff', cursor: disp ? 'pointer' : 'not-allowed', opacity: disp ? 1 : 0.45, transition:'all 0.2s' }}
-                  onMouseEnter={e => { if (disp && !sel) e.currentTarget.style.borderColor = '#c9a84c'; }}
-                  onMouseLeave={e => { if (!sel) e.currentTarget.style.borderColor = '#e8e4dc'; }}
+                  style={{ display:'flex', alignItems:'center', gap:12, padding:'0.75rem 1rem', borderRadius:4,
+                    border: sel ? '1px solid #c9a84c' : '1px solid #e8e4dc',
+                    background: sel ? '#fdf8ee' : '#fff',
+                    cursor: disp ? 'pointer' : 'not-allowed', opacity: disp ? 1 : 0.45, transition:'all 0.2s' }}
+                  onMouseEnter={e => { if (disp && !sel) e.currentTarget.style.borderColor='#c9a84c'; }}
+                  onMouseLeave={e => { if (!sel) e.currentTarget.style.borderColor='#e8e4dc'; }}
                 >
-                  <div style={{ width:18, height:18, borderRadius:'50%', border:`2px solid ${sel ? '#c9a84c' : '#e8e4dc'}`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                  <div style={{ width:18, height:18, borderRadius:'50%', flexShrink:0,
+                    border:`2px solid ${sel ? '#c9a84c' : '#e8e4dc'}`,
+                    display:'flex', alignItems:'center', justifyContent:'center' }}>
                     {sel && <div style={{ width:8, height:8, borderRadius:'50%', background:'#c9a84c' }} />}
                   </div>
-                  <span style={{ flex:1, fontSize:14, color:C.text, fontWeight: sel ? 600 : 400, textAlign:'left' }}>
-                    {t.label}{!disp && <span style={{ fontSize:11, color:C.text3, marginLeft:8 }}>indisponivel</span>}
+                  <span style={{ flex:1, fontSize:14, color:'#0d0b07', fontWeight: sel ? 600 : 400, textAlign:'left' }}>
+                    {t.label}{!disp && <span style={{ fontSize:11, color:'#9a9080', marginLeft:8 }}>indisponivel</span>}
                   </span>
-                  <span style={{ fontSize:14, color: sel ? C.gold : C.text2, fontWeight:600 }}>R$ {Number(opcao.preco).toFixed(2).replace('.',',')}</span>
+                  <span style={{ fontSize:14, color: sel ? '#8a6a10' : '#5a5550', fontWeight:600 }}>
+                    R$ {Number(op.preco).toFixed(2).replace('.',',')}
+                  </span>
                 </button>
               );
             })}
           </div>
 
-          <span style={LBL}>Ou quantidade avulsa</span>
-          <div style={{ background:C.bg2, border:'1px solid #e8e4dc', borderRadius:6, padding:'0.75rem 1rem', marginBottom:'1rem', display:'flex', alignItems:'center', gap:12 }}>
-            <input type="number" min="1" max={disponivel} placeholder="Quantos ml" value={mlAvulso}
-              onChange={e => { setMlAvulso(e.target.value); setSel(null); }}
-              style={{ width:120, background:'#fff', border:'1px solid #e8e4dc', borderRadius:4, padding:'8px 12px', fontSize:14, color:C.text, outline:'none' }}
+          {/* Avulsa */}
+          <p style={{ fontSize:11, fontWeight:600, letterSpacing:'0.22em', textTransform:'uppercase', color:'#8a6a10', marginBottom:6 }}>Ou quantidade avulsa</p>
+          <div style={{ background:'#f8f7f4', border:'1px solid #e8e4dc', borderRadius:4, padding:'0.75rem 1rem', marginBottom:'1rem', display:'flex', alignItems:'center', gap:12 }}>
+            <input type="number" min="1" max={disponivel} placeholder="Quantos ml"
+              value={mlAvulso} onChange={e => { setMlAvulso(e.target.value); setSel(null); }}
+              style={{ width:120, background:'#fff', border:'1px solid #e8e4dc', borderRadius:4, padding:'8px 12px', fontSize:14, color:'#0d0b07', outline:'none' }}
             />
-            {mlAvulso && precoPorMl && <span style={{ fontSize:13, color:C.text2 }}>x R$ {precoPorMl}/ml = <strong style={{ color:C.gold }}>R$ {totalAvulso}</strong></span>}
-            {!precoPorMl && <span style={{ fontSize:12, color:C.text3 }}>x preco/ml</span>}
+            {mlAvulso && precoPorMl
+              ? <span style={{ fontSize:13, color:'#5a5550' }}>x R$ {precoPorMl}/ml = <strong style={{ color:'#8a6a10' }}>R$ {totalAvulso}</strong></span>
+              : <span style={{ fontSize:12, color:'#9a9080' }}>x preco/ml</span>
+            }
           </div>
 
+          {/* Nome e telefone */}
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, marginBottom:'0.75rem' }}>
             <div>
-              <label style={{ display:'block', fontSize:10, fontWeight:600, letterSpacing:'0.15em', textTransform:'uppercase', color:C.text3, marginBottom:4 }}>Seu nome</label>
+              <label style={{ display:'block', fontSize:10, fontWeight:600, letterSpacing:'0.15em', textTransform:'uppercase', color:'#9a9080', marginBottom:4 }}>Seu nome</label>
               <input placeholder="Ex: Joao Silva" value={nome} onChange={e => setNome(e.target.value)}
-                style={{ width:'100%', padding:'10px 12px', background:'#fff', border:'1px solid #e8e4dc', borderRadius:4, color:C.text, fontSize:13, outline:'none' }} />
+                style={{ width:'100%', padding:'10px 12px', background:'#fff', border:'1px solid #e8e4dc', borderRadius:4, color:'#0d0b07', fontSize:13, outline:'none' }} />
             </div>
             <div>
-              <label style={{ display:'block', fontSize:10, fontWeight:600, letterSpacing:'0.15em', textTransform:'uppercase', color:C.text3, marginBottom:4 }}>WhatsApp</label>
+              <label style={{ display:'block', fontSize:10, fontWeight:600, letterSpacing:'0.15em', textTransform:'uppercase', color:'#9a9080', marginBottom:4 }}>WhatsApp</label>
               <input placeholder="(11) 99999-9999" value={telefone} onChange={e => setTelefone(e.target.value)}
-                style={{ width:'100%', padding:'10px 12px', background:'#fff', border:'1px solid #e8e4dc', borderRadius:4, color:C.text, fontSize:13, outline:'none' }} />
+                style={{ width:'100%', padding:'10px 12px', background:'#fff', border:'1px solid #e8e4dc', borderRadius:4, color:'#0d0b07', fontSize:13, outline:'none' }} />
             </div>
           </div>
 
           {msg && <p style={{ fontSize:13, color: msg.includes('confirmad') ? '#2a7a2a' : '#c0392b', marginBottom:'0.75rem', fontWeight:500 }}>{msg}</p>}
 
-          <button onClick={handleReservar} disabled={salvando || esgotado}
-            style={{ width:'100%', padding:'14px', borderRadius:4, background: esgotado ? C.bg2 : 'linear-gradient(135deg,#c9a84c,#e8c870)', border:`1px solid ${esgotado ? C.border : '#c9a84c'}`, cursor: esgotado ? 'not-allowed' : 'pointer', fontSize:13, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase', color: esgotado ? C.text3 : '#0d0b07', transition:'all 0.2s', opacity: salvando ? 0.7 : 1 }}
-          >
+          <button onClick={reservar} disabled={salvando || esgotado}
+            style={{ width:'100%', padding:'14px', borderRadius:4,
+              background: esgotado ? '#f8f7f4' : 'linear-gradient(135deg,#c9a84c,#e8c870)',
+              border: `1px solid ${esgotado ? '#e8e4dc' : '#c9a84c'}`,
+              cursor: esgotado ? 'not-allowed' : 'pointer',
+              fontSize:13, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase',
+              color: esgotado ? '#9a9080' : '#0d0b07', transition:'all 0.2s', opacity: salvando ? 0.7 : 1 }}>
             {salvando ? 'Reservando...' : esgotado ? 'Esgotado' : 'Reservar'}
           </button>
 
           {reservas.length > 0 && (
             <div style={{ marginTop:'1.5rem' }}>
-              <span style={{ ...LBL, marginBottom:'0.75rem' }}>Reservas ({reservas.length})</span>
+              <p style={{ fontSize:11, fontWeight:600, letterSpacing:'0.22em', textTransform:'uppercase', color:'#8a6a10', marginBottom:8 }}>Reservas ({reservas.length})</p>
               <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
-                {reservas.map((r, i) => (
-                  <div key={i} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'0.65rem 1rem', background:C.bg2, border:'1px solid #e8e4dc', borderRadius:4 }}>
-                    <span style={{ fontSize:14, color:C.text }}>{r.nome}</span>
-                    <span style={{ fontSize:13, color:C.gold, fontWeight:600 }}>{r.tamanho}</span>
+                {reservas.map((r,i) => (
+                  <div key={i} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'0.65rem 1rem', background:'#f8f7f4', border:'1px solid #e8e4dc', borderRadius:4 }}>
+                    <span style={{ fontSize:14 }}>{r.nome}</span>
+                    <span style={{ fontSize:13, color:'#8a6a10', fontWeight:600 }}>{r.tamanho}</span>
                   </div>
                 ))}
               </div>
             </div>
           )}
-
-          <div className="pd"><Piramide /></div>
         </div>
       </div>
     </div>
@@ -298,9 +302,10 @@ function NotaBadge({ nota, img }) {
     <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4, width:68 }}>
       <div style={{ width:52, height:52, borderRadius:8, overflow:'hidden', border:'1px solid #e0d8c8', background:'#f0ede8', display:'flex', alignItems:'center', justifyContent:'center' }}>
         {img
-          ? <img src={img} alt={nota} style={{ width:'100%', height:'100%', objectFit:'cover' }} onError={e => { e.target.style.display='none'; e.target.parentNode.innerHTML='&#127807;'; }} />
-          : <span style={{ fontSize:20 }}>&#127807;</span>
+          ? <img src={img} alt={nota} style={{ width:'100%', height:'100%', objectFit:'cover' }} onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='flex'; }} />
+          : null
         }
+        <span style={{ fontSize:20, display: img ? 'none' : 'flex' }}>&#127807;</span>
       </div>
       <span style={{ fontSize:10, color:'#4a4440', textAlign:'center', lineHeight:1.3, fontWeight:500 }}>{nota}</span>
     </div>
