@@ -7,6 +7,7 @@ import Perfume from './pages/Perfume.jsx';
 import Carrinho from './pages/Carrinho.jsx';
 import Admin from './pages/Admin.jsx';
 import AdminProdutos from './pages/AdminProdutos.jsx';
+import AdminNotas from './pages/AdminNotas.jsx';
 import Login from './pages/Login.jsx';
 import Decants from './pages/Frascos.jsx';
 import './index.css';
@@ -30,6 +31,7 @@ export default function App() {
             <Route path="/carrinho" element={<Carrinho />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/produtos" element={<AdminProdutos />} />
+            <Route path="/admin/notas" element={<AdminNotas />} />
             <Route path="/admin/login" element={<Login />} />
             <Route path="/decants" element={<Decants />} />
           </Routes>

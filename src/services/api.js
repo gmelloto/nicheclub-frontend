@@ -22,7 +22,12 @@ export const api = {
   criarPedido: (payload) => req('POST', '/pedidos', payload),
   reservar: (data) => req('POST', '/reservas', data),
   notasBatch: (nomes) => req('POST', '/notas/batch', { nomes }),
-  // Admin
+  // Admin - Notas
+  adminNotas: (q, pagina) => req('GET', `/admin/notas?q=${encodeURIComponent(q||'')}&pagina=${pagina||1}&limite=20`),
+  adminNotasImportar: (data) => req('POST', '/admin/notas/importar', data),
+  adminNotasAtualizar: (id, data) => req('PATCH', `/admin/notas/${id}`, data),
+  adminNotasDeletar: (id) => req('DELETE', `/admin/notas/${id}`),
+  // Admin - Produtos
   adminMarcas: (q) => req('GET', `/admin/marcas?q=${encodeURIComponent(q)}`),
   adminBuscaPerfume: (marca, q) => req('GET', `/admin/busca-perfume?marca=${encodeURIComponent(marca)}&q=${encodeURIComponent(q)}`),
   adminFragrantica: (marca, nome) => req('GET', `/admin/fragrantica?marca=${encodeURIComponent(marca)}&nome=${encodeURIComponent(nome)}`),

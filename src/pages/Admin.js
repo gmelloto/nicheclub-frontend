@@ -30,6 +30,9 @@ export default function Admin() {
         <button className="admin-nav-btn" onClick={() => navigate('/admin/produtos')} style={{ marginTop: '1rem', color: '#c9a84c', borderTop: '1px solid #e8e4dc', paddingTop: '1rem' }}>
           + Cadastrar Produto
         </button>
+        <button className="admin-nav-btn" onClick={() => navigate('/admin/notas')} style={{ color: '#c9a84c' }}>
+          Notas Olfativas
+        </button>
       </div>
       <div className="admin-content">
         {aba === 'pedidos' && <PainelPedidos token={token} />}

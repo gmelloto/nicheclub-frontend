@@ -36,7 +36,7 @@ echo "Verificando arquivos..."
 echo ""
 
 # Frontend
-for f in index.css Navbar.jsx Catalogo.jsx Perfume.jsx Carrinho.jsx Admin.jsx Admin.js AdminProdutos.jsx Login.jsx App.jsx api.js; do
+for f in index.css Navbar.jsx Catalogo.jsx Perfume.jsx Carrinho.jsx Admin.jsx Admin.js AdminProdutos.jsx Login.jsx Login.js App.jsx api.js; do
   if [ -f "$DOWNLOADS/$f" ]; then
     case "$f" in
       index.css) mover "$f" "$FRONTEND/src/index.css" ;;
@@ -48,6 +48,7 @@ for f in index.css Navbar.jsx Catalogo.jsx Perfume.jsx Carrinho.jsx Admin.jsx Ad
       Admin.js) mover "$f" "$FRONTEND/src/pages/Admin.js" ;;
       AdminProdutos.jsx) mover "$f" "$FRONTEND/src/pages/AdminProdutos.jsx" ;;
       Login.jsx) mover "$f" "$FRONTEND/src/pages/Login.jsx" ;;
+      Login.js) mover "$f" "$FRONTEND/src/pages/Login.js" ;;
       App.jsx) mover "$f" "$FRONTEND/src/App.jsx" ;;
       api.js) mover "$f" "$FRONTEND/src/services/api.js" ;;
     esac
