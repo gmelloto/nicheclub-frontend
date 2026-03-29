@@ -74,7 +74,7 @@ export default function Perfume() {
   const baseNotas   = (perfume.notas_base    || '').split(',').map(n => n.trim()).filter(Boolean);
   const notasImgs   = perfume.notas_imagens  || {};
 
-  const imgNota = nota => notasImgs[nota.toLowerCase().trim()] || null;
+  const imgNota = nota => { const r = notasImgs[nota.toLowerCase().trim()]; return r?.img || r?.cloudinary_url || (typeof r === 'string' ? r : null); };
 
   const reservar = async () => {
     if (!nome || !telefone)           return setMsg('Preencha nome e telefone.');
