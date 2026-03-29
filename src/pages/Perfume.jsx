@@ -74,7 +74,12 @@ export default function Perfume() {
   const baseNotas   = (perfume.notas_base    || '').split(',').map(n => n.trim()).filter(Boolean);
   const notasImgs   = perfume.notas_imagens  || {};
 
-  const imgNota = nota => { const r = notasImgs[nota.toLowerCase().trim()]; return r?.img || r?.cloudinary_url || (typeof r === 'string' ? r : null); };
+  const imgNota = nota => {
+    const r = notasImgs[nota.toLowerCase().trim()];
+    if (!r) return { img: null, label: nota };
+    if (typeof r === 'string') return { img: r, label: nota };
+    return { img: r.img || r.cloudinary_url || null, label: r.ptb || nota };
+  };
 
   const reservar = async () => {
     if (!nome || !telefone)           return setMsg('Preencha nome e telefone.');
@@ -98,7 +103,7 @@ export default function Perfume() {
           <div style={{ marginBottom:'1rem' }}>
             <p style={{ fontSize:11, fontWeight:600, letterSpacing:'0.22em', textTransform:'uppercase', color:'#8a6a10', marginBottom:8 }}>Topo</p>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
-              {topoNotas.map(n => <NotaBadge key={n} nota={n} img={imgNota(n)} />)}
+              {topoNotas.map(n => { const r=imgNota(n); return <NotaBadge key={n} nota={r.label} img={r.img} />; })}
             </div>
           </div>
         )}
@@ -106,7 +111,7 @@ export default function Perfume() {
           <div style={{ marginBottom:'1rem' }}>
             <p style={{ fontSize:11, fontWeight:600, letterSpacing:'0.22em', textTransform:'uppercase', color:'#8a6a10', marginBottom:8 }}>Coracao</p>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
-              {coracaoNotas.map(n => <NotaBadge key={n} nota={n} img={imgNota(n)} />)}
+              {coracaoNotas.map(n => { const r=imgNota(n); return <NotaBadge key={n} nota={r.label} img={r.img} />; })}
             </div>
           </div>
         )}
@@ -114,7 +119,7 @@ export default function Perfume() {
           <div>
             <p style={{ fontSize:11, fontWeight:600, letterSpacing:'0.22em', textTransform:'uppercase', color:'#8a6a10', marginBottom:8 }}>Base</p>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
-              {baseNotas.map(n => <NotaBadge key={n} nota={n} img={imgNota(n)} />)}
+              {baseNotas.map(n => { const r=imgNota(n); return <NotaBadge key={n} nota={r.label} img={r.img} />; })}
             </div>
           </div>
         )}
