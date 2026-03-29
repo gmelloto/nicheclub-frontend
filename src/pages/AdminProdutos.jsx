@@ -52,7 +52,7 @@ export default function AdminProdutos() {
   const [msg, setMsg] = useState({ tipo: '', texto: '' });
   const fileRef = useRef();
 
-  useEffect(() => { if (!token) navigate('/admin/login'); }, [token]);
+  useEffect(() => { if (!token) navigate('/admin/login', { state: { from: '/admin/produtos' } }); }, [token]);
 
   // Busca marcas
   useEffect(() => {
