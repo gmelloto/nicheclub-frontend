@@ -6,6 +6,7 @@ import Catalogo from './pages/Catalogo.jsx';
 import Perfume from './pages/Perfume.jsx';
 import Carrinho from './pages/Carrinho.jsx';
 import Admin from './pages/Admin.jsx';
+import AdminProdutos from './pages/AdminProdutos.jsx';
 import Login from './pages/Login.jsx';
 import Decants from './pages/Frascos.jsx';
 import './index.css';
