@@ -61,15 +61,16 @@ export default function Perfume() {
 
   useEffect(()=>{
     if(!perfume) return;
-    const notas=[
-      ...(perfume.notas_topo?.split(',').map(n=>n.trim()).filter(Boolean)||[]),
-      ...(perfume.notas_coracao?.split(',').map(n=>n.trim()).filter(Boolean)||[]),
-      ...(perfume.notas_base?.split(',').map(n=>n.trim()).filter(Boolean)||[]),
-      // Tambem envia versao em ingles se disponivel
-      ...(perfume.notas_topo_en?.split(',').map(n=>n.trim()).filter(Boolean)||[]),
-      ...(perfume.notas_coracao_en?.split(',').map(n=>n.trim()).filter(Boolean)||[]),
-      ...(perfume.notas_base_en?.split(',').map(n=>n.trim()).filter(Boolean)||[]),
-    ].filter((v,i,a)=>a.indexOf(v)===i); // remove duplicados
+    // Prioriza notas em ingles (match mais exato com notas_olfativas)
+    // Fallback para portugues se ingles nao disponivel
+    const notasTopo = perfume.notas_topo_en || perfume.notas_topo || '';
+    const notasCoracao = perfume.notas_coracao_en || perfume.notas_coracao || '';
+    const notasBase = perfume.notas_base_en || perfume.notas_base || '';
+    const notas = [
+      ...notasTopo.split(',').map(n=>n.trim()).filter(Boolean),
+      ...notasCoracao.split(',').map(n=>n.trim()).filter(Boolean),
+      ...notasBase.split(',').map(n=>n.trim()).filter(Boolean),
+    ].filter((v,i,a)=>a.indexOf(v)===i);
     if(!notas.length) return;
     api.notasBatch(notas).then(rows=>{
       const map={};
