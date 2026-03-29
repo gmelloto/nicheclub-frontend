@@ -28,6 +28,7 @@ export default function App() {
             <Route path="/perfume/:id" element={<Perfume />} />
             <Route path="/carrinho" element={<Carrinho />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/admin/produtos" element={<AdminProdutos />} />
             <Route path="/admin/login" element={<Login />} />
             <Route path="/decants" element={<Decants />} />
           </Routes>
