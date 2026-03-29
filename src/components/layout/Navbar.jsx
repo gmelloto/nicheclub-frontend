@@ -15,6 +15,13 @@ export default function Navbar() {
       <nav style={{ background: '#0d0b07', borderBottom: '1px solid rgba(201,168,76,0.2)', position: 'sticky', top: 0, zIndex: 100 }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 1.25rem', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
 
+          {/* Hamburguer mobile - ESQUERDA */}
+          <button onClick={() => setMenuAberto(!menuAberto)} className="nav-mobile" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 6, display: 'none', flexDirection: 'column', gap: 5, flexShrink: 0 }}>
+            <span style={{ display: 'block', width: 22, height: 2, background: '#c9a84c', borderRadius: 1, transition: 'all 0.3s', transform: menuAberto ? 'rotate(45deg) translateY(7px)' : 'none' }} />
+            <span style={{ display: 'block', width: 22, height: 2, background: '#c9a84c', borderRadius: 1, opacity: menuAberto ? 0 : 1, transition: 'opacity 0.3s' }} />
+            <span style={{ display: 'block', width: 22, height: 2, background: '#c9a84c', borderRadius: 1, transition: 'all 0.3s', transform: menuAberto ? 'rotate(-45deg) translateY(-7px)' : 'none' }} />
+          </button>
+
           {/* Logo */}
           <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
             <div style={{ width: 42, height: 42, borderRadius: 4, overflow: 'hidden', border: '1px solid rgba(201,168,76,0.3)', flexShrink: 0 }}>
@@ -37,7 +44,7 @@ export default function Navbar() {
             {usuario && <Link to="/admin" style={linkStyle}>Admin</Link>}
           </div>
 
-          {/* Ações */}
+          {/* Acoes */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <div className="nav-desktop" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               {usuario ? (
@@ -54,13 +61,6 @@ export default function Navbar() {
                 <span style={{ position: 'absolute', top: -7, right: -7, background: '#fff', color: '#0d0b07', width: 17, height: 17, borderRadius: '50%', fontSize: 9, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{items.length}</span>
               )}
             </Link>
-
-            {/* Hamburguer mobile */}
-            <button onClick={() => setMenuAberto(!menuAberto)} className="nav-mobile" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 6, display: 'none', flexDirection: 'column', gap: 5 }}>
-              <span style={{ display: 'block', width: 22, height: 2, background: '#c9a84c', borderRadius: 1, transition: 'all 0.3s', transform: menuAberto ? 'rotate(45deg) translateY(7px)' : 'none' }} />
-              <span style={{ display: 'block', width: 22, height: 2, background: '#c9a84c', borderRadius: 1, opacity: menuAberto ? 0 : 1, transition: 'opacity 0.3s' }} />
-              <span style={{ display: 'block', width: 22, height: 2, background: '#c9a84c', borderRadius: 1, transition: 'all 0.3s', transform: menuAberto ? 'rotate(-45deg) translateY(-7px)' : 'none' }} />
-            </button>
           </div>
         </div>
 
