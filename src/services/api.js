@@ -41,6 +41,7 @@ export const api = {
     return req('GET', `/frascos${q ? '?' + q : ''}`);
   },
   buscarPedido: (numero) => req('GET', `/pedidos/${numero}`),
+  scrapeFragrantica: (url) => req('GET', `/admin/scrape-fragrantica?url=${encodeURIComponent(url)}`),
   listarPedidos: (token, status) => req('GET', `/pedidos${status ? `?status=${status}` : ''}`, null, token),
   atualizarStatus: (token, id, status, rastreio) =>
     req('PATCH', `/pedidos/${id}/status`, { status, codigo_rastreio: rastreio }, token),

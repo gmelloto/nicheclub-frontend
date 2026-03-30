@@ -48,6 +48,8 @@ export default function AdminProdutos() {
   const [fotoPreview, setFotoPreview] = useState('');
   const [uploadando, setUploadando] = useState(false);
   const [buscandoFrag, setBuscandoFrag] = useState(false);
+  const [linkFrag, setLinkFrag] = useState('');
+  const [buscandoLink, setBuscandoLink] = useState(false);
   const [salvando, setSalvando] = useState(false);
   const [msg, setMsg] = useState({ tipo: '', texto: '' });
   const fileRef = useRef();
@@ -60,7 +62,39 @@ export default function AdminProdutos() {
     const t = setTimeout(() => {
       api.adminMarcas(marcaInput).then(setMarcaSugestoes).catch(() => {});
     }, 250);
-    return () => clearTimeout(t);
+    const preencherPeloLink = async () => {
+    if (!linkFrag || !linkFrag.includes('fragrantica.com/perfume/')) {
+      setMsg({ tipo: 'erro', texto: 'Informe um link valido do Fragrantica.' });
+      return;
+    }
+    setBuscandoLink(true);
+    setMsg({ tipo: '', texto: '' });
+    try {
+      const d = await api.scrapeFragrantica(linkFrag);
+      if (d.encontrado) {
+        setForm(f => ({
+          ...f,
+          nome: d.nome || f.nome,
+          marca: d.marca || f.marca,
+          ano: d.ano || f.ano,
+          genero: d.genero === 'Feminino' ? 'women' : d.genero === 'Masculino' ? 'men' : d.genero === 'Unissex' ? 'unisex' : f.genero,
+          foto_url: d.foto_url || f.foto_url,
+          url_fragrantica: linkFrag,
+          rating_valor: d.rating_valor || f.rating_valor,
+        }));
+        if (d.foto_url) setFotoPreview(d.foto_url);
+        setMsg({ tipo: 'ok', texto: 'Dados preenchidos com sucesso!' });
+      } else {
+        setMsg({ tipo: 'aviso', texto: 'Nao foi possivel extrair os dados. Preencha manualmente.' });
+      }
+    } catch(e) {
+      setMsg({ tipo: 'erro', texto: 'Erro ao buscar dados do Fragrantica.' });
+    } finally {
+      setBuscandoLink(false);
+    }
+  };
+
+  return () => clearTimeout(t);
   }, [marcaInput]);
 
   // Busca perfumes
@@ -272,6 +306,26 @@ export default function AdminProdutos() {
                     placeholder="https://..." style={{ fontSize: 12 }} />
                 </div>
               </div>
+            </div>
+
+            {/* Link Fragrantica */}
+            <div style={{ background: S.bg2, border: `1px solid ${S.border}`, borderRadius: 8, padding: '1.5rem' }}>
+              <Label>Preencher pelo Link do Fragrantica</Label>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <Input
+                  value={linkFrag}
+                  onChange={e => setLinkFrag(e.target.value)}
+                  placeholder="https://www.fragrantica.com/perfume/..."
+                  style={{ flex: 1 }}
+                />
+                <button
+                  onClick={preencherPeloLink}
+                  disabled={buscandoLink || !linkFrag}
+                  style={{ padding: '10px 20px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 4, fontSize: 13, fontWeight: 600, cursor: 'pointer', color: '#0d0b07', opacity: buscandoLink ? 0.7 : 1, whiteSpace: 'nowrap' }}>
+                  {buscandoLink ? 'Buscando...' : '⚡ Auto-preencher'}
+                </button>
+              </div>
+              <p style={{ fontSize: 11, color: S.text3, marginTop: 6 }}>Cole o link do Fragrantica e clique em Auto-preencher para preencher os dados automaticamente.</p>
             </div>
 
             {/* Dados basicos */}
