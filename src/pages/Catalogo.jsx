@@ -30,14 +30,8 @@ export default function Catalogo() {
   const carregarPerfumes = async (pag = 1, buscaTermo = busca, reset = false) => {
     if (pag === 1) setLoading(true); else setLoadingMore(true);
     try {
-      // Usa frascos (com estoque disponivel) em vez de todos os perfumes
-      const res = await api.frascos({ pagina: pag, limite: LIMITE, busca: buscaTermo });
-      const lista = (res.frascos || res).map(f => ({
-        ...f,
-        id: f.perfume_id || f.id,
-        ml_disponivel: f.ml_disponivel,
-        ml_total: f.ml_total,
-      }));
+      const res = await api.perfumes({ pagina: pag, limite: LIMITE, busca: buscaTermo });
+      const lista = res.perfumes || res;
       if (reset || pag === 1) setPerfumes(lista);
       else setPerfumes(prev => [...prev, ...lista]);
       setTotal(res.total || lista.length);
@@ -116,8 +110,8 @@ export default function Catalogo() {
 
           {/* Busca */}
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2.5rem' }}>
-            <input value={buscaInput} onChange={e => setBuscaInput(e.target.value)} placeholder="Buscar perfume ou marca..."
-              style={{ width: 320, background: '#f5f4f0', border: '1px solid #c9a84c', color: '#0d0b07', padding: '10px 16px', fontSize: 13, outline: 'none', letterSpacing: '0', WebkitTextFillColor: '#0d0b07' }}
+            <input value={buscaInput} onChange={e => setBuscaInput(e.target.value)} placeholder="Buscar perfume ou marca..." className="catalogo-busca"
+              style={{ width: 320, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(201,168,76,0.2)', color: S.text, padding: '10px 16px', fontSize: 13, outline: 'none', letterSpacing: '-0.01em' }}
             />
           </div>
 
