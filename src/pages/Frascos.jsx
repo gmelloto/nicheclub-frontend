@@ -32,8 +32,8 @@ export default function Frascos() {
   const carregar = async (pag = 1, termo = busca, reset = false) => {
     if (pag === 1) setLoading(true);
     try {
-      const res = await api.perfumes({ pagina: pag, limite: LIMITE, busca: termo });
-      const lista = res.perfumes || res;
+      const res = await api.frascos({ pagina: pag, limite: LIMITE, busca: termo });
+      const lista = res.frascos || res.perfumes || res;
       if (reset || pag === 1) setPerfumes(lista);
       else setPerfumes(prev => [...prev, ...lista]);
       setTotal(res.total || lista.length);
