@@ -62,6 +62,18 @@ export default function AdminProdutos() {
     const t = setTimeout(() => {
       api.adminMarcas(marcaInput).then(setMarcaSugestoes).catch(() => {});
     }, 250);
+    return () => clearTimeout(t);
+  }, [marcaInput]);
+
+  // Busca perfumes
+  useEffect(() => {
+    if (!marcaSel || !perfumeInput) { setPerfumeSugestoes([]); return; }
+    const t = setTimeout(() => {
+      api.adminBuscaPerfume(marcaSel, perfumeInput).then(setPerfumeSugestoes).catch(() => {});
+    }, 250);
+    return () => clearTimeout(t);
+  }, [perfumeInput, marcaSel]);
+
   const preencherPeloLink = async () => {
     if (!linkFrag || !linkFrag.includes('fragrantica.com/perfume/')) {
       setMsg({ tipo: 'erro', texto: 'Informe um link valido do Fragrantica.' });
@@ -93,18 +105,6 @@ export default function AdminProdutos() {
       setBuscandoLink(false);
     }
   };
-
-  return () => clearTimeout(t);
-  }, [marcaInput]);
-
-  // Busca perfumes
-  useEffect(() => {
-    if (!marcaSel || !perfumeInput) { setPerfumeSugestoes([]); return; }
-    const t = setTimeout(() => {
-      api.adminBuscaPerfume(marcaSel, perfumeInput).then(setPerfumeSugestoes).catch(() => {});
-    }, 250);
-    return () => clearTimeout(t);
-  }, [perfumeInput, marcaSel]);
 
   const selecionarMarca = (m) => {
     setMarcaSel(m); setMarcaInput(m); setMarcaSugestoes([]);
