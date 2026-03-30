@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/index.jsx';
 import { api } from '../services/api';
@@ -25,127 +25,254 @@ const Input = ({ style, ...props }) => (
   <input style={{ width: '100%', padding: '10px 12px', background: '#fff', border: `1px solid ${S.border}`, borderRadius: 4, color: S.text, fontSize: 13, outline: 'none', boxSizing: 'border-box', ...style }} {...props} />
 );
 
-export default function AdminProdutos() {
-  const { token } = useAuth();
-  const navigate = useNavigate();
+const Msg = ({ tipo, texto }) => {
+  if (!texto) return null;
+  const cores = {
+    ok: { bg: '#f0faf0', color: '#2a7a2a', border: '#b0e0b0' },
+    aviso: { bg: '#fffbf0', color: '#8a6a10', border: '#e8d840' },
+    erro: { bg: '#fff0f0', color: '#c0392b', border: '#f0b0b0' },
+  };
+  const c = cores[tipo] || cores.aviso;
+  return (
+    <div style={{ padding: '12px 16px', borderRadius: 4, fontSize: 13, fontWeight: 500, background: c.bg, color: c.color, border: `1px solid ${c.border}` }}>
+      {texto}
+    </div>
+  );
+};
 
-  // Step: 'marca' | 'perfume' | 'form'
-  const [step, setStep] = useState('marca');
+// ─── STEP: escolha do metodo ───────────────────────────────────────────────
+function StepEscolha({ onFragrantica, onManual }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <p style={{ fontSize: 14, color: S.text2, marginBottom: 8 }}>Como deseja cadastrar o produto?</p>
 
-  // Marca
-  const [marcaInput, setMarcaInput] = useState('');
-  const [marcaSugestoes, setMarcaSugestoes] = useState([]);
-  const [marcaSel, setMarcaSel] = useState('');
+      <button onClick={onFragrantica} style={{
+        padding: '2rem', background: S.bg2, border: `2px solid ${S.goldLight}`,
+        borderRadius: 12, cursor: 'pointer', textAlign: 'left', transition: 'all 0.2s',
+      }}
+        onMouseEnter={e => e.currentTarget.style.background = '#f5f0e8'}
+        onMouseLeave={e => e.currentTarget.style.background = S.bg2}
+      >
+        <p style={{ fontSize: 18, marginBottom: 6 }}>⚡ Carregar pelo Fragrantica</p>
+        <p style={{ fontSize: 13, color: S.text2 }}>Cole o link do Fragrantica e os dados serão preenchidos automaticamente.</p>
+        <p style={{ fontSize: 11, color: S.text3, marginTop: 8 }}>Requer servidor local rodando</p>
+      </button>
 
-  // Perfume
-  const [perfumeInput, setPerfumeInput] = useState('');
-  const [perfumeSugestoes, setPerfumeSugestoes] = useState([]);
-  const [perfumeSel, setPerfumeSel] = useState(null);
+      <button onClick={onManual} style={{
+        padding: '2rem', background: S.bg2, border: `1px solid ${S.border}`,
+        borderRadius: 12, cursor: 'pointer', textAlign: 'left', transition: 'all 0.2s',
+      }}
+        onMouseEnter={e => e.currentTarget.style.background = '#f5f0e8'}
+        onMouseLeave={e => e.currentTarget.style.background = S.bg2}
+      >
+        <p style={{ fontSize: 18, marginBottom: 6 }}>✏️ Preencher manualmente</p>
+        <p style={{ fontSize: 13, color: S.text2 }}>Digite os dados do produto um por um.</p>
+      </button>
+    </div>
+  );
+}
 
-  // Formulario
-  const [form, setForm] = useState({ nome: '', marca: '', ano: '', genero: '', pais: '', foto_url: '', url_fragrantica: '', rating_valor: '', ml_inicial: '' });
-  const [precos, setPrecos] = useState(TAMANHOS.map(t => ({ ...t, preco: '' })));
-  const [fotoPreview, setFotoPreview] = useState('');
-  const [uploadando, setUploadando] = useState(false);
-  const [buscandoFrag, setBuscandoFrag] = useState(false);
-  const [linkFrag, setLinkFrag] = useState('');
+// ─── STEP: carregar pelo Fragrantica ──────────────────────────────────────
+function StepFragrantica({ onPreview, onVoltar }) {
   const [tunnelUrl, setTunnelUrl] = useState(localStorage.getItem('scraper_tunnel') || '');
-  const [buscandoLink, setBuscandoLink] = useState(false);
-  const [salvando, setSalvando] = useState(false);
+  const [linkFrag, setLinkFrag] = useState('');
+  const [carregando, setCarregando] = useState(false);
   const [msg, setMsg] = useState({ tipo: '', texto: '' });
-  const fileRef = useRef();
 
-  useEffect(() => { if (!token) navigate('/admin/login', { state: { from: '/admin/produtos' } }); }, [token]);
-
-  // Busca marcas
-  useEffect(() => {
-    if (!marcaInput || marcaInput === marcaSel) { setMarcaSugestoes([]); return; }
-    const t = setTimeout(() => {
-      api.adminMarcas(marcaInput).then(setMarcaSugestoes).catch(() => {});
-    }, 250);
-    return () => clearTimeout(t);
-  }, [marcaInput]);
-
-  // Busca perfumes
-  useEffect(() => {
-    if (!marcaSel || !perfumeInput) { setPerfumeSugestoes([]); return; }
-    const t = setTimeout(() => {
-      api.adminBuscaPerfume(marcaSel, perfumeInput).then(setPerfumeSugestoes).catch(() => {});
-    }, 250);
-    return () => clearTimeout(t);
-  }, [perfumeInput, marcaSel]);
-
-  const preencherPeloLink = async () => {
+  const carregar = async () => {
+    if (!tunnelUrl) return setMsg({ tipo: 'erro', texto: 'Configure a URL do servidor local.' });
     if (!linkFrag || !linkFrag.includes('fragrantica.com/perfume/')) {
-      setMsg({ tipo: 'erro', texto: 'Informe um link valido do Fragrantica.' });
-      return;
+      return setMsg({ tipo: 'erro', texto: 'Cole um link valido do Fragrantica.' });
     }
-    setBuscandoLink(true);
+    setCarregando(true);
     setMsg({ tipo: '', texto: '' });
     try {
-      const baseUrl = tunnelUrl.replace(/\/$/, '');
-      const resp = await fetch(`${baseUrl}/scrape`, {
+      const base = tunnelUrl.replace(/\/$/, '');
+      const resp = await fetch(`${base}/scrape`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url: linkFrag }),
       });
       const d = await resp.json();
       if (d.sucesso) {
-        setForm(prev => ({
-          ...prev,
-          nome: d.dados?.nome || prev.nome,
-          marca: d.dados?.marca || prev.marca,
-          ano: d.dados?.ano || prev.ano,
-          genero: d.dados?.genero === 'Feminino' ? 'women' : d.dados?.genero === 'Masculino' ? 'men' : d.dados?.genero === 'Unissex' ? 'unisex' : prev.genero,
-          foto_url: d.dados?.foto_url || prev.foto_url,
-          url_fragrantica: linkFrag,
-          rating_valor: d.dados?.rating_valor || prev.rating_valor,
-        }));
-        if (d.dados?.foto_url) setFotoPreview(d.dados.foto_url);
-        setMsg({ tipo: 'ok', texto: d.atualizado ? 'Perfume atualizado no banco!' : 'Perfume cadastrado e salvo no banco!' });
+        onPreview(d);
       } else {
-        setMsg({ tipo: 'erro', texto: d.erro || 'Erro ao processar. Verifique o servidor local.' });
+        setMsg({ tipo: 'erro', texto: d.erro || 'Erro ao processar.' });
       }
     } catch(e) {
-      setMsg({ tipo: 'erro', texto: 'Erro ao buscar dados do Fragrantica.' });
+      setMsg({ tipo: 'erro', texto: 'Nao foi possivel conectar ao servidor local. Verifique se esta rodando.' });
     } finally {
-      setBuscandoLink(false);
+      setCarregando(false);
     }
   };
 
-  const selecionarMarca = (m) => {
-    setMarcaSel(m); setMarcaInput(m); setMarcaSugestoes([]);
-    setStep('perfume'); setPerfumeInput(''); setPerfumeSel(null);
-  };
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
 
-  const selecionarPerfume = (p) => {
-    setPerfumeSel(p); setPerfumeInput(p.nome); setPerfumeSugestoes([]);
-    setForm({ nome: p.nome, marca: p.marca, ano: p.ano || '', genero: p.genero || '', pais: p.pais || '', foto_url: p.foto_url || '', url_fragrantica: '', rating_valor: '', ml_inicial: '' });
-    setFotoPreview(p.foto_url || '');
-    setStep('form');
-  };
+      {/* Configuracao do servidor */}
+      <div style={{ background: S.bg2, border: `1px solid ${S.border}`, borderRadius: 8, padding: '1.5rem' }}>
+        <Label>URL do Servidor Local</Label>
+        <p style={{ fontSize: 11, color: S.text3, marginBottom: 8 }}>
+          Rode <code style={{ background: '#eee', padding: '2px 6px', borderRadius: 3 }}>python3 scrape_server.py</code> e depois{' '}
+          <code style={{ background: '#eee', padding: '2px 6px', borderRadius: 3 }}>npx localtunnel --port 4000</code>
+        </p>
+        <Input
+          value={tunnelUrl}
+          onChange={e => { setTunnelUrl(e.target.value); localStorage.setItem('scraper_tunnel', e.target.value); }}
+          placeholder="https://xxx.loca.lt"
+        />
+        {tunnelUrl && (
+          <p style={{ fontSize: 11, color: '#2a7a2a', marginTop: 6 }}>🟢 {tunnelUrl}</p>
+        )}
+      </div>
 
-  const buscarNovo = async () => {
-    if (!marcaSel || !perfumeInput) return;
-    setBuscandoFrag(true); setMsg({ tipo: '', texto: '' });
+      {/* Link do Fragrantica */}
+      <div style={{ background: S.bg2, border: `1px solid ${S.border}`, borderRadius: 8, padding: '1.5rem' }}>
+        <Label>Link do Fragrantica</Label>
+        <Input
+          value={linkFrag}
+          onChange={e => setLinkFrag(e.target.value)}
+          placeholder="https://www.fragrantica.com/perfume/..."
+        />
+      </div>
+
+      <Msg {...msg} />
+
+      <div style={{ display: 'flex', gap: 8 }}>
+        <button onClick={onVoltar} style={{ padding: '12px 20px', background: '#fff', border: `1px solid ${S.border}`, borderRadius: 4, fontSize: 13, cursor: 'pointer', color: S.text2 }}>
+          ← Voltar
+        </button>
+        <button onClick={carregar} disabled={carregando || !linkFrag || !tunnelUrl} style={{
+          flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)',
+          border: 'none', borderRadius: 4, fontSize: 13, fontWeight: 700,
+          cursor: carregando ? 'not-allowed' : 'pointer', color: '#0d0b07',
+          opacity: carregando || !linkFrag || !tunnelUrl ? 0.6 : 1,
+        }}>
+          {carregando ? '⏳ Carregando...' : '⚡ Carregar dados'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── STEP: preview dos dados ───────────────────────────────────────────────
+function StepPreview({ resultado, onConfirmar, onVoltar, onEditar }) {
+  const d = resultado.dados;
+  const [precos, setPrecos] = useState(TAMANHOS.map(t => ({ ...t, preco: '' })));
+  const [ml_inicial, setMlInicial] = useState('100');
+  const [salvando, setSalvando] = useState(false);
+  const [msg, setMsg] = useState({ tipo: '', texto: '' });
+
+  const confirmar = async () => {
+    setSalvando(true);
+    setMsg({ tipo: '', texto: '' });
     try {
-      const d = await api.adminFragrantica(marcaSel, perfumeInput);
-      if (d.encontrado) {
-        setForm({ nome: d.nome || perfumeInput, marca: marcaSel, ano: d.ano || '', genero: '', pais: '', foto_url: d.foto_url || '', url_fragrantica: d.url_fragrantica || '', rating_valor: d.rating_valor || '', ml_inicial: '' });
-        setFotoPreview(d.foto_url || '');
-        setMsg({ tipo: 'ok', texto: 'Dados encontrados no Fragrantica!' });
-      } else {
-        setForm({ nome: perfumeInput, marca: marcaSel, ano: '', genero: '', pais: '', foto_url: '', url_fragrantica: '', rating_valor: '', ml_inicial: '' });
-        setMsg({ tipo: 'aviso', texto: 'Nao encontrado no Fragrantica. Preencha manualmente.' });
-      }
-      setStep('form');
+      await onConfirmar(resultado, precos, ml_inicial);
     } catch(e) {
-      setMsg({ tipo: 'erro', texto: 'Erro ao buscar no Fragrantica.' });
-      setStep('form');
-    } finally {
-      setBuscandoFrag(false);
+      setMsg({ tipo: 'erro', texto: e.message || 'Erro ao salvar.' });
+      setSalvando(false);
     }
   };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+
+      {/* Card de preview */}
+      <div style={{ background: S.bg2, border: `2px solid ${S.goldLight}`, borderRadius: 12, padding: '1.5rem' }}>
+        <p style={{ fontSize: 11, color: S.gold, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '1rem' }}>
+          ✅ Dados carregados do Fragrantica
+        </p>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '1rem', alignItems: 'start' }}>
+          {/* Foto */}
+          {d?.foto_url && (
+            <img src={d.foto_url} alt={d.nome} style={{ width: 100, height: 120, objectFit: 'contain', background: '#fff', borderRadius: 8, border: `1px solid ${S.border}` }} />
+          )}
+
+          <div>
+            <p style={{ fontSize: 11, color: S.text3, textTransform: 'uppercase', letterSpacing: '0.15em' }}>{d?.marca}</p>
+            <p style={{ fontSize: 20, fontWeight: 700, color: S.text, marginBottom: 4 }}>{d?.nome}</p>
+            <p style={{ fontSize: 12, color: S.text2, marginBottom: 8 }}>
+              {d?.genero} {d?.ano ? `· ${d.ano}` : ''}
+              {d?.rating_valor ? ` · ⭐ ${d.rating_valor} (${d?.rating_count?.toLocaleString()} votos)` : ''}
+            </p>
+
+            {/* Acordes */}
+            {d?.acorde1 && (
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
+                {[d.acorde1, d.acorde2, d.acorde3, d.acorde4, d.acorde5].filter(Boolean).map(a => (
+                  <span key={a} style={{ padding: '3px 10px', background: '#fff', border: `1px solid ${S.border}`, borderRadius: 20, fontSize: 11, color: S.text2 }}>{a}</span>
+                ))}
+              </div>
+            )}
+
+            {/* Notas */}
+            {d?.notas_topo && <p style={{ fontSize: 11, color: S.text3 }}><b>Topo:</b> {d.notas_topo}</p>}
+            {d?.notas_coracao && <p style={{ fontSize: 11, color: S.text3 }}><b>Coração:</b> {d.notas_coracao}</p>}
+            {d?.notas_base && <p style={{ fontSize: 11, color: S.text3 }}><b>Base:</b> {d.notas_base}</p>}
+          </div>
+        </div>
+
+        {resultado.atualizado && (
+          <p style={{ fontSize: 12, color: '#8a6a10', marginTop: 12, padding: '8px 12px', background: '#fffbf0', borderRadius: 4, border: '1px solid #e8d840' }}>
+            ⚠️ Este perfume ja existe no banco e foi atualizado automaticamente.
+          </p>
+        )}
+      </div>
+
+      {/* Precos */}
+      <div style={{ background: S.bg2, border: `1px solid ${S.border}`, borderRadius: 8, padding: '1.5rem' }}>
+        <Label>Precos por Tamanho (opcional)</Label>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {precos.map((t, i) => (
+            <div key={t.key} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <span style={{ width: 50, fontSize: 13, color: S.text2, fontWeight: 500 }}>{t.label}</span>
+              <div style={{ position: 'relative', flex: 1 }}>
+                <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', fontSize: 13, color: S.text3 }}>R$</span>
+                <input type="number" value={t.preco}
+                  onChange={e => setPrecos(p => p.map((x, j) => j === i ? { ...x, preco: e.target.value } : x))}
+                  placeholder="0,00"
+                  style={{ width: '100%', padding: '8px 12px 8px 32px', background: '#fff', border: `1px solid ${S.border}`, borderRadius: 4, fontSize: 13, color: S.text, outline: 'none', boxSizing: 'border-box' }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{ marginTop: 12 }}>
+          <Label>ML do Frasco</Label>
+          <Input value={ml_inicial} onChange={e => setMlInicial(e.target.value)} placeholder="Ex: 100" type="number" style={{ maxWidth: 150 }} />
+        </div>
+      </div>
+
+      <Msg {...msg} />
+
+      <div style={{ display: 'flex', gap: 8 }}>
+        <button onClick={onVoltar} style={{ padding: '12px 20px', background: '#fff', border: `1px solid ${S.border}`, borderRadius: 4, fontSize: 13, cursor: 'pointer', color: S.text2 }}>
+          ← Voltar
+        </button>
+        <button onClick={confirmar} disabled={salvando} style={{
+          flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)',
+          border: 'none', borderRadius: 4, fontSize: 14, fontWeight: 700,
+          cursor: salvando ? 'not-allowed' : 'pointer', color: '#0d0b07',
+          opacity: salvando ? 0.7 : 1,
+        }}>
+          {salvando ? 'Salvando...' : '✅ Confirmar e Cadastrar'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── STEP: formulario manual ───────────────────────────────────────────────
+function StepManual({ onVoltar, onSalvo }) {
+  const { token } = useAuth();
+  const [form, setForm] = useState({ nome: '', marca: '', ano: '', genero: '', pais: '', foto_url: '', url_fragrantica: '', rating_valor: '', ml_inicial: '' });
+  const [precos, setPrecos] = useState(TAMANHOS.map(t => ({ ...t, preco: '' })));
+  const [fotoPreview, setFotoPreview] = useState('');
+  const [uploadando, setUploadando] = useState(false);
+  const [salvando, setSalvando] = useState(false);
+  const [msg, setMsg] = useState({ tipo: '', texto: '' });
+  const fileRef = useRef();
 
   const uploadFoto = async (file) => {
     setUploadando(true);
@@ -154,8 +281,7 @@ export default function AdminProdutos() {
       reader.onload = async (e) => {
         const base64 = e.target.result;
         setFotoPreview(base64);
-        // Upload para Cloudinary via backend
-        const res = await api.adminUploadFoto({ url_foto: base64, perfume_id: perfumeSel?.id });
+        const res = await api.adminUploadFoto({ url_foto: base64 });
         setForm(f => ({ ...f, foto_url: res.url }));
         setFotoPreview(res.url);
         setUploadando(false);
@@ -171,22 +297,174 @@ export default function AdminProdutos() {
     if (!form.nome || !form.marca) return setMsg({ tipo: 'erro', texto: 'Nome e marca sao obrigatorios.' });
     setSalvando(true); setMsg({ tipo: '', texto: '' });
     try {
-      const res = await api.adminCadastrarPerfume({
+      await api.adminCadastrarPerfume({
         ...form,
         precos: precos.filter(p => p.preco),
         ml_inicial: form.ml_inicial ? Number(form.ml_inicial) : null,
       });
-      setMsg({ tipo: 'ok', texto: `Perfume cadastrado com sucesso!` });
-      setTimeout(() => {
-        setStep('marca'); setMarcaInput(''); setMarcaSel(''); setPerfumeInput(''); setPerfumeSel(null);
-        setForm({ nome: '', marca: '', ano: '', genero: '', pais: '', foto_url: '', url_fragrantica: '', rating_valor: '', ml_inicial: '' });
-        setPrecos(TAMANHOS.map(t => ({ ...t, preco: '' }))); setFotoPreview(''); setMsg({ tipo: '', texto: '' });
-      }, 2000);
+      onSalvo();
     } catch(e) {
       setMsg({ tipo: 'erro', texto: e.message || 'Erro ao salvar.' });
-    } finally {
       setSalvando(false);
     }
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+
+      {/* Foto */}
+      <div style={{ background: S.bg2, border: `1px solid ${S.border}`, borderRadius: 8, padding: '1.5rem' }}>
+        <Label>Foto do Produto</Label>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+          <div style={{ width: 120, height: 120, border: `2px dashed ${S.border}`, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden', background: '#fff', cursor: 'pointer' }}
+            onClick={() => fileRef.current?.click()}>
+            {fotoPreview
+              ? <img src={fotoPreview} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+              : <span style={{ fontSize: 32, color: S.text3 }}>📷</span>
+            }
+          </div>
+          <div style={{ flex: 1 }}>
+            <button onClick={() => fileRef.current?.click()} disabled={uploadando}
+              style={{ display: 'block', width: '100%', padding: '10px', background: '#fff', border: `1px solid ${S.border}`, borderRadius: 4, fontSize: 13, cursor: 'pointer', color: S.text2, marginBottom: 8 }}>
+              {uploadando ? 'Enviando...' : '💾 Escolher arquivo'}
+            </button>
+            <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => e.target.files[0] && uploadFoto(e.target.files[0])} />
+            <Label>Ou cole uma URL</Label>
+            <Input value={form.foto_url} onChange={e => { setForm(f => ({ ...f, foto_url: e.target.value })); setFotoPreview(e.target.value); }} placeholder="https://..." style={{ fontSize: 12 }} />
+          </div>
+        </div>
+      </div>
+
+      {/* Dados */}
+      <div style={{ background: S.bg2, border: `1px solid ${S.border}`, borderRadius: 8, padding: '1.5rem' }}>
+        <Label>Dados Basicos</Label>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div style={{ gridColumn: '1/-1' }}>
+            <Label>Nome *</Label>
+            <Input value={form.nome} onChange={e => setForm(f => ({ ...f, nome: e.target.value }))} placeholder="Nome do perfume" />
+          </div>
+          <div style={{ gridColumn: '1/-1' }}>
+            <Label>Marca *</Label>
+            <Input value={form.marca} onChange={e => setForm(f => ({ ...f, marca: e.target.value }))} placeholder="Marca" />
+          </div>
+          <div>
+            <Label>Ano</Label>
+            <Input value={form.ano} onChange={e => setForm(f => ({ ...f, ano: e.target.value }))} placeholder="2020" type="number" />
+          </div>
+          <div>
+            <Label>Genero</Label>
+            <select value={form.genero} onChange={e => setForm(f => ({ ...f, genero: e.target.value }))}
+              style={{ width: '100%', padding: '10px 12px', background: '#fff', border: `1px solid ${S.border}`, borderRadius: 4, color: S.text, fontSize: 13, outline: 'none' }}>
+              <option value="">Selecione</option>
+              <option value="Unissex">Unissex</option>
+              <option value="Feminino">Feminino</option>
+              <option value="Masculino">Masculino</option>
+            </select>
+          </div>
+          <div style={{ gridColumn: '1/-1' }}>
+            <Label>Pais de Origem</Label>
+            <Input value={form.pais} onChange={e => setForm(f => ({ ...f, pais: e.target.value }))} placeholder="Ex: Franca" />
+          </div>
+          <div>
+            <Label>ML do Frasco</Label>
+            <Input value={form.ml_inicial} onChange={e => setForm(f => ({ ...f, ml_inicial: e.target.value }))} placeholder="Ex: 100" type="number" />
+          </div>
+        </div>
+      </div>
+
+      {/* Precos */}
+      <div style={{ background: S.bg2, border: `1px solid ${S.border}`, borderRadius: 8, padding: '1.5rem' }}>
+        <Label>Precos por Tamanho</Label>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {precos.map((t, i) => (
+            <div key={t.key} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <span style={{ width: 50, fontSize: 13, color: S.text2, fontWeight: 500 }}>{t.label}</span>
+              <div style={{ position: 'relative', flex: 1 }}>
+                <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', fontSize: 13, color: S.text3 }}>R$</span>
+                <input type="number" value={t.preco}
+                  onChange={e => setPrecos(p => p.map((x, j) => j === i ? { ...x, preco: e.target.value } : x))}
+                  placeholder="0,00"
+                  style={{ width: '100%', padding: '8px 12px 8px 32px', background: '#fff', border: `1px solid ${S.border}`, borderRadius: 4, fontSize: 13, color: S.text, outline: 'none', boxSizing: 'border-box' }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <Msg {...msg} />
+
+      <div style={{ display: 'flex', gap: 8 }}>
+        <button onClick={onVoltar} style={{ padding: '12px 20px', background: '#fff', border: `1px solid ${S.border}`, borderRadius: 4, fontSize: 13, cursor: 'pointer', color: S.text2 }}>
+          ← Voltar
+        </button>
+        <button onClick={salvar} disabled={salvando} style={{
+          flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)',
+          border: 'none', borderRadius: 4, fontSize: 13, fontWeight: 700,
+          cursor: salvando ? 'not-allowed' : 'pointer', color: '#0d0b07', opacity: salvando ? 0.7 : 1,
+        }}>
+          {salvando ? 'Salvando...' : 'Cadastrar Produto'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── STEP: sucesso ─────────────────────────────────────────────────────────
+function StepSucesso({ mensagem, onNovo, onAdmin }) {
+  return (
+    <div style={{ textAlign: 'center', padding: '3rem 1rem' }}>
+      <p style={{ fontSize: 48, marginBottom: 16 }}>🎉</p>
+      <p style={{ fontSize: 20, fontWeight: 700, color: S.text, marginBottom: 8 }}>{mensagem || 'Produto cadastrado!'}</p>
+      <p style={{ fontSize: 14, color: S.text2, marginBottom: 32 }}>O perfume ja esta disponivel no catalogo.</p>
+      <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
+        <button onClick={onNovo} style={{ padding: '12px 24px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 4, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: '#0d0b07' }}>
+          + Cadastrar outro
+        </button>
+        <button onClick={onAdmin} style={{ padding: '12px 24px', background: '#fff', border: `1px solid ${S.border}`, borderRadius: 4, fontSize: 13, cursor: 'pointer', color: S.text2 }}>
+          ← Voltar ao Admin
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── COMPONENTE PRINCIPAL ──────────────────────────────────────────────────
+export default function AdminProdutos() {
+  const { token } = useAuth();
+  const navigate = useNavigate();
+
+  // step: 'escolha' | 'fragrantica' | 'preview' | 'manual' | 'sucesso'
+  const [step, setStep] = useState('escolha');
+  const [resultado, setResultado] = useState(null);
+  const [mensagemSucesso, setMensagemSucesso] = useState('');
+
+  if (!token) { navigate('/admin/login'); return null; }
+
+  const confirmarECadastrar = async (resultado, precos, ml_inicial) => {
+    const d = resultado.dados;
+    await api.adminCadastrarPerfume({
+      nome: d.nome,
+      marca: d.marca,
+      ano: d.ano,
+      genero: d.genero,
+      pais: d.pais || '',
+      foto_url: d.foto_url || '',
+      url_fragrantica: resultado.slug ? `https://nicheclub-frontend.vercel.app/perfume/${resultado.slug}` : '',
+      rating_valor: d.rating_valor || '',
+      ml_inicial: ml_inicial ? Number(ml_inicial) : null,
+      precos: precos.filter(p => p.preco),
+    });
+    setMensagemSucesso(resultado.atualizado ? 'Perfume atualizado com sucesso!' : 'Perfume cadastrado com sucesso!');
+    setStep('sucesso');
+  };
+
+  const titulos = {
+    escolha: 'Cadastrar Produto',
+    fragrantica: 'Carregar pelo Fragrantica',
+    preview: 'Confirmar Dados',
+    manual: 'Preencher Manualmente',
+    sucesso: 'Produto Cadastrado',
   };
 
   return (
@@ -195,237 +473,47 @@ export default function AdminProdutos() {
 
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: '2rem' }}>
-          <button onClick={() => navigate('/admin')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: S.text3, fontSize: 13 }}>&#8592; Admin</button>
-          <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: S.text }}>Cadastrar Produto</h1>
+          <button onClick={() => navigate('/admin')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: S.text3, fontSize: 13 }}>← Admin</button>
+          <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: S.text }}>{titulos[step]}</h1>
         </div>
 
-        {/* Steps indicator */}
-        <div style={{ display: 'flex', gap: 8, marginBottom: '2rem' }}>
-          {[['marca', '1. Marca'], ['perfume', '2. Perfume'], ['form', '3. Dados']].map(([s, label]) => (
-            <div key={s} style={{ padding: '6px 14px', borderRadius: 20, fontSize: 12, fontWeight: 600,
-              background: step === s ? S.goldLight : S.bg2,
-              color: step === s ? '#0d0b07' : S.text3,
-              border: `1px solid ${step === s ? S.goldLight : S.border}` }}>
-              {label}
-            </div>
-          ))}
-        </div>
-
-        {/* STEP 1: Marca */}
-        {(step === 'marca' || step === 'perfume') && (
-          <div style={{ background: S.bg2, border: `1px solid ${S.border}`, borderRadius: 8, padding: '1.5rem', marginBottom: '1rem' }}>
-            <Label>Marca</Label>
-            <div style={{ position: 'relative' }}>
-              <Input
-                value={marcaInput}
-                onChange={e => { setMarcaInput(e.target.value); setMarcaSel(''); }}
-                placeholder="Ex: Maison Francis Kurkdjian"
-                onKeyDown={e => e.key === 'Enter' && marcaInput && selecionarMarca(marcaInput)}
-              />
-              {marcaSugestoes.length > 0 && (
-                <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#fff', border: `1px solid ${S.border}`, borderRadius: 4, zIndex: 10, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
-                  {marcaSugestoes.map(m => (
-                    <button key={m} onClick={() => selecionarMarca(m)}
-                      style={{ display: 'block', width: '100%', padding: '10px 14px', textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: S.text, borderBottom: `1px solid ${S.border}` }}
-                      onMouseEnter={e => e.currentTarget.style.background = S.bg2}
-                      onMouseLeave={e => e.currentTarget.style.background = 'none'}
-                    >{m}</button>
-                  ))}
-                </div>
-              )}
-            </div>
-            {marcaSel && <p style={{ fontSize: 12, color: S.gold, marginTop: 6 }}>&#10003; {marcaSel} selecionada</p>}
-          </div>
+        {step === 'escolha' && (
+          <StepEscolha
+            onFragrantica={() => setStep('fragrantica')}
+            onManual={() => setStep('manual')}
+          />
         )}
 
-        {/* STEP 2: Perfume */}
-        {step === 'perfume' && (
-          <div style={{ background: S.bg2, border: `1px solid ${S.border}`, borderRadius: 8, padding: '1.5rem', marginBottom: '1rem' }}>
-            <Label>Nome do Perfume</Label>
-            <div style={{ position: 'relative', marginBottom: 12 }}>
-              <Input
-                value={perfumeInput}
-                onChange={e => { setPerfumeInput(e.target.value); setPerfumeSel(null); }}
-                placeholder="Ex: Baccarat Rouge 540"
-                autoFocus
-              />
-              {perfumeSugestoes.length > 0 && (
-                <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#fff', border: `1px solid ${S.border}`, borderRadius: 4, zIndex: 10, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
-                  {perfumeSugestoes.map(p => (
-                    <button key={p.id} onClick={() => selecionarPerfume(p)}
-                      style={{ display: 'flex', alignItems: 'center', gap: 10, width: '100%', padding: '10px 14px', textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer', borderBottom: `1px solid ${S.border}` }}
-                      onMouseEnter={e => e.currentTarget.style.background = S.bg2}
-                      onMouseLeave={e => e.currentTarget.style.background = 'none'}
-                    >
-                      {p.foto_url && <img src={p.foto_url} style={{ width: 36, height: 36, objectFit: 'contain', borderRadius: 4, border: `1px solid ${S.border}` }} />}
-                      <div>
-                        <p style={{ fontSize: 13, color: S.text, fontWeight: 500 }}>{p.nome}</p>
-                        <p style={{ fontSize: 11, color: S.text3 }}>{p.marca} {p.ano ? `· ${p.ano}` : ''}</p>
-                      </div>
-                    </button>
-                  ))}
-                  <button onClick={buscarNovo}
-                    style={{ display: 'block', width: '100%', padding: '10px 14px', textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: S.gold, fontStyle: 'italic' }}>
-                    Nao encontrei — buscar no Fragrantica
-                  </button>
-                </div>
-              )}
-            </div>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <button onClick={buscarNovo} disabled={!perfumeInput || buscandoFrag}
-                style={{ flex: 1, padding: '10px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 4, fontSize: 13, fontWeight: 600, cursor: 'pointer', color: '#0d0b07', opacity: buscandoFrag ? 0.7 : 1 }}>
-                {buscandoFrag ? 'Buscando...' : '🔍 Buscar no Fragrantica'}
-              </button>
-              {perfumeInput && (
-                <button onClick={() => { setForm(f => ({ ...f, nome: perfumeInput, marca: marcaSel })); setStep('form'); }}
-                  style={{ padding: '10px 16px', background: S.bg, border: `1px solid ${S.border}`, borderRadius: 4, fontSize: 13, cursor: 'pointer', color: S.text2 }}>
-                  Preencher manualmente
-                </button>
-              )}
-            </div>
-          </div>
+        {step === 'fragrantica' && (
+          <StepFragrantica
+            onPreview={r => { setResultado(r); setStep('preview'); }}
+            onVoltar={() => setStep('escolha')}
+          />
         )}
 
-        {/* STEP 3: Formulario */}
-        {step === 'form' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-
-            {/* Foto */}
-            <div style={{ background: S.bg2, border: `1px solid ${S.border}`, borderRadius: 8, padding: '1.5rem' }}>
-              <Label>Foto do Produto</Label>
-              <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                {/* Preview */}
-                <div style={{ width: 120, height: 120, border: `2px dashed ${S.border}`, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden', background: '#fff' }}
-                  onClick={() => fileRef.current?.click()} style2={{ cursor: 'pointer' }}>
-                  {fotoPreview
-                    ? <img src={fotoPreview} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                    : <span style={{ fontSize: 32, color: S.text3 }}>&#128247;</span>
-                  }
-                </div>
-                <div style={{ flex: 1 }}>
-                  <button onClick={() => fileRef.current?.click()} disabled={uploadando}
-                    style={{ display: 'block', width: '100%', padding: '10px', background: '#fff', border: `1px solid ${S.border}`, borderRadius: 4, fontSize: 13, cursor: 'pointer', color: S.text2, marginBottom: 8 }}>
-                    {uploadando ? 'Enviando...' : '&#128190; Escolher arquivo'}
-                  </button>
-                  <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => e.target.files[0] && uploadFoto(e.target.files[0])} />
-                  <Label>Ou cole uma URL</Label>
-                  <Input value={form.foto_url} onChange={e => { setForm(f => ({ ...f, foto_url: e.target.value })); setFotoPreview(e.target.value); }}
-                    placeholder="https://..." style={{ fontSize: 12 }} />
-                </div>
-              </div>
-            </div>
-
-            {/* Link Fragrantica */}
-            <div style={{ background: S.bg2, border: `1px solid ${S.border}`, borderRadius: 8, padding: '1.5rem' }}>
-              <Label>Preencher pelo Link do Fragrantica</Label>
-              <div style={{ marginBottom: 10 }}>
-                <Label>URL do Servidor Local (localtunnel)</Label>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <Input
-                    value={tunnelUrl}
-                    onChange={e => { setTunnelUrl(e.target.value); localStorage.setItem('scraper_tunnel', e.target.value); }}
-                    placeholder="https://xxx.loca.lt"
-                    style={{ flex: 1 }}
-                  />
-                  <span style={{ fontSize: 11, color: S.text3, alignSelf: 'center', whiteSpace: 'nowrap' }}>
-                    {tunnelUrl ? '🟢 Configurado' : '🔴 Nao configurado'}
-                  </span>
-                </div>
-              </div>
-              <div style={{ display: 'flex', gap: 8 }}>
-                <Input
-                  value={linkFrag}
-                  onChange={e => setLinkFrag(e.target.value)}
-                  placeholder="https://www.fragrantica.com/perfume/..."
-                  style={{ flex: 1 }}
-                />
-                <button
-                  onClick={preencherPeloLink}
-                  disabled={buscandoLink || !linkFrag}
-                  style={{ padding: '10px 20px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 4, fontSize: 13, fontWeight: 600, cursor: 'pointer', color: '#0d0b07', opacity: buscandoLink ? 0.7 : 1, whiteSpace: 'nowrap' }}>
-                  {buscandoLink ? 'Buscando...' : '⚡ Auto-preencher'}
-                </button>
-              </div>
-              <p style={{ fontSize: 11, color: S.text3, marginTop: 6 }}>Cole o link do Fragrantica e clique em Auto-preencher para preencher os dados automaticamente.</p>
-            </div>
-
-            {/* Dados basicos */}
-            <div style={{ background: S.bg2, border: `1px solid ${S.border}`, borderRadius: 8, padding: '1.5rem' }}>
-              <Label>Dados Basicos</Label>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                <div style={{ gridColumn: '1/-1' }}>
-                  <Label>Nome *</Label>
-                  <Input value={form.nome} onChange={e => setForm(f => ({ ...f, nome: e.target.value }))} placeholder="Nome do perfume" />
-                </div>
-                <div style={{ gridColumn: '1/-1' }}>
-                  <Label>Marca *</Label>
-                  <Input value={form.marca} onChange={e => setForm(f => ({ ...f, marca: e.target.value }))} placeholder="Marca" />
-                </div>
-                <div>
-                  <Label>Ano</Label>
-                  <Input value={form.ano} onChange={e => setForm(f => ({ ...f, ano: e.target.value }))} placeholder="2020" type="number" />
-                </div>
-                <div>
-                  <Label>Genero</Label>
-                  <select value={form.genero} onChange={e => setForm(f => ({ ...f, genero: e.target.value }))}
-                    style={{ width: '100%', padding: '10px 12px', background: '#fff', border: `1px solid ${S.border}`, borderRadius: 4, color: S.text, fontSize: 13, outline: 'none' }}>
-                    <option value="">Selecione</option>
-                    <option value="unisex">Unissex</option>
-                    <option value="women">Feminino</option>
-                    <option value="men">Masculino</option>
-                  </select>
-                </div>
-                <div style={{ gridColumn: '1/-1' }}>
-                  <Label>Pais de Origem</Label>
-                  <Input value={form.pais} onChange={e => setForm(f => ({ ...f, pais: e.target.value }))} placeholder="Ex: Franca" />
-                </div>
-                <div>
-                  <Label>ML do Frasco</Label>
-                  <Input value={form.ml_inicial} onChange={e => setForm(f => ({ ...f, ml_inicial: e.target.value }))} placeholder="Ex: 100" type="number" />
-                </div>
-              </div>
-            </div>
-
-            {/* Precos */}
-            <div style={{ background: S.bg2, border: `1px solid ${S.border}`, borderRadius: 8, padding: '1.5rem' }}>
-              <Label>Precos por Tamanho</Label>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {precos.map((t, i) => (
-                  <div key={t.key} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <span style={{ width: 60, fontSize: 13, color: S.text2, fontWeight: 500 }}>{t.label}</span>
-                    <div style={{ position: 'relative', flex: 1 }}>
-                      <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', fontSize: 13, color: S.text3 }}>R$</span>
-                      <input type="number" value={t.preco} onChange={e => setPrecos(p => p.map((x, j) => j === i ? { ...x, preco: e.target.value } : x))}
-                        placeholder="0,00"
-                        style={{ width: '100%', padding: '8px 12px 8px 32px', background: '#fff', border: `1px solid ${S.border}`, borderRadius: 4, fontSize: 13, color: S.text, outline: 'none', boxSizing: 'border-box' }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Msg */}
-            {msg.texto && (
-              <div style={{ padding: '12px 16px', borderRadius: 4, fontSize: 13, fontWeight: 500,
-                background: msg.tipo === 'ok' ? '#f0faf0' : msg.tipo === 'aviso' ? '#fffbf0' : '#fff0f0',
-                color: msg.tipo === 'ok' ? '#2a7a2a' : msg.tipo === 'aviso' ? '#8a6a10' : '#c0392b',
-                border: `1px solid ${msg.tipo === 'ok' ? '#b0e0b0' : msg.tipo === 'aviso' ? '#e8d840' : '#f0b0b0'}` }}>
-                {msg.texto}
-              </div>
-            )}
-
-            {/* Botoes */}
-            <div style={{ display: 'flex', gap: 8 }}>
-              <button onClick={() => setStep('perfume')} style={{ padding: '12px 20px', background: '#fff', border: `1px solid ${S.border}`, borderRadius: 4, fontSize: 13, cursor: 'pointer', color: S.text2 }}>
-                &#8592; Voltar
-              </button>
-              <button onClick={salvar} disabled={salvando}
-                style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 4, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: '#0d0b07', letterSpacing: '0.08em', opacity: salvando ? 0.7 : 1 }}>
-                {salvando ? 'Salvando...' : 'Cadastrar Produto'}
-              </button>
-            </div>
-          </div>
+        {step === 'preview' && resultado && (
+          <StepPreview
+            resultado={resultado}
+            onConfirmar={confirmarECadastrar}
+            onVoltar={() => setStep('fragrantica')}
+          />
         )}
+
+        {step === 'manual' && (
+          <StepManual
+            onVoltar={() => setStep('escolha')}
+            onSalvo={() => { setMensagemSucesso('Perfume cadastrado com sucesso!'); setStep('sucesso'); }}
+          />
+        )}
+
+        {step === 'sucesso' && (
+          <StepSucesso
+            mensagem={mensagemSucesso}
+            onNovo={() => { setStep('escolha'); setResultado(null); }}
+            onAdmin={() => navigate('/admin')}
+          />
+        )}
+
       </div>
     </div>
   );
