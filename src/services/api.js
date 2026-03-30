@@ -22,6 +22,7 @@ export const api = {
   criarPedido: (payload) => req('POST', '/pedidos', payload),
   reservar: (data) => req('POST', '/reservas', data),
   notasBatch: (nomes) => req('POST', '/notas/batch', { nomes }),
+  lacrados: (params) => req('GET', '/lacrados?' + new URLSearchParams(params).toString()),
   // Admin - Notas
   adminNotas: (q, pagina) => req('GET', `/admin/notas?q=${encodeURIComponent(q||'')}&pagina=${pagina||1}&limite=20`),
   adminNotasImportar: (data) => req('POST', '/admin/notas/importar', data),

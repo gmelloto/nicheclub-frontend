@@ -106,9 +106,16 @@ export default function Catalogo() {
 
           {/* Tabs */}
           <div style={{ display: 'flex', justifyContent: 'center', gap: 0, marginBottom: '3rem' }}>
-            <button onClick={() => setTab('decants')} style={{ padding: '12px 36px', fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', border: '1px solid rgba(201,168,76,0.4)', cursor: 'pointer', transition: 'all 0.2s', background: tab === 'decants' ? S.gold : 'transparent', color: tab === 'decants' ? '#0d0b07' : '#6b6460' }}>
-              Decants
-            </button>
+            {[
+              { key: 'decants', label: 'Decants' },
+              { key: 'lacrados', label: 'Perfumes Lacrados' },
+              { key: 'todos', label: 'Todos os Perfumes' },
+            ].map(({ key, label }) => (
+              <button key={key} onClick={() => { setTab(key); setBuscaInput(''); setBusca(''); }}
+                style={{ padding: '12px 28px', fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', border: '1px solid rgba(201,168,76,0.4)', cursor: 'pointer', transition: 'all 0.2s', background: tab === key ? S.gold : 'transparent', color: tab === key ? '#0d0b07' : '#6b6460' }}>
+                {label}
+              </button>
+            ))}
             <button onClick={() => setTab('lacrados')} style={{ padding: '12px 36px', fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', border: '1px solid rgba(201,168,76,0.4)', borderLeft: 'none', cursor: 'pointer', transition: 'all 0.2s', background: tab === 'lacrados' ? S.gold : 'transparent', color: tab === 'lacrados' ? '#0d0b07' : '#6b6460' }}>
               Perfumes Lacrados
             </button>
