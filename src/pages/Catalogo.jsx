@@ -37,7 +37,7 @@ export default function Catalogo() {
       setTotal(res.total || lista.length);
       setPagina(pag);
     } catch {
-      if (pag === 1) setPerfumes(DEMO);
+      console.error("Erro ao carregar perfumes:", e);
     } finally {
       setLoading(false);
       setLoadingMore(false);
