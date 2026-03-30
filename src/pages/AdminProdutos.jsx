@@ -62,7 +62,7 @@ export default function AdminProdutos() {
     const t = setTimeout(() => {
       api.adminMarcas(marcaInput).then(setMarcaSugestoes).catch(() => {});
     }, 250);
-    const preencherPeloLink = async () => {
+  const preencherPeloLink = async () => {
     if (!linkFrag || !linkFrag.includes('fragrantica.com/perfume/')) {
       setMsg({ tipo: 'erro', texto: 'Informe um link valido do Fragrantica.' });
       return;
@@ -72,15 +72,15 @@ export default function AdminProdutos() {
     try {
       const d = await api.scrapeFragrantica(linkFrag);
       if (d.encontrado) {
-        setForm(f => ({
-          ...f,
-          nome: d.nome || f.nome,
-          marca: d.marca || f.marca,
-          ano: d.ano || f.ano,
-          genero: d.genero === 'Feminino' ? 'women' : d.genero === 'Masculino' ? 'men' : d.genero === 'Unissex' ? 'unisex' : f.genero,
-          foto_url: d.foto_url || f.foto_url,
+        setForm(prev => ({
+          ...prev,
+          nome: d.nome || prev.nome,
+          marca: d.marca || prev.marca,
+          ano: d.ano || prev.ano,
+          genero: d.genero === 'Feminino' ? 'women' : d.genero === 'Masculino' ? 'men' : d.genero === 'Unissex' ? 'unisex' : prev.genero,
+          foto_url: d.foto_url || prev.foto_url,
           url_fragrantica: linkFrag,
-          rating_valor: d.rating_valor || f.rating_valor,
+          rating_valor: d.rating_valor || prev.rating_valor,
         }));
         if (d.foto_url) setFotoPreview(d.foto_url);
         setMsg({ tipo: 'ok', texto: 'Dados preenchidos com sucesso!' });
@@ -267,7 +267,7 @@ export default function AdminProdutos() {
             <div style={{ display: 'flex', gap: 8 }}>
               <button onClick={buscarNovo} disabled={!perfumeInput || buscandoFrag}
                 style={{ flex: 1, padding: '10px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 4, fontSize: 13, fontWeight: 600, cursor: 'pointer', color: '#0d0b07', opacity: buscandoFrag ? 0.7 : 1 }}>
-                {buscandoFrag ? 'Buscando...' : '&#128269; Buscar no Fragrantica'}
+                {buscandoFrag ? 'Buscando...' : '🔍 Buscar no Fragrantica'}
               </button>
               {perfumeInput && (
                 <button onClick={() => { setForm(f => ({ ...f, nome: perfumeInput, marca: marcaSel })); setStep('form'); }}
