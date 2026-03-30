@@ -30,8 +30,14 @@ export default function Catalogo() {
   const carregarPerfumes = async (pag = 1, buscaTermo = busca, reset = false) => {
     if (pag === 1) setLoading(true); else setLoadingMore(true);
     try {
-      const res = await api.perfumes({ pagina: pag, limite: LIMITE, busca: buscaTermo });
-      const lista = res.perfumes || res;
+      // Usa frascos (com estoque disponivel) em vez de todos os perfumes
+      const res = await api.frascos({ pagina: pag, limite: LIMITE, busca: buscaTermo });
+      const lista = (res.frascos || res).map(f => ({
+        ...f,
+        id: f.perfume_id || f.id,
+        ml_disponivel: f.ml_disponivel,
+        ml_total: f.ml_total,
+      }));
       if (reset || pag === 1) setPerfumes(lista);
       else setPerfumes(prev => [...prev, ...lista]);
       setTotal(res.total || lista.length);
