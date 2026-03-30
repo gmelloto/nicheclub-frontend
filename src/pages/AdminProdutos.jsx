@@ -49,6 +49,7 @@ export default function AdminProdutos() {
   const [uploadando, setUploadando] = useState(false);
   const [buscandoFrag, setBuscandoFrag] = useState(false);
   const [linkFrag, setLinkFrag] = useState('');
+  const [tunnelUrl, setTunnelUrl] = useState(localStorage.getItem('scraper_tunnel') || '');
   const [buscandoLink, setBuscandoLink] = useState(false);
   const [salvando, setSalvando] = useState(false);
   const [msg, setMsg] = useState({ tipo: '', texto: '' });
@@ -82,22 +83,28 @@ export default function AdminProdutos() {
     setBuscandoLink(true);
     setMsg({ tipo: '', texto: '' });
     try {
-      const d = await api.scrapeFragrantica(linkFrag);
-      if (d.encontrado) {
+      const baseUrl = tunnelUrl.replace(/\/$/, '');
+      const resp = await fetch(`${baseUrl}/scrape`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: linkFrag }),
+      });
+      const d = await resp.json();
+      if (d.sucesso) {
         setForm(prev => ({
           ...prev,
-          nome: d.nome || prev.nome,
-          marca: d.marca || prev.marca,
-          ano: d.ano || prev.ano,
-          genero: d.genero === 'Feminino' ? 'women' : d.genero === 'Masculino' ? 'men' : d.genero === 'Unissex' ? 'unisex' : prev.genero,
-          foto_url: d.foto_url || prev.foto_url,
+          nome: d.dados?.nome || prev.nome,
+          marca: d.dados?.marca || prev.marca,
+          ano: d.dados?.ano || prev.ano,
+          genero: d.dados?.genero === 'Feminino' ? 'women' : d.dados?.genero === 'Masculino' ? 'men' : d.dados?.genero === 'Unissex' ? 'unisex' : prev.genero,
+          foto_url: d.dados?.foto_url || prev.foto_url,
           url_fragrantica: linkFrag,
-          rating_valor: d.rating_valor || prev.rating_valor,
+          rating_valor: d.dados?.rating_valor || prev.rating_valor,
         }));
-        if (d.foto_url) setFotoPreview(d.foto_url);
-        setMsg({ tipo: 'ok', texto: 'Dados preenchidos com sucesso!' });
+        if (d.dados?.foto_url) setFotoPreview(d.dados.foto_url);
+        setMsg({ tipo: 'ok', texto: d.atualizado ? 'Perfume atualizado no banco!' : 'Perfume cadastrado e salvo no banco!' });
       } else {
-        setMsg({ tipo: 'aviso', texto: 'Nao foi possivel extrair os dados. Preencha manualmente.' });
+        setMsg({ tipo: 'erro', texto: d.erro || 'Erro ao processar. Verifique o servidor local.' });
       }
     } catch(e) {
       setMsg({ tipo: 'erro', texto: 'Erro ao buscar dados do Fragrantica.' });
@@ -311,6 +318,20 @@ export default function AdminProdutos() {
             {/* Link Fragrantica */}
             <div style={{ background: S.bg2, border: `1px solid ${S.border}`, borderRadius: 8, padding: '1.5rem' }}>
               <Label>Preencher pelo Link do Fragrantica</Label>
+              <div style={{ marginBottom: 10 }}>
+                <Label>URL do Servidor Local (localtunnel)</Label>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <Input
+                    value={tunnelUrl}
+                    onChange={e => { setTunnelUrl(e.target.value); localStorage.setItem('scraper_tunnel', e.target.value); }}
+                    placeholder="https://xxx.loca.lt"
+                    style={{ flex: 1 }}
+                  />
+                  <span style={{ fontSize: 11, color: S.text3, alignSelf: 'center', whiteSpace: 'nowrap' }}>
+                    {tunnelUrl ? '🟢 Configurado' : '🔴 Nao configurado'}
+                  </span>
+                </div>
+              </div>
               <div style={{ display: 'flex', gap: 8 }}>
                 <Input
                   value={linkFrag}
