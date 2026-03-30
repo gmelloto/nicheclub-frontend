@@ -27,20 +27,29 @@ export default function Catalogo() {
   const [total, setTotal] = useState(0);
   const LIMITE = 12;
 
-  const carregarPerfumes = async (pag = 1, buscaTermo = busca, reset = false) => {
+  const carregarPerfumes = async (pag = 1, buscaTermo = busca, reset = false, abaAtual = tab) => {
     if (pag === 1) setLoading(true); else setLoadingMore(true);
     try {
-      // Usa frascos (com estoque disponivel) em vez de todos os perfumes
-      const res = await api.frascos({ pagina: pag, limite: LIMITE, busca: buscaTermo });
-      const lista = (res.frascos || res).map(f => ({
-        ...f,
-        id: f.perfume_id || f.id,
-        ml_disponivel: f.ml_disponivel,
-        ml_total: f.ml_total,
-      }));
+      let lista = [];
+      let totalRes = 0;
+
+      if (abaAtual === 'decants') {
+        const res = await api.frascos({ pagina: pag, limite: LIMITE, busca: buscaTermo });
+        lista = (res.frascos || []).map(f => ({ ...f, id: f.perfume_id }));
+        totalRes = res.total || lista.length;
+      } else if (abaAtual === 'lacrados') {
+        const res = await api.lacrados({ pagina: pag, limite: LIMITE, busca: buscaTermo });
+        lista = res.lacrados || [];
+        totalRes = res.total || lista.length;
+      } else {
+        const res = await api.perfumes({ pagina: pag, limite: LIMITE, busca: buscaTermo });
+        lista = res.perfumes || res;
+        totalRes = res.total || lista.length;
+      }
+
       if (reset || pag === 1) setPerfumes(lista);
       else setPerfumes(prev => [...prev, ...lista]);
-      setTotal(res.total || lista.length);
+      setTotal(totalRes);
       setPagina(pag);
     } catch {
       if (pag === 1) setPerfumes(DEMO);
@@ -50,7 +59,7 @@ export default function Catalogo() {
     }
   };
 
-  useEffect(() => { carregarPerfumes(1, '', true); }, []);
+  useEffect(() => { carregarPerfumes(1, '', true, tab); }, [tab]);
 
   // Debounce busca
   useEffect(() => {
@@ -116,9 +125,7 @@ export default function Catalogo() {
                 {label}
               </button>
             ))}
-            <button onClick={() => setTab('lacrados')} style={{ padding: '12px 36px', fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', border: '1px solid rgba(201,168,76,0.4)', borderLeft: 'none', cursor: 'pointer', transition: 'all 0.2s', background: tab === 'lacrados' ? S.gold : 'transparent', color: tab === 'lacrados' ? '#0d0b07' : '#6b6460' }}>
-              Perfumes Lacrados
-            </button>
+
           </div>
 
           {/* Busca */}
