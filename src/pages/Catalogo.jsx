@@ -32,8 +32,8 @@ export default function Catalogo() {
     try {
       const params = { pagina: pag, limite: LIMITE, busca: buscaTermo };
       if (tabAtual === "catalogo") params.todos = true;
-      const res = await api.perfumes(params);
-      const lista = res.perfumes || res;
+      const res = tabAtual === "decants" ? await api.frascos(params) : await api.perfumes(params);
+      const lista = res.frascos || res.perfumes || res;
       if (reset || pag === 1) setPerfumes(lista);
       else setPerfumes(prev => [...prev, ...lista]);
       setTotal(res.total || lista.length);
