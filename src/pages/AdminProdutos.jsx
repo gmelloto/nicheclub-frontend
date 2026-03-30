@@ -88,14 +88,14 @@ function StepFragrantica({ onPreview, onVoltar }) {
     setMsg({ tipo: '', texto: '' });
     try {
       const base = tunnelUrl.replace(/\/$/, '');
-      const resp = await fetch(`${base}/scrape`, {
+      const resp = await fetch(`${base}/preview`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'bypass-tunnel-password': '1' },
         body: JSON.stringify({ url: linkFrag }),
       });
       const d = await resp.json();
       if (d.sucesso) {
-        onPreview(d);
+        onPreview({ dados: d.dados, atualizado: false, id: null, slug: null });
       } else {
         setMsg({ tipo: 'erro', texto: d.erro || 'Erro ao processar.' });
       }
