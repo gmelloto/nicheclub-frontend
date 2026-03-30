@@ -266,32 +266,34 @@ function FrascoCard({ perfume }) {
 
   return (
     <Link to={`/perfume/${perfume.id}`}
-      style={{ display: 'block', background: '#ffffff', border: '1px solid #e8e4dc', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', borderRadius: 4, overflow: 'hidden', transition: 'border-color 0.3s, transform 0.3s', transform: hovered ? 'translateY(-4px)' : 'translateY(0)' }}
+      style={{ display: 'block', background: esgotado ? '#f8f6f2' : '#ffffff', border: '1px solid #e8e4dc', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', borderRadius: 4, overflow: 'hidden', transition: 'border-color 0.3s, transform 0.3s', transform: hovered ? 'translateY(-4px)' : 'translateY(0)', opacity: esgotado ? 0.65 : 1 }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
       {/* Imagem + acordes */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0, minHeight: 200 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0, minHeight: 200, position: 'relative' }}>
+
+        {/* Tarja esgotado */}
+        {esgotado && (
+          <div style={{ position: 'absolute', top: 16, left: -28, width: 120, background: '#e84040', color: '#fff', fontSize: 10, fontWeight: 800, letterSpacing: '0.15em', textTransform: 'uppercase', textAlign: 'center', padding: '4px 0', transform: 'rotate(-45deg)', zIndex: 10 }}>
+            Esgotado
+          </div>
+        )}
 
         {/* Imagem */}
         <div style={{ background: '#fff', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 200, overflow: 'hidden' }}>
           <img src={perfume.foto_url || '/frasco.jpeg'} alt={perfume.nome}
             style={{ width: '100%', height: 200, objectFit: 'contain', padding: 8, transform: hovered ? 'scale(1.04)' : 'scale(1)', transition: 'transform 0.5s' }}
           />
-          {esgotado && (
-            <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: '0.15em', color: '#e84040', textTransform: 'uppercase', border: '2px solid #e84040', padding: '4px 12px' }}>Esgotado</span>
-            </div>
-          )}
         </div>
 
         {/* Acordes barras */}
         <div style={{ padding: '12px 12px 12px 10px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', gap: 4 }}>
-          <p style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#9a7030', marginBottom: 6, fontWeight: 600 }}>Principais acordes</p>
+          <p style={{ fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#7a6020', marginBottom: 6, fontWeight: 700, whiteSpace: 'nowrap' }}>Principais acordes</p>
           {acordes.length > 0 ? acordes.map(a => (
             <div key={a} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <div style={{ flex: 1, height: 18, borderRadius: 3, background: corAcorde(a), display: 'flex', alignItems: 'center', paddingLeft: 8, overflow: 'hidden' }}>
-                <span style={{ fontSize: 10, fontWeight: 700, color: 'rgba(0,0,0,0.7)', whiteSpace: 'nowrap', letterSpacing: '0.02em' }}>{a}</span>
+                <span style={{ fontSize: 10, fontWeight: 700, color: 'rgba(0,0,0,0.75)', whiteSpace: 'nowrap', letterSpacing: '0.02em' }}>{a}</span>
               </div>
             </div>
           )) : (
@@ -302,14 +304,14 @@ function FrascoCard({ perfume }) {
           {perfume.rating_valor && (
             <div style={{ marginTop: 'auto', paddingTop: 8 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                <span style={{ fontSize: 18, fontWeight: 700, color: '#1a1a1a' }}>{Number(perfume.rating_valor).toFixed(1)}</span>
+                <span style={{ fontSize: 18, fontWeight: 700, color: '#111' }}>{Number(perfume.rating_valor).toFixed(1)}</span>
                 <div style={{ display: 'flex', gap: 1 }}>
                   {[1,2,3,4,5].map(s => (
                     <span key={s} style={{ fontSize: 10, color: s <= Math.round(perfume.rating_valor) ? '#c9a84c' : 'rgba(201,168,76,0.2)' }}>★</span>
                   ))}
                 </div>
               </div>
-              <p style={{ fontSize: 10, color: '#aaa' }}>({perfume.rating_count?.toLocaleString()})</p>
+              <p style={{ fontSize: 10, color: '#888' }}>({perfume.rating_count?.toLocaleString()})</p>
             </div>
           )}
         </div>
@@ -317,25 +319,24 @@ function FrascoCard({ perfume }) {
 
       {/* Info inferior */}
       <div style={{ padding: '1rem 1.25rem' }}>
-        {/* Nome e marca */}
-        <p style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#9a7030', marginBottom: 3, fontWeight: 500 }}>{perfume.marca}</p>
-        <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#1a1a1a', marginBottom: 4, lineHeight: 1.2 }}>{perfume.nome}</h3>
-        {perfume.genero && <p style={{ fontSize: 11, color: '#888', marginBottom: 8 }}>{perfume.genero}</p>}
+        <p style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#7a6020', marginBottom: 3, fontWeight: 600 }}>{perfume.marca}</p>
+        <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#111', marginBottom: 4, lineHeight: 1.2 }}>{perfume.nome}</h3>
+        {perfume.genero && <p style={{ fontSize: 11, color: '#555', marginBottom: 8 }}>{perfume.genero}</p>}
 
         {/* Barra estoque */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#888', marginBottom: 4 }}>
-          <span>{disponivel}ml disponível</span>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#555', marginBottom: 4 }}>
+          <span>{disponivel}ml disponivel</span>
           <span>{pct}%</span>
         </div>
         <div style={{ height: 4, background: 'rgba(0,0,0,0.08)', borderRadius: 2, marginBottom: '0.75rem' }}>
           <div style={{ height: '100%', background: 'linear-gradient(90deg,#c9a84c,#e8c870)', borderRadius: 2, width: `${100 - pct}%`, transition: 'width 0.5s' }} />
         </div>
 
-        {/* Preço */}
+        {/* Preco */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           {precoMin
-            ? <p style={{ fontSize: 13, color: '#555' }}>A partir de <span style={{ color: '#c9a84c', fontWeight: 700 }}>R$ {Number(precoMin).toFixed(2).replace('.', ',')}</span></p>
-            : <p style={{ fontSize: 12, color: '#aaa', fontStyle: 'italic' }}>Consultar preço</p>
+            ? <p style={{ fontSize: 13, color: '#111' }}>A partir de <span style={{ color: '#c9a84c', fontWeight: 700 }}>R$ {Number(precoMin).toFixed(2).replace('.', ',')}</span></p>
+            : <p style={{ fontSize: 12, color: '#888', fontStyle: 'italic' }}>Consultar preco</p>
           }
           <span style={{ fontSize: 10, color: '#c9a84c', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Ver →</span>
         </div>
