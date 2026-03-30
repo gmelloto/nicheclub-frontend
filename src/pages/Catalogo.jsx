@@ -1,343 +1,313 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import BrandCarousel from '../components/BrandCarousel.jsx';
+import { api } from '../services/api';
 
-const API = "https://nicheclub-backend-production.up.railway.app";
-
-const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap');
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  .cat-root {
-    min-height: 100vh;
-    background: #ffffff;
-    font-family: 'Jost', sans-serif;
-    color: #1a1a1a;
-  }
-
-  .cat-header {
-    border-bottom: 1px solid #e8e0cc;
-    padding: 36px 48px 24px;
-  }
-  .cat-eyebrow {
-    font-family: 'Jost', sans-serif;
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: #B8960C;
-    margin-bottom: 10px;
-  }
-  .cat-heading {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 38px;
-    font-weight: 300;
-    color: #1a1a1a;
-    letter-spacing: 0.02em;
-    line-height: 1.1;
-  }
-  .cat-heading em {
-    font-style: italic;
-    color: #B8960C;
-  }
-  .cat-sub {
-    margin-top: 8px;
-    font-size: 13px;
-    font-weight: 300;
-    color: #888;
-    letter-spacing: 0.05em;
-  }
-
-  .cat-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-    gap: 40px 28px;
-    padding: 48px 48px 0;
-  }
-
-  .cat-card {
-    cursor: pointer;
-  }
-  .cat-img-wrap {
-    position: relative;
-    width: 100%;
-    padding-bottom: 125%;
-    background: #f5f3ef;
-    overflow: hidden;
-    margin-bottom: 16px;
-  }
-  .cat-img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-  .cat-card:hover .cat-img {
-    transform: scale(1.04);
-  }
-  .cat-placeholder {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 48px;
-    font-weight: 300;
-    font-style: italic;
-    color: #c9bfa8;
-  }
-  .cat-stock {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    font-size: 9px;
-    font-weight: 500;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    padding: 4px 9px;
-    border-radius: 1px;
-  }
-  .cat-stock.yes { background: #B8960C; color: #fff; }
-  .cat-stock.no {
-    background: rgba(255,255,255,0.88);
-    color: #aaa;
-    border: 1px solid #ddd;
-  }
-  .cat-brand {
-    font-size: 10px;
-    font-weight: 400;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: #B8960C;
-    margin-bottom: 5px;
-  }
-  .cat-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 18px;
-    font-weight: 400;
-    color: #1a1a1a;
-    line-height: 1.3;
-  }
-
-  .cat-load-area {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    padding: 56px 48px 72px;
-  }
-  .cat-load-btn {
-    padding: 14px 52px;
-    border: 1px solid #B8960C;
-    background: transparent;
-    color: #B8960C;
-    font-family: 'Jost', sans-serif;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    cursor: pointer;
-    border-radius: 2px;
-    transition: background 0.22s, color 0.22s;
-  }
-  .cat-load-btn:hover:not(:disabled) { background: #B8960C; color: #fff; }
-  .cat-load-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-  .cat-progress {
-    font-size: 11px;
-    font-weight: 300;
-    color: #bbb;
-    letter-spacing: 0.08em;
-  }
-
-  .cat-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 100px 24px;
-    gap: 14px;
-    text-align: center;
-  }
-  .cat-state p {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 24px;
-    font-weight: 300;
-    font-style: italic;
-    color: #bbb;
-  }
-  .cat-state small {
-    font-family: 'Jost', sans-serif;
-    font-size: 12px;
-    font-weight: 300;
-    color: #ccc;
-    letter-spacing: 0.1em;
-  }
-  .cat-spinner {
-    width: 30px;
-    height: 30px;
-    border: 2px solid #eee;
-    border-top-color: #B8960C;
-    border-radius: 50%;
-    animation: cat-spin 0.75s linear infinite;
-  }
-  @keyframes cat-spin { to { transform: rotate(360deg); } }
-
-  @keyframes cat-fadeUp {
-    from { opacity: 0; transform: translateY(18px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .cat-card { animation: cat-fadeUp 0.4s ease both; }
-
-  @media (max-width: 768px) {
-    .cat-header { padding: 24px 20px 18px; }
-    .cat-heading { font-size: 28px; }
-    .cat-grid { grid-template-columns: repeat(2, 1fr); gap: 24px 14px; padding: 28px 20px 0; }
-    .cat-load-area { padding: 40px 20px 56px; }
-  }
-`;
-
-const PAGE_SIZE = 12;
+const S = {
+  gold: '#c9a84c',
+  gold2: '#e8c870',
+  black: '#0d0b07',
+  black2: '#111009',
+  black3: '#1a1810',
+  text: '#f0ece0',
+  text2: 'rgba(240,236,224,0.6)',
+  text3: 'rgba(240,236,224,0.35)',
+  border: 'rgba(201,168,76,0.15)',
+};
 
 export default function Catalogo() {
-  const navigate = useNavigate();
-
   const [perfumes, setPerfumes] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [error, setError] = useState(null);
+  const [busca, setBusca] = useState('');
+  const [buscaInput, setBuscaInput] = useState('');
+  const [tab, setTab] = useState('decants');
+  const [faqAberto, setFaqAberto] = useState(null);
+  const [pagina, setPagina] = useState(1);
+  const [total, setTotal] = useState(0);
+  const LIMITE = 12;
 
-  const fetchPerfumes = async (pg, append = false) => {
-    if (pg === 1) setLoading(true);
-    else setLoadingMore(true);
-    setError(null);
-
+  const carregarPerfumes = async (pag = 1, buscaTermo = busca, reset = false) => {
+    if (pag === 1) setLoading(true); else setLoadingMore(true);
     try {
-      const res = await fetch(`${API}/perfumes?page=${pg}&limit=${PAGE_SIZE}`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-
-      const list = data.perfumes ?? data.data ?? (Array.isArray(data) ? data : []);
-      const count = data.total ?? data.count ?? list.length;
-
-      setPerfumes(prev => append ? [...prev, ...list] : list);
-      setTotal(count);
-      setPage(pg);
-    } catch (e) {
-      setError("Nao foi possivel conectar ao servidor.");
-      console.error(e);
+      // Usa frascos (com estoque disponivel) em vez de todos os perfumes
+      const res = await api.frascos({ pagina: pag, limite: LIMITE, busca: buscaTermo });
+      const lista = (res.frascos || res).map(f => ({
+        ...f,
+        id: f.perfume_id || f.id,
+        ml_disponivel: f.ml_disponivel,
+        ml_total: f.ml_total,
+      }));
+      if (reset || pag === 1) setPerfumes(lista);
+      else setPerfumes(prev => [...prev, ...lista]);
+      setTotal(res.total || lista.length);
+      setPagina(pag);
+    } catch {
+      if (pag === 1) setPerfumes(DEMO);
     } finally {
       setLoading(false);
       setLoadingMore(false);
     }
   };
 
-  useEffect(() => {
-    fetchPerfumes(1);
-  }, []);
+  useEffect(() => { carregarPerfumes(1, '', true); }, []);
 
-  const handleLoadMore = () => fetchPerfumes(page + 1, true);
-  const hasMore = perfumes.length < total;
+  // Debounce busca
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setBusca(buscaInput);
+      carregarPerfumes(1, buscaInput, true);
+    }, 400);
+    return () => clearTimeout(t);
+  }, [buscaInput]);
+
+  const temMais = perfumes.length < total;
+  const filtrados = perfumes;
+
+  const faqs = [
+    { q: 'O que é um decant?', r: 'Decant é uma amostra fracionada de um perfume original, transferida para um frasco menor. É a maneira ideal de experimentar fragrâncias de alto padrão antes de investir no frasco completo.' },
+    { q: 'Os perfumes são originais?', r: 'Sim! Todos os nossos decants são extraídos de frascos 100% originais, lacrados e adquiridos de distribuidores autorizados.' },
+    { q: 'Quais tamanhos estão disponíveis?', r: 'Oferecemos decants nos tamanhos de 3ml, 5ml, 10ml e 15ml, perfeitos para testar a fragrância no dia a dia. Também temos APC (frasco completo +50ml).' },
+    { q: 'Como funciona a reserva?', r: 'Você seleciona o perfume e o tamanho desejado, adiciona ao carrinho e finaliza o pedido. O pagamento é processado via Pix ou cartão de crédito em até 12x.' },
+    { q: 'Posso trocar ou devolver?', r: 'Devido à natureza do produto (fragrância fracionada), não aceitamos trocas ou devoluções. Garantimos a qualidade e autenticidade de todos os decants.' },
+  ];
 
   return (
-    <>
-      <style>{styles}</style>
-      <div className="cat-root">
+    <div style={{ background: S.black, color: S.text, fontFamily: "'Jost', sans-serif" }}>
 
-        <header className="cat-header">
-          <div className="cat-eyebrow">Niche Club</div>
-          <h1 className="cat-heading">Nossa <em>colecao</em></h1>
-          {total > 0 && (
-            <p className="cat-sub">{total.toLocaleString("pt-BR")} perfumes</p>
-          )}
-        </header>
+      {/* ─── HERO ─────────────────────────────────────────────────────────── */}
+      <div style={{ position: 'relative', minHeight: '42vh', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
+        <img src="/banner-hero.jpg" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', filter: 'brightness(0.45)' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(13,11,7,0.9) 40%, rgba(13,11,7,0.3) 100%)' }} />
+        <div style={{ position: 'relative', maxWidth: 1280, margin: '0 auto', padding: '3rem 2.5rem', width: '100%' }}>
+          <p style={{ fontSize: 11, letterSpacing: '0.35em', textTransform: 'uppercase', color: S.gold, marginBottom: '1rem', fontWeight: 500 }}>Fragrâncias Exclusivas</p>
+          <h1 style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 600, lineHeight: 1.1, marginBottom: '1.25rem', maxWidth: 560 }}>
+            Descubra sua<br /><span style={{ color: S.gold }}>essência</span>
+          </h1>
+          <p style={{ fontSize: 15, color: S.text2, maxWidth: 420, lineHeight: 1.8, marginBottom: '2.5rem' }}>
+            Decants selecionados das melhores casas de perfumaria do mundo. Reserve o seu e experimente antes de investir.
+          </p>
+          <a href="#catalogo" onClick={e => { e.preventDefault(); document.getElementById('catalogo').scrollIntoView({behavior:'smooth'}); }} style={{ display: 'inline-block', background: S.gold, color: S.black, padding: '13px 28px', fontSize: 12, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'pointer' }}>
+            Ver Catálogo
+          </a>
+        </div>
+      </div>
 
-        {loading ? (
-          <div className="cat-state">
-            <div className="cat-spinner" />
-            <small>Carregando colecao</small>
+      <BrandCarousel />
+
+      {/* ─── CATÁLOGO ─────────────────────────────────────────────────────── */}
+      <div id="catalogo" style={{ padding: '5rem 2.5rem', background: '#fff' }}>
+        <div style={{ maxWidth: 1280, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+            <p style={{ fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', color: '#7a6020', marginBottom: '0.75rem', fontWeight: 500 }}>Nossa Coleção</p>
+            <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(2.2rem, 4vw, 3.5rem)', fontWeight: 600, marginBottom: '0.75rem' }}>Catálogo</h2>
+            <p style={{ fontSize: 14, color: '#6b6460' }}>Selecione um perfume para escolher o tamanho e fazer sua reserva.</p>
           </div>
-        ) : error ? (
-          <div className="cat-state">
-            <p>Algo deu errado</p>
-            <small>{error}</small>
+
+          {/* Tabs */}
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 0, marginBottom: '3rem' }}>
+            <button onClick={() => setTab('decants')} style={{ padding: '12px 36px', fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', border: '1px solid rgba(201,168,76,0.4)', cursor: 'pointer', transition: 'all 0.2s', background: tab === 'decants' ? S.gold : 'transparent', color: tab === 'decants' ? '#0d0b07' : '#6b6460' }}>
+              Decants
+            </button>
+            <button onClick={() => setTab('lacrados')} style={{ padding: '12px 36px', fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', border: '1px solid rgba(201,168,76,0.4)', borderLeft: 'none', cursor: 'pointer', transition: 'all 0.2s', background: tab === 'lacrados' ? S.gold : 'transparent', color: tab === 'lacrados' ? '#0d0b07' : '#6b6460' }}>
+              Perfumes Lacrados
+            </button>
           </div>
-        ) : perfumes.length === 0 ? (
-          <div className="cat-state">
-            <p>Nenhum perfume encontrado</p>
+
+          {/* Busca */}
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2.5rem' }}>
+            <input value={buscaInput} onChange={e => setBuscaInput(e.target.value)} placeholder="Buscar perfume ou marca..."
+              style={{ width: 320, background: '#f5f4f0', border: '1px solid #c9a84c', color: '#0d0b07', padding: '10px 16px', fontSize: 13, outline: 'none', letterSpacing: '0', WebkitTextFillColor: '#0d0b07' }}
+            />
           </div>
-        ) : (
-          <>
-            <div className="cat-grid">
-              {perfumes.map((p, i) => (
-                <PerfumeCard
-                  key={p.id}
-                  perfume={p}
-                  index={i}
-                  onClick={() => navigate(`/perfumes/${p.slug ?? p.id}`)}
-                />
+
+          {/* Grid */}
+          {loading ? (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '1.25rem' }}>
+              {[...Array(6)].map((_, i) => (
+                <div key={i} style={{ background: S.black3, height: 480, borderRadius: 2 }} />
               ))}
             </div>
-
-            <div className="cat-load-area">
-              {hasMore && (
-                <button
-                  className="cat-load-btn"
-                  onClick={handleLoadMore}
-                  disabled={loadingMore}
-                >
-                  {loadingMore ? "Carregando..." : "Ver mais"}
-                </button>
-              )}
-              <span className="cat-progress">
-                Exibindo {perfumes.length} de {total.toLocaleString("pt-BR")}
-              </span>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 260px), 1fr))', gap: '1.5rem' }}>
+              {filtrados.map((p, i) => <PerfumeCard key={p.id} perfume={p} delay={i * 60} />)}
             </div>
-          </>
-        )}
+          )}
 
+          {/* Carregar mais */}
+          {temMais && !loading && (
+            <div style={{ textAlign: 'center', marginTop: '3rem' }}>
+              <button onClick={() => carregarPerfumes(pagina + 1, busca)} disabled={loadingMore}
+                style={{ background: 'transparent', border: '1px solid #c9a84c', color: '#7a6020', padding: '12px 36px', fontSize: 12, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'pointer' }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(201,168,76,0.08)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+              >
+                {loadingMore ? 'Carregando...' : 'Carregar mais'}
+              </button>
+            </div>
+          )}
+          <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+            <p style={{ fontSize: 12, color: 'rgba(240,236,224,0.25)' }}>{perfumes.length} de {total} fragrâncias</p>
+          </div>
+        </div>
       </div>
-    </>
-  );
-}
 
-function PerfumeCard({ perfume, index, onClick }) {
-  const [imgError, setImgError] = useState(false);
-
-  const nome = perfume.nome ?? perfume.name ?? "Sem nome";
-  const marca = perfume.marca ?? perfume.brand ?? "";
-  const imgUrl = perfume.imagem_url ?? perfume.image_url ?? perfume.foto ?? null;
-  const disponivel = perfume.disponivel ?? perfume.available ?? false;
-  const initials = nome.slice(0, 2).toUpperCase();
-
-  return (
-    <div
-      className="cat-card"
-      onClick={onClick}
-      style={{ animationDelay: `${Math.min(index % PAGE_SIZE, 11) * 45}ms` }}
-    >
-      <div className="cat-img-wrap">
-        {imgUrl && !imgError ? (
-          <img
-            className="cat-img"
-            src={imgUrl}
-            alt={nome}
-            loading="lazy"
-            onError={() => setImgError(true)}
-          />
-        ) : (
-          <div className="cat-placeholder">{initials}</div>
-        )}
-        <span className={`cat-stock ${disponivel ? "yes" : "no"}`}>
-          {disponivel ? "Disponivel" : "Esgotado"}
-        </span>
+      {/* ─── COMO FUNCIONA ────────────────────────────────────────────────── */}
+      <div id="como-funciona" style={{ background: S.black2, borderTop: `1px solid ${S.border}`, borderBottom: `1px solid ${S.border}`, padding: '5rem 2.5rem' }}>
+        <div style={{ maxWidth: 1280, margin: '0 auto', textAlign: 'center' }}>
+          <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, marginBottom: '3.5rem' }}>Como Funciona</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '2rem' }}>
+            {[
+              { n: '01', t: 'Escolha', d: 'Navegue pelo catálogo e selecione o perfume desejado.' },
+              { n: '02', t: 'Reserve', d: 'Escolha o tamanho do decant e faça sua reserva.' },
+              { n: '03', t: 'Receba', d: 'Finalize o pedido e receba seu decant em casa.' },
+            ].map(s => (
+              <div key={s.n} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '3.5rem', fontWeight: 600, color: S.gold, lineHeight: 1 }}>{s.n}</span>
+                <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: '1.4rem', fontWeight: 600 }}>{s.t}</h3>
+                <p style={{ fontSize: 14, color: S.text2, lineHeight: 1.7, maxWidth: 220 }}>{s.d}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-      {marca && <div className="cat-brand">{marca}</div>}
-      <div className="cat-name">{nome}</div>
+
+      {/* ─── PRAZO DE ENTREGA ─────────────────────────────────────────────── */}
+      <div style={{ padding: '5rem 2.5rem' }}>
+        <div style={{ maxWidth: 1280, margin: '0 auto', textAlign: 'center' }}>
+          <p style={{ fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', color: S.gold, marginBottom: '0.75rem', fontWeight: 500 }}>Entregas</p>
+          <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, marginBottom: '3rem' }}>Prazo de Entrega</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '1.25rem' }}>
+            {[
+              { icon: '📦', t: 'Preparação', d: 'Seu pedido é preparado com cuidado em até 2 dias úteis.' },
+              { icon: '🚚', t: 'Envio', d: 'Enviamos para todo o Brasil via transportadora rastreável.' },
+              { icon: '📍', t: 'Prazo', d: 'Capitais: 3-5 dias úteis.\nInterior: 5-10 dias úteis.' },
+            ].map(s => (
+              <div key={s.t} style={{ background: S.black2, border: `1px solid ${S.border}`, padding: '2.5rem 2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                <span style={{ fontSize: 36 }}>{s.icon}</span>
+                <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: '1.3rem', fontWeight: 600 }}>{s.t}</h3>
+                <p style={{ fontSize: 14, color: S.text2, lineHeight: 1.7, whiteSpace: 'pre-line', textAlign: 'center' }}>{s.d}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ─── FAQ ──────────────────────────────────────────────────────────── */}
+      <div id="faq" style={{ background: S.black2, borderTop: `1px solid ${S.border}`, padding: '5rem 2.5rem' }}>
+        <div style={{ maxWidth: 800, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <p style={{ fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', color: S.gold, marginBottom: '0.75rem', fontWeight: 500 }}>Dúvidas</p>
+            <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600 }}>Perguntas Frequentes</h2>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {faqs.map((f, i) => (
+              <div key={i} style={{ border: `1px solid ${S.border}`, overflow: 'hidden' }}>
+                <button onClick={() => setFaqAberto(faqAberto === i ? null : i)} style={{ width: '100%', padding: '1.25rem 1.5rem', display: 'flex', alignItems: 'center', gap: 12, background: faqAberto === i ? 'rgba(201,168,76,0.06)' : 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}>
+                  <span style={{ color: S.gold, fontSize: 14, flexShrink: 0 }}>{faqAberto === i ? '▲' : '▼'}</span>
+                  <span style={{ fontSize: 15, fontWeight: 500, color: S.text }}>{f.q}</span>
+                </button>
+                {faqAberto === i && (
+                  <div style={{ padding: '0 1.5rem 1.25rem 3rem', fontSize: 14, color: S.text2, lineHeight: 1.8 }}>{f.r}</div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ─── QUEM SOMOS ───────────────────────────────────────────────────── */}
+      <div id="quem-somos" style={{ borderTop: `1px solid ${S.border}`, padding: '6rem 2.5rem' }}>
+        <div style={{ maxWidth: 800, margin: '0 auto', textAlign: 'center' }}>
+          <p style={{ fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', color: S.gold, marginBottom: '1rem', fontWeight: 500 }}>Nossa História</p>
+          <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, marginBottom: '2rem' }}>Quem Somos</h2>
+          <p style={{ fontSize: 15, color: S.text2, lineHeight: 1.9, marginBottom: '1.5rem' }}>
+            A <strong style={{ color: S.text, fontWeight: 600 }}>Niche Club</strong> nasceu da paixão por perfumaria de nicho e do desejo de tornar fragrâncias exclusivas acessíveis a todos. Acreditamos que todo mundo merece experimentar o melhor da perfumaria mundial sem precisar investir em um frasco completo.
+          </p>
+          <p style={{ fontSize: 15, color: S.text2, lineHeight: 1.9 }}>
+            Selecionamos cuidadosamente cada fragrância do nosso catálogo, garantindo autenticidade e qualidade em cada decant. Nossa missão é proporcionar uma experiência única de descoberta olfativa, conectando você às melhores casas de perfumaria do mundo.
+          </p>
+        </div>
+      </div>
+
+      {/* ─── FOOTER ───────────────────────────────────────────────────────── */}
+      <div style={{ borderTop: `1px solid ${S.border}`, padding: '2rem', textAlign: 'center' }}>
+        <p style={{ fontSize: 13, color: S.text3 }}>© 2026 Niche Club — Luxury Perfumes. Todos os direitos reservados.</p>
+      </div>
     </div>
   );
 }
+
+function PerfumeCard({ perfume, delay }) {
+  const disponivel = Number(perfume.ml_disponivel || 0);
+  const total = Number(perfume.ml_total || 100);
+  const pct = Math.min(100, Math.round((disponivel / total) * 100));
+  const precoMin = perfume.opcoes?.[0]?.preco;
+  const esgotado = disponivel === 0;
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <Link to={`/perfume/${perfume.id}`} className="fade-in" style={{
+      animationDelay: `${delay}ms`, opacity: 0, display: 'block',
+      background: '#ffffff',
+      border: '1px solid #e8e4dc',
+      boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+      borderRadius: 4,
+      overflow: 'hidden',
+      transition: 'border-color 0.3s, transform 0.3s',
+      transform: hovered ? 'translateY(-4px)' : 'translateY(0)',
+    }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {/* Imagem */}
+      <div style={{ position: 'relative', paddingBottom: '100%', overflow: 'hidden', background: '#ffffff' }}>
+        {perfume.foto_url
+          ? <img src={perfume.foto_url} alt={perfume.nome} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', padding: '8px', transform: hovered ? 'scale(1.03)' : 'scale(1)', transition: 'transform 0.5s ease' }} />
+          : <img src="/frasco.jpeg" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', padding: '8px', transform: hovered ? 'scale(1.03)' : 'scale(1)', transition: 'transform 0.5s ease', filter: 'brightness(0.7)' }} />
+        }
+        {/* Badge família olfativa */}
+        {perfume.acorde1 && (
+          <div style={{ position: 'absolute', top: 12, left: 12, background: 'rgba(13,11,7,0.85)', border: '1px solid rgba(201,168,76,0.35)', padding: '3px 10px', fontSize: 10, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#c9a84c', backdropFilter: 'blur(4px)' }}>
+            {perfume.acorde1}
+          </div>
+        )}
+        {esgotado && (
+          <div style={{ position: 'absolute', top: 12, right: 12, background: 'rgba(160,30,30,0.9)', padding: '3px 10px', fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#fff' }}>
+            Esgotado
+          </div>
+        )}
+        {/* Barra de estoque */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 3, background: 'rgba(0,0,0,0.4)' }}>
+          <div style={{ height: '100%', background: 'linear-gradient(90deg,#c9a84c,#e8c870)', width: `${100 - pct}%`, transition: 'width 0.5s' }} />
+        </div>
+      </div>
+
+      {/* Info */}
+      <div style={{ padding: '1.25rem' }}>
+        <p style={{ fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#7a6020', marginBottom: 5, fontWeight: 500 }}>{perfume.marca}</p>
+        <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: '1.25rem', fontWeight: 500, color: hovered ? '#9a7d3a' : '#0d0b07', transition: 'color 0.3s', marginBottom: 6, lineHeight: 1.2 }}>{perfume.nome}</h3>
+        {perfume.familia_olfativa && (
+          <p style={{ fontSize: 11, color: '#a09880', marginBottom: 12, fontStyle: 'italic' }}>{perfume.familia_olfativa}</p>
+        )}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 10, borderTop: '1px solid #ede9e0' }}>
+          {precoMin
+            ? <p style={{ fontSize: 13, color: '#6b6460' }}>A partir de <span style={{ color: '#7a6020', fontWeight: 500 }}>R$ {Number(precoMin).toFixed(2).replace('.', ',')}</span></p>
+            : <p style={{ fontSize: 12, color: '#b0a888', fontStyle: 'italic' }}>Consultar preço</p>
+          }
+          <span style={{ fontSize: 11, color: '#b0a888' }}>{disponivel}ml</span>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+
+const DEMO = [
+  { id: '1', nome: 'Baccarat Rouge 540', marca: 'Maison Francis Kurkdjian', acorde1: 'Floral', ml_disponivel: 38, ml_total: 100, opcoes: [{ preco: 38 }] },
+  { id: '2', nome: 'Oud Wood', marca: 'Tom Ford', acorde1: 'Amadeirado', ml_disponivel: 220, ml_total: 250, opcoes: [{ preco: 42 }] },
+  { id: '3', nome: 'Neroli Portofino', marca: 'Tom Ford', acorde1: 'Cítrico', ml_disponivel: 0, ml_total: 100, opcoes: [{ preco: 35 }] },
+  { id: '4', nome: 'Rose Prick', marca: 'Tom Ford', acorde1: 'Floral', ml_disponivel: 105, ml_total: 150, opcoes: [{ preco: 40 }] },
+  { id: '5', nome: 'Santal 33', marca: 'Le Labo', acorde1: 'Amadeirado', ml_disponivel: 80, ml_total: 100, opcoes: [{ preco: 36 }] },
+  { id: '6', nome: 'Another 13', marca: 'Le Labo', acorde1: 'Almiscarado', ml_disponivel: 25, ml_total: 100, opcoes: [{ preco: 38 }] },
+];
