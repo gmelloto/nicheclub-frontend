@@ -15,6 +15,24 @@ const S = {
   border: 'rgba(201,168,76,0.15)',
 };
 
+const COR_ACORDE = {
+  'Floral': '#e8a0b0', 'Floral Branco': '#f0c8d8', 'Rosa': '#e87090',
+  'Amadeirado': '#c8a878', 'Sândalo': '#d4b896', 'Cedro': '#b89060',
+  'Oud': '#8a6030', 'Patchouli': '#9a7850',
+  'Oriental': '#d4884c', 'Adocicado': '#e8b060', 'Baunilha': '#f0c878',
+  'Âmbar': '#d4a040', 'Almiscarado': '#c8b8a0', 'Especiado': '#c87840',
+  'Cítrico': '#e8d040', 'Fresco': '#78c8d8', 'Aromático': '#78b890',
+  'Verde': '#88c878', 'Aquático': '#60b8d8', 'Marinho': '#4898c8',
+  'Frutado': '#e87878', 'Gourmet': '#e8a060', 'Almiscarado Suave': '#d8c8b8',
+  'Couro': '#a07848', 'Defumado': '#9898a8', 'Terroso': '#a08868',
+  'Herbal': '#90b870', 'Mineral': '#a8b0b8', 'Tropical': '#f0b040',
+};
+
+function corAcorde(nome) {
+  if (!nome) return '#c9a84c';
+  return COR_ACORDE[nome] || '#c9a84c';
+}
+
 export default function Catalogo() {
   const [perfumes, setPerfumes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -129,7 +147,7 @@ export default function Catalogo() {
             </div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 260px), 1fr))', gap: '1.5rem' }}>
-              {filtrados.map((p, i) => <PerfumeCard key={p.id} perfume={p} delay={i * 60} />)}
+              {filtrados.map((p, i) => tab === "decants" ? <FrascoCard key={p.id} perfume={p} /> : <PerfumeCard key={p.id} perfume={p} delay={i * 60} />)}
             </div>
           )}
 
@@ -236,6 +254,96 @@ export default function Catalogo() {
     </div>
   );
 }
+
+function FrascoCard({ perfume }) {
+  const [hovered, setHovered] = useState(false);
+  const disponivel = Number(perfume.ml_disponivel || 0);
+  const total = Number(perfume.ml_total || 100);
+  const pct = total > 0 ? Math.round((disponivel / total) * 100) : 0;
+  const esgotado = disponivel === 0;
+  const precoMin = perfume.opcoes?.[0]?.preco;
+  const acordes = [perfume.acorde1, perfume.acorde2, perfume.acorde3, perfume.acorde4, perfume.acorde5].filter(Boolean);
+
+  return (
+    <Link to={`/perfume/${perfume.id}`}
+      style={{ display: 'block', background: '#111009', borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(201,168,76,0.1)', transition: 'transform 0.3s, border-color 0.3s', transform: hovered ? 'translateY(-6px)' : 'translateY(0)', borderColor: hovered ? 'rgba(201,168,76,0.35)' : 'rgba(201,168,76,0.1)' }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {/* Imagem + acordes */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0, minHeight: 200 }}>
+
+        {/* Imagem */}
+        <div style={{ background: '#fff', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 200, overflow: 'hidden' }}>
+          <img src={perfume.foto_url || '/frasco.jpeg'} alt={perfume.nome}
+            style={{ width: '100%', height: 200, objectFit: 'contain', padding: 8, transform: hovered ? 'scale(1.04)' : 'scale(1)', transition: 'transform 0.5s' }}
+          />
+          {esgotado && (
+            <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: '0.15em', color: '#e84040', textTransform: 'uppercase', border: '2px solid #e84040', padding: '4px 12px' }}>Esgotado</span>
+            </div>
+          )}
+        </div>
+
+        {/* Acordes barras */}
+        <div style={{ padding: '12px 12px 12px 10px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', gap: 4 }}>
+          <p style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(201,168,76,0.6)', marginBottom: 6, fontWeight: 600 }}>Principais acordes</p>
+          {acordes.length > 0 ? acordes.map(a => (
+            <div key={a} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <div style={{ flex: 1, height: 18, borderRadius: 3, background: corAcorde(a), display: 'flex', alignItems: 'center', paddingLeft: 8, overflow: 'hidden' }}>
+                <span style={{ fontSize: 10, fontWeight: 700, color: 'rgba(0,0,0,0.7)', whiteSpace: 'nowrap', letterSpacing: '0.02em' }}>{a}</span>
+              </div>
+            </div>
+          )) : (
+            <p style={{ fontSize: 11, color: 'rgba(240,236,224,0.25)', fontStyle: 'italic' }}>—</p>
+          )}
+
+          {/* Rating */}
+          {perfume.rating_valor && (
+            <div style={{ marginTop: 'auto', paddingTop: 8 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                <span style={{ fontSize: 18, fontWeight: 700, color: '#f0ece0' }}>{Number(perfume.rating_valor).toFixed(1)}</span>
+                <div style={{ display: 'flex', gap: 1 }}>
+                  {[1,2,3,4,5].map(s => (
+                    <span key={s} style={{ fontSize: 10, color: s <= Math.round(perfume.rating_valor) ? '#c9a84c' : 'rgba(201,168,76,0.2)' }}>★</span>
+                  ))}
+                </div>
+              </div>
+              <p style={{ fontSize: 10, color: 'rgba(240,236,224,0.3)' }}>({perfume.rating_count?.toLocaleString()})</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Info inferior */}
+      <div style={{ padding: '1rem 1.25rem' }}>
+        {/* Nome e marca */}
+        <p style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(201,168,76,0.6)', marginBottom: 3, fontWeight: 500 }}>{perfume.marca}</p>
+        <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#f0ece0', marginBottom: 4, lineHeight: 1.2 }}>{perfume.nome}</h3>
+        {perfume.genero && <p style={{ fontSize: 11, color: 'rgba(240,236,224,0.35)', marginBottom: 8 }}>{perfume.genero}</p>}
+
+        {/* Barra estoque */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'rgba(240,236,224,0.4)', marginBottom: 4 }}>
+          <span>{disponivel}ml disponível</span>
+          <span>{pct}%</span>
+        </div>
+        <div style={{ height: 4, background: 'rgba(255,255,255,0.06)', borderRadius: 2, marginBottom: '0.75rem' }}>
+          <div style={{ height: '100%', background: 'linear-gradient(90deg,#c9a84c,#e8c870)', borderRadius: 2, width: `${100 - pct}%`, transition: 'width 0.5s' }} />
+        </div>
+
+        {/* Preço */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          {precoMin
+            ? <p style={{ fontSize: 13, color: 'rgba(240,236,224,0.6)' }}>A partir de <span style={{ color: '#c9a84c', fontWeight: 700 }}>R$ {Number(precoMin).toFixed(2).replace('.', ',')}</span></p>
+            : <p style={{ fontSize: 12, color: 'rgba(240,236,224,0.25)', fontStyle: 'italic' }}>Consultar preço</p>
+          }
+          <span style={{ fontSize: 10, color: 'rgba(201,168,76,0.5)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Ver →</span>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
 
 function PerfumeCard({ perfume, delay }) {
   const disponivel = Number(perfume.ml_disponivel || 0);
