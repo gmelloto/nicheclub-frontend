@@ -266,7 +266,7 @@ function FrascoCard({ perfume }) {
 
   return (
     <Link to={`/perfume/${perfume.id}`}
-      style={{ display: 'block', background: '#ffffff', borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(201,168,76,0.1)', transition: 'transform 0.3s, border-color 0.3s', transform: hovered ? 'translateY(-6px)' : 'translateY(0)', borderColor: hovered ? 'rgba(201,168,76,0.35)' : 'rgba(201,168,76,0.1)' }}
+      style={{ display: 'block', background: '#ffffff', border: '1px solid #e8e4dc', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', borderRadius: 4, overflow: 'hidden', transition: 'border-color 0.3s, transform 0.3s', transform: hovered ? 'translateY(-4px)' : 'translateY(0)' }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
