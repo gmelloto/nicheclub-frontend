@@ -5,7 +5,7 @@ import Navbar from './components/layout/Navbar.jsx';
 import Catalogo from './pages/Catalogo.jsx';
 import Perfume from './pages/Perfume.jsx';
 import Carrinho from './pages/Carrinho.jsx';
-import Admin from './pages/Admin.jsx';
+import Admin from './pages/Admin.js';
 import AdminProdutos from './pages/AdminProdutos.jsx';
 import AdminNotas from './pages/AdminNotas.jsx';
 import Login from './pages/Login.jsx';
