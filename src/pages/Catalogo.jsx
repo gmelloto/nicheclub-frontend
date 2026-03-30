@@ -266,7 +266,7 @@ function FrascoCard({ perfume }) {
 
   return (
     <Link to={`/perfume/${perfume.id}`}
-      style={{ display: 'block', background: '#111009', borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(201,168,76,0.1)', transition: 'transform 0.3s, border-color 0.3s', transform: hovered ? 'translateY(-6px)' : 'translateY(0)', borderColor: hovered ? 'rgba(201,168,76,0.35)' : 'rgba(201,168,76,0.1)' }}
+      style={{ display: 'block', background: '#ffffff', borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(201,168,76,0.1)', transition: 'transform 0.3s, border-color 0.3s', transform: hovered ? 'translateY(-6px)' : 'translateY(0)', borderColor: hovered ? 'rgba(201,168,76,0.35)' : 'rgba(201,168,76,0.1)' }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -287,7 +287,7 @@ function FrascoCard({ perfume }) {
 
         {/* Acordes barras */}
         <div style={{ padding: '12px 12px 12px 10px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', gap: 4 }}>
-          <p style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(201,168,76,0.6)', marginBottom: 6, fontWeight: 600 }}>Principais acordes</p>
+          <p style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#9a7030', marginBottom: 6, fontWeight: 600 }}>Principais acordes</p>
           {acordes.length > 0 ? acordes.map(a => (
             <div key={a} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <div style={{ flex: 1, height: 18, borderRadius: 3, background: corAcorde(a), display: 'flex', alignItems: 'center', paddingLeft: 8, overflow: 'hidden' }}>
@@ -295,21 +295,21 @@ function FrascoCard({ perfume }) {
               </div>
             </div>
           )) : (
-            <p style={{ fontSize: 11, color: 'rgba(240,236,224,0.25)', fontStyle: 'italic' }}>—</p>
+            <p style={{ fontSize: 11, color: '#ccc', fontStyle: 'italic' }}>—</p>
           )}
 
           {/* Rating */}
           {perfume.rating_valor && (
             <div style={{ marginTop: 'auto', paddingTop: 8 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                <span style={{ fontSize: 18, fontWeight: 700, color: '#f0ece0' }}>{Number(perfume.rating_valor).toFixed(1)}</span>
+                <span style={{ fontSize: 18, fontWeight: 700, color: '#1a1a1a' }}>{Number(perfume.rating_valor).toFixed(1)}</span>
                 <div style={{ display: 'flex', gap: 1 }}>
                   {[1,2,3,4,5].map(s => (
                     <span key={s} style={{ fontSize: 10, color: s <= Math.round(perfume.rating_valor) ? '#c9a84c' : 'rgba(201,168,76,0.2)' }}>★</span>
                   ))}
                 </div>
               </div>
-              <p style={{ fontSize: 10, color: 'rgba(240,236,224,0.3)' }}>({perfume.rating_count?.toLocaleString()})</p>
+              <p style={{ fontSize: 10, color: '#aaa' }}>({perfume.rating_count?.toLocaleString()})</p>
             </div>
           )}
         </div>
@@ -318,26 +318,26 @@ function FrascoCard({ perfume }) {
       {/* Info inferior */}
       <div style={{ padding: '1rem 1.25rem' }}>
         {/* Nome e marca */}
-        <p style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(201,168,76,0.6)', marginBottom: 3, fontWeight: 500 }}>{perfume.marca}</p>
-        <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#f0ece0', marginBottom: 4, lineHeight: 1.2 }}>{perfume.nome}</h3>
-        {perfume.genero && <p style={{ fontSize: 11, color: 'rgba(240,236,224,0.35)', marginBottom: 8 }}>{perfume.genero}</p>}
+        <p style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#9a7030', marginBottom: 3, fontWeight: 500 }}>{perfume.marca}</p>
+        <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#1a1a1a', marginBottom: 4, lineHeight: 1.2 }}>{perfume.nome}</h3>
+        {perfume.genero && <p style={{ fontSize: 11, color: '#888', marginBottom: 8 }}>{perfume.genero}</p>}
 
         {/* Barra estoque */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'rgba(240,236,224,0.4)', marginBottom: 4 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#888', marginBottom: 4 }}>
           <span>{disponivel}ml disponível</span>
           <span>{pct}%</span>
         </div>
-        <div style={{ height: 4, background: 'rgba(255,255,255,0.06)', borderRadius: 2, marginBottom: '0.75rem' }}>
+        <div style={{ height: 4, background: 'rgba(0,0,0,0.08)', borderRadius: 2, marginBottom: '0.75rem' }}>
           <div style={{ height: '100%', background: 'linear-gradient(90deg,#c9a84c,#e8c870)', borderRadius: 2, width: `${100 - pct}%`, transition: 'width 0.5s' }} />
         </div>
 
         {/* Preço */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           {precoMin
-            ? <p style={{ fontSize: 13, color: 'rgba(240,236,224,0.6)' }}>A partir de <span style={{ color: '#c9a84c', fontWeight: 700 }}>R$ {Number(precoMin).toFixed(2).replace('.', ',')}</span></p>
-            : <p style={{ fontSize: 12, color: 'rgba(240,236,224,0.25)', fontStyle: 'italic' }}>Consultar preço</p>
+            ? <p style={{ fontSize: 13, color: '#555' }}>A partir de <span style={{ color: '#c9a84c', fontWeight: 700 }}>R$ {Number(precoMin).toFixed(2).replace('.', ',')}</span></p>
+            : <p style={{ fontSize: 12, color: '#aaa', fontStyle: 'italic' }}>Consultar preço</p>
           }
-          <span style={{ fontSize: 10, color: 'rgba(201,168,76,0.5)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Ver →</span>
+          <span style={{ fontSize: 10, color: '#c9a84c', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Ver →</span>
         </div>
       </div>
     </Link>
