@@ -27,10 +27,12 @@ export default function Catalogo() {
   const [total, setTotal] = useState(0);
   const LIMITE = 12;
 
-  const carregarPerfumes = async (pag = 1, buscaTermo = busca, reset = false) => {
+  const carregarPerfumes = async (pag = 1, buscaTermo = busca, reset = false, tabAtual = tab) => {
     if (pag === 1) setLoading(true); else setLoadingMore(true);
     try {
-      const res = await api.perfumes({ pagina: pag, limite: LIMITE, busca: buscaTermo });
+      const params = { pagina: pag, limite: LIMITE, busca: buscaTermo };
+      if (tabAtual === "catalogo") params.todos = true;
+      const res = await api.perfumes(params);
       const lista = res.perfumes || res;
       if (reset || pag === 1) setPerfumes(lista);
       else setPerfumes(prev => [...prev, ...lista]);
@@ -44,7 +46,7 @@ export default function Catalogo() {
     }
   };
 
-  useEffect(() => { carregarPerfumes(1, '', true); }, []);
+  useEffect(() => { carregarPerfumes(1, '', true, tab); }, [tab]);
 
   // Debounce busca
   useEffect(() => {
@@ -105,6 +107,9 @@ export default function Catalogo() {
             </button>
             <button onClick={() => setTab('lacrados')} style={{ padding: '12px 36px', fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', border: '1px solid rgba(201,168,76,0.4)', borderLeft: 'none', cursor: 'pointer', transition: 'all 0.2s', background: tab === 'lacrados' ? S.gold : 'transparent', color: tab === 'lacrados' ? '#0d0b07' : '#6b6460' }}>
               Perfumes Lacrados
+            </button>
+            <button onClick={() => setTab('catalogo')} style={{ padding: '12px 36px', fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', border: '1px solid rgba(201,168,76,0.4)', borderLeft: 'none', cursor: 'pointer', transition: 'all 0.2s', background: tab === 'catalogo' ? S.gold : 'transparent', color: tab === 'catalogo' ? '#0d0b07' : '#6b6460' }}>
+              Catalogo Completo
             </button>
           </div>
 
