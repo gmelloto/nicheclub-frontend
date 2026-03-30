@@ -264,8 +264,7 @@ function StepPreview({ resultado, onConfirmar, onVoltar, onEditar }) {
 }
 
 // ─── STEP: formulario manual ───────────────────────────────────────────────
-function StepManual({ onVoltar, onSalvo }) {
-  const { token } = useAuth();
+function StepManual({ onVoltar, onSalvo, token }) {
   const [form, setForm] = useState({ nome: '', marca: '', ano: '', genero: '', pais: '', foto_url: '', url_fragrantica: '', rating_valor: '', ml_inicial: '' });
   const [precos, setPrecos] = useState(TAMANHOS.map(t => ({ ...t, preco: '' })));
   const [fotoPreview, setFotoPreview] = useState('');
@@ -301,7 +300,7 @@ function StepManual({ onVoltar, onSalvo }) {
         ...form,
         precos: precos.filter(p => p.preco),
         ml_inicial: form.ml_inicial ? Number(form.ml_inicial) : null,
-      });
+      }, token);
       onSalvo();
     } catch(e) {
       setMsg({ tipo: 'erro', texto: e.message || 'Erro ao salvar.' });
@@ -442,6 +441,7 @@ export default function AdminProdutos() {
   if (!token) { navigate('/admin/login'); return null; }
 
   const confirmarECadastrar = async (resultado, precos, ml_inicial) => {
+    if (!token) throw new Error('Token nao fornecido. Faca login novamente.');
     const d = resultado.dados;
     await api.adminCadastrarPerfume({
       nome: d.nome,
@@ -454,7 +454,7 @@ export default function AdminProdutos() {
       rating_valor: d.rating_valor || '',
       ml_inicial: ml_inicial ? Number(ml_inicial) : null,
       precos: precos.filter(p => p.preco),
-    });
+    }, token);
     setMensagemSucesso(resultado.atualizado ? 'Perfume atualizado com sucesso!' : 'Perfume cadastrado com sucesso!');
     setStep('sucesso');
   };
@@ -501,6 +501,7 @@ export default function AdminProdutos() {
 
         {step === 'manual' && (
           <StepManual
+            token={token}
             onVoltar={() => setStep('escolha')}
             onSalvo={() => { setMensagemSucesso('Perfume cadastrado com sucesso!'); setStep('sucesso'); }}
           />
