@@ -90,7 +90,7 @@ function StepFragrantica({ onPreview, onVoltar }) {
       const base = tunnelUrl.replace(/\/$/, '');
       const resp = await fetch(`${base}/scrape`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'bypass-tunnel-password': '1' },
         body: JSON.stringify({ url: linkFrag }),
       });
       const d = await resp.json();
