@@ -292,7 +292,7 @@ function PainelEstoque({ token }) {
           )}
           <div className="admin-table-wrap">
             <table className="admin-table">
-              <thead><tr style={{ fontWeight: 700 }}><th style={{ width: 36 }}><input type="checkbox" checked={sels.length === filtrados.length && filtrados.length > 0} onChange={() => setSels(p => p.length === filtrados.length ? [] : filtrados.map(x => x.id))} style={{ cursor: "pointer" }} /></th><th>Perfume</th><th>Marca</th><th>Total</th><th>Vendido</th><th>Disponível</th><th>Status</th><th>Criado em</th><th>Esgotado em</th><th>Ações</th></tr></thead>
+              <thead style={{ fontWeight: 700 }}><tr><th style={{ width: 36 }}><input type="checkbox" checked={sels.length === filtrados.length && filtrados.length > 0} onChange={() => setSels(p => p.length === filtrados.length ? [] : filtrados.map(x => x.id))} style={{ cursor: "pointer" }} /></th><th>Perfume</th><th>Marca</th><th>Total</th><th>Vendido</th><th>Disponível</th><th>Status</th><th>Criado em</th><th>Esgotado em</th><th>Ações</th></tr></thead>
               <tbody>
                 {filtrados.map(f => {
                   const disp = Number(f.ml_disponivel || 0);
