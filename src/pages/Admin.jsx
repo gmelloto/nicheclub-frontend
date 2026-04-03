@@ -123,8 +123,8 @@ function PainelEstoque({ token }) {
 
   const filtrados = frascos.filter(f => {
     const matchBusca = !busca || f.perfume?.toLowerCase().includes(busca.toLowerCase()) || f.marca?.toLowerCase().includes(busca.toLowerCase());
-    const pct = Math.round((Number(f.ml_vendido) / Number(f.ml_total)) * 100);
-    const status = pct >= 80 ? 'critico' : pct >= 60 ? 'atencao' : 'ok';
+    const disp = Number(f.ml_disponivel || 0);
+    const status = disp === 0 ? 'esgotado' : disp < 20 ? 'fechado' : 'aberto';
     const matchStatus = !filtroStatus || status === filtroStatus;
     return matchBusca && matchStatus;
   });
@@ -204,9 +204,9 @@ function PainelEstoque({ token }) {
           <select value={filtroStatus} onChange={e => setFiltroStatus(e.target.value)}
             style={{ padding: '8px 12px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, outline: 'none', background: '#fff', cursor: 'pointer' }}>
             <option value="">Todos os status</option>
-            <option value="ok">✅ OK</option>
-            <option value="atencao">⚠️ Atenção</option>
-            <option value="critico">🔴 Crítico</option>
+            <option value="aberto">✅ Aberto</option>
+            <option value="fechado">⚠️ Fechado</option>
+            <option value="esgotado">🔴 Esgotado</option>
           </select>
           <button className="btn-primary" style={{ width: 'auto', padding: '10px 20px' }}
             onClick={() => window.location.href = '/admin/produtos'}>
@@ -223,9 +223,9 @@ function PainelEstoque({ token }) {
               <thead><tr><th>Perfume</th><th>Marca</th><th>Total</th><th>Vendido</th><th>Disponível</th><th>Status</th><th>Ações</th></tr></thead>
               <tbody>
                 {filtrados.map(f => {
-                  const pct = Math.round((Number(f.ml_vendido) / Number(f.ml_total)) * 100);
-                  const cls = pct >= 80 ? 'badge-red' : pct >= 60 ? 'badge-gold' : 'badge-green';
-                  const label = pct >= 80 ? 'Crítico' : pct >= 60 ? 'Atenção' : 'OK';
+                  const disp = Number(f.ml_disponivel || 0);
+                  const cls = disp === 0 ? 'badge-red' : disp < 20 ? 'badge-gold' : 'badge-green';
+                  const label = disp === 0 ? 'Esgotado' : disp < 20 ? 'Fechado' : 'Aberto';
                   return (
                     <tr key={f.id}>
                       <td>{f.perfume}</td>
