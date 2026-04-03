@@ -9,6 +9,7 @@ export default function Admin() {
   const { token, usuario } = useAuth();
   const navigate = useNavigate();
   const [aba, setAba] = useState('pedidos');
+  const [menuAberto, setMenuAberto] = useState(false);
 
   useEffect(() => {
     if (!token) navigate('/admin/login');
@@ -16,23 +17,29 @@ export default function Admin() {
 
   if (!token) return null;
 
+  const selecionarAba = (a) => { setAba(a); setMenuAberto(false); };
+
   const abaLabels = { pedidos: 'Pedidos', estoque: 'Decants', perfumes: 'Perfumes', whatsapp: 'WhatsApp' };
   return (
     <div className="admin-page">
-      <div className="admin-sidebar">
+      <button className="admin-menu-btn" onClick={() => setMenuAberto(v => !v)} aria-label="Menu">
+        {menuAberto ? '✕' : '☰'}
+      </button>
+      <div className={`admin-sidebar-overlay ${menuAberto ? 'open' : ''}`} onClick={() => setMenuAberto(false)} />
+      <div className={`admin-sidebar ${menuAberto ? 'open' : ''}`}>
         <div className="admin-brand">
           <span className="gold">◈</span> Admin
         </div>
         <p className="small muted" style={{ marginBottom: '2rem' }}>{usuario?.nome}</p>
         {['pedidos', 'estoque', 'perfumes', 'whatsapp'].map(a => (
-          <button key={a} className={`admin-nav-btn ${aba === a ? 'active' : ''}`} onClick={() => setAba(a)}>
+          <button key={a} className={`admin-nav-btn ${aba === a ? 'active' : ''}`} onClick={() => selecionarAba(a)}>
             {abaLabels[a] || a.charAt(0).toUpperCase() + a.slice(1)}
           </button>
         ))}
-        <button className="admin-nav-btn" onClick={() => navigate('/admin/produtos')} style={{ marginTop: '1rem', color: '#c9a84c', borderTop: '1px solid #e8e4dc', paddingTop: '1rem' }}>
+        <button className="admin-nav-btn" onClick={() => { setMenuAberto(false); navigate('/admin/produtos'); }} style={{ marginTop: '1rem', color: '#c9a84c', borderTop: '1px solid #e8e4dc', paddingTop: '1rem' }}>
           + Cadastrar Produto
         </button>
-        <button className="admin-nav-btn" onClick={() => navigate('/admin/notas')} style={{ color: '#c9a84c' }}>
+        <button className="admin-nav-btn" onClick={() => { setMenuAberto(false); navigate('/admin/notas'); }} style={{ color: '#c9a84c' }}>
           Notas Olfativas
         </button>
       </div>
@@ -185,7 +192,7 @@ function PainelEstoque({ token }) {
       {/* Modal editar */}
       {editando && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ background: '#fff', borderRadius: 8, padding: '2rem', width: 360, boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}>
+          <div style={{ background: '#fff', borderRadius: 8, padding: '2rem', width: 360, maxWidth: '92vw', boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}>
             <h3 style={{ marginBottom: 4, color: '#0d0b07' }}>Editar Frasco</h3>
             <p style={{ color: '#888', fontSize: 13, marginBottom: 20 }}>{editando.perfume} — {editando.marca}</p>
             <div style={{ marginBottom: 12 }}>
@@ -217,7 +224,7 @@ function PainelEstoque({ token }) {
         </button>
       </div>
       <div style={{ background: '#f8f8f8', border: '1px solid #eee', borderRadius: 12, padding: '1rem 1.25rem', marginBottom: 20, marginTop: 16, display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center' }}>
-        <div style={{ position: 'relative', flex: '0 0 calc(50% - 6px)', minWidth: 0 }}>
+        <div style={{ position: 'relative', flex: '1 1 200px', minWidth: 0 }}>
           <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#aaa', fontSize: 15 }}>&#128269;</span>
           <input
             value={busca}
@@ -227,7 +234,7 @@ function PainelEstoque({ token }) {
           />
         </div>
         <select value={filtroStatus} onChange={e => setFiltroStatus(e.target.value)}
-          style={{ flex: '0 0 calc(50% - 6px)', padding: '9px 14px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 13, outline: 'none', background: '#fff', cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+          style={{ flex: '1 1 160px', padding: '9px 14px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 13, outline: 'none', background: '#fff', cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
           <option value="">Todos os status</option>
           <option value="aberto">✅ Aberto</option>
           <option value="fechado">⚠️ Fechado</option>
@@ -542,7 +549,7 @@ function PainelPerfumes({ token }) {
       {/* Modal editar */}
       {editando && createPortal(
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ background: '#fff', borderRadius: 10, padding: '2rem', width: 440, boxShadow: '0 8px 32px rgba(0,0,0,0.2)', maxHeight: '90vh', overflowY: 'auto' }}>
+          <div style={{ background: '#fff', borderRadius: 10, padding: '1.5rem', width: 440, maxWidth: '92vw', boxShadow: '0 8px 32px rgba(0,0,0,0.2)', maxHeight: '90vh', overflowY: 'auto' }}>
             <h3 style={{ marginBottom: 16, color: '#0d0b07' }}>Editar Perfume</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
 

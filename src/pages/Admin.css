@@ -27,3 +27,38 @@
 .wa-input input { flex: 1; }
 .wa-empty { flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem; }
 .broadcast-form { width: 100%; max-width: 480px; }
+
+/* Mobile hamburger button */
+.admin-menu-btn { display: none; position: fixed; top: 12px; left: 12px; z-index: 1001; width: 40px; height: 40px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg2); cursor: pointer; font-size: 20px; color: var(--text); align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+
+/* Mobile sidebar overlay */
+.admin-sidebar-overlay { display: none; }
+
+/* ─── Responsive: Tablet (≤ 900px) ─── */
+@media (max-width: 900px) {
+  .admin-page { grid-template-columns: 1fr; }
+  .admin-sidebar { display: none; position: fixed; top: 0; left: 0; bottom: 0; width: 240px; z-index: 1000; padding: 3.5rem 1.5rem 2rem; box-shadow: 4px 0 20px rgba(0,0,0,0.15); }
+  .admin-sidebar.open { display: block; }
+  .admin-sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 999; }
+  .admin-sidebar-overlay.open { display: block; }
+  .admin-menu-btn { display: flex; }
+  .admin-content { padding: 1.25rem; padding-top: 4rem; }
+  .painel-header { flex-wrap: wrap; gap: 12px; }
+  .wa-layout { grid-template-columns: 1fr; min-height: auto; }
+  .wa-conversas { border-right: none; border-bottom: 1px solid var(--border); max-height: 240px; overflow-y: auto; }
+  .wa-msgs { min-height: 250px; }
+  .admin-table { font-size: 12px; }
+  .admin-table th, .admin-table td { padding: 8px 8px; }
+}
+
+/* ─── Responsive: Mobile (≤ 600px) ─── */
+@media (max-width: 600px) {
+  .admin-content { padding: 1rem; padding-top: 3.5rem; }
+  .painel-header h2 { font-size: 1.1rem; }
+  .wa-layout { grid-template-columns: 1fr; }
+  .wa-conversas { max-height: 200px; }
+  .wa-msg { max-width: 85%; }
+  .wa-input { flex-wrap: wrap; }
+  .wa-input input { min-width: 0; }
+  .admin-table th, .admin-table td { padding: 6px 6px; white-space: nowrap; }
+}

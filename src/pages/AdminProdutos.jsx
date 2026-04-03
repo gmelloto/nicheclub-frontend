@@ -468,7 +468,7 @@ export default function AdminProdutos() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: S.bg, padding: '2rem' }}>
+    <div style={{ minHeight: '100vh', background: S.bg, padding: '1rem' }}>
       <div style={{ maxWidth: 720, margin: '0 auto' }}>
 
         {/* Header */}
