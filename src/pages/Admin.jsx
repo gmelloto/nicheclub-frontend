@@ -635,7 +635,40 @@ function PainelPerfumes({ token }) {
         <>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
             <p style={{ fontSize: 12, color: '#888' }}>{total} perfumes no total — página {pagina} de {totalPaginas || 1}</p>
+            {selsp.length > 0 && (
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center', background: '#fffbf0', border: '1px solid #e8c870', borderRadius: 6, padding: '8px 14px' }}>
+                <span style={{ fontSize: 13, fontWeight: 600, color: '#8a6a10' }}>{selsp.length} sel.</span>
+                <button onClick={() => setShowMassaP(v => !v)} style={{ padding: '4px 12px', background: '#c9a84c', border: 'none', borderRadius: 4, fontSize: 12, fontWeight: 600, cursor: 'pointer', color: '#0d0b07' }}>Editar</button>
+                <button onClick={excluirMassaP} disabled={salvandoMassaP} style={{ padding: '4px 12px', background: '#fff0f0', border: '1px solid #fcc', borderRadius: 4, fontSize: 12, cursor: 'pointer', color: '#c0392b' }}>Excluir</button>
+                <button onClick={() => setSelsp([])} style={{ padding: '4px 8px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 4, fontSize: 12, cursor: 'pointer' }}>X</button>
+              </div>
+            )}
           </div>
+          {showMassaP && selsp.length > 0 && (
+            <div style={{ background: '#fffbf0', border: '1px solid #e8c870', borderRadius: 6, padding: '12px 16px', marginBottom: 12, display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: 12, color: '#888' }}>Aplicar a {selsp.length} perfume(s):</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <label style={{ fontSize: 12, color: '#888' }}>Gênero:</label>
+                <select value={massaFormP.genero} onChange={e => setMassaFormP(m => ({ ...m, genero: e.target.value }))} style={{ padding: '6px 10px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, outline: 'none', background: '#fff', color: '#333' }}>
+                  <option value=''>Manter</option>
+                  <option value='Masculino'>Masculino</option>
+                  <option value='Feminino'>Feminino</option>
+                  <option value='Unissex'>Unissex</option>
+                </select>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <label style={{ fontSize: 12, color: '#888' }}>Status:</label>
+                <select value={massaFormP.ativo} onChange={e => setMassaFormP(m => ({ ...m, ativo: e.target.value }))} style={{ padding: '6px 10px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, outline: 'none', background: '#fff', color: '#333' }}>
+                  <option value=''>Manter</option>
+                  <option value='true'>Ativo</option>
+                  <option value='false'>Inativo</option>
+                </select>
+              </div>
+              <button onClick={salvarMassaP} disabled={salvandoMassaP} style={{ padding: '6px 16px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 4, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: '#0d0b07' }}>
+                {salvandoMassaP ? 'Salvando...' : 'Aplicar'}
+              </button>
+            </div>
+          )}
           <div className="admin-table-wrap">
             <table className="admin-table">
               <thead style={{ fontWeight: 700 }}>
