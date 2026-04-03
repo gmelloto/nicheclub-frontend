@@ -252,9 +252,6 @@ function PainelEstoque({ token }) {
           )}
       </div>
 
-        </div>
-      </div>
-
       {loading ? <p className="muted">Carregando...</p> : (
         <>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
