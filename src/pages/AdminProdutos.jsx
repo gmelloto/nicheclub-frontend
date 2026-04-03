@@ -88,14 +88,14 @@ function StepFragrantica({ onPreview, onVoltar }) {
     setMsg({ tipo: '', texto: '' });
     try {
       const base = tunnelUrl.replace(/\/$/, '');
-      const resp = await fetch(`${base}/preview`, {
+      const resp = await fetch(`${base}/scrape`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'bypass-tunnel-password': '1' },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url: linkFrag }),
       });
       const d = await resp.json();
       if (d.sucesso) {
-        onPreview({ dados: d.dados, atualizado: false, id: null, slug: null });
+        onPreview(d);
       } else {
         setMsg({ tipo: 'erro', texto: d.erro || 'Erro ao processar.' });
       }
@@ -264,7 +264,8 @@ function StepPreview({ resultado, onConfirmar, onVoltar, onEditar }) {
 }
 
 // ─── STEP: formulario manual ───────────────────────────────────────────────
-function StepManual({ onVoltar, onSalvo, token }) {
+function StepManual({ onVoltar, onSalvo }) {
+  const { token } = useAuth();
   const [form, setForm] = useState({ nome: '', marca: '', ano: '', genero: '', pais: '', foto_url: '', url_fragrantica: '', rating_valor: '', ml_inicial: '' });
   const [precos, setPrecos] = useState(TAMANHOS.map(t => ({ ...t, preco: '' })));
   const [fotoPreview, setFotoPreview] = useState('');
@@ -300,7 +301,7 @@ function StepManual({ onVoltar, onSalvo, token }) {
         ...form,
         precos: precos.filter(p => p.preco),
         ml_inicial: form.ml_inicial ? Number(form.ml_inicial) : null,
-      }, token);
+      });
       onSalvo();
     } catch(e) {
       setMsg({ tipo: 'erro', texto: e.message || 'Erro ao salvar.' });
@@ -441,7 +442,6 @@ export default function AdminProdutos() {
   if (!token) { navigate('/admin/login'); return null; }
 
   const confirmarECadastrar = async (resultado, precos, ml_inicial) => {
-    if (!token) throw new Error('Token nao fornecido. Faca login novamente.');
     const d = resultado.dados;
     await api.adminCadastrarPerfume({
       nome: d.nome,
@@ -450,23 +450,11 @@ export default function AdminProdutos() {
       genero: d.genero,
       pais: d.pais || '',
       foto_url: d.foto_url || '',
-      url_fragrantica: d.link_fragrantica || '',
+      url_fragrantica: resultado.slug ? `https://nicheclub-frontend.vercel.app/perfume/${resultado.slug}` : '',
       rating_valor: d.rating_valor || '',
-      rating_count: d.rating_count || '',
-      acorde1: d.acorde1 || '',
-      acorde2: d.acorde2 || '',
-      acorde3: d.acorde3 || '',
-      acorde4: d.acorde4 || '',
-      acorde5: d.acorde5 || '',
-      notas_topo: d.notas_topo || '',
-      notas_coracao: d.notas_coracao || '',
-      notas_base: d.notas_base || '',
-      perfumista1: d.perfumista1 || '',
-      perfumista2: d.perfumista2 || '',
-      descricao: d.descricao || '',
       ml_inicial: ml_inicial ? Number(ml_inicial) : null,
       precos: precos.filter(p => p.preco),
-    }, token);
+    });
     setMensagemSucesso(resultado.atualizado ? 'Perfume atualizado com sucesso!' : 'Perfume cadastrado com sucesso!');
     setStep('sucesso');
   };
@@ -513,7 +501,6 @@ export default function AdminProdutos() {
 
         {step === 'manual' && (
           <StepManual
-            token={token}
             onVoltar={() => setStep('escolha')}
             onSalvo={() => { setMensagemSucesso('Perfume cadastrado com sucesso!'); setStep('sucesso'); }}
           />

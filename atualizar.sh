@@ -1,90 +1,89 @@
 #!/bin/bash
 
-FRONTEND="$HOME/Applications/nicheclub-frontend"
-BACKEND="$HOME/Applications/nicheclub"
-DOWNLOADS="$HOME/Downloads"
-BACKUP="$HOME/Applications/nicheclub-backups"
-TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
-BACKUP_DIR="$BACKUP/$TIMESTAMP"
+BACKUP_DIR="$HOME/Applications/nicheclub-backups/$(date +%Y-%m-%d_%H-%M-%S)"
+FRONTEND_DIR="$HOME/Applications/nicheclub-frontend/src"
+BACKEND_DIR="$HOME/Applications/nicheclub/src"
+DOWNLOADS_DIR="$HOME/Downloads"
 
-mover() {
-  ARQUIVO="$1"
-  DESTINO="$2"
-  ORIGEM="$DOWNLOADS/$ARQUIVO"
+echo "📦 Criando backup em $BACKUP_DIR..."
+mkdir -p "$BACKUP_DIR"
 
-  if [ ! -f "$ORIGEM" ]; then
-    return
+# Backup dos arquivos modificados do frontend
+find "$FRONTEND_DIR" -name "*.jsx" -o -name "*.js" -o -name "*.css" | while read f; do
+  filename=$(basename "$f")
+  cp "$f" "$BACKUP_DIR/$filename"
+done
+
+# Backup dos arquivos modificados do backend
+find "$BACKEND_DIR" -name "*.js" | while read f; do
+  filename=$(basename "$f")
+  # Evita sobrescrever arquivo com mesmo nome
+  if [ -f "$BACKUP_DIR/$filename" ]; then
+    cp "$f" "$BACKUP_DIR/backend_$filename"
+  else
+    cp "$f" "$BACKUP_DIR/$filename"
   fi
+done
 
-  mkdir -p "$BACKUP_DIR"
+echo "✅ Backup criado com $(ls $BACKUP_DIR | wc -l | tr -d ' ') arquivos"
 
-  if [ -f "$DESTINO" ]; then
-    cp "$DESTINO" "$BACKUP_DIR/$ARQUIVO"
-    echo "  backup:     $ARQUIVO"
-  fi
-
-  cp "$ORIGEM" "$DESTINO"
-  rm "$ORIGEM"
-  echo "  atualizado: $ARQUIVO"
-  ATUALIZOU=true
-}
-
-ATUALIZOU=false
-FRONTEND_MUDOU=false
-
-echo "Verificando arquivos..."
+# Copia arquivos de Downloads para os projetos
 echo ""
+echo "🔍 Verificando Downloads..."
 
-# Frontend
-for f in index.css Navbar.jsx Catalogo.jsx Perfume.jsx Carrinho.jsx Admin.jsx Admin.js AdminProdutos.jsx Login.jsx Login.js App.jsx api.js; do
-  if [ -f "$DOWNLOADS/$f" ]; then
-    case "$f" in
-      index.css) mover "$f" "$FRONTEND/src/index.css" ;;
-      Navbar.jsx) mover "$f" "$FRONTEND/src/components/layout/Navbar.jsx" ;;
-      Catalogo.jsx) mover "$f" "$FRONTEND/src/pages/Catalogo.jsx" ;;
-      Perfume.jsx) mover "$f" "$FRONTEND/src/pages/Perfume.jsx" ;;
-      Carrinho.jsx) mover "$f" "$FRONTEND/src/pages/Carrinho.jsx" ;;
-      Admin.jsx) mover "$f" "$FRONTEND/src/pages/Admin.jsx" ;;
-      Admin.js) mover "$f" "$FRONTEND/src/pages/Admin.js" ;;
-      AdminProdutos.jsx) mover "$f" "$FRONTEND/src/pages/AdminProdutos.jsx" ;;
-      Login.jsx) mover "$f" "$FRONTEND/src/pages/Login.jsx" ;;
-      Login.js) mover "$f" "$FRONTEND/src/pages/Login.js" ;;
-      App.jsx) mover "$f" "$FRONTEND/src/App.jsx" ;;
-      api.js) mover "$f" "$FRONTEND/src/services/api.js" ;;
-    esac
-    FRONTEND_MUDOU=true
+ARQUIVOS_COPIADOS=0
+
+for file in "$DOWNLOADS_DIR"/*.jsx "$DOWNLOADS_DIR"/*.js "$DOWNLOADS_DIR"/*.css "$DOWNLOADS_DIR"/*.py; do
+  [ -f "$file" ] || continue
+  filename=$(basename "$file")
+
+  # Tenta encontrar no frontend
+  destino=$(find "$HOME/Applications/nicheclub-frontend/src" -name "$filename" 2>/dev/null | head -1)
+
+  # Se nao achou no frontend, tenta no backend
+  if [ -z "$destino" ]; then
+    destino=$(find "$HOME/Applications/nicheclub/src" -name "$filename" 2>/dev/null | head -1)
+  fi
+
+  # Se nao achou em nenhum, copia para raiz do nicheclub (scripts)
+  if [ -z "$destino" ]; then
+    if [[ "$filename" == *.py ]]; then
+      destino="$HOME/Applications/nicheclub/$filename"
+    fi
+  fi
+
+  if [ -n "$destino" ]; then
+    cp "$file" "$destino"
+    echo "   ✅ $filename → $destino"
+    ARQUIVOS_COPIADOS=$((ARQUIVOS_COPIADOS + 1))
+  else
+    echo "   ⚠️  $filename — destino nao encontrado, ignorado"
   fi
 done
 
-# Backend
-for f in estoque.js index.js migrate_fragrantica.js import_fragrantica.js; do
-  if [ -f "$DOWNLOADS/$f" ]; then
-    case "$f" in
-      estoque.js) mover "$f" "$BACKEND/src/services/estoque.js" ;;
-      index.js) mover "$f" "$BACKEND/src/routes/index.js" ;;
-      migrate_fragrantica.js) mover "$f" "$BACKEND/src/db/migrate_fragrantica.js" ;;
-      import_fragrantica.js) mover "$f" "$BACKEND/src/db/import_fragrantica.js" ;;
-    esac
-  fi
-done
-
-if [ "$ATUALIZOU" = false ]; then
-  echo "Nenhum arquivo encontrado na pasta Downloads. Nada a fazer."
-  exit 0
+if [ $ARQUIVOS_COPIADOS -eq 0 ]; then
+  echo "   Nenhum arquivo encontrado na pasta Downloads."
 fi
 
 echo ""
-echo "---"
 
-if [ "$FRONTEND_MUDOU" = true ]; then
-  echo "Fazendo build e deploy do frontend..."
+# Deploy frontend
+if [ $ARQUIVOS_COPIADOS -gt 0 ] || [ "$1" == "--force" ]; then
+  echo "🚀 Fazendo deploy do frontend..."
+  cd "$HOME/Applications/nicheclub-frontend"
+  git add -A
+  git commit -m "atualizar: $(date +%Y-%m-%d_%H-%M-%S)" 2>/dev/null || echo "   Nada a commitar no frontend"
+  git push && npx vercel --prod
   echo ""
-  cd "$FRONTEND"
-  npm run build && \
-  git add . && \
-  git commit -m "update: $TIMESTAMP" && \
-  git push && \
-  vercel --prod
+
+  echo "🚀 Fazendo deploy do backend..."
+  cd "$HOME/Applications/nicheclub"
+  git add -A
+  git commit -m "atualizar: $(date +%Y-%m-%d_%H-%M-%S)" 2>/dev/null || echo "   Nada a commitar no backend"
+  git push
 else
-  echo "Apenas backend atualizado. Rode 'railway redeploy' se necessário."
+  echo "Nada a fazer. Use --force para forcar o deploy mesmo sem arquivos novos."
 fi
+
+echo ""
+echo "🎉 Concluido!"
