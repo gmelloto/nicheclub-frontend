@@ -76,45 +76,6 @@ function PainelPedidos({ token }) {
           <option value="entregue">Entregue</option>
         </select>
       </div>
-      {/* Barra de ações em massa */}
-      {selecionados.length > 0 && (
-        <div style={{ background: '#fffbf0', border: '1px solid #e8c870', borderRadius: 6, padding: '12px 16px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: 13, fontWeight: 600, color: '#8a6a10' }}>{selecionados.length} selecionado(s)</span>
-          <button onClick={() => setMostrarMassa(!mostrarMassa)}
-            style={{ padding: '6px 14px', background: '#c9a84c', border: 'none', borderRadius: 4, fontSize: 12, fontWeight: 600, cursor: 'pointer', color: '#0d0b07' }}>
-            ✏️ Editar em massa
-          </button>
-          <button onClick={excluirMassa} disabled={salvandoMassa}
-            style={{ padding: '6px 14px', background: '#fff0f0', border: '1px solid #fcc', borderRadius: 4, fontSize: 12, fontWeight: 600, cursor: 'pointer', color: '#c0392b' }}>
-            🗑️ Excluir selecionados
-          </button>
-          <button onClick={() => setSelecionados([])}
-            style={{ padding: '6px 14px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 4, fontSize: 12, cursor: 'pointer', color: '#666' }}>
-            Desmarcar todos
-          </button>
-          {mostrarMassa && (
-            <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', paddingTop: 8, borderTop: '1px solid #e8c870', width: '100%' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <label style={{ fontSize: 12, color: '#888' }}>ML Total:</label>
-                <input type="number" value={editMassa.ml_total} onChange={e => setEditMassa(m => ({ ...m, ml_total: e.target.value }))}
-                  placeholder="Manter atual"
-                  style={{ padding: '6px 10px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, width: 120, outline: 'none' }} />
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <label style={{ fontSize: 12, color: '#888' }}>ML Vendido:</label>
-                <input type="number" value={editMassa.ml_vendido} onChange={e => setEditMassa(m => ({ ...m, ml_vendido: e.target.value }))}
-                  placeholder="Manter atual"
-                  style={{ padding: '6px 10px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, width: 120, outline: 'none' }} />
-              </div>
-              <button onClick={salvarMassa} disabled={salvandoMassa}
-                style={{ padding: '6px 16px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 4, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: '#0d0b07' }}>
-                {salvandoMassa ? 'Salvando...' : 'Aplicar'}
-              </button>
-            </div>
-          )}
-        </div>
-      )}
-
       {loading ? <p className="muted">Carregando...</p> : (
         <div className="admin-table-wrap">
           <table className="admin-table">
@@ -149,10 +110,6 @@ function PainelEstoque({ token }) {
   const [editForm, setEditForm] = useState({ ml_total: '', ml_vendido: '' });
   const [salvando, setSalvando] = useState(false);
   const [excluindo, setExcluindo] = useState(null);
-  const [selecionados, setSelecionados] = useState([]);
-  const [editMassa, setEditMassa] = useState({ ml_total: '', ml_vendido: '' });
-  const [salvandoMassa, setSalvandoMassa] = useState(false);
-  const [mostrarMassa, setMostrarMassa] = useState(false);
   const API = 'https://nicheclub-backend-production.up.railway.app';
 
   const carregar = () => {
@@ -171,53 +128,6 @@ function PainelEstoque({ token }) {
     const matchStatus = !filtroStatus || status === filtroStatus;
     return matchBusca && matchStatus;
   });
-
-  const toggleSelecionado = (id) => {
-    setSelecionados(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
-  };
-
-  const toggleTodos = () => {
-    setSelecionados(prev => prev.length === filtrados.length ? [] : filtrados.map(f => f.id));
-  };
-
-  const salvarMassa = async () => {
-    if (!selecionados.length) return;
-    setSalvandoMassa(true);
-    try {
-      await Promise.all(selecionados.map(id =>
-        fetch(`${API}/api/admin/frascos/${id}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-          body: JSON.stringify({
-            ...(editMassa.ml_total !== '' ? { ml_total: Number(editMassa.ml_total) } : {}),
-            ...(editMassa.ml_vendido !== '' ? { ml_vendido: Number(editMassa.ml_vendido) } : {}),
-          }),
-        })
-      ));
-      setSelecionados([]);
-      setEditMassa({ ml_total: '', ml_vendido: '' });
-      setMostrarMassa(false);
-      carregar();
-    } catch(e) { alert(e.message); }
-    finally { setSalvandoMassa(false); }
-  };
-
-  const excluirMassa = async () => {
-    if (!selecionados.length) return;
-    if (!window.confirm(`Excluir ${selecionados.length} frasco(s)? Esta ação não pode ser desfeita.`)) return;
-    setSalvandoMassa(true);
-    try {
-      await Promise.all(selecionados.map(id =>
-        fetch(`${API}/api/admin/frascos/${id}`, {
-          method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${token}` },
-        })
-      ));
-      setSelecionados([]);
-      carregar();
-    } catch(e) { alert(e.message); }
-    finally { setSalvandoMassa(false); }
-  };
 
   const abrirEditar = (f) => {
     setEditando(f);
@@ -310,24 +220,14 @@ function PainelEstoque({ token }) {
           <p style={{ fontSize: 12, color: '#888', marginBottom: 12 }}>{filtrados.length} de {frascos.length} frascos</p>
           <div className="admin-table-wrap">
             <table className="admin-table">
-              <thead><tr>
-    <th style={{ width: 36 }}>
-      <input type="checkbox" checked={selecionados.length === filtrados.length && filtrados.length > 0} onChange={toggleTodos}
-        style={{ cursor: 'pointer', width: 16, height: 16 }} />
-    </th>
-    <th>Perfume</th><th>Marca</th><th>Total</th><th>Vendido</th><th>Disponível</th><th>Status</th><th>Ações</th>
-  </tr></thead>
+              <thead><tr><th>Perfume</th><th>Marca</th><th>Total</th><th>Vendido</th><th>Disponível</th><th>Status</th><th>Ações</th></tr></thead>
               <tbody>
                 {filtrados.map(f => {
                   const disp = Number(f.ml_disponivel || 0);
                   const cls = disp === 0 ? 'badge-red' : disp < 20 ? 'badge-gold' : 'badge-green';
                   const label = disp === 0 ? 'Esgotado' : disp < 20 ? 'Fechado' : 'Aberto';
                   return (
-                    <tr key={f.id} style={{ background: selecionados.includes(f.id) ? '#fffbf0' : '' }}>
-                      <td>
-                        <input type="checkbox" checked={selecionados.includes(f.id)} onChange={() => toggleSelecionado(f.id)}
-                          style={{ cursor: 'pointer', width: 16, height: 16 }} />
-                      </td>
+                    <tr key={f.id}>
                       <td>{f.perfume}</td>
                       <td className="muted small">{f.marca}</td>
                       <td>{f.ml_total}ml</td>
