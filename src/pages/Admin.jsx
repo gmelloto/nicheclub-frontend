@@ -488,30 +488,6 @@ function PainelPerfumes({ token }) {
     setSelsp([]); setMassaFormP({ genero: '', ativo: '' }); setShowMassaP(false); setSalvandoMassaP(false); carregar(pagina, busca, limite);
   };
 
-  const toggleSelP = (id) => setSelsp(p => p.includes(id) ? p.filter(x => x !== id) : [...p, id]);
-  const toggleTodosP = () => setSelsp(p => p.length === perfumes.length ? [] : perfumes.map(x => x.id));
-
-  const excluirMassaP = async () => {
-    const ok = window.confirm('Excluir ' + selsp.length + ' perfume(s)? Isso remove tambem os frascos e precos.');
-    if (!ok) return;
-    setSalvandoMassaP(true);
-    for (const id of selsp) {
-      await fetch(API_URL + '/api/admin/perfumes/' + id, { method: 'DELETE', headers: { Authorization: 'Bearer ' + token } });
-    }
-    setSelsp([]); setSalvandoMassaP(false); carregar(pagina, busca, limite);
-  };
-
-  const salvarMassaP = async () => {
-    setSalvandoMassaP(true);
-    const body = {};
-    if (massaFormP.genero) body.genero = massaFormP.genero;
-    if (massaFormP.ativo !== '') body.ativo = massaFormP.ativo === 'true';
-    for (const id of selsp) {
-      await fetch(API_URL + '/api/admin/perfumes/' + id, { method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }, body: JSON.stringify(body) });
-    }
-    setSelsp([]); setMassaFormP({ genero: '', ativo: '' }); setShowMassaP(false); setSalvandoMassaP(false); carregar(pagina, busca, limite);
-  };
-
   const abrirEditar = (p) => {
     setEditando(p);
     setEditForm({
