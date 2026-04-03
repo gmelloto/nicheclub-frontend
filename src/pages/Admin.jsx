@@ -450,9 +450,9 @@ function PainelPerfumes({ token }) {
     finally { setLoading(false); }
   };
 
-  React.useEffect(() => { carregar(1, '', limite); }, []);
+  useEffect(() => { carregar(1, '', limite); }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const t = setTimeout(() => { setBusca(buscaInput); carregar(1, buscaInput, limite); }, 400);
     return () => clearTimeout(t);
   }, [buscaInput]);
