@@ -91,19 +91,19 @@ export default function AdminNotas() {
     <div style={{ minHeight: '100vh', background: S.bg }}>
 
       {/* Header */}
-      <div style={{ background: '#0d0b07', borderBottom: '1px solid rgba(201,168,76,0.2)', padding: '0 2rem', height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+      <div style={{ background: '#0d0b07', borderBottom: '1px solid rgba(201,168,76,0.2)', padding: '0 1rem', minHeight: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', padding: '8px 0' }}>
           <button onClick={() => navigate('/admin')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(240,236,224,0.5)', fontSize: 13 }}>&#8592; Admin</button>
           <span style={{ color: '#c9a84c', fontWeight: 700, fontSize: 15, letterSpacing: '0.05em' }}>Notas Olfativas</span>
           <span style={{ background: 'rgba(201,168,76,0.15)', color: '#c9a84c', fontSize: 11, padding: '2px 8px', borderRadius: 10 }}>{total} notas</span>
         </div>
         <button onClick={() => setModal(true)}
-          style={{ background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 4, padding: '8px 16px', fontSize: 12, fontWeight: 700, cursor: 'pointer', color: '#0d0b07', letterSpacing: '0.08em' }}>
+          style={{ background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 4, padding: '8px 16px', fontSize: 12, fontWeight: 700, cursor: 'pointer', color: '#0d0b07', letterSpacing: '0.08em', marginBottom: 8 }}>
           + Adicionar Nota
         </button>
       </div>
 
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '1.5rem 2rem' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '1.5rem 1rem' }}>
 
         {/* Busca */}
         <input value={buscaInput} onChange={e => setBuscaInput(e.target.value)}
@@ -112,9 +112,9 @@ export default function AdminNotas() {
         />
 
         {/* Tabela */}
-        <div style={{ border: `1px solid ${S.border}`, borderRadius: 8, overflow: 'hidden' }}>
+        <div style={{ border: `1px solid ${S.border}`, borderRadius: 8, overflow: 'hidden', overflowX: 'auto' }}>
           {/* Header tabela */}
-          <div style={{ display: 'grid', gridTemplateColumns: '52px 1fr 1fr 1fr 80px', background: '#0d0b07', padding: '10px 16px', gap: 12 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '52px 1fr 1fr 1fr 80px', background: '#0d0b07', padding: '10px 16px', gap: 12, minWidth: 540 }}>
             {['Foto', 'Nome EN', 'Nome PT', 'Cloudinary', ''].map((h, i) => (
               <span key={i} style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(201,168,76,0.7)' }}>{h}</span>
             ))}
@@ -125,7 +125,7 @@ export default function AdminNotas() {
           ) : notas.length === 0 ? (
             <div style={{ padding: '3rem', textAlign: 'center', color: S.text3 }}>Nenhuma nota encontrada.</div>
           ) : notas.map((nota, i) => (
-            <div key={nota.id} style={{ display: 'grid', gridTemplateColumns: '52px 1fr 1fr 1fr 80px', padding: '10px 16px', gap: 12, alignItems: 'center', background: i % 2 === 0 ? '#fff' : S.bg2, borderTop: `1px solid ${S.border}` }}>
+            <div key={nota.id} style={{ display: 'grid', gridTemplateColumns: '52px 1fr 1fr 1fr 80px', padding: '10px 16px', gap: 12, alignItems: 'center', background: i % 2 === 0 ? '#fff' : S.bg2, borderTop: `1px solid ${S.border}`, minWidth: 540 }}>
 
               {/* Foto */}
               <div style={{ width: 40, height: 40, borderRadius: 6, overflow: 'hidden', border: `1px solid ${S.border}`, background: S.bg2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

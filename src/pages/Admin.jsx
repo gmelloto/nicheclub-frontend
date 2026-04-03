@@ -9,6 +9,7 @@ export default function Admin() {
   const { token, usuario } = useAuth();
   const navigate = useNavigate();
   const [aba, setAba] = useState('pedidos');
+  const [menuAberto, setMenuAberto] = useState(false);
 
   useEffect(() => {
     if (!token) navigate('/admin/login');
@@ -16,23 +17,29 @@ export default function Admin() {
 
   if (!token) return null;
 
+  const selecionarAba = (a) => { setAba(a); setMenuAberto(false); };
+
   const abaLabels = { pedidos: 'Pedidos', estoque: 'Decants', perfumes: 'Perfumes', whatsapp: 'WhatsApp' };
   return (
     <div className="admin-page">
-      <div className="admin-sidebar">
+      <button className="admin-menu-btn" onClick={() => setMenuAberto(v => !v)} aria-label="Menu">
+        {menuAberto ? '✕' : '☰'}
+      </button>
+      <div className={`admin-sidebar-overlay ${menuAberto ? 'open' : ''}`} onClick={() => setMenuAberto(false)} />
+      <div className={`admin-sidebar ${menuAberto ? 'open' : ''}`}>
         <div className="admin-brand">
           <span className="gold">◈</span> Admin
         </div>
         <p className="small muted" style={{ marginBottom: '2rem' }}>{usuario?.nome}</p>
         {['pedidos', 'estoque', 'perfumes', 'whatsapp'].map(a => (
-          <button key={a} className={`admin-nav-btn ${aba === a ? 'active' : ''}`} onClick={() => setAba(a)}>
+          <button key={a} className={`admin-nav-btn ${aba === a ? 'active' : ''}`} onClick={() => selecionarAba(a)}>
             {abaLabels[a] || a.charAt(0).toUpperCase() + a.slice(1)}
           </button>
         ))}
-        <button className="admin-nav-btn" onClick={() => navigate('/admin/produtos')} style={{ marginTop: '1rem', color: '#c9a84c', borderTop: '1px solid #e8e4dc', paddingTop: '1rem' }}>
+        <button className="admin-nav-btn" onClick={() => { setMenuAberto(false); navigate('/admin/produtos'); }} style={{ marginTop: '1rem', color: '#c9a84c', borderTop: '1px solid #e8e4dc', paddingTop: '1rem' }}>
           + Cadastrar Produto
         </button>
-        <button className="admin-nav-btn" onClick={() => navigate('/admin/notas')} style={{ color: '#c9a84c' }}>
+        <button className="admin-nav-btn" onClick={() => { setMenuAberto(false); navigate('/admin/notas'); }} style={{ color: '#c9a84c' }}>
           Notas Olfativas
         </button>
       </div>
@@ -70,7 +77,7 @@ function PainelPedidos({ token }) {
     <div className="fade-in">
       <div className="painel-header">
         <h2>Pedidos</h2>
-        <select value={filtro} onChange={e => setFiltro(e.target.value)} style={{ width: 'auto', minWidth: 180 }}>
+        <select value={filtro} onChange={e => setFiltro(e.target.value)} style={{ width: 'auto', minWidth: 140, maxWidth: '100%' }}>
           <option value="">Todos os status</option>
           <option value="aguardando_pagamento">Aguardando pagamento</option>
           <option value="pagamento_aprovado">Pagamento aprovado</option>
@@ -185,7 +192,7 @@ function PainelEstoque({ token }) {
       {/* Modal editar */}
       {editando && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ background: '#fff', borderRadius: 8, padding: '2rem', width: 360, boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}>
+          <div style={{ background: '#fff', borderRadius: 8, padding: '2rem', width: 360, maxWidth: '92vw', boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}>
             <h3 style={{ marginBottom: 4, color: '#0d0b07' }}>Editar Frasco</h3>
             <p style={{ color: '#888', fontSize: 13, marginBottom: 20 }}>{editando.perfume} — {editando.marca}</p>
             <div style={{ marginBottom: 12 }}>
@@ -217,7 +224,7 @@ function PainelEstoque({ token }) {
         </button>
       </div>
       <div style={{ background: '#f8f8f8', border: '1px solid #eee', borderRadius: 12, padding: '1rem 1.25rem', marginBottom: 20, marginTop: 16, display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center' }}>
-        <div style={{ position: 'relative', flex: '0 0 calc(50% - 6px)', minWidth: 0 }}>
+        <div style={{ position: 'relative', flex: '1 1 200px', minWidth: 0 }}>
           <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#aaa', fontSize: 15 }}>&#128269;</span>
           <input
             value={busca}
@@ -227,27 +234,27 @@ function PainelEstoque({ token }) {
           />
         </div>
         <select value={filtroStatus} onChange={e => setFiltroStatus(e.target.value)}
-          style={{ flex: '0 0 calc(50% - 6px)', padding: '9px 14px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 13, outline: 'none', background: '#fff', cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+          style={{ flex: '1 1 160px', padding: '9px 14px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 13, outline: 'none', background: '#fff', cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
           <option value="">Todos os status</option>
           <option value="aberto">✅ Aberto</option>
           <option value="fechado">⚠️ Fechado</option>
           <option value="esgotado">🔴 Esgotado</option>
         </select>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', flex: '1 1 auto', minWidth: 0 }}>
             <span style={{ fontSize: 13, color: '#555', fontWeight: 500 }}>Criado:</span>
             <input type="date" value={filtroCriadoInicio} onChange={e => setFiltroCriadoInicio(e.target.value)}
-              style={{ padding: '8px 12px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 13, outline: 'none', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', color: '#333' }} />
+              style={{ padding: '8px 8px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 12, outline: 'none', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', color: '#333', minWidth: 0, flex: '1 1 120px', maxWidth: 160 }} />
             <span style={{ fontSize: 13, color: '#aaa' }}>–</span>
             <input type="date" value={filtroCriadoFim} onChange={e => setFiltroCriadoFim(e.target.value)}
-              style={{ padding: '8px 12px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 13, outline: 'none', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', color: '#333' }} />
+              style={{ padding: '8px 8px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 12, outline: 'none', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', color: '#333', minWidth: 0, flex: '1 1 120px', maxWidth: 160 }} />
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', flex: '1 1 auto', minWidth: 0 }}>
             <span style={{ fontSize: 13, color: '#555', fontWeight: 500 }}>Esgotado:</span>
             <input type="date" value={filtroEsgotadoInicio} onChange={e => setFiltroEsgotadoInicio(e.target.value)}
-              style={{ padding: '8px 12px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 13, outline: 'none', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', color: '#333' }} />
+              style={{ padding: '8px 8px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 12, outline: 'none', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', color: '#333', minWidth: 0, flex: '1 1 120px', maxWidth: 160 }} />
             <span style={{ fontSize: 13, color: '#aaa' }}>–</span>
             <input type="date" value={filtroEsgotadoFim} onChange={e => setFiltroEsgotadoFim(e.target.value)}
-              style={{ padding: '8px 12px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 13, outline: 'none', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', color: '#333' }} />
+              style={{ padding: '8px 8px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 12, outline: 'none', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', color: '#333', minWidth: 0, flex: '1 1 120px', maxWidth: 160 }} />
           </div>
           {(filtroCriadoInicio || filtroCriadoFim || filtroEsgotadoInicio || filtroEsgotadoFim) && (
             <button onClick={() => { setFiltroCriadoInicio(''); setFiltroCriadoFim(''); setFiltroEsgotadoInicio(''); setFiltroEsgotadoFim(''); }}
@@ -257,10 +264,10 @@ function PainelEstoque({ token }) {
 
       {loading ? <p className="muted">Carregando...</p> : (
         <>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, flexWrap: 'wrap', gap: 8 }}>
             <p style={{ fontSize: 12, color: '#888' }}>{filtrados.length} de {frascos.length} frascos</p>
             {sels.length > 0 && (
-              <div style={{ display: 'flex', gap: 8, alignItems: 'center', background: '#fffbf0', border: '1px solid #e8c870', borderRadius: 6, padding: '8px 14px' }}>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center', background: '#fffbf0', border: '1px solid #e8c870', borderRadius: 6, padding: '8px 14px', flexWrap: 'wrap' }}>
                 <span style={{ fontSize: 13, fontWeight: 600, color: '#8a6a10' }}>{sels.length} sel.</span>
                 <button onClick={() => setShowMassa(v => !v)} style={{ padding: '4px 12px', background: '#c9a84c', border: 'none', borderRadius: 4, fontSize: 12, fontWeight: 600, cursor: 'pointer', color: '#0d0b07' }}>Editar</button>
                 <button onClick={async () => { const ok = window.confirm('Excluir ' + sels.length + ' frasco(s)?'); if (!ok) return; setSalvandoMassa(true); for (const id of sels) { await fetch(API + '/api/admin/frascos/' + id, { method: 'DELETE', headers: { Authorization: 'Bearer ' + token } }); } setSels([]); setSalvandoMassa(false); carregar(); }} disabled={salvandoMassa} style={{ padding: '4px 12px', background: '#fff0f0', border: '1px solid #fcc', borderRadius: 4, fontSize: 12, cursor: 'pointer', color: '#c0392b' }}>Excluir</button>
@@ -542,7 +549,7 @@ function PainelPerfumes({ token }) {
       {/* Modal editar */}
       {editando && createPortal(
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ background: '#fff', borderRadius: 10, padding: '2rem', width: 440, boxShadow: '0 8px 32px rgba(0,0,0,0.2)', maxHeight: '90vh', overflowY: 'auto' }}>
+          <div style={{ background: '#fff', borderRadius: 10, padding: '1.5rem', width: 440, maxWidth: '92vw', boxShadow: '0 8px 32px rgba(0,0,0,0.2)', maxHeight: '90vh', overflowY: 'auto' }}>
             <h3 style={{ marginBottom: 16, color: '#0d0b07' }}>Editar Perfume</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
 
@@ -612,8 +619,8 @@ function PainelPerfumes({ token }) {
       </div>
 
       {/* Filtros */}
-      <div style={{ background: '#f8f8f8', border: '1px solid #eee', borderRadius: 12, padding: '1rem 1.25rem', marginBottom: 20, display: 'flex', gap: 12, alignItems: 'center' }}>
-        <div style={{ position: 'relative', flex: '1 1 auto' }}>
+      <div style={{ background: '#f8f8f8', border: '1px solid #eee', borderRadius: 12, padding: '1rem 1.25rem', marginBottom: 20, display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+        <div style={{ position: 'relative', flex: '1 1 200px', minWidth: 0 }}>
           <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#bbb', fontSize: 15 }}>&#128269;</span>
           <input value={buscaInput} onChange={e => setBuscaInput(e.target.value)} placeholder="Buscar perfume ou marca..."
             style={{ width: '100%', padding: '10px 16px 10px 42px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 13, outline: 'none', background: '#fff', boxSizing: 'border-box', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }} />
@@ -633,10 +640,10 @@ function PainelPerfumes({ token }) {
       {/* Tabela */}
       {loading ? <p className="muted">Carregando...</p> : (
         <>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-            <p style={{ fontSize: 12, color: '#888' }}>{total} perfumes no total — página {pagina} de {totalPaginas || 1}</p>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, flexWrap: 'wrap', gap: 8 }}>
+            <p style={{ fontSize: 12, color: '#888' }}>{total} perfumes no total — pag. {pagina}/{totalPaginas || 1}</p>
             {selsp.length > 0 && (
-              <div style={{ display: 'flex', gap: 8, alignItems: 'center', background: '#fffbf0', border: '1px solid #e8c870', borderRadius: 6, padding: '8px 14px' }}>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center', background: '#fffbf0', border: '1px solid #e8c870', borderRadius: 6, padding: '8px 14px', flexWrap: 'wrap' }}>
                 <span style={{ fontSize: 13, fontWeight: 600, color: '#8a6a10' }}>{selsp.length} sel.</span>
                 <button onClick={() => setShowMassaP(v => !v)} style={{ padding: '4px 12px', background: '#c9a84c', border: 'none', borderRadius: 4, fontSize: 12, fontWeight: 600, cursor: 'pointer', color: '#0d0b07' }}>Editar</button>
                 <button onClick={excluirMassaP} disabled={salvandoMassaP} style={{ padding: '4px 12px', background: '#fff0f0', border: '1px solid #fcc', borderRadius: 4, fontSize: 12, cursor: 'pointer', color: '#c0392b' }}>Excluir</button>
