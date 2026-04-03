@@ -243,7 +243,16 @@ function PainelEstoque({ token }) {
                 <label style={{ fontSize: 12, color: '#888' }}>ML Vendido:</label>
                 <input type="number" value={massaForm.ml_vendido} onChange={e => setMassaForm(m => ({ ...m, ml_vendido: e.target.value }))} placeholder="Manter" style={{ padding: '6px 10px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, width: 100, outline: 'none' }} />
               </div>
-              <button onClick={async () => { setSalvandoMassa(true); const body = {}; if (massaForm.ml_total !== '') body.ml_total = Number(massaForm.ml_total); if (massaForm.ml_vendido !== '') body.ml_vendido = Number(massaForm.ml_vendido); for (const id of sels) { await fetch(API + '/api/admin/frascos/' + id, { method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }, body: JSON.stringify(body) }); } setSels([]); setMassaForm({ ml_total: '', ml_vendido: '' }); setShowMassa(false); setSalvandoMassa(false); carregar(); }} disabled={salvandoMassa} style={{ padding: '6px 16px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 4, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: '#0d0b07' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <label style={{ fontSize: 12, color: '#888' }}>Status:</label>
+                <select value={massaForm.status || ''} onChange={e => setMassaForm(m => ({ ...m, status: e.target.value }))} style={{ padding: '6px 10px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, outline: 'none', background: '#fff' }}>
+                  <option value=''>Manter</option>
+                  <option value='aberto'>Aberto</option>
+                  <option value='fechado'>Fechado</option>
+                  <option value='esgotado'>Esgotado</option>
+                </select>
+              </div>
+              <button onClick={async () => { setSalvandoMassa(true); const body = {}; if (massaForm.ml_total !== '') body.ml_total = Number(massaForm.ml_total); if (massaForm.ml_vendido !== '') body.ml_vendido = Number(massaForm.ml_vendido); if (massaForm.status) body.status = massaForm.status; for (const id of sels) { await fetch(API + '/api/admin/frascos/' + id, { method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }, body: JSON.stringify(body) }); } setSels([]); setMassaForm({ ml_total: '', ml_vendido: '' }); setShowMassa(false); setSalvandoMassa(false); carregar(); }} disabled={salvandoMassa} style={{ padding: '6px 16px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 4, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: '#0d0b07' }}>
                 {salvandoMassa ? 'Salvando...' : 'Aplicar'}
               </button>
             </div>
