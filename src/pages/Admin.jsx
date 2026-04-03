@@ -213,8 +213,8 @@ function PainelEstoque({ token }) {
           + Novo perfume
         </button>
       </div>
-      <div style={{ background: '#f8f8f8', border: '1px solid #eee', borderRadius: 12, padding: '1rem 1.25rem', marginBottom: 20, display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center' }}>
-        <div style={{ position: 'relative', flex: '1 1 220px', minWidth: 200 }}>
+      <div style={{ background: '#f8f8f8', border: '1px solid #eee', borderRadius: 12, padding: '1rem 1.25rem', marginBottom: 20, marginTop: 16, display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center' }}>
+        <div style={{ position: 'relative', flex: '0 0 calc(50% - 6px)', minWidth: 0 }}>
           <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#aaa', fontSize: 15 }}>&#128269;</span>
           <input
             value={busca}
@@ -224,7 +224,7 @@ function PainelEstoque({ token }) {
           />
         </div>
         <select value={filtroStatus} onChange={e => setFiltroStatus(e.target.value)}
-          style={{ padding: '9px 14px', border: '1.5px solid #e0e0e0', borderRadius: 50, fontSize: 13, outline: 'none', background: '#fff', cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+          style={{ flex: '0 0 calc(50% - 6px)', flex: '0 0 calc(50% - 6px)', padding: '9px 14px', border: '1.5px solid #e0e0e0', borderRadius: 50, fontSize: 13, outline: 'none', background: '#fff', cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
           <option value="">Todos os status</option>
           <option value="aberto">✅ Aberto</option>
           <option value="fechado">⚠️ Fechado</option>
