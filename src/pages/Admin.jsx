@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context';
 import { api } from '../services/api';
@@ -501,7 +502,7 @@ function PainelPerfumes({ token }) {
   return (
     <div className="fade-in">
       {/* Modal editar */}
-      {editando && (
+      {editando && createPortal(
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ background: '#fff', borderRadius: 10, padding: '2rem', width: 440, boxShadow: '0 8px 32px rgba(0,0,0,0.2)', maxHeight: '90vh', overflowY: 'auto' }}>
             <h3 style={{ marginBottom: 16, color: '#0d0b07' }}>Editar Perfume</h3>
@@ -534,7 +535,7 @@ function PainelPerfumes({ token }) {
             </div>
           </div>
         </div>
-      )}
+      , document.body)}
 
       {/* Header */}
       <div className="painel-header" style={{ marginBottom: 16 }}>
