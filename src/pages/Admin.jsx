@@ -502,7 +502,7 @@ function PainelPerfumes({ token }) {
     <div className="fade-in">
       {/* Modal editar */}
       {editando && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ background: '#fff', borderRadius: 10, padding: '2rem', width: 440, boxShadow: '0 8px 32px rgba(0,0,0,0.2)', maxHeight: '90vh', overflowY: 'auto' }}>
             <h3 style={{ marginBottom: 16, color: '#0d0b07' }}>Editar Perfume</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
