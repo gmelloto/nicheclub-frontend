@@ -496,7 +496,7 @@ function PainelPerfumes({ token }) {
   const inp = (key) => ({
     value: editForm[key] || '',
     onChange: e => setEditForm(f => ({ ...f, [key]: e.target.value })),
-    style: { width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, boxSizing: 'border-box', outline: 'none' }
+    style: { width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, boxSizing: 'border-box', outline: 'none', color: '#0d0b07', background: '#fff' }
   });
 
   return (
