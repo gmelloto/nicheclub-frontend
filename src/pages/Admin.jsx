@@ -549,11 +549,11 @@ function PainelPerfumes({ token }) {
       {/* Modal editar */}
       {editando && createPortal(
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ background: '#fff', borderRadius: 10, padding: '1.5rem', width: 440, maxWidth: '92vw', boxShadow: '0 8px 32px rgba(0,0,0,0.2)', maxHeight: '90vh', overflowY: 'auto' }}>
+          <div style={{ background: '#fff', borderRadius: 10, padding: '1.5rem', width: 440, maxWidth: '92vw', boxShadow: '0 8px 32px rgba(0,0,0,0.2)', maxHeight: '90vh', overflowY: 'auto', overflowX: 'hidden', boxSizing: 'border-box' }}>
             <h3 style={{ marginBottom: 16, color: '#0d0b07' }}>Editar Perfume</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 140px), 1fr))', gap: 12 }}>
                 <div style={{ gridColumn: '1/-1' }}><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>NOME</label><input {...inp('nome')} /></div>
                 <div style={{ gridColumn: '1/-1' }}><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>MARCA</label><input {...inp('marca')} /></div>
                 <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>ANO</label><input {...inp('ano')} type="number" /></div>
@@ -576,7 +576,7 @@ function PainelPerfumes({ token }) {
               </div>
 
               <p style={{ fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 0 }}>ACORDES</p>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 100px), 1fr))', gap: 8 }}>
                 <input {...inp('acorde1')} placeholder="Acorde 1" />
                 <input {...inp('acorde2')} placeholder="Acorde 2" />
                 <input {...inp('acorde3')} placeholder="Acorde 3" />
