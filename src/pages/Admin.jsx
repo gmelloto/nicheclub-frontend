@@ -22,9 +22,6 @@ export default function Admin() {
   const abaLabels = { pedidos: 'Pedidos', estoque: 'Decants', perfumes: 'Perfumes', whatsapp: 'WhatsApp' };
   return (
     <div className="admin-page">
-      <button className="admin-menu-btn" onClick={() => setMenuAberto(v => !v)} aria-label="Menu">
-        {menuAberto ? '✕' : '☰'}
-      </button>
       <div className={`admin-sidebar-overlay ${menuAberto ? 'open' : ''}`} onClick={() => setMenuAberto(false)} />
       <div className={`admin-sidebar ${menuAberto ? 'open' : ''}`}>
         <div className="admin-brand">
@@ -44,6 +41,9 @@ export default function Admin() {
         </button>
       </div>
       <div className="admin-content">
+        <button className="admin-menu-btn" onClick={() => setMenuAberto(v => !v)} aria-label="Menu">
+          {menuAberto ? '✕' : '☰'}
+        </button>
         {aba === 'pedidos' && <PainelPedidos token={token} />}
         {aba === 'estoque' && <PainelEstoque token={token} />}
         {aba === 'perfumes' && <PainelPerfumes token={token} />}
