@@ -114,6 +114,10 @@ function PainelEstoque({ token }) {
   const [massaForm, setMassaForm] = useState({ ml_total: '', ml_vendido: '' });
   const [salvandoMassa, setSalvandoMassa] = useState(false);
   const [showMassa, setShowMassa] = useState(false);
+  const [filtroCriadoInicio, setFiltroCriadoInicio] = useState('');
+  const [filtroCriadoFim, setFiltroCriadoFim] = useState('');
+  const [filtroEsgotadoInicio, setFiltroEsgotadoInicio] = useState('');
+  const [filtroEsgotadoFim, setFiltroEsgotadoFim] = useState('');
   const API = 'https://nicheclub-backend-production.up.railway.app';
 
   const carregar = () => {
@@ -130,7 +134,13 @@ function PainelEstoque({ token }) {
     const disp = Number(f.ml_disponivel || 0);
     const status = disp === 0 ? 'esgotado' : disp < 20 ? 'fechado' : 'aberto';
     const matchStatus = !filtroStatus || status === filtroStatus;
-    return matchBusca && matchStatus;
+    const criado = f.criado_em ? new Date(f.criado_em) : null;
+    const esgotado = f.esgotado_em ? new Date(f.esgotado_em) : null;
+    const matchCriado = (!filtroCriadoInicio || (criado && criado >= new Date(filtroCriadoInicio))) &&
+                        (!filtroCriadoFim || (criado && criado <= new Date(filtroCriadoFim + 'T23:59:59')));
+    const matchEsgotado = (!filtroEsgotadoInicio || (esgotado && esgotado >= new Date(filtroEsgotadoInicio))) &&
+                          (!filtroEsgotadoFim || (esgotado && esgotado <= new Date(filtroEsgotadoFim + 'T23:59:59')));
+    return matchBusca && matchStatus && matchCriado && matchEsgotado;
   });
 
   const abrirEditar = (f) => {
@@ -212,6 +222,26 @@ function PainelEstoque({ token }) {
             <option value="fechado">⚠️ Fechado</option>
             <option value="esgotado">🔴 Esgotado</option>
           </select>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ fontSize: 12, color: '#888' }}>Criado:</span>
+            <input type="date" value={filtroCriadoInicio} onChange={e => setFiltroCriadoInicio(e.target.value)}
+              style={{ padding: '6px 8px', border: '1px solid #ddd', borderRadius: 4, fontSize: 12, outline: 'none' }} />
+            <span style={{ fontSize: 12, color: '#888' }}>-</span>
+            <input type="date" value={filtroCriadoFim} onChange={e => setFiltroCriadoFim(e.target.value)}
+              style={{ padding: '6px 8px', border: '1px solid #ddd', borderRadius: 4, fontSize: 12, outline: 'none' }} />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ fontSize: 12, color: '#888' }}>Esgotado:</span>
+            <input type="date" value={filtroEsgotadoInicio} onChange={e => setFiltroEsgotadoInicio(e.target.value)}
+              style={{ padding: '6px 8px', border: '1px solid #ddd', borderRadius: 4, fontSize: 12, outline: 'none' }} />
+            <span style={{ fontSize: 12, color: '#888' }}>-</span>
+            <input type="date" value={filtroEsgotadoFim} onChange={e => setFiltroEsgotadoFim(e.target.value)}
+              style={{ padding: '6px 8px', border: '1px solid #ddd', borderRadius: 4, fontSize: 12, outline: 'none' }} />
+          </div>
+          {(filtroCriadoInicio || filtroCriadoFim || filtroEsgotadoInicio || filtroEsgotadoFim) && (
+            <button onClick={() => { setFiltroCriadoInicio(''); setFiltroCriadoFim(''); setFiltroEsgotadoInicio(''); setFiltroEsgotadoFim(''); }}
+              style={{ padding: '6px 12px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 4, fontSize: 12, cursor: 'pointer', color: '#666' }}>Limpar datas</button>
+          )}
           <button className="btn-primary" style={{ width: 'auto', padding: '10px 20px' }}
             onClick={() => window.location.href = '/admin/produtos'}>
             + Novo perfume
@@ -259,7 +289,7 @@ function PainelEstoque({ token }) {
           )}
           <div className="admin-table-wrap">
             <table className="admin-table">
-              <thead><tr><th style={{ width: 36 }}><input type="checkbox" checked={sels.length === filtrados.length && filtrados.length > 0} onChange={() => setSels(p => p.length === filtrados.length ? [] : filtrados.map(x => x.id))} style={{ cursor: "pointer" }} /></th><th>Perfume</th><th>Marca</th><th>Total</th><th>Vendido</th><th>Disponível</th><th>Status</th><th>Criado em</th><th>Ações</th></tr></thead>
+              <thead><tr><th style={{ width: 36 }}><input type="checkbox" checked={sels.length === filtrados.length && filtrados.length > 0} onChange={() => setSels(p => p.length === filtrados.length ? [] : filtrados.map(x => x.id))} style={{ cursor: "pointer" }} /></th><th>Perfume</th><th>Marca</th><th>Total</th><th>Vendido</th><th>Disponível</th><th>Status</th><th>Criado em</th><th>Esgotado em</th><th>Ações</th></tr></thead>
               <tbody>
                 {filtrados.map(f => {
                   const disp = Number(f.ml_disponivel || 0);
@@ -275,6 +305,7 @@ function PainelEstoque({ token }) {
                       <td className="gold">{f.ml_disponivel}ml</td>
                       <td><span className={`badge ${cls}`}>{label}</span></td>
                       <td className='muted small'>{f.criado_em ? new Date(f.criado_em).toLocaleDateString('pt-BR') : '-'}</td>
+                      <td className='muted small'>{f.esgotado_em ? new Date(f.esgotado_em).toLocaleDateString('pt-BR') : '-'}</td>
                       <td>
                         <div style={{ display: 'flex', gap: 6 }}>
                           <button onClick={() => abrirEditar(f)}
