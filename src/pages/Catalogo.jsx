@@ -87,7 +87,7 @@ export default function Catalogo() {
   ];
 
   return (
-    <div style={{ background: S.black, color: S.text, fontFamily: "'Jost', sans-serif", overflowX: 'hidden' }}>
+    <div style={{ background: S.black, color: S.text, fontFamily: "'Inter', sans-serif", overflowX: 'hidden' }}>
 
       {/* ─── HERO ─────────────────────────────────────────────────────────── */}
       <div style={{ position: 'relative', minHeight: '42vh', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>

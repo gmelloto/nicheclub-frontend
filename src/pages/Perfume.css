@@ -22,4 +22,4 @@
 .tamanho-preco { font-size: 14px; }
 .esgotado-label { position: absolute; right: 18px; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); }
 .preco-total { display: flex; justify-content: space-between; align-items: baseline; padding: 12px 0; border-top: 1px solid var(--border); }
-.preco-valor { font-size: 1.4rem; font-family: 'Cormorant Garamond', serif; }
+.preco-valor { font-size: 1.4rem; font-family: 'Inter', sans-serif; font-weight: 600; }
