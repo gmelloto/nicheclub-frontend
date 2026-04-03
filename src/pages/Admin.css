@@ -83,7 +83,7 @@
     position: fixed !important;
     top: 76px !important;
     left: 12px !important;
-    z-index: 1001 !important;
+    z-index: 90 !important;
     width: 40px !important;
     height: 40px !important;
     border-radius: 8px !important;
