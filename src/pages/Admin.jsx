@@ -635,6 +635,7 @@ function PainelPerfumes({ token }) {
         <>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
             <p style={{ fontSize: 12, color: '#888' }}>{total} perfumes no total — página {pagina} de {totalPaginas || 1}</p>
+          </div>
           <div className="admin-table-wrap">
             <table className="admin-table">
               <thead style={{ fontWeight: 700 }}>
