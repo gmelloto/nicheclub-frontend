@@ -110,7 +110,7 @@ export default function Catalogo() {
       <BrandCarousel />
 
       {/* ─── CATÁLOGO ─────────────────────────────────────────────────────── */}
-      <div id="catalogo" style={{ padding: '5rem 1rem', background: '#fff' }}>
+      <div id="catalogo" style={{ padding: '5rem 2.5rem', background: '#fff' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
             <p style={{ fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', color: '#7a6020', marginBottom: '0.75rem', fontWeight: 500 }}>Nossa Coleção</p>
@@ -170,7 +170,7 @@ export default function Catalogo() {
       </div>
 
       {/* ─── COMO FUNCIONA ────────────────────────────────────────────────── */}
-      <div id="como-funciona" style={{ background: S.black2, borderTop: `1px solid ${S.border}`, borderBottom: `1px solid ${S.border}`, padding: '5rem 1rem' }}>
+      <div id="como-funciona" style={{ background: S.black2, borderTop: `1px solid ${S.border}`, borderBottom: `1px solid ${S.border}`, padding: '5rem 2.5rem' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', textAlign: 'center' }}>
           <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, marginBottom: '3.5rem' }}>Como Funciona</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '2rem' }}>
@@ -190,7 +190,7 @@ export default function Catalogo() {
       </div>
 
       {/* ─── PRAZO DE ENTREGA ─────────────────────────────────────────────── */}
-      <div style={{ padding: '5rem 1rem' }}>
+      <div style={{ padding: '5rem 2.5rem' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', textAlign: 'center' }}>
           <p style={{ fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', color: S.gold, marginBottom: '0.75rem', fontWeight: 500 }}>Entregas</p>
           <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, marginBottom: '3rem' }}>Prazo de Entrega</h2>
@@ -211,7 +211,7 @@ export default function Catalogo() {
       </div>
 
       {/* ─── FAQ ──────────────────────────────────────────────────────────── */}
-      <div id="faq" style={{ background: S.black2, borderTop: `1px solid ${S.border}`, padding: '5rem 1rem' }}>
+      <div id="faq" style={{ background: S.black2, borderTop: `1px solid ${S.border}`, padding: '5rem 2.5rem' }}>
         <div style={{ maxWidth: 800, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <p style={{ fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', color: S.gold, marginBottom: '0.75rem', fontWeight: 500 }}>Dúvidas</p>
@@ -234,7 +234,7 @@ export default function Catalogo() {
       </div>
 
       {/* ─── QUEM SOMOS ───────────────────────────────────────────────────── */}
-      <div id="quem-somos" style={{ borderTop: `1px solid ${S.border}`, padding: '6rem 1rem' }}>
+      <div id="quem-somos" style={{ borderTop: `1px solid ${S.border}`, padding: '6rem 2.5rem' }}>
         <div style={{ maxWidth: 800, margin: '0 auto', textAlign: 'center' }}>
           <p style={{ fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', color: S.gold, marginBottom: '1rem', fontWeight: 500 }}>Nossa História</p>
           <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, marginBottom: '2rem' }}>Quem Somos</h2>

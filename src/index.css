@@ -143,6 +143,12 @@ input::placeholder { color: var(--text3); letter-spacing: 0.1em; }
 
 /* ─── Responsivo Mobile ──────────────────────────────────────────── */
 @media (max-width: 768px) {
+  /* Seções do catálogo — padding lateral menor no mobile */
+  #catalogo, #como-funciona, #faq, #quem-somos {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
   /* Perfume page */
   .perfume-grid {
     grid-template-columns: 1fr !important;
