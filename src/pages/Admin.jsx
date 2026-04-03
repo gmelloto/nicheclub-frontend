@@ -110,6 +110,14 @@ function PainelEstoque({ token }) {
   const [editForm, setEditForm] = useState({ ml_total: '', ml_vendido: '' });
   const [salvando, setSalvando] = useState(false);
   const [excluindo, setExcluindo] = useState(null);
+  const [sels, setSels] = useState([]);
+  const [massaForm, setMassaForm] = useState({ ml_total: '', ml_vendido: '' });
+  const [salvandoMassa, setSalvandoMassa] = useState(false);
+  const [showMassa, setShowMassa] = useState(false);
+  const [sels, setSels] = useState([]);
+  const [massaForm, setMassaForm] = useState({ ml_total: '', ml_vendido: '' });
+  const [salvandoMassa, setSalvandoMassa] = useState(false);
+  const [showMassa, setShowMassa] = useState(false);
   const API = 'https://nicheclub-backend-production.up.railway.app';
 
   const carregar = () => {
@@ -217,17 +225,56 @@ function PainelEstoque({ token }) {
 
       {loading ? <p className="muted">Carregando...</p> : (
         <>
-          <p style={{ fontSize: 12, color: '#888', marginBottom: 12 }}>{filtrados.length} de {frascos.length} frascos</p>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+            <p style={{ fontSize: 12, color: '#888' }}>{filtrados.length} de {frascos.length} frascos</p>
+            {sels.length > 0 && (
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center', background: '#fffbf0', border: '1px solid #e8c870', borderRadius: 6, padding: '8px 14px' }}>
+                <span style={{ fontSize: 13, fontWeight: 600, color: '#8a6a10' }}>{sels.length} sel.</span>
+                <button onClick={() => setShowMassa(s => !s)} style={{ padding: '4px 12px', background: '#c9a84c', border: 'none', borderRadius: 4, fontSize: 12, fontWeight: 600, cursor: 'pointer', color: '#0d0b07' }}>Editar</button>
+                <button onClick={async () => {
+                  if (!window.confirm('Excluir ' + sels.length + ' frasco(s)?')) return;
+                  setSalvandoMassa(true);
+                  for (const id of sels) await fetch(API + '/api/admin/frascos/' + id, { method: 'DELETE', headers: { Authorization: 'Bearer ' + token } });
+                  setSels([]); setSalvandoMassa(false); carregar();
+                }} disabled={salvandoMassa} style={{ padding: '4px 12px', background: '#fff0f0', border: '1px solid #fcc', borderRadius: 4, fontSize: 12, cursor: 'pointer', color: '#c0392b' }}>Excluir</button>
+                <button onClick={() => setSels([])} style={{ padding: '4px 8px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 4, fontSize: 12, cursor: 'pointer' }}>X</button>
+              </div>
+            )}
+          </div>
+          {showMassa && sels.length > 0 && (
+            <div style={{ background: '#fffbf0', border: '1px solid #e8c870', borderRadius: 6, padding: '12px 16px', marginBottom: 12, display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: 12, color: '#888' }}>Aplicar a {sels.length} frasco(s):</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <label style={{ fontSize: 12, color: '#888' }}>ML Total:</label>
+                <input type="number" value={massaForm.ml_total} onChange={e => setMassaForm(m => ({ ...m, ml_total: e.target.value }))} placeholder="Manter" style={{ padding: '6px 10px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, width: 100, outline: 'none' }} />
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <label style={{ fontSize: 12, color: '#888' }}>ML Vendido:</label>
+                <input type="number" value={massaForm.ml_vendido} onChange={e => setMassaForm(m => ({ ...m, ml_vendido: e.target.value }))} placeholder="Manter" style={{ padding: '6px 10px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, width: 100, outline: 'none' }} />
+              </div>
+              <button onClick={async () => {
+                setSalvandoMassa(true);
+                const body = {};
+                if (massaForm.ml_total !== '') body.ml_total = Number(massaForm.ml_total);
+                if (massaForm.ml_vendido !== '') body.ml_vendido = Number(massaForm.ml_vendido);
+                for (const id of sels) await fetch(API + '/api/admin/frascos/' + id, { method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }, body: JSON.stringify(body) });
+                setSels([]); setMassaForm({ ml_total: '', ml_vendido: '' }); setShowMassa(false); setSalvandoMassa(false); carregar();
+              }} disabled={salvandoMassa} style={{ padding: '6px 16px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 4, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: '#0d0b07' }}>
+                {salvandoMassa ? 'Salvando...' : 'Aplicar'}
+              </button>
+            </div>
+          )}
           <div className="admin-table-wrap">
             <table className="admin-table">
-              <thead><tr><th>Perfume</th><th>Marca</th><th>Total</th><th>Vendido</th><th>Disponível</th><th>Status</th><th>Ações</th></tr></thead>
+              <thead><tr><th style={{ width: 36 }}><input type="checkbox" checked={sels.length === filtrados.length && filtrados.length > 0} onChange={() => setSels(p => p.length === filtrados.length ? [] : filtrados.map(x => x.id))} style={{ cursor: "pointer" }} /></th><th>Perfume</th><th>Marca</th><th>Total</th><th>Vendido</th><th>Disponível</th><th>Status</th><th>Ações</th></tr></thead>
               <tbody>
                 {filtrados.map(f => {
                   const disp = Number(f.ml_disponivel || 0);
                   const cls = disp === 0 ? 'badge-red' : disp < 20 ? 'badge-gold' : 'badge-green';
                   const label = disp === 0 ? 'Esgotado' : disp < 20 ? 'Fechado' : 'Aberto';
                   return (
-                    <tr key={f.id}>
+                    <tr key={f.id} style={{ background: sels.includes(f.id) ? "#fffbf0" : "" }}>
+                      <td><input type="checkbox" checked={sels.includes(f.id)} onChange={() => setSels(p => p.includes(f.id) ? p.filter(x => x !== f.id) : [...p, f.id])} style={{ cursor: "pointer" }} /></td>
                       <td>{f.perfume}</td>
                       <td className="muted small">{f.marca}</td>
                       <td>{f.ml_total}ml</td>
