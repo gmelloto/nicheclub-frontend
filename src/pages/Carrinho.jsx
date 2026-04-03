@@ -158,7 +158,7 @@ export default function Carrinho() {
               <div className="divider" />
               <div className="summary-total">
                 <span>Total</span>
-                <span className="gold" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '1.3rem' }}>
+                <span className="gold" style={{ fontFamily: 'Cormorant Garamond', fontSize: '1.3rem' }}>
                   R$ {totalFinal.toFixed(2).replace('.', ',')}
                 </span>
               </div>
