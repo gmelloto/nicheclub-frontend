@@ -104,44 +104,143 @@ function PainelPedidos({ token }) {
 function PainelEstoque({ token }) {
   const [frascos, setFrascos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [busca, setBusca] = useState('');
+  const [editando, setEditando] = useState(null);
+  const [editForm, setEditForm] = useState({ ml_total: '', ml_vendido: '' });
+  const [salvando, setSalvando] = useState(false);
+  const [excluindo, setExcluindo] = useState(null);
+  const API = 'https://nicheclub-backend-production.up.railway.app';
 
-  useEffect(() => {
+  const carregar = () => {
+    setLoading(true);
     api.estoque(token)
       .then(setFrascos).catch(() => setFrascos(DEMO_ESTOQUE))
       .finally(() => setLoading(false));
-  }, [token]);
+  };
+
+  useEffect(() => { carregar(); }, [token]);
+
+  const filtrados = frascos.filter(f =>
+    !busca || f.perfume?.toLowerCase().includes(busca.toLowerCase()) || f.marca?.toLowerCase().includes(busca.toLowerCase())
+  );
+
+  const abrirEditar = (f) => {
+    setEditando(f);
+    setEditForm({ ml_total: String(f.ml_total), ml_vendido: String(f.ml_vendido) });
+  };
+
+  const salvarEdicao = async () => {
+    setSalvando(true);
+    try {
+      const res = await fetch(`${API}/api/admin/frascos/${editando.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ ml_total: Number(editForm.ml_total), ml_vendido: Number(editForm.ml_vendido) }),
+      });
+      if (!res.ok) throw new Error('Erro ao salvar');
+      setEditando(null);
+      carregar();
+    } catch(e) { alert(e.message); }
+    finally { setSalvando(false); }
+  };
+
+  const confirmarExcluir = async (f) => {
+    if (!window.confirm(`Excluir frasco de "${f.perfume}"? Esta ação não pode ser desfeita.`)) return;
+    setExcluindo(f.id);
+    try {
+      const res = await fetch(`${API}/api/admin/frascos/${f.id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error('Erro ao excluir');
+      carregar();
+    } catch(e) { alert(e.message); }
+    finally { setExcluindo(null); }
+  };
 
   return (
     <div className="fade-in">
+      {/* Modal editar */}
+      {editando && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ background: '#fff', borderRadius: 8, padding: '2rem', width: 360, boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}>
+            <h3 style={{ marginBottom: 4, color: '#0d0b07' }}>Editar Frasco</h3>
+            <p style={{ color: '#888', fontSize: 13, marginBottom: 20 }}>{editando.perfume} — {editando.marca}</p>
+            <div style={{ marginBottom: 12 }}>
+              <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>ML TOTAL</label>
+              <input type="number" value={editForm.ml_total} onChange={e => setEditForm(f => ({ ...f, ml_total: e.target.value }))}
+                style={{ width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: 4, fontSize: 14, boxSizing: 'border-box' }} />
+            </div>
+            <div style={{ marginBottom: 20 }}>
+              <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>ML VENDIDO</label>
+              <input type="number" value={editForm.ml_vendido} onChange={e => setEditForm(f => ({ ...f, ml_vendido: e.target.value }))}
+                style={{ width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: 4, fontSize: 14, boxSizing: 'border-box' }} />
+              <p style={{ fontSize: 11, color: '#888', marginTop: 4 }}>Disponível: {Math.max(0, Number(editForm.ml_total) - Number(editForm.ml_vendido))}ml</p>
+            </div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button onClick={() => setEditando(null)} style={{ flex: 1, padding: '10px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 4, cursor: 'pointer', fontSize: 13 }}>Cancelar</button>
+              <button onClick={salvarEdicao} disabled={salvando} style={{ flex: 1, padding: '10px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 13, fontWeight: 700, color: '#0d0b07' }}>
+                {salvando ? 'Salvando...' : 'Salvar'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="painel-header">
         <h2>Estoque</h2>
-        <button className="btn-primary" style={{ width: 'auto', padding: '10px 20px' }}>
-          + Novo perfume
-        </button>
-      </div>
-      {loading ? <p className="muted">Carregando...</p> : (
-        <div className="admin-table-wrap">
-          <table className="admin-table">
-            <thead><tr><th>Perfume</th><th>Marca</th><th>Total</th><th>Vendido</th><th>Disponível</th><th>Status</th></tr></thead>
-            <tbody>
-              {frascos.map(f => {
-                const pct = Math.round((Number(f.ml_vendido) / Number(f.ml_total)) * 100);
-                const cls = pct >= 80 ? 'badge-red' : pct >= 60 ? 'badge-gold' : 'badge-green';
-                const label = pct >= 80 ? 'Crítico' : pct >= 60 ? 'Atenção' : 'OK';
-                return (
-                  <tr key={f.id}>
-                    <td>{f.perfume}</td>
-                    <td className="muted small">{f.marca}</td>
-                    <td>{f.ml_total}ml</td>
-                    <td>{f.ml_vendido}ml</td>
-                    <td className="gold">{f.ml_disponivel}ml</td>
-                    <td><span className={`badge ${cls}`}>{label}</span></td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+          <input
+            value={busca}
+            onChange={e => setBusca(e.target.value)}
+            placeholder="Buscar perfume ou marca..."
+            style={{ padding: '8px 14px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, width: 220, outline: 'none' }}
+          />
+          <button className="btn-primary" style={{ width: 'auto', padding: '10px 20px' }}
+            onClick={() => window.location.href = '/admin/produtos'}>
+            + Novo perfume
+          </button>
         </div>
+      </div>
+
+      {loading ? <p className="muted">Carregando...</p> : (
+        <>
+          <p style={{ fontSize: 12, color: '#888', marginBottom: 12 }}>{filtrados.length} de {frascos.length} frascos</p>
+          <div className="admin-table-wrap">
+            <table className="admin-table">
+              <thead><tr><th>Perfume</th><th>Marca</th><th>Total</th><th>Vendido</th><th>Disponível</th><th>Status</th><th>Ações</th></tr></thead>
+              <tbody>
+                {filtrados.map(f => {
+                  const pct = Math.round((Number(f.ml_vendido) / Number(f.ml_total)) * 100);
+                  const cls = pct >= 80 ? 'badge-red' : pct >= 60 ? 'badge-gold' : 'badge-green';
+                  const label = pct >= 80 ? 'Crítico' : pct >= 60 ? 'Atenção' : 'OK';
+                  return (
+                    <tr key={f.id}>
+                      <td>{f.perfume}</td>
+                      <td className="muted small">{f.marca}</td>
+                      <td>{f.ml_total}ml</td>
+                      <td>{f.ml_vendido}ml</td>
+                      <td className="gold">{f.ml_disponivel}ml</td>
+                      <td><span className={`badge ${cls}`}>{label}</span></td>
+                      <td>
+                        <div style={{ display: 'flex', gap: 6 }}>
+                          <button onClick={() => abrirEditar(f)}
+                            style={{ padding: '4px 10px', background: '#f0f0f0', border: '1px solid #ddd', borderRadius: 4, cursor: 'pointer', fontSize: 12, color: '#333' }}>
+                            ✏️ Editar
+                          </button>
+                          <button onClick={() => confirmarExcluir(f)} disabled={excluindo === f.id}
+                            style={{ padding: '4px 10px', background: '#fff0f0', border: '1px solid #fcc', borderRadius: 4, cursor: 'pointer', fontSize: 12, color: '#c0392b' }}>
+                            {excluindo === f.id ? '...' : '🗑️'}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
     </div>
   );
