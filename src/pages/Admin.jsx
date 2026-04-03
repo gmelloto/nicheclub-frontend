@@ -15,6 +15,7 @@ export default function Admin() {
 
   if (!token) return null;
 
+  const abaLabels = { pedidos: 'Pedidos', estoque: 'Decants', whatsapp: 'WhatsApp' };
   return (
     <div className="admin-page">
       <div className="admin-sidebar">
@@ -22,7 +23,6 @@ export default function Admin() {
           <span className="gold">◈</span> Admin
         </div>
         <p className="small muted" style={{ marginBottom: '2rem' }}>{usuario?.nome}</p>
-        const abaLabels = { pedidos: 'Pedidos', estoque: 'Decants', whatsapp: 'WhatsApp' };
         {['pedidos', 'estoque', 'whatsapp'].map(a => (
           <button key={a} className={`admin-nav-btn ${aba === a ? 'active' : ''}`} onClick={() => setAba(a)}>
             {abaLabels[a] || a.charAt(0).toUpperCase() + a.slice(1)}
