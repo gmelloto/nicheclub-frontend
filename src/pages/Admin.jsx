@@ -437,6 +437,10 @@ function PainelPerfumes({ token }) {
   const [editForm, setEditForm] = useState({});
   const [salvando, setSalvando] = useState(false);
   const [excluindo, setExcluindo] = useState(null);
+  const [selsp, setSelsp] = useState([]);
+  const [showMassaP, setShowMassaP] = useState(false);
+  const [massaFormP, setMassaFormP] = useState({ genero: '', ativo: '' });
+  const [salvandoMassaP, setSalvandoMassaP] = useState(false);
 
   const carregar = async (pag = 1, termo = busca, lim = limite) => {
     setLoading(true);
@@ -459,6 +463,30 @@ function PainelPerfumes({ token }) {
   }, [buscaInput]);
 
   const totalPaginas = Math.ceil(total / limite);
+
+  const toggleSelP = (id) => setSelsp(p => p.includes(id) ? p.filter(x => x !== id) : [...p, id]);
+  const toggleTodosP = () => setSelsp(p => p.length === perfumes.length ? [] : perfumes.map(x => x.id));
+
+  const excluirMassaP = async () => {
+    const ok = window.confirm('Excluir ' + selsp.length + ' perfume(s)? Isso remove tambem os frascos e precos.');
+    if (!ok) return;
+    setSalvandoMassaP(true);
+    for (const id of selsp) {
+      await fetch(API_URL + '/api/admin/perfumes/' + id, { method: 'DELETE', headers: { Authorization: 'Bearer ' + token } });
+    }
+    setSelsp([]); setSalvandoMassaP(false); carregar(pagina, busca, limite);
+  };
+
+  const salvarMassaP = async () => {
+    setSalvandoMassaP(true);
+    const body = {};
+    if (massaFormP.genero) body.genero = massaFormP.genero;
+    if (massaFormP.ativo !== '') body.ativo = massaFormP.ativo === 'true';
+    for (const id of selsp) {
+      await fetch(API_URL + '/api/admin/perfumes/' + id, { method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }, body: JSON.stringify(body) });
+    }
+    setSelsp([]); setMassaFormP({ genero: '', ativo: '' }); setShowMassaP(false); setSalvandoMassaP(false); carregar(pagina, busca, limite);
+  };
 
   const abrirEditar = (p) => {
     setEditando(p);
@@ -605,15 +633,19 @@ function PainelPerfumes({ token }) {
       {/* Tabela */}
       {loading ? <p className="muted">Carregando...</p> : (
         <>
-          <p style={{ fontSize: 12, color: '#888', marginBottom: 12 }}>{total} perfumes no total — página {pagina} de {totalPaginas || 1}</p>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+            <p style={{ fontSize: 12, color: '#888' }}>{total} perfumes no total — página {pagina} de {totalPaginas || 1}</p>
           <div className="admin-table-wrap">
             <table className="admin-table">
               <thead style={{ fontWeight: 700 }}>
-                <tr><th>Foto</th><th>Nome</th><th>Marca</th><th>Ano</th><th>Gênero</th><th>Rating</th><th>Status</th><th>Ações</th></tr>
+                <tr>
+                  <th style={{ width: 36 }}><input type='checkbox' checked={selsp.length === perfumes.length && perfumes.length > 0} onChange={toggleTodosP} style={{ cursor: 'pointer' }} /></th>
+                  <th>Foto</th><th>Nome</th><th>Marca</th><th>Ano</th><th>Gênero</th><th>Rating</th><th>Status</th><th>Ações</th></tr>
               </thead>
               <tbody>
                 {perfumes.map(p => (
-                  <tr key={p.id}>
+                  <tr key={p.id} style={{ background: selsp.includes(p.id) ? '#fffbf0' : '' }}>
+                    <td><input type='checkbox' checked={selsp.includes(p.id)} onChange={() => toggleSelP(p.id)} style={{ cursor: 'pointer' }} /></td>
                     <td>
                       {p.foto_url
                         ? <img src={p.foto_url} alt={p.nome} style={{ width: 36, height: 44, objectFit: 'contain', borderRadius: 4, background: '#f5f5f5' }} />
