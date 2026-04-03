@@ -114,10 +114,6 @@ function PainelEstoque({ token }) {
   const [massaForm, setMassaForm] = useState({ ml_total: '', ml_vendido: '' });
   const [salvandoMassa, setSalvandoMassa] = useState(false);
   const [showMassa, setShowMassa] = useState(false);
-  const [sels, setSels] = useState([]);
-  const [massaForm, setMassaForm] = useState({ ml_total: '', ml_vendido: '' });
-  const [salvandoMassa, setSalvandoMassa] = useState(false);
-  const [showMassa, setShowMassa] = useState(false);
   const API = 'https://nicheclub-backend-production.up.railway.app';
 
   const carregar = () => {
@@ -230,13 +226,8 @@ function PainelEstoque({ token }) {
             {sels.length > 0 && (
               <div style={{ display: 'flex', gap: 8, alignItems: 'center', background: '#fffbf0', border: '1px solid #e8c870', borderRadius: 6, padding: '8px 14px' }}>
                 <span style={{ fontSize: 13, fontWeight: 600, color: '#8a6a10' }}>{sels.length} sel.</span>
-                <button onClick={() => setShowMassa(s => !s)} style={{ padding: '4px 12px', background: '#c9a84c', border: 'none', borderRadius: 4, fontSize: 12, fontWeight: 600, cursor: 'pointer', color: '#0d0b07' }}>Editar</button>
-                <button onClick={async () => {
-                  if (!window.confirm('Excluir ' + sels.length + ' frasco(s)?')) return;
-                  setSalvandoMassa(true);
-                  for (const id of sels) await fetch(API + '/api/admin/frascos/' + id, { method: 'DELETE', headers: { Authorization: 'Bearer ' + token } });
-                  setSels([]); setSalvandoMassa(false); carregar();
-                }} disabled={salvandoMassa} style={{ padding: '4px 12px', background: '#fff0f0', border: '1px solid #fcc', borderRadius: 4, fontSize: 12, cursor: 'pointer', color: '#c0392b' }}>Excluir</button>
+                <button onClick={() => setShowMassa(v => !v)} style={{ padding: '4px 12px', background: '#c9a84c', border: 'none', borderRadius: 4, fontSize: 12, fontWeight: 600, cursor: 'pointer', color: '#0d0b07' }}>Editar</button>
+                <button onClick={async () => { const ok = window.confirm('Excluir ' + sels.length + ' frasco(s)?'); if (!ok) return; setSalvandoMassa(true); for (const id of sels) { await fetch(API + '/api/admin/frascos/' + id, { method: 'DELETE', headers: { Authorization: 'Bearer ' + token } }); } setSels([]); setSalvandoMassa(false); carregar(); }} disabled={salvandoMassa} style={{ padding: '4px 12px', background: '#fff0f0', border: '1px solid #fcc', borderRadius: 4, fontSize: 12, cursor: 'pointer', color: '#c0392b' }}>Excluir</button>
                 <button onClick={() => setSels([])} style={{ padding: '4px 8px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 4, fontSize: 12, cursor: 'pointer' }}>X</button>
               </div>
             )}
@@ -252,14 +243,7 @@ function PainelEstoque({ token }) {
                 <label style={{ fontSize: 12, color: '#888' }}>ML Vendido:</label>
                 <input type="number" value={massaForm.ml_vendido} onChange={e => setMassaForm(m => ({ ...m, ml_vendido: e.target.value }))} placeholder="Manter" style={{ padding: '6px 10px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, width: 100, outline: 'none' }} />
               </div>
-              <button onClick={async () => {
-                setSalvandoMassa(true);
-                const body = {};
-                if (massaForm.ml_total !== '') body.ml_total = Number(massaForm.ml_total);
-                if (massaForm.ml_vendido !== '') body.ml_vendido = Number(massaForm.ml_vendido);
-                for (const id of sels) await fetch(API + '/api/admin/frascos/' + id, { method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }, body: JSON.stringify(body) });
-                setSels([]); setMassaForm({ ml_total: '', ml_vendido: '' }); setShowMassa(false); setSalvandoMassa(false); carregar();
-              }} disabled={salvandoMassa} style={{ padding: '6px 16px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 4, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: '#0d0b07' }}>
+              <button onClick={async () => { setSalvandoMassa(true); const body = {}; if (massaForm.ml_total !== '') body.ml_total = Number(massaForm.ml_total); if (massaForm.ml_vendido !== '') body.ml_vendido = Number(massaForm.ml_vendido); for (const id of sels) { await fetch(API + '/api/admin/frascos/' + id, { method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }, body: JSON.stringify(body) }); } setSels([]); setMassaForm({ ml_total: '', ml_vendido: '' }); setShowMassa(false); setSalvandoMassa(false); carregar(); }} disabled={salvandoMassa} style={{ padding: '6px 16px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 4, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: '#0d0b07' }}>
                 {salvandoMassa ? 'Salvando...' : 'Aplicar'}
               </button>
             </div>
