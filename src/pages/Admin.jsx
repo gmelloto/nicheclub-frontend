@@ -259,7 +259,7 @@ function PainelEstoque({ token }) {
           )}
           <div className="admin-table-wrap">
             <table className="admin-table">
-              <thead><tr><th style={{ width: 36 }}><input type="checkbox" checked={sels.length === filtrados.length && filtrados.length > 0} onChange={() => setSels(p => p.length === filtrados.length ? [] : filtrados.map(x => x.id))} style={{ cursor: "pointer" }} /></th><th>Perfume</th><th>Marca</th><th>Total</th><th>Vendido</th><th>Disponível</th><th>Status</th><th>Ações</th></tr></thead>
+              <thead><tr><th style={{ width: 36 }}><input type="checkbox" checked={sels.length === filtrados.length && filtrados.length > 0} onChange={() => setSels(p => p.length === filtrados.length ? [] : filtrados.map(x => x.id))} style={{ cursor: "pointer" }} /></th><th>Perfume</th><th>Marca</th><th>Total</th><th>Vendido</th><th>Disponível</th><th>Status</th><th>Criado em</th><th>Ações</th></tr></thead>
               <tbody>
                 {filtrados.map(f => {
                   const disp = Number(f.ml_disponivel || 0);
@@ -274,6 +274,8 @@ function PainelEstoque({ token }) {
                       <td>{f.ml_vendido}ml</td>
                       <td className="gold">{f.ml_disponivel}ml</td>
                       <td><span className={`badge ${cls}`}>{label}</span></td>
+                      <td className='muted small'>{f.criado_em ? new Date(f.criado_em).toLocaleDateString('pt-BR') : '-'}</td>
+                      <td className="muted small">{f.criado_em ? new Date(f.criado_em).toLocaleDateString("pt-BR") : "-"}</td>
                       <td>
                         <div style={{ display: 'flex', gap: 6 }}>
                           <button onClick={() => abrirEditar(f)}
