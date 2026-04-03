@@ -275,7 +275,6 @@ function PainelEstoque({ token }) {
                       <td className="gold">{f.ml_disponivel}ml</td>
                       <td><span className={`badge ${cls}`}>{label}</span></td>
                       <td className='muted small'>{f.criado_em ? new Date(f.criado_em).toLocaleDateString('pt-BR') : '-'}</td>
-                      <td className="muted small">{f.criado_em ? new Date(f.criado_em).toLocaleDateString("pt-BR") : "-"}</td>
                       <td>
                         <div style={{ display: 'flex', gap: 6 }}>
                           <button onClick={() => abrirEditar(f)}
