@@ -594,9 +594,9 @@ function PainelPerfumes({ token }) {
                 <textarea value={editForm.descricao || ''} onChange={e => setEditForm(f => ({ ...f, descricao: e.target.value }))}
                   style={{ width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, outline: 'none', color: '#0d0b07', background: '#fff', minHeight: 80, resize: 'vertical', boxSizing: 'border-box' }} />
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <input type="checkbox" checked={editForm.ativo !== false} onChange={e => setEditForm(f => ({ ...f, ativo: e.target.checked }))} id="ativo_perf" />
-                <label htmlFor="ativo_perf" style={{ fontSize: 13, color: '#333' }}>Perfume ativo (visível no catálogo)</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+                <input type="checkbox" checked={editForm.ativo !== false} onChange={e => setEditForm(f => ({ ...f, ativo: e.target.checked }))} id="ativo_perf" style={{ flexShrink: 0 }} />
+                <label htmlFor="ativo_perf" style={{ fontSize: 13, color: '#333', wordBreak: 'break-word' }}>Perfume ativo (visível no catálogo)</label>
               </div>
             </div>
             <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
