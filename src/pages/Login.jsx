@@ -44,7 +44,7 @@ export default function Login() {
             <input type="password" value={senha} onChange={e => setSenha(e.target.value)} placeholder="••••••••" required />
           </div>
           {erro && <p style={{ color: 'var(--danger)', fontSize: 13 }}>{erro}</p>}
-          <button type="submit" className="btn-primary" disabled={loading} style={{ marginTop: '0.5rem' }}>
+          <button type="submit" disabled={loading} style={{ marginTop: '0.5rem', padding: '12px', width: '100%', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 6, fontSize: 14, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', color: '#0d0b07', opacity: loading ? 0.7 : 1, letterSpacing: '0.05em' }}>
             {loading ? 'Entrando...' : 'Entrar'}
           </button>
         </form>
