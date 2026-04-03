@@ -220,11 +220,11 @@ function PainelEstoque({ token }) {
             value={busca}
             onChange={e => setBusca(e.target.value)}
             placeholder="Buscar perfume ou marca..."
-            style={{ width: '100%', padding: '10px 16px 10px 40px', border: '1.5px solid #e0e0e0', borderRadius: 50, fontSize: 13, outline: 'none', background: '#fff', boxSizing: 'border-box', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}
+            style={{ width: '100%', padding: '10px 16px 10px 40px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 13, outline: 'none', background: '#fff', boxSizing: 'border-box', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}
           />
         </div>
         <select value={filtroStatus} onChange={e => setFiltroStatus(e.target.value)}
-          style={{ flex: '0 0 calc(50% - 6px)', flex: '0 0 calc(50% - 6px)', padding: '9px 14px', border: '1.5px solid #e0e0e0', borderRadius: 50, fontSize: 13, outline: 'none', background: '#fff', cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+          style={{ flex: '0 0 calc(50% - 6px)', padding: '9px 14px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 13, outline: 'none', background: '#fff', cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
           <option value="">Todos os status</option>
           <option value="aberto">✅ Aberto</option>
           <option value="fechado">⚠️ Fechado</option>
@@ -248,7 +248,7 @@ function PainelEstoque({ token }) {
           </div>
           {(filtroCriadoInicio || filtroCriadoFim || filtroEsgotadoInicio || filtroEsgotadoFim) && (
             <button onClick={() => { setFiltroCriadoInicio(''); setFiltroCriadoFim(''); setFiltroEsgotadoInicio(''); setFiltroEsgotadoFim(''); }}
-              style={{ padding: '6px 12px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 50, fontSize: 12, cursor: 'pointer', color: '#666' }}>Limpar datas</button>
+              style={{ padding: '6px 12px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 6, fontSize: 12, cursor: 'pointer', color: '#666' }}>Limpar datas</button>
           )}
       </div>
 
