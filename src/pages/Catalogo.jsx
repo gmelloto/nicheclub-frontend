@@ -87,13 +87,13 @@ export default function Catalogo() {
   ];
 
   return (
-    <div style={{ background: S.black, color: S.text, fontFamily: "'Jost', sans-serif" }}>
+    <div style={{ background: S.black, color: S.text, fontFamily: "'Jost', sans-serif", overflowX: 'hidden' }}>
 
       {/* ─── HERO ─────────────────────────────────────────────────────────── */}
       <div style={{ position: 'relative', minHeight: '42vh', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
         <img src="/banner-hero.jpg" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', filter: 'brightness(0.45)' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(13,11,7,0.9) 40%, rgba(13,11,7,0.3) 100%)' }} />
-        <div style={{ position: 'relative', maxWidth: 1280, margin: '0 auto', padding: '3rem 2.5rem', width: '100%' }}>
+        <div style={{ position: 'relative', maxWidth: 1280, margin: '0 auto', padding: '3rem 1.25rem', width: '100%' }}>
           <p style={{ fontSize: 11, letterSpacing: '0.35em', textTransform: 'uppercase', color: S.gold, marginBottom: '1rem', fontWeight: 500 }}>Fragrâncias Exclusivas</p>
           <h1 style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 600, lineHeight: 1.1, marginBottom: '1.25rem', maxWidth: 560 }}>
             Descubra sua<br /><span style={{ color: S.gold }}>essência</span>
@@ -110,7 +110,7 @@ export default function Catalogo() {
       <BrandCarousel />
 
       {/* ─── CATÁLOGO ─────────────────────────────────────────────────────── */}
-      <div id="catalogo" style={{ padding: '5rem 2.5rem', background: '#fff' }}>
+      <div id="catalogo" style={{ padding: '5rem 1rem', background: '#fff' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
             <p style={{ fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', color: '#7a6020', marginBottom: '0.75rem', fontWeight: 500 }}>Nossa Coleção</p>
@@ -119,22 +119,22 @@ export default function Catalogo() {
           </div>
 
           {/* Tabs */}
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 0, marginBottom: '3rem' }}>
-            <button onClick={() => setTab('decants')} style={{ padding: '12px 36px', fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', border: '1px solid rgba(201,168,76,0.4)', cursor: 'pointer', transition: 'all 0.2s', background: tab === 'decants' ? S.gold : 'transparent', color: tab === 'decants' ? '#0d0b07' : '#6b6460' }}>
+          <div className="catalogo-tabs" style={{ display: 'flex', justifyContent: 'center', gap: 0, marginBottom: '3rem', flexWrap: 'wrap' }}>
+            <button onClick={() => setTab('decants')} style={{ padding: '12px 24px', fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', border: '1px solid rgba(201,168,76,0.4)', cursor: 'pointer', transition: 'all 0.2s', background: tab === 'decants' ? S.gold : 'transparent', color: tab === 'decants' ? '#0d0b07' : '#6b6460', flex: '1 1 auto', minWidth: 0 }}>
               Decants
             </button>
-            <button onClick={() => setTab('lacrados')} style={{ padding: '12px 36px', fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', border: '1px solid rgba(201,168,76,0.4)', borderLeft: 'none', cursor: 'pointer', transition: 'all 0.2s', background: tab === 'lacrados' ? S.gold : 'transparent', color: tab === 'lacrados' ? '#0d0b07' : '#6b6460' }}>
-              Perfumes Lacrados
+            <button onClick={() => setTab('lacrados')} style={{ padding: '12px 24px', fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', border: '1px solid rgba(201,168,76,0.4)', borderLeft: 'none', cursor: 'pointer', transition: 'all 0.2s', background: tab === 'lacrados' ? S.gold : 'transparent', color: tab === 'lacrados' ? '#0d0b07' : '#6b6460', flex: '1 1 auto', minWidth: 0 }}>
+              Lacrados
             </button>
-            <button onClick={() => setTab('catalogo')} style={{ padding: '12px 36px', fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', border: '1px solid rgba(201,168,76,0.4)', borderLeft: 'none', cursor: 'pointer', transition: 'all 0.2s', background: tab === 'catalogo' ? S.gold : 'transparent', color: tab === 'catalogo' ? '#0d0b07' : '#6b6460' }}>
-              Catalogo Completo
+            <button onClick={() => setTab('catalogo')} style={{ padding: '12px 24px', fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', border: '1px solid rgba(201,168,76,0.4)', borderLeft: 'none', cursor: 'pointer', transition: 'all 0.2s', background: tab === 'catalogo' ? S.gold : 'transparent', color: tab === 'catalogo' ? '#0d0b07' : '#6b6460', flex: '1 1 auto', minWidth: 0 }}>
+              Completo
             </button>
           </div>
 
           {/* Busca */}
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2.5rem' }}>
             <input value={buscaInput} onChange={e => setBuscaInput(e.target.value)} placeholder="Buscar perfume ou marca..." className="catalogo-busca"
-              style={{ width: 320, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(201,168,76,0.2)', color: S.text, padding: '10px 16px', fontSize: 13, outline: 'none', letterSpacing: '-0.01em' }}
+              style={{ width: '100%', maxWidth: 320, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(201,168,76,0.2)', color: S.text, padding: '10px 16px', fontSize: 13, outline: 'none', letterSpacing: '-0.01em', boxSizing: 'border-box' }}
             />
           </div>
 
@@ -170,7 +170,7 @@ export default function Catalogo() {
       </div>
 
       {/* ─── COMO FUNCIONA ────────────────────────────────────────────────── */}
-      <div id="como-funciona" style={{ background: S.black2, borderTop: `1px solid ${S.border}`, borderBottom: `1px solid ${S.border}`, padding: '5rem 2.5rem' }}>
+      <div id="como-funciona" style={{ background: S.black2, borderTop: `1px solid ${S.border}`, borderBottom: `1px solid ${S.border}`, padding: '5rem 1rem' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', textAlign: 'center' }}>
           <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, marginBottom: '3.5rem' }}>Como Funciona</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '2rem' }}>
@@ -190,7 +190,7 @@ export default function Catalogo() {
       </div>
 
       {/* ─── PRAZO DE ENTREGA ─────────────────────────────────────────────── */}
-      <div style={{ padding: '5rem 2.5rem' }}>
+      <div style={{ padding: '5rem 1rem' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', textAlign: 'center' }}>
           <p style={{ fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', color: S.gold, marginBottom: '0.75rem', fontWeight: 500 }}>Entregas</p>
           <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, marginBottom: '3rem' }}>Prazo de Entrega</h2>
@@ -211,7 +211,7 @@ export default function Catalogo() {
       </div>
 
       {/* ─── FAQ ──────────────────────────────────────────────────────────── */}
-      <div id="faq" style={{ background: S.black2, borderTop: `1px solid ${S.border}`, padding: '5rem 2.5rem' }}>
+      <div id="faq" style={{ background: S.black2, borderTop: `1px solid ${S.border}`, padding: '5rem 1rem' }}>
         <div style={{ maxWidth: 800, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <p style={{ fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', color: S.gold, marginBottom: '0.75rem', fontWeight: 500 }}>Dúvidas</p>
@@ -234,7 +234,7 @@ export default function Catalogo() {
       </div>
 
       {/* ─── QUEM SOMOS ───────────────────────────────────────────────────── */}
-      <div id="quem-somos" style={{ borderTop: `1px solid ${S.border}`, padding: '6rem 2.5rem' }}>
+      <div id="quem-somos" style={{ borderTop: `1px solid ${S.border}`, padding: '6rem 1rem' }}>
         <div style={{ maxWidth: 800, margin: '0 auto', textAlign: 'center' }}>
           <p style={{ fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', color: S.gold, marginBottom: '1rem', fontWeight: 500 }}>Nossa História</p>
           <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, marginBottom: '2rem' }}>Quem Somos</h2>
