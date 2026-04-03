@@ -30,7 +30,7 @@ export default function Login() {
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
       <div style={{ width: '100%', maxWidth: 380 }}>
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-          <img src="/logo.jpeg" alt="Niche Club" style={{ width: 64, height: 64, borderRadius: 8, border: '1px solid rgba(201,168,76,0.3)', objectFit: 'cover', marginBottom: '0.5rem' }} />
+          <img src="/logo.jpeg" alt="Niche Club" style={{ width: 100, height: 100, borderRadius: 12, objectFit: 'cover', marginBottom: '0.5rem' }} />
           <h1 style={{ fontSize: '1.8rem', fontWeight: 300 }}>Niche Club</h1>
           <p className="muted small caps" style={{ marginTop: 8 }}>Painel Admin</p>
         </div>
