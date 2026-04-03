@@ -22,9 +22,10 @@ export default function Admin() {
           <span className="gold">◈</span> Admin
         </div>
         <p className="small muted" style={{ marginBottom: '2rem' }}>{usuario?.nome}</p>
+        const abaLabels = { pedidos: 'Pedidos', estoque: 'Decants', whatsapp: 'WhatsApp' };
         {['pedidos', 'estoque', 'whatsapp'].map(a => (
           <button key={a} className={`admin-nav-btn ${aba === a ? 'active' : ''}`} onClick={() => setAba(a)}>
-            {a.charAt(0).toUpperCase() + a.slice(1)}
+            {abaLabels[a] || a.charAt(0).toUpperCase() + a.slice(1)}
           </button>
         ))}
         <button className="admin-nav-btn" onClick={() => navigate('/admin/produtos')} style={{ marginTop: '1rem', color: '#c9a84c', borderTop: '1px solid #e8e4dc', paddingTop: '1rem' }}>
