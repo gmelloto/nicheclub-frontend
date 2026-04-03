@@ -231,20 +231,20 @@ function PainelEstoque({ token }) {
           <option value="esgotado">🔴 Esgotado</option>
         </select>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ fontSize: 12, color: '#888' }}>Criado:</span>
+            <span style={{ fontSize: 13, color: '#555', fontWeight: 500 }}>Criado:</span>
             <input type="date" value={filtroCriadoInicio} onChange={e => setFiltroCriadoInicio(e.target.value)}
-              style={{ padding: '6px 8px', border: '1px solid #ddd', borderRadius: 4, fontSize: 12, outline: 'none' }} />
-            <span style={{ fontSize: 12, color: '#888' }}>-</span>
+              style={{ padding: '8px 12px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 13, outline: 'none', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', color: '#333' }} />
+            <span style={{ fontSize: 13, color: '#aaa' }}>–</span>
             <input type="date" value={filtroCriadoFim} onChange={e => setFiltroCriadoFim(e.target.value)}
-              style={{ padding: '6px 8px', border: '1px solid #ddd', borderRadius: 4, fontSize: 12, outline: 'none' }} />
+              style={{ padding: '8px 12px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 13, outline: 'none', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', color: '#333' }} />
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ fontSize: 12, color: '#888' }}>Esgotado:</span>
+            <span style={{ fontSize: 13, color: '#555', fontWeight: 500 }}>Esgotado:</span>
             <input type="date" value={filtroEsgotadoInicio} onChange={e => setFiltroEsgotadoInicio(e.target.value)}
-              style={{ padding: '6px 8px', border: '1px solid #ddd', borderRadius: 4, fontSize: 12, outline: 'none' }} />
-            <span style={{ fontSize: 12, color: '#888' }}>-</span>
+              style={{ padding: '8px 12px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 13, outline: 'none', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', color: '#333' }} />
+            <span style={{ fontSize: 13, color: '#aaa' }}>–</span>
             <input type="date" value={filtroEsgotadoFim} onChange={e => setFiltroEsgotadoFim(e.target.value)}
-              style={{ padding: '6px 8px', border: '1px solid #ddd', borderRadius: 4, fontSize: 12, outline: 'none' }} />
+              style={{ padding: '8px 12px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 13, outline: 'none', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', color: '#333' }} />
           </div>
           {(filtroCriadoInicio || filtroCriadoFim || filtroEsgotadoInicio || filtroEsgotadoFim) && (
             <button onClick={() => { setFiltroCriadoInicio(''); setFiltroCriadoFim(''); setFiltroEsgotadoInicio(''); setFiltroEsgotadoFim(''); }}
