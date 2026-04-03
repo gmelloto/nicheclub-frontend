@@ -207,7 +207,7 @@ function PainelEstoque({ token }) {
       )}
 
       <div className="painel-header" style={{ marginBottom: 0 }}>
-        <h2>Estoque</h2>
+        <h2>Decants</h2>
         <button className="btn-primary" style={{ width: 'auto', padding: '10px 20px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', color: '#0d0b07', fontWeight: 700, border: 'none', borderRadius: 6, cursor: 'pointer' }}
           onClick={() => window.location.href = '/admin/produtos'}>
           + Novo perfume
