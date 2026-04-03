@@ -240,21 +240,21 @@ function PainelEstoque({ token }) {
           <option value="fechado">⚠️ Fechado</option>
           <option value="esgotado">🔴 Esgotado</option>
         </select>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', flex: '1 1 auto', minWidth: 0 }}>
-            <span style={{ fontSize: 13, color: '#555', fontWeight: 500 }}>Criado:</span>
+          <div style={{ flex: '1 1 100%', display: 'flex', gap: 6, alignItems: 'center' }}>
+            <span style={{ fontSize: 12, color: '#555', fontWeight: 500, flexShrink: 0, width: 62 }}>Criado:</span>
             <input type="date" value={filtroCriadoInicio} onChange={e => setFiltroCriadoInicio(e.target.value)}
-              style={{ padding: '8px 8px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 12, outline: 'none', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', color: '#333', minWidth: 0, flex: '1 1 120px', maxWidth: 160 }} />
+              style={{ padding: '8px 6px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 12, outline: 'none', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', color: '#333', flex: 1, minWidth: 0, boxSizing: 'border-box' }} />
             <span style={{ fontSize: 13, color: '#aaa' }}>–</span>
             <input type="date" value={filtroCriadoFim} onChange={e => setFiltroCriadoFim(e.target.value)}
-              style={{ padding: '8px 8px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 12, outline: 'none', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', color: '#333', minWidth: 0, flex: '1 1 120px', maxWidth: 160 }} />
+              style={{ padding: '8px 6px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 12, outline: 'none', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', color: '#333', flex: 1, minWidth: 0, boxSizing: 'border-box' }} />
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', flex: '1 1 auto', minWidth: 0 }}>
-            <span style={{ fontSize: 13, color: '#555', fontWeight: 500 }}>Esgotado:</span>
+          <div style={{ flex: '1 1 100%', display: 'flex', gap: 6, alignItems: 'center' }}>
+            <span style={{ fontSize: 12, color: '#555', fontWeight: 500, flexShrink: 0, width: 62 }}>Esgotado:</span>
             <input type="date" value={filtroEsgotadoInicio} onChange={e => setFiltroEsgotadoInicio(e.target.value)}
-              style={{ padding: '8px 8px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 12, outline: 'none', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', color: '#333', minWidth: 0, flex: '1 1 120px', maxWidth: 160 }} />
+              style={{ padding: '8px 6px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 12, outline: 'none', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', color: '#333', flex: 1, minWidth: 0, boxSizing: 'border-box' }} />
             <span style={{ fontSize: 13, color: '#aaa' }}>–</span>
             <input type="date" value={filtroEsgotadoFim} onChange={e => setFiltroEsgotadoFim(e.target.value)}
-              style={{ padding: '8px 8px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 12, outline: 'none', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', color: '#333', minWidth: 0, flex: '1 1 120px', maxWidth: 160 }} />
+              style={{ padding: '8px 6px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 12, outline: 'none', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', color: '#333', flex: 1, minWidth: 0, boxSizing: 'border-box' }} />
           </div>
           {(filtroCriadoInicio || filtroCriadoFim || filtroEsgotadoInicio || filtroEsgotadoFim) && (
             <button onClick={() => { setFiltroCriadoInicio(''); setFiltroCriadoFim(''); setFiltroEsgotadoInicio(''); setFiltroEsgotadoFim(''); }}
