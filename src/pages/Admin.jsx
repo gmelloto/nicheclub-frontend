@@ -551,7 +551,7 @@ function PainelPerfumes({ token }) {
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ background: '#fff', borderRadius: 10, padding: '1.5rem', width: 440, maxWidth: '92vw', boxShadow: '0 8px 32px rgba(0,0,0,0.2)', maxHeight: '90vh', overflowY: 'auto', overflowX: 'hidden', boxSizing: 'border-box' }}>
             <h3 style={{ marginBottom: 16, color: '#0d0b07' }}>Editar Perfume</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, overflow: 'hidden' }}>
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 140px), 1fr))', gap: 12 }}>
                 <div style={{ gridColumn: '1/-1' }}><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>NOME</label><input {...inp('nome')} /></div>
@@ -594,10 +594,10 @@ function PainelPerfumes({ token }) {
                 <textarea value={editForm.descricao || ''} onChange={e => setEditForm(f => ({ ...f, descricao: e.target.value }))}
                   style={{ width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, outline: 'none', color: '#0d0b07', background: '#fff', minHeight: 80, resize: 'vertical', boxSizing: 'border-box' }} />
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-                <input type="checkbox" checked={editForm.ativo !== false} onChange={e => setEditForm(f => ({ ...f, ativo: e.target.checked }))} id="ativo_perf" style={{ flexShrink: 0 }} />
-                <label htmlFor="ativo_perf" style={{ fontSize: 13, color: '#333', wordBreak: 'break-word' }}>Perfume ativo (visível no catálogo)</label>
-              </div>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#333', cursor: 'pointer' }}>
+                <input type="checkbox" checked={editForm.ativo !== false} onChange={e => setEditForm(f => ({ ...f, ativo: e.target.checked }))} style={{ flexShrink: 0 }} />
+                Ativo no catálogo
+              </label>
             </div>
             <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
               <button onClick={() => setEditando(null)} style={{ flex: 1, padding: '10px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 4, cursor: 'pointer', fontSize: 13 }}>Cancelar</button>
