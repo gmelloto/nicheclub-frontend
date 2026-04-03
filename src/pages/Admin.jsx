@@ -15,7 +15,7 @@ export default function Admin() {
 
   if (!token) return null;
 
-  const abaLabels = { pedidos: 'Pedidos', estoque: 'Decants', whatsapp: 'WhatsApp' };
+  const abaLabels = { pedidos: 'Pedidos', estoque: 'Decants', perfumes: 'Perfumes', whatsapp: 'WhatsApp' };
   return (
     <div className="admin-page">
       <div className="admin-sidebar">
@@ -23,7 +23,7 @@ export default function Admin() {
           <span className="gold">◈</span> Admin
         </div>
         <p className="small muted" style={{ marginBottom: '2rem' }}>{usuario?.nome}</p>
-        {['pedidos', 'estoque', 'whatsapp'].map(a => (
+        {['pedidos', 'estoque', 'perfumes', 'whatsapp'].map(a => (
           <button key={a} className={`admin-nav-btn ${aba === a ? 'active' : ''}`} onClick={() => setAba(a)}>
             {abaLabels[a] || a.charAt(0).toUpperCase() + a.slice(1)}
           </button>
@@ -38,6 +38,7 @@ export default function Admin() {
       <div className="admin-content">
         {aba === 'pedidos' && <PainelPedidos token={token} />}
         {aba === 'estoque' && <PainelEstoque token={token} />}
+        {aba === 'perfumes' && <PainelPerfumes token={token} />}
         {aba === 'whatsapp' && <PainelWhatsApp token={token} />}
       </div>
     </div>
@@ -420,6 +421,223 @@ const DEMO_PEDIDOS = [
   { id: '1', numero: 'NC-2024-0001', cliente: 'Maria Silva', total: 194.90, status: 'pagamento_aprovado', criado_em: new Date() },
   { id: '2', numero: 'NC-2024-0002', cliente: 'João Pereira', total: 58, status: 'enviado', criado_em: new Date() },
 ];
+
+const API_URL = 'https://nicheclub-backend-production.up.railway.app';
+
+function PainelPerfumes({ token }) {
+  const [perfumes, setPerfumes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [busca, setBusca] = useState('');
+  const [buscaInput, setBuscaInput] = useState('');
+  const [pagina, setPagina] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [limite, setLimite] = useState(20);
+  const [editando, setEditando] = useState(null);
+  const [editForm, setEditForm] = useState({});
+  const [salvando, setSalvando] = useState(false);
+  const [excluindo, setExcluindo] = useState(null);
+
+  const carregar = async (pag = 1, termo = busca, lim = limite) => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams({ pagina: pag, limite: lim, busca: termo, todos: true });
+      const res = await fetch(`${API_URL}/api/perfumes?${params}`, { headers: { Authorization: `Bearer ${token}` } });
+      const data = await res.json();
+      setPerfumes(data.perfumes || data);
+      setTotal(data.total || 0);
+      setPagina(pag);
+    } catch(e) { console.error(e); }
+    finally { setLoading(false); }
+  };
+
+  React.useEffect(() => { carregar(1, '', limite); }, []);
+
+  React.useEffect(() => {
+    const t = setTimeout(() => { setBusca(buscaInput); carregar(1, buscaInput, limite); }, 400);
+    return () => clearTimeout(t);
+  }, [buscaInput]);
+
+  const totalPaginas = Math.ceil(total / limite);
+
+  const abrirEditar = (p) => {
+    setEditando(p);
+    setEditForm({ nome: p.nome, marca: p.marca, ano: p.ano || '', genero: p.genero || '', ativo: p.ativo !== false });
+  };
+
+  const salvarEdicao = async () => {
+    setSalvando(true);
+    try {
+      const res = await fetch(`${API_URL}/api/admin/perfumes/${editando.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(editForm),
+      });
+      if (!res.ok) throw new Error('Erro ao salvar');
+      setEditando(null);
+      carregar(pagina, busca, limite);
+    } catch(e) { alert(e.message); }
+    finally { setSalvando(false); }
+  };
+
+  const excluir = async (p) => {
+    if (!window.confirm(`Excluir "${p.nome}"? Isso remove também os frascos e preços.`)) return;
+    setExcluindo(p.id);
+    try {
+      const res = await fetch(`${API_URL}/api/admin/perfumes/${p.id}`, {
+        method: 'DELETE', headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error('Erro ao excluir');
+      carregar(pagina, busca, limite);
+    } catch(e) { alert(e.message); }
+    finally { setExcluindo(null); }
+  };
+
+  const inp = (key) => ({
+    value: editForm[key] || '',
+    onChange: e => setEditForm(f => ({ ...f, [key]: e.target.value })),
+    style: { width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, boxSizing: 'border-box', outline: 'none' }
+  });
+
+  return (
+    <div className="fade-in">
+      {/* Modal editar */}
+      {editando && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ background: '#fff', borderRadius: 10, padding: '2rem', width: 440, boxShadow: '0 8px 32px rgba(0,0,0,0.2)', maxHeight: '90vh', overflowY: 'auto' }}>
+            <h3 style={{ marginBottom: 16, color: '#0d0b07' }}>Editar Perfume</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>NOME</label><input {...inp('nome')} /></div>
+              <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>MARCA</label><input {...inp('marca')} /></div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>ANO</label><input {...inp('ano')} type="number" /></div>
+                <div>
+                  <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>GÊNERO</label>
+                  <select value={editForm.genero || ''} onChange={e => setEditForm(f => ({ ...f, genero: e.target.value }))}
+                    style={{ width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, outline: 'none' }}>
+                    <option value="">Selecione</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Feminino">Feminino</option>
+                    <option value="Unissex">Unissex</option>
+                  </select>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <input type="checkbox" checked={editForm.ativo} onChange={e => setEditForm(f => ({ ...f, ativo: e.target.checked }))} id="ativo" />
+                <label htmlFor="ativo" style={{ fontSize: 13, color: '#333' }}>Perfume ativo (visível no catálogo)</label>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
+              <button onClick={() => setEditando(null)} style={{ flex: 1, padding: '10px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 4, cursor: 'pointer', fontSize: 13 }}>Cancelar</button>
+              <button onClick={salvarEdicao} disabled={salvando} style={{ flex: 1, padding: '10px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 13, fontWeight: 700, color: '#0d0b07' }}>
+                {salvando ? 'Salvando...' : 'Salvar'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Header */}
+      <div className="painel-header" style={{ marginBottom: 16 }}>
+        <h2>Perfumes</h2>
+        <button onClick={() => window.location.href = '/admin/produtos'}
+          style={{ padding: '10px 22px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: '#0d0b07', boxShadow: '0 2px 8px rgba(201,168,76,0.3)' }}>
+          + Novo perfume
+        </button>
+      </div>
+
+      {/* Filtros */}
+      <div style={{ background: '#f8f8f8', border: '1px solid #eee', borderRadius: 12, padding: '1rem 1.25rem', marginBottom: 20, display: 'flex', gap: 12, alignItems: 'center' }}>
+        <div style={{ position: 'relative', flex: '1 1 auto' }}>
+          <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#bbb', fontSize: 15 }}>&#128269;</span>
+          <input value={buscaInput} onChange={e => setBuscaInput(e.target.value)} placeholder="Buscar perfume ou marca..."
+            style={{ width: '100%', padding: '10px 16px 10px 42px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 13, outline: 'none', background: '#fff', boxSizing: 'border-box', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }} />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ fontSize: 13, color: '#888' }}>Mostrar:</span>
+          <select value={limite} onChange={e => { setLimite(Number(e.target.value)); carregar(1, busca, Number(e.target.value)); }}
+            style={{ padding: '9px 14px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 13, outline: 'none', background: '#fff', cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Tabela */}
+      {loading ? <p className="muted">Carregando...</p> : (
+        <>
+          <p style={{ fontSize: 12, color: '#888', marginBottom: 12 }}>{total} perfumes no total — página {pagina} de {totalPaginas || 1}</p>
+          <div className="admin-table-wrap">
+            <table className="admin-table">
+              <thead style={{ fontWeight: 700 }}>
+                <tr><th>Foto</th><th>Nome</th><th>Marca</th><th>Ano</th><th>Gênero</th><th>Rating</th><th>Status</th><th>Ações</th></tr>
+              </thead>
+              <tbody>
+                {perfumes.map(p => (
+                  <tr key={p.id}>
+                    <td>
+                      {p.foto_url
+                        ? <img src={p.foto_url} alt={p.nome} style={{ width: 36, height: 44, objectFit: 'contain', borderRadius: 4, background: '#f5f5f5' }} />
+                        : <div style={{ width: 36, height: 44, background: '#f0f0f0', borderRadius: 4 }} />
+                      }
+                    </td>
+                    <td style={{ fontWeight: 500 }}>{p.nome}</td>
+                    <td className="muted small">{p.marca}</td>
+                    <td className="muted small">{p.ano || '—'}</td>
+                    <td className="muted small">{p.genero || '—'}</td>
+                    <td className="muted small">{p.rating_valor ? Number(p.rating_valor).toFixed(1) : '—'}</td>
+                    <td>
+                      <span className={`badge ${p.ativo !== false ? 'badge-green' : 'badge-red'}`}>
+                        {p.ativo !== false ? 'Ativo' : 'Inativo'}
+                      </span>
+                    </td>
+                    <td>
+                      <div style={{ display: 'flex', gap: 6 }}>
+                        <button onClick={() => abrirEditar(p)}
+                          style={{ padding: '4px 10px', background: '#f0f0f0', border: '1px solid #ddd', borderRadius: 4, cursor: 'pointer', fontSize: 12, color: '#333' }}>
+                          ✏️ Editar
+                        </button>
+                        <button onClick={() => excluir(p)} disabled={excluindo === p.id}
+                          style={{ padding: '4px 10px', background: '#fff0f0', border: '1px solid #fcc', borderRadius: 4, cursor: 'pointer', fontSize: 12, color: '#c0392b' }}>
+                          {excluindo === p.id ? '...' : '🗑️'}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Paginacao */}
+          {totalPaginas > 1 && (
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 24, flexWrap: 'wrap' }}>
+              <button onClick={() => carregar(pagina - 1, busca, limite)} disabled={pagina === 1}
+                style={{ padding: '6px 14px', border: '1px solid #ddd', borderRadius: 4, background: '#fff', cursor: pagina === 1 ? 'not-allowed' : 'pointer', fontSize: 13, color: pagina === 1 ? '#ccc' : '#333' }}>
+                ← Anterior
+              </button>
+              {[...Array(Math.min(totalPaginas, 7))].map((_, i) => {
+                const p = i + 1;
+                return (
+                  <button key={p} onClick={() => carregar(p, busca, limite)}
+                    style={{ padding: '6px 12px', border: '1px solid #ddd', borderRadius: 4, background: pagina === p ? 'linear-gradient(135deg,#c9a84c,#e8c870)' : '#fff', cursor: 'pointer', fontSize: 13, fontWeight: pagina === p ? 700 : 400, color: pagina === p ? '#0d0b07' : '#333' }}>
+                    {p}
+                  </button>
+                );
+              })}
+              <button onClick={() => carregar(pagina + 1, busca, limite)} disabled={pagina === totalPaginas}
+                style={{ padding: '6px 14px', border: '1px solid #ddd', borderRadius: 4, background: '#fff', cursor: pagina === totalPaginas ? 'not-allowed' : 'pointer', fontSize: 13, color: pagina === totalPaginas ? '#ccc' : '#333' }}>
+                Próxima →
+              </button>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
 const DEMO_ESTOQUE = [
   { id: '1', perfume: 'Baccarat Rouge 540', marca: 'MFK', ml_total: 100, ml_vendido: 62, ml_disponivel: 38 },
   { id: '2', perfume: 'Oud Wood', marca: 'Tom Ford', ml_total: 250, ml_vendido: 30, ml_disponivel: 220 },
