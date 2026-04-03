@@ -105,6 +105,7 @@ function PainelEstoque({ token }) {
   const [frascos, setFrascos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [busca, setBusca] = useState('');
+  const [filtroStatus, setFiltroStatus] = useState('');
   const [editando, setEditando] = useState(null);
   const [editForm, setEditForm] = useState({ ml_total: '', ml_vendido: '' });
   const [salvando, setSalvando] = useState(false);
@@ -120,9 +121,13 @@ function PainelEstoque({ token }) {
 
   useEffect(() => { carregar(); }, [token]);
 
-  const filtrados = frascos.filter(f =>
-    !busca || f.perfume?.toLowerCase().includes(busca.toLowerCase()) || f.marca?.toLowerCase().includes(busca.toLowerCase())
-  );
+  const filtrados = frascos.filter(f => {
+    const matchBusca = !busca || f.perfume?.toLowerCase().includes(busca.toLowerCase()) || f.marca?.toLowerCase().includes(busca.toLowerCase());
+    const pct = Math.round((Number(f.ml_vendido) / Number(f.ml_total)) * 100);
+    const status = pct >= 80 ? 'critico' : pct >= 60 ? 'atencao' : 'ok';
+    const matchStatus = !filtroStatus || status === filtroStatus;
+    return matchBusca && matchStatus;
+  });
 
   const abrirEditar = (f) => {
     setEditando(f);
@@ -196,6 +201,13 @@ function PainelEstoque({ token }) {
             placeholder="Buscar perfume ou marca..."
             style={{ padding: '8px 14px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, width: 220, outline: 'none' }}
           />
+          <select value={filtroStatus} onChange={e => setFiltroStatus(e.target.value)}
+            style={{ padding: '8px 12px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, outline: 'none', background: '#fff', cursor: 'pointer' }}>
+            <option value="">Todos os status</option>
+            <option value="ok">✅ OK</option>
+            <option value="atencao">⚠️ Atenção</option>
+            <option value="critico">🔴 Crítico</option>
+          </select>
           <button className="btn-primary" style={{ width: 'auto', padding: '10px 20px' }}
             onClick={() => window.location.href = '/admin/produtos'}>
             + Novo perfume
