@@ -462,7 +462,17 @@ function PainelPerfumes({ token }) {
 
   const abrirEditar = (p) => {
     setEditando(p);
-    setEditForm({ nome: p.nome, marca: p.marca, ano: p.ano || '', genero: p.genero || '', ativo: p.ativo !== false });
+    setEditForm({
+      nome: p.nome || '', marca: p.marca || '', ano: p.ano || '',
+      genero: p.genero || '', pais: p.pais || '', familia_olfativa: p.familia_olfativa || '',
+      rating_valor: p.rating_valor || '', rating_count: p.rating_count || '',
+      perfumista1: p.perfumista1 || '', perfumista2: p.perfumista2 || '',
+      acorde1: p.acorde1 || '', acorde2: p.acorde2 || '', acorde3: p.acorde3 || '',
+      acorde4: p.acorde4 || '', acorde5: p.acorde5 || '',
+      notas_topo: p.notas_topo || '', notas_coracao: p.notas_coracao || '', notas_base: p.notas_base || '',
+      foto_url: p.foto_url || '', link_fragrantica: p.link_fragrantica || '',
+      descricao: p.descricao || '', ativo: p.ativo !== false,
+    });
   };
 
   const salvarEdicao = async () => {
@@ -507,9 +517,10 @@ function PainelPerfumes({ token }) {
           <div style={{ background: '#fff', borderRadius: 10, padding: '2rem', width: 440, boxShadow: '0 8px 32px rgba(0,0,0,0.2)', maxHeight: '90vh', overflowY: 'auto' }}>
             <h3 style={{ marginBottom: 16, color: '#0d0b07' }}>Editar Perfume</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>NOME</label><input {...inp('nome')} /></div>
-              <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>MARCA</label><input {...inp('marca')} /></div>
+
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <div style={{ gridColumn: '1/-1' }}><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>NOME</label><input {...inp('nome')} /></div>
+                <div style={{ gridColumn: '1/-1' }}><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>MARCA</label><input {...inp('marca')} /></div>
                 <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>ANO</label><input {...inp('ano')} type="number" /></div>
                 <div>
                   <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>GÊNERO</label>
@@ -521,10 +532,36 @@ function PainelPerfumes({ token }) {
                     <option value="Unissex">Unissex</option>
                   </select>
                 </div>
+                <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>PAÍS</label><input {...inp('pais')} /></div>
+                <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>FAMÍLIA OLFATIVA</label><input {...inp('familia_olfativa')} /></div>
+                <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>RATING</label><input {...inp('rating_valor')} type="number" step="0.01" /></div>
+                <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>VOTOS</label><input {...inp('rating_count')} type="number" /></div>
+                <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>PERFUMISTA 1</label><input {...inp('perfumista1')} /></div>
+                <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>PERFUMISTA 2</label><input {...inp('perfumista2')} /></div>
+              </div>
+
+              <p style={{ fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 0 }}>ACORDES</p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
+                <input {...inp('acorde1')} placeholder="Acorde 1" />
+                <input {...inp('acorde2')} placeholder="Acorde 2" />
+                <input {...inp('acorde3')} placeholder="Acorde 3" />
+                <input {...inp('acorde4')} placeholder="Acorde 4" />
+                <input {...inp('acorde5')} placeholder="Acorde 5" />
+              </div>
+
+              <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>NOTAS DE TOPO</label><input {...inp('notas_topo')} /></div>
+              <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>NOTAS DE CORAÇÃO</label><input {...inp('notas_coracao')} /></div>
+              <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>NOTAS DE BASE</label><input {...inp('notas_base')} /></div>
+              <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>URL FOTO</label><input {...inp('foto_url')} /></div>
+              <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>LINK FRAGRANTICA</label><input {...inp('link_fragrantica')} /></div>
+              <div>
+                <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>DESCRIÇÃO</label>
+                <textarea value={editForm.descricao || ''} onChange={e => setEditForm(f => ({ ...f, descricao: e.target.value }))}
+                  style={{ width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, outline: 'none', color: '#0d0b07', background: '#fff', minHeight: 80, resize: 'vertical', boxSizing: 'border-box' }} />
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <input type="checkbox" checked={editForm.ativo} onChange={e => setEditForm(f => ({ ...f, ativo: e.target.checked }))} id="ativo" />
-                <label htmlFor="ativo" style={{ fontSize: 13, color: '#333' }}>Perfume ativo (visível no catálogo)</label>
+                <input type="checkbox" checked={editForm.ativo !== false} onChange={e => setEditForm(f => ({ ...f, ativo: e.target.checked }))} id="ativo_perf" />
+                <label htmlFor="ativo_perf" style={{ fontSize: 13, color: '#333' }}>Perfume ativo (visível no catálogo)</label>
               </div>
             </div>
             <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
