@@ -206,22 +206,30 @@ function PainelEstoque({ token }) {
         </div>
       )}
 
-      <div className="painel-header">
+      <div className="painel-header" style={{ marginBottom: 0 }}>
         <h2>Estoque</h2>
-        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+        <button className="btn-primary" style={{ width: 'auto', padding: '10px 20px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', color: '#0d0b07', fontWeight: 700, border: 'none', borderRadius: 6, cursor: 'pointer' }}
+          onClick={() => window.location.href = '/admin/produtos'}>
+          + Novo perfume
+        </button>
+      </div>
+      <div style={{ background: '#f8f8f8', border: '1px solid #eee', borderRadius: 12, padding: '1rem 1.25rem', marginBottom: 20, display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center' }}>
+        <div style={{ position: 'relative', flex: '1 1 220px', minWidth: 200 }}>
+          <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#aaa', fontSize: 15 }}>&#128269;</span>
           <input
             value={busca}
             onChange={e => setBusca(e.target.value)}
             placeholder="Buscar perfume ou marca..."
-            style={{ padding: '8px 14px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, width: 220, outline: 'none' }}
+            style={{ width: '100%', padding: '10px 16px 10px 40px', border: '1.5px solid #e0e0e0', borderRadius: 50, fontSize: 13, outline: 'none', background: '#fff', boxSizing: 'border-box', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}
           />
-          <select value={filtroStatus} onChange={e => setFiltroStatus(e.target.value)}
-            style={{ padding: '8px 12px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, outline: 'none', background: '#fff', cursor: 'pointer' }}>
-            <option value="">Todos os status</option>
-            <option value="aberto">✅ Aberto</option>
-            <option value="fechado">⚠️ Fechado</option>
-            <option value="esgotado">🔴 Esgotado</option>
-          </select>
+        </div>
+        <select value={filtroStatus} onChange={e => setFiltroStatus(e.target.value)}
+          style={{ padding: '9px 14px', border: '1.5px solid #e0e0e0', borderRadius: 50, fontSize: 13, outline: 'none', background: '#fff', cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+          <option value="">Todos os status</option>
+          <option value="aberto">✅ Aberto</option>
+          <option value="fechado">⚠️ Fechado</option>
+          <option value="esgotado">🔴 Esgotado</option>
+        </select>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <span style={{ fontSize: 12, color: '#888' }}>Criado:</span>
             <input type="date" value={filtroCriadoInicio} onChange={e => setFiltroCriadoInicio(e.target.value)}
@@ -240,12 +248,10 @@ function PainelEstoque({ token }) {
           </div>
           {(filtroCriadoInicio || filtroCriadoFim || filtroEsgotadoInicio || filtroEsgotadoFim) && (
             <button onClick={() => { setFiltroCriadoInicio(''); setFiltroCriadoFim(''); setFiltroEsgotadoInicio(''); setFiltroEsgotadoFim(''); }}
-              style={{ padding: '6px 12px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 4, fontSize: 12, cursor: 'pointer', color: '#666' }}>Limpar datas</button>
+              style={{ padding: '6px 12px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 50, fontSize: 12, cursor: 'pointer', color: '#666' }}>Limpar datas</button>
           )}
-          <button className="btn-primary" style={{ width: 'auto', padding: '10px 20px' }}
-            onClick={() => window.location.href = '/admin/produtos'}>
-            + Novo perfume
-          </button>
+      </div>
+
         </div>
       </div>
 
