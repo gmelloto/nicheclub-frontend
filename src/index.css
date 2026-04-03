@@ -143,6 +143,11 @@ input::placeholder { color: var(--text3); letter-spacing: 0.1em; }
 
 /* ─── Responsivo Mobile ──────────────────────────────────────────── */
 @media (max-width: 768px) {
+  /* Evitar zoom do iOS em inputs */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+
   /* Perfume page */
   .perfume-grid {
     grid-template-columns: 1fr !important;
