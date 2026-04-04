@@ -204,7 +204,7 @@ function FrascoCard({ perfume, isAdmin, onEditar, onExcluir }) {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             {precoMin
               ? <p style={{ fontSize: 13, color: '#111' }}>A partir de <span style={{ color: '#c9a84c', fontWeight: 700 }}>R$ {Number(precoMin).toFixed(2).replace('.', ',')}</span></p>
-              : <p style={{ fontSize: 12, color: '#111', fontStyle: 'italic' }}>Consultar preço</p>
+              : <p style={{ fontSize: 12, color: 'rgb(122, 96, 32)' }}>Consultar preço</p>
             }
             <span style={{ fontSize: 10, color: '#c9a84c', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Ver →</span>
           </div>
