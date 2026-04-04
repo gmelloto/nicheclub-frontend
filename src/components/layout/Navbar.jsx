@@ -27,10 +27,10 @@ export default function Navbar() {
       <nav style={{ background: '#0d0b07', borderBottom: '1px solid rgba(201,168,76,0.15)', position: 'sticky', top: 0, zIndex: 100 }}>
 
         {/* ── Linha 1: Hamburger | Logo central | Ícones ── */}
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 70 }}>
+        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 70, position: 'relative' }}>
 
           {/* Hamburger mobile */}
-          <button onClick={() => setMenuAberto(!menuAberto)} className="nav-mobile" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 6, display: 'none', flexDirection: 'column', gap: 5, flexShrink: 0, width: 40 }}>
+          <button onClick={() => setMenuAberto(!menuAberto)} className="nav-mobile" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 6, display: 'none', flexDirection: 'column', gap: 5, flexShrink: 0, width: 40, zIndex: 2 }}>
             <span style={{ display: 'block', width: 22, height: 1.5, background: '#c9a84c', transition: 'all 0.3s', transform: menuAberto ? 'rotate(45deg) translateY(6.5px)' : 'none' }} />
             <span style={{ display: 'block', width: 22, height: 1.5, background: '#c9a84c', opacity: menuAberto ? 0 : 1, transition: 'opacity 0.3s' }} />
             <span style={{ display: 'block', width: 22, height: 1.5, background: '#c9a84c', transition: 'all 0.3s', transform: menuAberto ? 'rotate(-45deg) translateY(-6.5px)' : 'none' }} />
@@ -39,17 +39,17 @@ export default function Navbar() {
           {/* Spacer esquerdo desktop */}
           <div className="nav-desktop" style={{ width: 120, flexShrink: 0 }} />
 
-          {/* Logo centralizado */}
-          <Link to="/" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, flexShrink: 0, textDecoration: 'none' }}>
+          {/* Logo centralizado (absolute para ficar sempre no centro) */}
+          <Link to="/" style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, textDecoration: 'none', zIndex: 1 }}>
             <span style={{
-              fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700,
+              fontFamily: "'Playfair Display', serif", fontSize: 24, fontWeight: 700,
               color: '#c9a84c', letterSpacing: '0.15em', lineHeight: 1,
             }}>NICHE CLUB</span>
-            <span style={{ fontSize: 7, letterSpacing: '0.35em', color: 'rgba(201,168,76,0.45)', textTransform: 'uppercase' }}>Luxury Perfumes</span>
+            <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 9, letterSpacing: '0.3em', color: 'rgba(201,168,76,0.75)', textTransform: 'uppercase', fontWeight: 500 }}>Luxury Perfumes</span>
           </Link>
 
           {/* Ícones à direita */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', width: 120, justifyContent: 'flex-end', flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', width: 120, justifyContent: 'flex-end', flexShrink: 0, zIndex: 2 }}>
             {/* Login/Sair - desktop only */}
             <div className="nav-desktop" style={{ display: 'flex', alignItems: 'center' }}>
               {usuario ? (
