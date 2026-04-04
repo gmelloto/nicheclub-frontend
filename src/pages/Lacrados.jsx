@@ -3,9 +3,30 @@ import { Link } from 'react-router-dom';
 import { api } from '../services/api';
 import { useAuth } from '../context/index.jsx';
 
+const COR_ACORDE = {
+  'Floral': '#e8a0b0', 'Floral Branco': '#f0c8d8', 'Rosa': '#e87090',
+  'Amadeirado': '#c8a878', 'Sândalo': '#d4b896', 'Cedro': '#b89060',
+  'Oud': '#8a6030', 'Patchouli': '#9a7850',
+  'Oriental': '#d4884c', 'Adocicado': '#e8b060', 'Baunilha': '#f0c878',
+  'Âmbar': '#d4a040', 'Almiscarado': '#c8b8a0', 'Especiado': '#c87840',
+  'Cítrico': '#e8d040', 'Fresco': '#78c8d8', 'Aromático': '#78b890',
+  'Verde': '#88c878', 'Aquático': '#60b8d8', 'Marinho': '#4898c8',
+  'Frutado': '#e87878', 'Gourmet': '#e8a060', 'Almiscarado Suave': '#d8c8b8',
+  'Couro': '#a07848', 'Defumado': '#9898a8', 'Terroso': '#a08868',
+  'Herbal': '#90b870', 'Mineral': '#a8b0b8', 'Tropical': '#f0b040',
+  'Aromatico': '#78b890', 'Violeta': '#b090d0', 'Picante Quente': '#d87840',
+  'Picante Fresco': '#88d0b0',
+};
+
+function corAcorde(nome) {
+  if (!nome) return '#c9a84c';
+  return COR_ACORDE[nome] || '#c9a84c';
+}
+
 // ─── Card do Perfume Lacrado ──────────────────────────────────────────────
 function LacradoCard({ perfume }) {
   const [hovered, setHovered] = useState(false);
+  const acordes = [perfume.acorde1, perfume.acorde2, perfume.acorde3, perfume.acorde4, perfume.acorde5].filter(Boolean);
 
   return (
     <div style={{ position: 'relative' }}>
@@ -14,15 +35,42 @@ function LacradoCard({ perfume }) {
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
-        <div style={{ background: '#fff', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 240, overflow: 'hidden' }}>
-          <img src={perfume.foto_url || '/frasco.jpeg'} alt={perfume.nome}
-            style={{ width: '100%', height: 240, objectFit: 'contain', padding: 12, transform: hovered ? 'scale(1.04)' : 'scale(1)', transition: 'transform 0.5s' }}
-          />
-          {perfume.estoque === 0 && (
-            <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: '0.15em', color: '#e84040', textTransform: 'uppercase', border: '2px solid #e84040', padding: '4px 12px' }}>Esgotado</span>
-            </div>
-          )}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0, minHeight: 200 }}>
+          <div style={{ background: '#fff', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 200, overflow: 'hidden' }}>
+            <img src={perfume.foto_url || '/frasco.jpeg'} alt={perfume.nome}
+              style={{ width: '100%', height: 200, objectFit: 'contain', padding: 8, transform: hovered ? 'scale(1.04)' : 'scale(1)', transition: 'transform 0.5s' }}
+            />
+            {perfume.estoque === 0 && (
+              <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: '0.15em', color: '#e84040', textTransform: 'uppercase', border: '2px solid #e84040', padding: '4px 12px' }}>Esgotado</span>
+              </div>
+            )}
+          </div>
+
+          <div style={{ padding: '12px 12px 12px 10px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', gap: 4 }}>
+            <p style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#7a6020', marginBottom: 6, fontWeight: 600 }}>Principais acordes</p>
+            {acordes.length > 0 ? acordes.map(a => (
+              <div key={a} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div style={{ flex: 1, height: 18, borderRadius: 3, background: corAcorde(a), display: 'flex', alignItems: 'center', paddingLeft: 8, overflow: 'hidden' }}>
+                  <span style={{ fontSize: 10, fontWeight: 700, color: 'rgba(0,0,0,0.7)', whiteSpace: 'nowrap', letterSpacing: '0.02em' }}>{a}</span>
+                </div>
+              </div>
+            )) : <p style={{ fontSize: 11, color: '#ccc', fontStyle: 'italic' }}>—</p>}
+
+            {perfume.rating_valor && (
+              <div style={{ marginTop: 'auto', paddingTop: 8 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <span style={{ fontSize: 18, fontWeight: 700, color: '#111' }}>{Number(perfume.rating_valor).toFixed(1)}</span>
+                  <div style={{ display: 'flex', gap: 1 }}>
+                    {[1,2,3,4,5].map(s => (
+                      <span key={s} style={{ fontSize: 10, color: s <= Math.round(perfume.rating_valor) ? '#c9a84c' : 'rgba(201,168,76,0.2)' }}>★</span>
+                    ))}
+                  </div>
+                </div>
+                <p style={{ fontSize: 10, color: '#888' }}>({perfume.rating_count?.toLocaleString()})</p>
+              </div>
+            )}
+          </div>
         </div>
 
         <div style={{ padding: '1rem 1.25rem' }}>

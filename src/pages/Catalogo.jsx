@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import BrandCarousel from '../components/BrandCarousel.jsx';
 import { api } from '../services/api';
 
@@ -34,6 +34,7 @@ function corAcorde(nome) {
 }
 
 export default function Catalogo() {
+  const navigate = useNavigate();
   const [perfumes, setPerfumes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -175,7 +176,7 @@ export default function Catalogo() {
           </p>
           <div>
             <button
-              onClick={() => { setTab('lacrados'); setTimeout(() => document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' }), 100); }}
+              onClick={() => navigate('/lacrados')}
               style={{
                 border: `1px solid ${S.gold}`, padding: '16px 28px',
                 fontSize: 12, letterSpacing: '0.2em', textTransform: 'uppercase',
