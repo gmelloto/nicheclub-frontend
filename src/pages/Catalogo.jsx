@@ -92,26 +92,26 @@ export default function Catalogo() {
       {/* ─── HERO (estilo editorial) ────────────────────────────────────── */}
       <div className="hero-block" style={{
         display: 'grid', gridTemplateColumns: '1fr 1.4fr',
-        minHeight: '90vh', overflow: 'hidden', background: '#f6f4f1',
+        minHeight: '90vh', overflow: 'hidden', background: '#0b0b0b',
       }}>
         {/* Texto */}
         <div style={{
           display: 'flex', flexDirection: 'column', justifyContent: 'center',
           padding: 'clamp(2.5rem, 5vw, 5rem)',
-          gap: '1.25rem', color: '#111',
+          gap: '1.25rem', color: '#fff',
         }}>
-          <p style={{ fontSize: 12, letterSpacing: '0.25em', textTransform: 'uppercase', fontWeight: 500 }}>
+          <p style={{ fontSize: 12, letterSpacing: '0.25em', textTransform: 'uppercase', fontWeight: 500, color: S.gold }}>
             DECANTS
           </p>
           <h1 style={{
             fontFamily: "'Playfair Display', serif",
             fontSize: 'clamp(2.5rem, 5vw, 4rem)',
-            fontWeight: 700, lineHeight: 1.05, color: '#111',
+            fontWeight: 700, lineHeight: 1.05, color: '#fff',
             textTransform: 'uppercase',
           }}>
             Descubra as melhores fragrâncias do mundo
           </h1>
-          <p style={{ fontSize: 16, color: '#555', lineHeight: 1.7, maxWidth: 360 }}>
+          <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, maxWidth: 360 }}>
             Experimente antes de escolher.<br />
             Uma curadoria dos perfumes mais exclusivos em formatos práticos.
           </p>
@@ -119,13 +119,13 @@ export default function Catalogo() {
             <button
               onClick={() => { document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' }); }}
               style={{
-                border: '1px solid #111', padding: '16px 28px',
+                border: `1px solid ${S.gold}`, padding: '16px 28px',
                 fontSize: 12, letterSpacing: '0.2em', textTransform: 'uppercase',
                 background: 'transparent', cursor: 'pointer', transition: '0.3s',
-                color: '#111', marginTop: '0.5rem',
+                color: S.gold, marginTop: '0.5rem',
               }}
-              onMouseEnter={e => { e.currentTarget.style.background = '#111'; e.currentTarget.style.color = '#fff'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#111'; }}
+              onMouseEnter={e => { e.currentTarget.style.background = S.gold; e.currentTarget.style.color = '#0b0b0b'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = S.gold; }}
             >
               DESCUBRA
             </button>
