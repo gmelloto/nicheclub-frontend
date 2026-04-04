@@ -125,19 +125,19 @@ export default function Catalogo() {
             Uma curadoria dos perfumes mais exclusivos em formatos práticos.
           </p>
           <div>
-            <button
-              onClick={() => { document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' }); }}
+            <Link to="/decants"
               style={{
+                display: 'inline-block',
                 border: `1px solid ${S.gold}`, padding: '16px 28px',
                 fontSize: 12, letterSpacing: '0.2em', textTransform: 'uppercase',
                 background: 'transparent', cursor: 'pointer', transition: '0.3s',
-                color: S.gold, marginTop: '0.5rem',
+                color: S.gold, marginTop: '0.5rem', textDecoration: 'none',
               }}
               onMouseEnter={e => { e.currentTarget.style.background = S.gold; e.currentTarget.style.color = '#0b0b0b'; }}
               onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = S.gold; }}
             >
               DESCUBRA
-            </button>
+            </Link>
           </div>
         </div>
       </div>
