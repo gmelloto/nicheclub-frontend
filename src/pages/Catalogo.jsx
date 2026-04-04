@@ -171,7 +171,7 @@ export default function Catalogo() {
             Fragrâncias originais, intocadas, como devem ser.
           </h2>
           <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, maxWidth: 360 }}>
-            Luxo, arte e exclusividade em cada gota.
+            Para quem já sabe o que quer.
           </p>
           <div>
             <button
