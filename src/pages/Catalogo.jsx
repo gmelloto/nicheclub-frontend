@@ -193,52 +193,52 @@ export default function Catalogo() {
 
       {/* ─── BLOCO 3: Catálogo Completo ──────────────────────────────────── */}
       <div className="hero-block" style={{
-        display: 'grid', gridTemplateColumns: '1fr 1.4fr',
-        minHeight: 480, overflow: 'hidden', background: '#f5f3ef',
+        display: 'grid', gridTemplateColumns: '1.4fr 1fr',
+        minHeight: 480, overflow: 'hidden', background: '#0a0a0a',
       }}>
-        {/* Texto */}
+        {/* Imagem à esquerda */}
+        <div style={{ overflow: 'hidden' }}>
+          <img src="https://res.cloudinary.com/dafksmivt/image/upload/v1775274806/ChatGPT_Image_Apr_4_2026_12_53_06_AM_ysdczs.png" alt="Catálogo Completo" style={{
+            width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center',
+            animation: 'heroZoom 18s ease infinite alternate',
+          }} />
+        </div>
+
+        {/* Texto à direita */}
         <div style={{
           display: 'flex', flexDirection: 'column', justifyContent: 'center',
           padding: 'clamp(2.5rem, 5vw, 5rem)',
-          gap: '1.25rem', color: '#111',
+          gap: '1.25rem', color: '#fff',
         }}>
-          <p style={{ fontSize: 12, letterSpacing: '0.25em', textTransform: 'uppercase', fontWeight: 500, color: '#7a6020' }}>
+          <p style={{ fontSize: 12, letterSpacing: '0.25em', textTransform: 'uppercase', fontWeight: 500, color: S.gold }}>
             COLEÇÃO
           </p>
           <h2 style={{
             fontFamily: "'Playfair Display', serif",
             fontSize: 'clamp(2.2rem, 5vw, 3.8rem)',
-            fontWeight: 700, lineHeight: 1.05, color: '#111',
+            fontWeight: 700, lineHeight: 1.05, color: '#fff',
             textTransform: 'uppercase',
           }}>
             Catálogo<br />Completo
           </h2>
-          <p style={{ fontSize: 16, color: '#555', lineHeight: 1.7, maxWidth: 360 }}>
+          <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, maxWidth: 360 }}>
             Explore a nossa seleção completa de fragrâncias icônicas, nicho e edições exclusivas.
           </p>
           <div>
             <button
               onClick={() => { setTab('catalogo'); setTimeout(() => document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' }), 100); }}
               style={{
-                border: '1px solid #111', padding: '16px 28px',
+                border: `1px solid ${S.gold}`, padding: '16px 28px',
                 fontSize: 12, letterSpacing: '0.2em', textTransform: 'uppercase',
                 background: 'transparent', cursor: 'pointer', transition: '0.3s',
-                color: '#111', marginTop: '0.5rem',
+                color: S.gold, marginTop: '0.5rem',
               }}
-              onMouseEnter={e => { e.currentTarget.style.background = '#111'; e.currentTarget.style.color = '#fff'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#111'; }}
+              onMouseEnter={e => { e.currentTarget.style.background = S.gold; e.currentTarget.style.color = '#0b0b0b'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = S.gold; }}
             >
               EXPLORAR
             </button>
           </div>
-        </div>
-
-        {/* Imagem */}
-        <div style={{ overflow: 'hidden', background: '#0a0a0a' }}>
-          <img src="https://res.cloudinary.com/dafksmivt/image/upload/v1775273240/ChatGPT_Image_Apr_4_2026_12_26_57_AM_ktou0m.png" alt="Catálogo Completo" style={{
-            width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center',
-            animation: 'heroZoom 18s ease infinite alternate',
-          }} />
         </div>
       </div>
 
