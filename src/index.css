@@ -203,6 +203,9 @@ input::placeholder { color: var(--text3); letter-spacing: 0.1em; }
   .hero-section {
     align-items: flex-start !important;
   }
+  .hero-section img {
+    object-position: center bottom !important;
+  }
 
   /* Hero block split — empilha no mobile */
   .hero-block {
