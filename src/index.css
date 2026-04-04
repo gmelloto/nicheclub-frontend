@@ -197,13 +197,10 @@ input::placeholder { color: var(--text3); letter-spacing: 0.1em; }
     object-fit: cover !important;
   }
 
-  /* Hero block — empilha no mobile */
-  .hero-block {
-    grid-template-columns: 1fr !important;
-    min-height: auto !important;
-  }
-  .hero-block > div:last-child {
-    min-height: 300px !important;
+  /* Hero — texto mais ao topo no mobile */
+  .hero-section {
+    align-items: flex-start !important;
+    padding-top: 100px !important;
   }
 }
 

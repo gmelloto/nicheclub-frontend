@@ -90,7 +90,7 @@ export default function Catalogo() {
     <div style={{ background: S.black, color: S.text, fontFamily: "'Inter', sans-serif", overflowX: 'hidden' }}>
 
       {/* ─── HERO (texto sobre imagem) ──────────────────────────────────── */}
-      <div style={{
+      <div className="hero-section" style={{
         position: 'relative', minHeight: '90vh',
         display: 'flex', alignItems: 'center', overflow: 'hidden',
       }}>
