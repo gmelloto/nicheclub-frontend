@@ -160,7 +160,7 @@ function FrascoCard({ perfume, isAdmin, onEditar, onExcluir }) {
       )}
 
       <Link to={`/perfume/${perfume.perfume_id || perfume.id}`}
-        style={{ display: 'block', background: '#111009', borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(201,168,76,0.1)', transition: 'transform 0.3s, border-color 0.3s', transform: hovered ? 'translateY(-6px)' : 'translateY(0)', borderColor: hovered ? 'rgba(201,168,76,0.35)' : 'rgba(201,168,76,0.1)' }}
+        style={{ display: 'block', background: '#fff', borderRadius: 12, overflow: 'hidden', border: '1px solid #e8e4dc', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', transition: 'transform 0.3s, border-color 0.3s', transform: hovered ? 'translateY(-6px)' : 'translateY(0)', borderColor: hovered ? 'rgba(201,168,76,0.5)' : '#e8e4dc' }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
@@ -177,50 +177,50 @@ function FrascoCard({ perfume, isAdmin, onEditar, onExcluir }) {
           </div>
 
           <div style={{ padding: '12px 12px 12px 10px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', gap: 4 }}>
-            <p style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(201,168,76,0.6)', marginBottom: 6, fontWeight: 600 }}>Principais acordes</p>
+            <p style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#7a6020', marginBottom: 6, fontWeight: 600 }}>Principais acordes</p>
             {acordes.length > 0 ? acordes.map(a => (
               <div key={a} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <div style={{ flex: 1, height: 18, borderRadius: 3, background: corAcorde(a), display: 'flex', alignItems: 'center', paddingLeft: 8, overflow: 'hidden' }}>
                   <span style={{ fontSize: 10, fontWeight: 700, color: 'rgba(0,0,0,0.7)', whiteSpace: 'nowrap', letterSpacing: '0.02em' }}>{a}</span>
                 </div>
               </div>
-            )) : <p style={{ fontSize: 11, color: 'rgba(240,236,224,0.25)', fontStyle: 'italic' }}>—</p>}
+            )) : <p style={{ fontSize: 11, color: '#ccc', fontStyle: 'italic' }}>—</p>}
 
             {perfume.rating_valor && (
               <div style={{ marginTop: 'auto', paddingTop: 8 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <span style={{ fontSize: 18, fontWeight: 700, color: '#f0ece0' }}>{Number(perfume.rating_valor).toFixed(1)}</span>
+                  <span style={{ fontSize: 18, fontWeight: 700, color: '#111' }}>{Number(perfume.rating_valor).toFixed(1)}</span>
                   <div style={{ display: 'flex', gap: 1 }}>
                     {[1,2,3,4,5].map(s => (
                       <span key={s} style={{ fontSize: 10, color: s <= Math.round(perfume.rating_valor) ? '#c9a84c' : 'rgba(201,168,76,0.2)' }}>★</span>
                     ))}
                   </div>
                 </div>
-                <p style={{ fontSize: 10, color: 'rgba(240,236,224,0.3)' }}>({perfume.rating_count?.toLocaleString()})</p>
+                <p style={{ fontSize: 10, color: '#888' }}>({perfume.rating_count?.toLocaleString()})</p>
               </div>
             )}
           </div>
         </div>
 
         <div style={{ padding: '1rem 1.25rem' }}>
-          <p style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(201,168,76,0.6)', marginBottom: 3, fontWeight: 500 }}>{perfume.marca}</p>
-          <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#f0ece0', marginBottom: 4, lineHeight: 1.2 }}>{perfume.nome}</h3>
-          {perfume.genero && <p style={{ fontSize: 11, color: 'rgba(240,236,224,0.35)', marginBottom: 8 }}>{perfume.genero}</p>}
+          <p style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#7a6020', marginBottom: 3, fontWeight: 500 }}>{perfume.marca}</p>
+          <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#111', marginBottom: 4, lineHeight: 1.2 }}>{perfume.nome}</h3>
+          {perfume.genero && <p style={{ fontSize: 11, color: '#888', marginBottom: 8 }}>{perfume.genero}</p>}
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'rgba(240,236,224,0.4)', marginBottom: 4 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#888', marginBottom: 4 }}>
             <span>{disponivel}ml disponível</span>
             <span>{pct}%</span>
           </div>
-          <div style={{ height: 4, background: 'rgba(255,255,255,0.06)', borderRadius: 2, marginBottom: '0.75rem' }}>
+          <div style={{ height: 4, background: 'rgba(0,0,0,0.08)', borderRadius: 2, marginBottom: '0.75rem' }}>
             <div style={{ height: '100%', background: 'linear-gradient(90deg,#c9a84c,#e8c870)', borderRadius: 2, width: `${100 - pct}%`, transition: 'width 0.5s' }} />
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             {precoMin
-              ? <p style={{ fontSize: 13, color: 'rgba(240,236,224,0.6)' }}>A partir de <span style={{ color: '#c9a84c', fontWeight: 700 }}>R$ {Number(precoMin).toFixed(2).replace('.', ',')}</span></p>
-              : <p style={{ fontSize: 12, color: 'rgba(240,236,224,0.25)', fontStyle: 'italic' }}>Consultar preço</p>
+              ? <p style={{ fontSize: 13, color: '#555' }}>A partir de <span style={{ color: '#c9a84c', fontWeight: 700 }}>R$ {Number(precoMin).toFixed(2).replace('.', ',')}</span></p>
+              : <p style={{ fontSize: 12, color: '#aaa', fontStyle: 'italic' }}>Consultar preço</p>
             }
-            <span style={{ fontSize: 10, color: 'rgba(201,168,76,0.5)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Ver →</span>
+            <span style={{ fontSize: 10, color: '#c9a84c', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Ver →</span>
           </div>
         </div>
       </Link>
@@ -269,7 +269,7 @@ export default function Frascos() {
   const recarregar = () => carregar(1, busca, true);
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0d0b07', color: '#f0ece0' }}>
+    <div style={{ minHeight: '100vh', background: '#fff', color: '#111' }}>
 
       {/* Modais */}
       {modalEditar && (
@@ -293,23 +293,23 @@ export default function Frascos() {
         <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 700, letterSpacing: '-0.02em', marginBottom: '0.5rem' }}>
           Perfumes <span style={{ color: '#c9a84c' }}>Disponíveis</span>
         </h1>
-        <p style={{ fontSize: 15, color: 'rgba(240,236,224,0.5)', marginBottom: '2rem' }}>
+        <p style={{ fontSize: 15, color: '#888', marginBottom: '2rem' }}>
           {total > 0 ? `${total} fragrâncias` : 'Experimente fragrâncias premium!'}
         </p>
 
         {/* Busca */}
         <div style={{ display: 'flex', justifyContent: 'center', gap: 12, flexWrap: 'wrap' }}>
           <div style={{ position: 'relative' }}>
-            <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', fontSize: 14, color: 'rgba(240,236,224,0.3)' }}>🔍</span>
+            <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', fontSize: 14, color: '#aaa' }}>🔍</span>
             <input
               value={buscaInput}
               onChange={e => setBuscaInput(e.target.value)}
               placeholder="Buscar perfume ou marca..."
-              style={{ width: 300, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(201,168,76,0.25)', color: '#f0ece0', padding: '10px 16px 10px 40px', fontSize: 13, outline: 'none', borderRadius: 2 }}
+              style={{ width: 300, background: '#f5f3ef', border: '1px solid #e0dcd4', color: '#111', padding: '10px 16px 10px 40px', fontSize: 13, outline: 'none', borderRadius: 2 }}
             />
             {buscaInput && (
               <button onClick={() => setBuscaInput('')}
-                style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'rgba(240,236,224,0.4)', cursor: 'pointer', fontSize: 16 }}>
+                style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#999', cursor: 'pointer', fontSize: 16 }}>
                 ×
               </button>
             )}
@@ -322,11 +322,11 @@ export default function Frascos() {
         {loading ? (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
             {[...Array(8)].map((_, i) => (
-              <div key={i} style={{ background: '#1a1810', borderRadius: 12, height: 420 }} />
+              <div key={i} style={{ background: '#f0ece6', borderRadius: 12, height: 420 }} />
             ))}
           </div>
         ) : perfumes.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '5rem 0', color: 'rgba(240,236,224,0.3)' }}>
+          <div style={{ textAlign: 'center', padding: '5rem 0', color: '#aaa' }}>
             <p style={{ fontSize: 48, marginBottom: 16 }}>🔍</p>
             <p style={{ fontSize: 18 }}>Nenhum resultado para "{buscaInput}"</p>
           </div>
@@ -350,7 +350,7 @@ export default function Frascos() {
               style={{ background: 'transparent', border: '1px solid rgba(201,168,76,0.4)', color: '#c9a84c', padding: '12px 36px', fontSize: 12, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'pointer', borderRadius: 2 }}>
               Carregar mais
             </button>
-            <p style={{ fontSize: 12, color: 'rgba(240,236,224,0.25)', marginTop: '1rem' }}>{perfumes.length} de {total}</p>
+            <p style={{ fontSize: 12, color: '#aaa', marginTop: '1rem' }}>{perfumes.length} de {total}</p>
           </div>
         )}
       </div>
