@@ -196,7 +196,7 @@ export default function Catalogo() {
         position: 'relative', minHeight: '75vh',
         display: 'flex', overflow: 'hidden',
       }}>
-        <img src="https://res.cloudinary.com/dafksmivt/image/upload/v1775275165/ChatGPT_Image_Apr_4_2026_12_59_01_AM_xz5tqs.png" alt="Catálogo Completo" style={{
+        <img src="https://res.cloudinary.com/dafksmivt/image/upload/v1775275657/ChatGPT_Image_Apr_4_2026_01_07_21_AM_pdpbuw.png" alt="Catálogo Completo" style={{
           position: 'absolute', inset: 0, width: '100%', height: '100%',
           objectFit: 'cover', objectPosition: '70% center',
           animation: 'heroZoom 18s ease infinite alternate',
