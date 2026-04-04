@@ -274,7 +274,7 @@ export default function Frascos() {
       )}
 
       {/* Header */}
-      <div style={{ textAlign: 'center', padding: '4rem 2rem 3rem' }}>
+      <div style={{ textAlign: 'center', padding: '2rem 2rem 3rem' }}>
         <p style={{ fontSize: 10, letterSpacing: '0.5em', textTransform: 'uppercase', color: '#c9a84c', marginBottom: '0.75rem', fontWeight: 500 }}>Decants</p>
         <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 700, letterSpacing: '-0.02em', marginBottom: '0.5rem' }}>
           Perfumes <span style={{ color: '#c9a84c' }}>Disponíveis</span>
