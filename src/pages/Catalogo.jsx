@@ -89,109 +89,25 @@ export default function Catalogo() {
   return (
     <div style={{ background: S.black, color: S.text, fontFamily: "'Outfit', sans-serif", overflowX: 'hidden' }}>
 
-      {/* ─── HERO BLOCKS (estilo Chanel) ────────────────────────────────── */}
-      {[
-        {
-          img: '/banner-hero.jpg',
-          label: 'DECANTS',
-          title: 'Descubra as melhores fragrâncias do mundo',
-          desc: 'Experimente antes de escolher. Uma seleção cuidada dos perfumes mais exclusivos em formatos práticos.',
-          cta: 'Descubra',
-          tab: 'decants',
-          light: true,
-        },
-        {
-          img: '/frasco2.jpeg',
-          label: 'PERFUMES LACRADOS',
-          title: 'Boadicea\nThe Victorious',
-          desc: 'Luxo, arte e exclusividade em cada gota.',
-          cta: 'Conhecer',
-          tab: 'lacrados',
-          light: false,
-        },
-        {
-          img: '/caixa.jpeg',
-          label: 'COLEÇÃO',
-          title: 'Catálogo\nCompleto',
-          desc: 'Explore a nossa seleção completa de fragrâncias icônicas, nicho e edições exclusivas.',
-          cta: 'Explorar',
-          tab: 'catalogo',
-          light: false,
-        },
-      ].map((block, i) => (
-        <div key={i} className="hero-block" style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          minHeight: 480,
-          background: block.light ? '#f5f3ef' : '#0d0b07',
-          overflow: 'hidden',
-          cursor: 'pointer',
-        }}
-          onClick={() => {
-            setTab(block.tab);
-            setTimeout(() => document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' }), 100);
-          }}
-        >
-          {/* Texto à esquerda */}
-          <div style={{
-            display: 'flex', flexDirection: 'column', justifyContent: 'center',
-            padding: 'clamp(2rem, 5vw, 5rem)',
-            gap: '1.25rem',
-          }}>
-            <p style={{
-              fontSize: 11, letterSpacing: '0.3em', textTransform: 'uppercase',
-              color: block.light ? '#7a6020' : S.gold, fontWeight: 600,
-            }}>{block.label}</p>
-            <h2 style={{
-              fontFamily: "'Cormorant Garamond', serif",
-              fontSize: 'clamp(1.8rem, 4vw, 3.2rem)',
-              fontWeight: 700, lineHeight: 1.1,
-              color: block.light ? '#0d0b07' : '#fff',
-              textTransform: 'uppercase', letterSpacing: '0.02em',
-              whiteSpace: 'pre-line',
-            }}>{block.title}</h2>
-            <p style={{
-              fontSize: 14, lineHeight: 1.7, maxWidth: 320,
-              color: block.light ? '#6b6460' : 'rgba(240,236,224,0.6)',
-            }}>{block.desc}</p>
-            <div>
-              <button style={{
-                background: block.light ? '#0d0b07' : 'transparent',
-                border: block.light ? '1px solid #0d0b07' : '1px solid #fff',
-                color: block.light ? '#fff' : '#fff',
-                padding: '13px 32px',
-                fontSize: 11, fontWeight: 700,
-                letterSpacing: '0.2em', textTransform: 'uppercase',
-                cursor: 'pointer',
-                transition: 'all 0.3s',
-                marginTop: '0.5rem',
-              }}
-                onMouseEnter={e => {
-                  if (block.light) { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = '#0d0b07'; e.currentTarget.style.border = '1px solid #0d0b07'; }
-                  else { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = '#0d0b07'; }
-                }}
-                onMouseLeave={e => {
-                  if (block.light) { e.currentTarget.style.background = '#0d0b07'; e.currentTarget.style.color = '#fff'; }
-                  else { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#fff'; }
-                }}
-              >
-                {block.cta}
-              </button>
-            </div>
-          </div>
-
-          {/* Imagem à direita */}
-          <div style={{
-            position: 'relative', overflow: 'hidden',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <img src={block.img} alt="" style={{
-              width: '100%', height: '100%',
-              objectFit: 'cover', objectPosition: 'center',
-            }} />
-          </div>
+      {/* ─── HERO ─────────────────────────────────────────────────────────── */}
+      <div style={{ position: 'relative', minHeight: '42vh', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
+        <img src="/banner-hero.jpg" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', filter: 'brightness(0.45)' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(13,11,7,0.9) 40%, rgba(13,11,7,0.3) 100%)' }} />
+        <div style={{ position: 'relative', maxWidth: 1280, margin: '0 auto', padding: '3rem 1.25rem', width: '100%' }}>
+          <p style={{ fontSize: 11, letterSpacing: '0.35em', textTransform: 'uppercase', color: S.gold, marginBottom: '1rem', fontWeight: 500 }}>Fragrâncias Exclusivas</p>
+          <h1 style={{ fontFamily: "'Outfit', sans-serif", fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 600, lineHeight: 1.1, marginBottom: '1.25rem', maxWidth: 560 }}>
+            Descubra sua<br /><span style={{ color: S.gold }}>essência</span>
+          </h1>
+          <p style={{ fontSize: 15, color: S.text2, maxWidth: 420, lineHeight: 1.8, marginBottom: '2.5rem' }}>
+            Decants selecionados das melhores casas de perfumaria do mundo. Reserve o seu e experimente antes de investir.
+          </p>
+          <a href="#catalogo" onClick={e => { e.preventDefault(); document.getElementById('catalogo').scrollIntoView({behavior:'smooth'}); }} style={{ display: 'inline-block', background: S.gold, color: S.black, padding: '13px 28px', fontSize: 12, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'pointer' }}>
+            Ver Catálogo
+          </a>
         </div>
-      ))}
+      </div>
+
+      <BrandCarousel />
 
       {/* ─── CATÁLOGO ─────────────────────────────────────────────────────── */}
       <div id="catalogo" style={{ padding: '5rem 2.5rem', background: '#fff' }}>

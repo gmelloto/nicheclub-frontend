@@ -194,15 +194,6 @@ input::placeholder { color: var(--text3); letter-spacing: 0.1em; }
     max-height: 300px !important;
     object-fit: cover !important;
   }
-
-  /* Hero blocks — empilha no mobile */
-  .hero-block {
-    grid-template-columns: 1fr !important;
-    min-height: auto !important;
-  }
-  .hero-block > div:last-child {
-    min-height: 280px !important;
-  }
 }
 
 @media (max-width: 480px) {
