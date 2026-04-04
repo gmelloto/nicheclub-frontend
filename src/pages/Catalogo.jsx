@@ -196,43 +196,43 @@ export default function Catalogo() {
         position: 'relative', minHeight: '70vh',
         display: 'flex', overflow: 'hidden',
       }}>
-        <img src="https://res.cloudinary.com/dafksmivt/image/upload/v1775272910/ChatGPT_Image_Apr_4_2026_12_21_21_AM_a6eiu0.png" alt="Catálogo Completo" style={{
+        <img src="https://res.cloudinary.com/dafksmivt/image/upload/v1775273240/ChatGPT_Image_Apr_4_2026_12_26_57_AM_ktou0m.png" alt="Catálogo Completo" style={{
           position: 'absolute', inset: 0, width: '100%', height: '100%',
           objectFit: 'cover', objectPosition: 'center right',
           animation: 'heroZoom 18s ease infinite alternate',
         }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(0,0,0,0.8) 25%, rgba(0,0,0,0.2) 100%)' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(245,243,239,0.92) 30%, rgba(245,243,239,0.1) 70%)' }} />
 
         <div style={{
           position: 'relative', maxWidth: 1280, margin: '0 auto',
           padding: 'clamp(2.5rem, 5vw, 5rem)', width: '100%',
           display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '1.25rem',
         }}>
-          <p style={{ fontSize: 12, letterSpacing: '0.25em', textTransform: 'uppercase', fontWeight: 500, color: S.gold }}>
+          <p style={{ fontSize: 12, letterSpacing: '0.25em', textTransform: 'uppercase', fontWeight: 500, color: '#7a6020' }}>
             COLEÇÃO
           </p>
           <h2 style={{
             fontFamily: "'Playfair Display', serif",
             fontSize: 'clamp(2.2rem, 5vw, 3.8rem)',
-            fontWeight: 700, lineHeight: 1.05, color: '#fff',
+            fontWeight: 700, lineHeight: 1.05, color: '#111',
             textTransform: 'uppercase', maxWidth: 500,
           }}>
             Catálogo<br />Completo
           </h2>
-          <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, maxWidth: 360 }}>
+          <p style={{ fontSize: 16, color: '#555', lineHeight: 1.7, maxWidth: 360 }}>
             Explore a nossa seleção completa de fragrâncias icônicas, nicho e edições exclusivas.
           </p>
           <div>
             <button
               onClick={() => { setTab('catalogo'); setTimeout(() => document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' }), 100); }}
               style={{
-                border: `1px solid ${S.gold}`, padding: '16px 28px',
+                border: '1px solid #111', padding: '16px 28px',
                 fontSize: 12, letterSpacing: '0.2em', textTransform: 'uppercase',
                 background: 'transparent', cursor: 'pointer', transition: '0.3s',
-                color: S.gold, marginTop: '0.5rem',
+                color: '#111', marginTop: '0.5rem',
               }}
-              onMouseEnter={e => { e.currentTarget.style.background = S.gold; e.currentTarget.style.color = '#0b0b0b'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = S.gold; }}
+              onMouseEnter={e => { e.currentTarget.style.background = '#111'; e.currentTarget.style.color = '#fff'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#111'; }}
             >
               EXPLORAR
             </button>
