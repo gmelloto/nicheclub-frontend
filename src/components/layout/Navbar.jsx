@@ -11,7 +11,7 @@ export default function Navbar() {
   const links = [
     ['/decants', 'Decants'],
     ['/lacrados', 'Lacrados'],
-    ['#catalogo', 'Catálogo'],
+    ['/catalogo', 'Catálogo'],
     ['#como-funciona', 'Como Funciona'],
     ['#faq', 'FAQ'],
     ['#quem-somos', 'Quem Somos'],

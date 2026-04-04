@@ -224,7 +224,7 @@ export default function Catalogo() {
           </p>
           <div>
             <button
-              onClick={() => { setTab('catalogo'); setTimeout(() => document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' }), 100); }}
+              onClick={() => navigate('/catalogo')}
               style={{
                 border: `1px solid ${S.gold}`, padding: '16px 28px',
                 fontSize: 12, letterSpacing: '0.2em', textTransform: 'uppercase',

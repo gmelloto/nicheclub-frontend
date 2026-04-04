@@ -11,6 +11,7 @@ import AdminNotas from './pages/AdminNotas.jsx';
 import Login from './pages/Login.jsx';
 import Decants from './pages/Frascos.jsx';
 import Lacrados from './pages/Lacrados.jsx';
+import CatalogoCompleto from './pages/CatalogoCompleto.jsx';
 import Teste from './pages/Teste.jsx';
 import './index.css';
 
@@ -37,6 +38,7 @@ export default function App() {
             <Route path="/admin/login" element={<Login />} />
             <Route path="/decants" element={<Decants />} />
             <Route path="/lacrados" element={<Lacrados />} />
+            <Route path="/catalogo" element={<CatalogoCompleto />} />
             <Route path="/teste" element={<Teste />} />
           </Routes>
         </BrowserRouter>
