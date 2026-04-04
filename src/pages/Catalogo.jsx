@@ -217,7 +217,7 @@ export default function Catalogo() {
             fontWeight: 700, lineHeight: 1.05, color: '#fff',
             textTransform: 'uppercase', maxWidth: 500,
           }}>
-            Explore a nossa seleção completa de fragrâncias icônicas, nicho e edições exclusivas.
+            Um acervo para quem leva fragrâncias a sério.
           </h2>
           <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, maxWidth: 360 }}>
             Para quem quer saber mais sobre a perfumaria.
