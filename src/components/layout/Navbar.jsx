@@ -10,6 +10,7 @@ export default function Navbar() {
 
   const links = [
     ['/decants', 'Decants'],
+    ['/lacrados', 'Lacrados'],
     ['#catalogo', 'Catálogo'],
     ['#como-funciona', 'Como Funciona'],
     ['#faq', 'FAQ'],
@@ -88,10 +89,17 @@ export default function Navbar() {
           padding: '0 1.25rem 12px', borderTop: '1px solid rgba(201,168,76,0.08)',
         }}>
           {links.map(([to, label]) => (
-            <a key={label} href={to} style={linkStyle}
-              onMouseEnter={e => e.target.style.color = '#c9a84c'}
-              onMouseLeave={e => e.target.style.color = 'rgba(240,236,224,0.7)'}
-            >{label}</a>
+            to.startsWith('/') ? (
+              <Link key={label} to={to} style={linkStyle}
+                onMouseEnter={e => e.currentTarget.style.color = '#c9a84c'}
+                onMouseLeave={e => e.currentTarget.style.color = 'rgba(240,236,224,0.7)'}
+              >{label}</Link>
+            ) : (
+              <a key={label} href={to} style={linkStyle}
+                onMouseEnter={e => e.target.style.color = '#c9a84c'}
+                onMouseLeave={e => e.target.style.color = 'rgba(240,236,224,0.7)'}
+              >{label}</a>
+            )
           ))}
           {usuario && <Link to="/admin" style={linkStyle}>Admin</Link>}
         </div>
@@ -101,9 +109,15 @@ export default function Navbar() {
           <div className="nav-mobile" style={{ display: 'none', background: '#0d0b07', borderTop: '1px solid rgba(201,168,76,0.1)', padding: '1rem 1.25rem' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {links.map(([to, label]) => (
-                <a key={label} href={to} onClick={() => setMenuAberto(false)}
-                  style={{ fontSize: 12, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(240,236,224,0.7)', fontWeight: 500, padding: '0.5rem 0', borderBottom: '1px solid rgba(201,168,76,0.06)' }}
-                >{label}</a>
+                to.startsWith('/') ? (
+                  <Link key={label} to={to} onClick={() => setMenuAberto(false)}
+                    style={{ fontSize: 12, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(240,236,224,0.7)', fontWeight: 500, padding: '0.5rem 0', borderBottom: '1px solid rgba(201,168,76,0.06)' }}
+                  >{label}</Link>
+                ) : (
+                  <a key={label} href={to} onClick={() => setMenuAberto(false)}
+                    style={{ fontSize: 12, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(240,236,224,0.7)', fontWeight: 500, padding: '0.5rem 0', borderBottom: '1px solid rgba(201,168,76,0.06)' }}
+                  >{label}</a>
+                )
               ))}
               {usuario && <Link to="/admin" onClick={() => setMenuAberto(false)} style={{ fontSize: 12, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(240,236,224,0.7)', fontWeight: 500 }}>Admin</Link>}
               {usuario
