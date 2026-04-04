@@ -145,20 +145,6 @@ function FrascoCard({ perfume, isAdmin, onEditar, onExcluir }) {
 
   return (
     <div style={{ position: 'relative' }}>
-      {/* Botoes admin */}
-      {isAdmin && (
-        <div style={{ position: 'absolute', top: 10, right: 10, zIndex: 10, display: 'flex', gap: 6 }}>
-          <button onClick={e => { e.preventDefault(); onEditar(perfume); }}
-            style={{ padding: '5px 10px', background: 'rgba(201,168,76,0.9)', border: 'none', borderRadius: 4, color: '#0d0b07', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
-            ✏️ Editar
-          </button>
-          <button onClick={e => { e.preventDefault(); onExcluir(perfume); }}
-            style={{ padding: '5px 10px', background: 'rgba(192,57,43,0.9)', border: 'none', borderRadius: 4, color: '#fff', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
-            🗑️ Excluir
-          </button>
-        </div>
-      )}
-
       <Link to={`/perfume/${perfume.perfume_id || perfume.id}`}
         style={{ display: 'block', background: '#fff', borderRadius: 12, overflow: 'hidden', border: '1px solid #e8e4dc', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', transition: 'transform 0.3s, border-color 0.3s', transform: hovered ? 'translateY(-6px)' : 'translateY(0)', borderColor: hovered ? 'rgba(201,168,76,0.5)' : '#e8e4dc' }}
         onMouseEnter={() => setHovered(true)}
