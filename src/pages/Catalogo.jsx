@@ -209,7 +209,7 @@ export default function Catalogo() {
           display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '1.25rem',
         }}>
           <p style={{ fontSize: 12, letterSpacing: '0.25em', textTransform: 'uppercase', fontWeight: 500, color: S.gold }}>
-            COLEÇÃO
+            CATÁLOGO COMPLETO
           </p>
           <h2 style={{
             fontFamily: "'Playfair Display', serif",
@@ -217,10 +217,10 @@ export default function Catalogo() {
             fontWeight: 700, lineHeight: 1.05, color: '#fff',
             textTransform: 'uppercase', maxWidth: 500,
           }}>
-            Catálogo<br />Completo
+            Explore a nossa seleção completa de fragrâncias icônicas, nicho e edições exclusivas.
           </h2>
           <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, maxWidth: 360 }}>
-            Explore a nossa seleção completa de fragrâncias icônicas, nicho e edições exclusivas.
+            Para quem quer saber mais sobre a perfumaria.
           </p>
           <div>
             <button
