@@ -142,6 +142,55 @@ export default function Catalogo() {
         </div>
       </div>
 
+      {/* ─── BLOCO 2: Perfumes Lacrados ──────────────────────────────────── */}
+      <div className="hero-section" style={{
+        position: 'relative', minHeight: '90vh',
+        display: 'flex', overflow: 'hidden',
+      }}>
+        <img src="https://res.cloudinary.com/dafksmivt/image/upload/v1775270482/ChatGPT_Image_Apr_3_2026_11_40_43_PM_rbnaj9.png" alt="Perfumes Lacrados" style={{
+          position: 'absolute', inset: 0, width: '100%', height: '100%',
+          objectFit: 'cover', objectPosition: 'center',
+          animation: 'heroZoom 18s ease infinite alternate',
+        }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(0,0,0,0.7) 25%, rgba(0,0,0,0.15) 100%)' }} />
+
+        <div style={{
+          position: 'relative', maxWidth: 1280, margin: '0 auto',
+          padding: 'clamp(2.5rem, 5vw, 5rem)', width: '100%',
+          display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '1.25rem',
+        }}>
+          <p style={{ fontSize: 12, letterSpacing: '0.25em', textTransform: 'uppercase', fontWeight: 500, color: S.gold }}>
+            PERFUMES LACRADOS
+          </p>
+          <h2 style={{
+            fontFamily: "'Playfair Display', serif",
+            fontSize: 'clamp(2.2rem, 5vw, 3.8rem)',
+            fontWeight: 700, lineHeight: 1.05, color: '#fff',
+            textTransform: 'uppercase', maxWidth: 500,
+          }}>
+            Boadicea<br />The Victorious
+          </h2>
+          <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, maxWidth: 360 }}>
+            Luxo, arte e exclusividade<br />em cada gota.
+          </p>
+          <div>
+            <button
+              onClick={() => { setTab('lacrados'); setTimeout(() => document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' }), 100); }}
+              style={{
+                border: `1px solid ${S.gold}`, padding: '16px 28px',
+                fontSize: 12, letterSpacing: '0.2em', textTransform: 'uppercase',
+                background: 'transparent', cursor: 'pointer', transition: '0.3s',
+                color: S.gold, marginTop: '0.5rem',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = S.gold; e.currentTarget.style.color = '#0b0b0b'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = S.gold; }}
+            >
+              CONHECER
+            </button>
+          </div>
+        </div>
+      </div>
+
       <BrandCarousel />
 
       {/* ─── CATÁLOGO ─────────────────────────────────────────────────────── */}
