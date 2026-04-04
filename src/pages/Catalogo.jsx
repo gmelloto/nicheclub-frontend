@@ -241,66 +241,6 @@ export default function Catalogo() {
 
       <BrandCarousel />
 
-      {/* ─── CATÁLOGO ─────────────────────────────────────────────────────── */}
-      <div id="catalogo" style={{ padding: '5rem 2.5rem', background: '#fff' }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-            <p style={{ fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', color: '#7a6020', marginBottom: '0.75rem', fontWeight: 500 }}>Nossa Coleção</p>
-            <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(2.2rem, 4vw, 3.5rem)', fontWeight: 600, marginBottom: '0.75rem' }}>Catálogo</h2>
-            <p style={{ fontSize: 14, color: '#6b6460' }}>Selecione um perfume para escolher o tamanho e fazer sua reserva.</p>
-          </div>
-
-          {/* Tabs */}
-          <div className="catalogo-tabs" style={{ display: 'flex', justifyContent: 'center', gap: 0, marginBottom: '3rem', flexWrap: 'wrap' }}>
-            <button onClick={() => setTab('decants')} style={{ padding: '12px 24px', fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', border: '1px solid rgba(201,168,76,0.4)', cursor: 'pointer', transition: 'all 0.2s', background: tab === 'decants' ? S.gold : 'transparent', color: tab === 'decants' ? '#0d0b07' : '#6b6460', flex: '1 1 auto', minWidth: 0 }}>
-              Decants
-            </button>
-            <button onClick={() => setTab('lacrados')} style={{ padding: '12px 24px', fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', border: '1px solid rgba(201,168,76,0.4)', borderLeft: 'none', cursor: 'pointer', transition: 'all 0.2s', background: tab === 'lacrados' ? S.gold : 'transparent', color: tab === 'lacrados' ? '#0d0b07' : '#6b6460', flex: '1 1 auto', minWidth: 0 }}>
-              Lacrados
-            </button>
-            <button onClick={() => setTab('catalogo')} style={{ padding: '12px 24px', fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', border: '1px solid rgba(201,168,76,0.4)', borderLeft: 'none', cursor: 'pointer', transition: 'all 0.2s', background: tab === 'catalogo' ? S.gold : 'transparent', color: tab === 'catalogo' ? '#0d0b07' : '#6b6460', flex: '1 1 auto', minWidth: 0 }}>
-              Completo
-            </button>
-          </div>
-
-          {/* Busca */}
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2.5rem' }}>
-            <input value={buscaInput} onChange={e => setBuscaInput(e.target.value)} placeholder="Buscar perfume ou marca..." className="catalogo-busca"
-              style={{ width: '100%', maxWidth: 320, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(201,168,76,0.2)', color: S.text, padding: '10px 16px', fontSize: 13, outline: 'none', letterSpacing: '-0.01em', boxSizing: 'border-box' }}
-            />
-          </div>
-
-          {/* Grid */}
-          {loading ? (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '1.25rem' }}>
-              {[...Array(6)].map((_, i) => (
-                <div key={i} style={{ background: S.black3, height: 480, borderRadius: 2 }} />
-              ))}
-            </div>
-          ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 260px), 1fr))', gap: '1.5rem' }}>
-              {filtrados.map((p, i) => tab === "decants" ? <FrascoCard key={p.id} perfume={p} /> : <PerfumeCard key={p.id} perfume={p} delay={i * 60} />)}
-            </div>
-          )}
-
-          {/* Carregar mais */}
-          {temMais && !loading && (
-            <div style={{ textAlign: 'center', marginTop: '3rem' }}>
-              <button onClick={() => carregarPerfumes(pagina + 1, busca)} disabled={loadingMore}
-                style={{ background: 'transparent', border: '1px solid #c9a84c', color: '#7a6020', padding: '12px 36px', fontSize: 12, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'pointer' }}
-                onMouseEnter={e => e.currentTarget.style.background = 'rgba(201,168,76,0.08)'}
-                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-              >
-                {loadingMore ? 'Carregando...' : 'Carregar mais'}
-              </button>
-            </div>
-          )}
-          <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-            <p style={{ fontSize: 12, color: 'rgba(240,236,224,0.25)' }}>{perfumes.length} de {total} fragrâncias</p>
-          </div>
-        </div>
-      </div>
-
       {/* ─── COMO FUNCIONA ────────────────────────────────────────────────── */}
       <div id="como-funciona" style={{ background: S.black2, borderTop: `1px solid ${S.border}`, borderBottom: `1px solid ${S.border}`, padding: '5rem 2.5rem' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', textAlign: 'center' }}>
