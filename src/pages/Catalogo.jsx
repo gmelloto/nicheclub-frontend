@@ -89,16 +89,25 @@ export default function Catalogo() {
   return (
     <div style={{ background: S.black, color: S.text, fontFamily: "'Inter', sans-serif", overflowX: 'hidden' }}>
 
-      {/* ─── HERO (estilo editorial) ────────────────────────────────────── */}
-      <div className="hero-block" style={{
-        display: 'grid', gridTemplateColumns: '1fr 1.4fr',
-        minHeight: '90vh', overflow: 'hidden', background: '#0b0b0b',
+      {/* ─── HERO (texto sobre imagem) ──────────────────────────────────── */}
+      <div style={{
+        position: 'relative', minHeight: '90vh',
+        display: 'flex', alignItems: 'center', overflow: 'hidden',
       }}>
+        {/* Imagem de fundo */}
+        <img src="https://res.cloudinary.com/dafksmivt/image/upload/v1775268145/ChatGPT_Image_Apr_3_2026_11_02_07_PM_qlh1pt.png" alt="Decants" style={{
+          position: 'absolute', inset: 0, width: '100%', height: '100%',
+          objectFit: 'cover', objectPosition: 'center',
+          animation: 'heroZoom 18s ease infinite alternate',
+        }} />
+        {/* Overlay escuro */}
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(0,0,0,0.75) 30%, rgba(0,0,0,0.2) 100%)' }} />
+
         {/* Texto */}
         <div style={{
-          display: 'flex', flexDirection: 'column', justifyContent: 'center',
-          padding: 'clamp(2.5rem, 5vw, 5rem)',
-          gap: '1.25rem', color: '#fff',
+          position: 'relative', maxWidth: 1280, margin: '0 auto',
+          padding: 'clamp(2.5rem, 5vw, 5rem)', width: '100%',
+          display: 'flex', flexDirection: 'column', gap: '1.25rem',
         }}>
           <p style={{ fontSize: 12, letterSpacing: '0.25em', textTransform: 'uppercase', fontWeight: 500, color: S.gold }}>
             DECANTS
@@ -107,7 +116,7 @@ export default function Catalogo() {
             fontFamily: "'Playfair Display', serif",
             fontSize: 'clamp(2.5rem, 5vw, 4rem)',
             fontWeight: 700, lineHeight: 1.05, color: '#fff',
-            textTransform: 'uppercase',
+            textTransform: 'uppercase', maxWidth: 500,
           }}>
             Descubra as melhores fragrâncias do mundo
           </h1>
@@ -130,14 +139,6 @@ export default function Catalogo() {
               DESCUBRA
             </button>
           </div>
-        </div>
-
-        {/* Imagem */}
-        <div style={{ position: 'relative', overflow: 'hidden' }}>
-          <img src="https://res.cloudinary.com/dafksmivt/image/upload/v1775268145/ChatGPT_Image_Apr_3_2026_11_02_07_PM_qlh1pt.png" alt="Decants" style={{
-            width: '100%', height: '100%', objectFit: 'cover',
-            animation: 'heroZoom 18s ease infinite alternate',
-          }} />
         </div>
       </div>
 
