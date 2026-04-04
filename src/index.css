@@ -136,6 +136,8 @@ input::placeholder { color: var(--text3); letter-spacing: 0.1em; }
 
 @keyframes heroZoom { from { transform: scale(1); } to { transform: scale(1.1); } }
 
+.hero-section { align-items: center; }
+
 @keyframes shimmer { 0% { background-position:-200% 0; } 100% { background-position:200% 0; } }
 .skeleton {
   background: linear-gradient(90deg, var(--black3) 25%, var(--black2) 50%, var(--black3) 75%);
@@ -200,7 +202,6 @@ input::placeholder { color: var(--text3); letter-spacing: 0.1em; }
   /* Hero — texto mais ao topo no mobile */
   .hero-section {
     align-items: flex-start !important;
-    padding-top: 100px !important;
   }
 }
 

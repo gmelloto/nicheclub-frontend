@@ -92,7 +92,7 @@ export default function Catalogo() {
       {/* ─── HERO (texto sobre imagem) ──────────────────────────────────── */}
       <div className="hero-section" style={{
         position: 'relative', minHeight: '90vh',
-        display: 'flex', alignItems: 'center', overflow: 'hidden',
+        display: 'flex', overflow: 'hidden',
       }}>
         {/* Imagem de fundo */}
         <img src="https://res.cloudinary.com/dafksmivt/image/upload/v1775268145/ChatGPT_Image_Apr_3_2026_11_02_07_PM_qlh1pt.png" alt="Decants" style={{
