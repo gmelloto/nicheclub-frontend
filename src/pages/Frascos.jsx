@@ -163,7 +163,7 @@ function FrascoCard({ perfume, isAdmin, onEditar, onExcluir }) {
           </div>
 
           <div style={{ padding: '12px 12px 12px 10px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', gap: 4 }}>
-            <p style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#7a6020', marginBottom: 6, fontWeight: 600 }}>Principais acordes</p>
+            <p style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#7a6020', marginBottom: 6, fontWeight: 600 }}>Principais acordes</p>
             {acordes.length > 0 ? acordes.map(a => (
               <div key={a} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <div style={{ flex: 1, height: 18, borderRadius: 3, background: corAcorde(a), display: 'flex', alignItems: 'center', paddingLeft: 8, overflow: 'hidden' }}>
