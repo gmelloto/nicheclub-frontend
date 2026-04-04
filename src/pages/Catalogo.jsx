@@ -168,10 +168,10 @@ export default function Catalogo() {
             fontWeight: 700, lineHeight: 1.05, color: '#fff',
             textTransform: 'uppercase', maxWidth: 500,
           }}>
-            Boadicea<br />The Victorious
+            Fragrâncias originais, intocadas, como devem ser.
           </h2>
           <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, maxWidth: 360 }}>
-            Luxo, arte e exclusividade<br />em cada gota.
+            Luxo, arte e exclusividade em cada gota.
           </p>
           <div>
             <button
