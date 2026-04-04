@@ -43,9 +43,9 @@ export default function Navbar() {
           <Link to="/" style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, textDecoration: 'none', zIndex: 1 }}>
             <span style={{
               fontFamily: "'Playfair Display', serif", fontSize: 24, fontWeight: 700,
-              color: '#b78727', letterSpacing: '0.15em', lineHeight: 1,
+              color: '#DAA520', letterSpacing: '0.15em', lineHeight: 1,
             }}>NICHE CLUB</span>
-            <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 9, letterSpacing: '0.3em', color: 'rgba(183,135,39,0.75)', textTransform: 'uppercase', fontWeight: 500 }}>Luxury Perfumes</span>
+            <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 9, letterSpacing: '0.3em', color: 'rgba(218,165,32,0.75)', textTransform: 'uppercase', fontWeight: 500 }}>Luxury Perfumes</span>
           </Link>
 
           {/* Ícones à direita */}
