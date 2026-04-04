@@ -203,6 +203,15 @@ input::placeholder { color: var(--text3); letter-spacing: 0.1em; }
   .hero-section {
     align-items: flex-start !important;
   }
+
+  /* Hero block split — empilha no mobile */
+  .hero-block {
+    grid-template-columns: 1fr !important;
+    min-height: auto !important;
+  }
+  .hero-block > div:last-child {
+    min-height: 280px !important;
+  }
 }
 
 @media (max-width: 480px) {

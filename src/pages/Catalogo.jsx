@@ -192,21 +192,15 @@ export default function Catalogo() {
       </div>
 
       {/* ─── BLOCO 3: Catálogo Completo ──────────────────────────────────── */}
-      <div className="hero-section" style={{
-        position: 'relative', minHeight: '70vh',
-        display: 'flex', overflow: 'hidden',
+      <div className="hero-block" style={{
+        display: 'grid', gridTemplateColumns: '1fr 1.4fr',
+        minHeight: 480, overflow: 'hidden', background: '#f5f3ef',
       }}>
-        <img src="https://res.cloudinary.com/dafksmivt/image/upload/v1775273240/ChatGPT_Image_Apr_4_2026_12_26_57_AM_ktou0m.png" alt="Catálogo Completo" style={{
-          position: 'absolute', inset: 0, width: '100%', height: '100%',
-          objectFit: 'cover', objectPosition: 'center right',
-          animation: 'heroZoom 18s ease infinite alternate',
-        }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(245,243,239,0.92) 30%, rgba(245,243,239,0.1) 70%)' }} />
-
+        {/* Texto */}
         <div style={{
-          position: 'relative', maxWidth: 1280, margin: '0 auto',
-          padding: 'clamp(2.5rem, 5vw, 5rem)', width: '100%',
-          display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '1.25rem',
+          display: 'flex', flexDirection: 'column', justifyContent: 'center',
+          padding: 'clamp(2.5rem, 5vw, 5rem)',
+          gap: '1.25rem', color: '#111',
         }}>
           <p style={{ fontSize: 12, letterSpacing: '0.25em', textTransform: 'uppercase', fontWeight: 500, color: '#7a6020' }}>
             COLEÇÃO
@@ -215,7 +209,7 @@ export default function Catalogo() {
             fontFamily: "'Playfair Display', serif",
             fontSize: 'clamp(2.2rem, 5vw, 3.8rem)',
             fontWeight: 700, lineHeight: 1.05, color: '#111',
-            textTransform: 'uppercase', maxWidth: 500,
+            textTransform: 'uppercase',
           }}>
             Catálogo<br />Completo
           </h2>
@@ -237,6 +231,14 @@ export default function Catalogo() {
               EXPLORAR
             </button>
           </div>
+        </div>
+
+        {/* Imagem */}
+        <div style={{ overflow: 'hidden', background: '#0a0a0a' }}>
+          <img src="https://res.cloudinary.com/dafksmivt/image/upload/v1775273240/ChatGPT_Image_Apr_4_2026_12_26_57_AM_ktou0m.png" alt="Catálogo Completo" style={{
+            width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center',
+            animation: 'heroZoom 18s ease infinite alternate',
+          }} />
         </div>
       </div>
 
