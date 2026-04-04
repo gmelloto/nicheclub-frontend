@@ -279,7 +279,7 @@ export default function Frascos() {
           Decants
         </h1>
         <p style={{ fontSize: 15, color: '#888', marginBottom: '2rem' }}>
-          {total > 0 ? `${total} fragrâncias` : 'Experimente fragrâncias premium!'}
+          {(() => { const disp = perfumes.filter(p => Number(p.ml_disponivel || 0) > 0).length; return disp > 0 ? `${disp} fragrâncias disponíveis` : 'Experimente fragrâncias premium!'; })()}
         </p>
 
         {/* Busca */}
