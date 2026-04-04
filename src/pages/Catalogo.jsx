@@ -95,28 +95,35 @@ export default function Catalogo() {
           img: '/banner-hero.jpg',
           label: 'DECANTS',
           title: 'Descubra as melhores fragrâncias do mundo',
+          desc: 'Experimente antes de escolher. Uma seleção cuidada dos perfumes mais exclusivos em formatos práticos.',
+          cta: 'Descubra',
           tab: 'decants',
+          light: true,
         },
         {
           img: '/frasco2.jpeg',
-          label: 'PERFUMES',
-          title: 'Perfumes Lacrados',
+          label: 'PERFUMES LACRADOS',
+          title: 'Boadicea\nThe Victorious',
+          desc: 'Luxo, arte e exclusividade em cada gota.',
+          cta: 'Conhecer',
           tab: 'lacrados',
+          light: false,
         },
         {
           img: '/caixa.jpeg',
           label: 'COLEÇÃO',
-          title: 'Catálogo Completo',
+          title: 'Catálogo\nCompleto',
+          desc: 'Explore a nossa seleção completa de fragrâncias icônicas, nicho e edições exclusivas.',
+          cta: 'Explorar',
           tab: 'catalogo',
+          light: false,
         },
       ].map((block, i) => (
-        <div key={i} style={{
-          position: 'relative',
-          height: '100vh',
-          minHeight: 500,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+        <div key={i} className="hero-block" style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          minHeight: 480,
+          background: block.light ? '#f5f3ef' : '#0d0b07',
           overflow: 'hidden',
           cursor: 'pointer',
         }}
@@ -125,44 +132,63 @@ export default function Catalogo() {
             setTimeout(() => document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' }), 100);
           }}
         >
-          <img src={block.img} alt="" style={{
-            position: 'absolute', inset: 0, width: '100%', height: '100%',
-            objectFit: 'cover', objectPosition: 'center',
-            filter: 'brightness(0.4)',
-            transition: 'transform 0.6s ease',
-          }} />
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(13,11,7,0.2) 0%, rgba(13,11,7,0.6) 100%)' }} />
+          {/* Texto à esquerda */}
           <div style={{
-            position: 'relative', textAlign: 'center', padding: '2rem 1.5rem',
-            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem',
+            display: 'flex', flexDirection: 'column', justifyContent: 'center',
+            padding: 'clamp(2rem, 5vw, 5rem)',
+            gap: '1.25rem',
           }}>
             <p style={{
-              fontSize: 11, letterSpacing: '0.4em', textTransform: 'uppercase',
-              color: S.gold, fontWeight: 500,
+              fontSize: 11, letterSpacing: '0.3em', textTransform: 'uppercase',
+              color: block.light ? '#7a6020' : S.gold, fontWeight: 600,
             }}>{block.label}</p>
             <h2 style={{
               fontFamily: "'Cormorant Garamond', serif",
-              fontSize: 'clamp(2rem, 5vw, 3.8rem)',
-              fontWeight: 600, lineHeight: 1.15,
-              color: '#fff', maxWidth: 600,
-              textTransform: 'uppercase', letterSpacing: '0.04em',
+              fontSize: 'clamp(1.8rem, 4vw, 3.2rem)',
+              fontWeight: 700, lineHeight: 1.1,
+              color: block.light ? '#0d0b07' : '#fff',
+              textTransform: 'uppercase', letterSpacing: '0.02em',
+              whiteSpace: 'pre-line',
             }}>{block.title}</h2>
-            <button style={{
-              background: 'transparent',
-              border: '1px solid #fff',
-              color: '#fff',
-              padding: '14px 40px',
-              fontSize: 12, fontWeight: 600,
-              letterSpacing: '0.2em', textTransform: 'uppercase',
-              cursor: 'pointer',
-              transition: 'all 0.3s',
-              marginTop: '0.5rem',
-            }}
-              onMouseEnter={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = '#0d0b07'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#fff'; }}
-            >
-              Descubra
-            </button>
+            <p style={{
+              fontSize: 14, lineHeight: 1.7, maxWidth: 320,
+              color: block.light ? '#6b6460' : 'rgba(240,236,224,0.6)',
+            }}>{block.desc}</p>
+            <div>
+              <button style={{
+                background: block.light ? '#0d0b07' : 'transparent',
+                border: block.light ? '1px solid #0d0b07' : '1px solid #fff',
+                color: block.light ? '#fff' : '#fff',
+                padding: '13px 32px',
+                fontSize: 11, fontWeight: 700,
+                letterSpacing: '0.2em', textTransform: 'uppercase',
+                cursor: 'pointer',
+                transition: 'all 0.3s',
+                marginTop: '0.5rem',
+              }}
+                onMouseEnter={e => {
+                  if (block.light) { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = '#0d0b07'; e.currentTarget.style.border = '1px solid #0d0b07'; }
+                  else { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = '#0d0b07'; }
+                }}
+                onMouseLeave={e => {
+                  if (block.light) { e.currentTarget.style.background = '#0d0b07'; e.currentTarget.style.color = '#fff'; }
+                  else { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#fff'; }
+                }}
+              >
+                {block.cta}
+              </button>
+            </div>
+          </div>
+
+          {/* Imagem à direita */}
+          <div style={{
+            position: 'relative', overflow: 'hidden',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <img src={block.img} alt="" style={{
+              width: '100%', height: '100%',
+              objectFit: 'cover', objectPosition: 'center',
+            }} />
           </div>
         </div>
       ))}
