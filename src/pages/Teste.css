@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500&display=swap');
+
+.teste-page {
+  font-family: 'Inter', sans-serif;
+  background: #f6f4f1;
+  color: #111;
+}
+
+/* CONTAINER */
+.teste-page .section {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  min-height: 90vh;
+  overflow: hidden;
+}
+
+/* TEXT */
+.teste-page .content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px;
+  animation: testePageFadeUp 1s ease forwards;
+}
+
+.teste-page .eyebrow {
+  letter-spacing: 0.25em;
+  font-size: 12px;
+  margin-bottom: 20px;
+}
+
+.teste-page .title {
+  font-family: 'Playfair Display', serif;
+  font-size: 64px;
+  line-height: 1.05;
+  margin-bottom: 25px;
+}
+
+.teste-page .subtitle {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.7;
+  margin-bottom: 35px;
+  max-width: 360px;
+}
+
+/* BUTTON */
+.teste-page .btn {
+  border: 1px solid #111;
+  padding: 16px 28px;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  background: transparent;
+  cursor: pointer;
+  transition: 0.3s;
+  width: fit-content;
+  color: #111;
+}
+
+.teste-page .btn:hover {
+  background: #111;
+  color: #fff;
+}
+
+/* IMAGE */
+.teste-page .image {
+  position: relative;
+  overflow: hidden;
+}
+
+.teste-page .image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: testePageZoom 18s ease infinite alternate;
+}
+
+/* DARK SECTION */
+.teste-page .dark {
+  background: #0b0b0b;
+  color: #fff;
+}
+
+.teste-page .dark .subtitle {
+  color: #bbb;
+}
+
+.teste-page .dark .btn {
+  border-color: #fff;
+  color: #fff;
+}
+
+.teste-page .dark .btn:hover {
+  background: #fff;
+  color: #000;
+}
+
+/* ANIMATIONS */
+@keyframes testePageZoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.1); }
+}
+
+@keyframes testePageFadeUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* MOBILE */
+@media (max-width: 900px) {
+  .teste-page .section {
+    grid-template-columns: 1fr;
+  }
+  .teste-page .content {
+    padding: 40px 25px;
+  }
+  .teste-page .title {
+    font-size: 42px;
+  }
+}

@@ -10,6 +10,7 @@ import AdminProdutos from './pages/AdminProdutos.jsx';
 import AdminNotas from './pages/AdminNotas.jsx';
 import Login from './pages/Login.jsx';
 import Decants from './pages/Frascos.jsx';
+import Teste from './pages/Teste.jsx';
 import './index.css';
 
 function ScrollToTop() {
@@ -34,6 +35,7 @@ export default function App() {
             <Route path="/admin/notas" element={<AdminNotas />} />
             <Route path="/admin/login" element={<Login />} />
             <Route path="/decants" element={<Decants />} />
+            <Route path="/teste" element={<Teste />} />
           </Routes>
         </BrowserRouter>
       </CartProvider>
