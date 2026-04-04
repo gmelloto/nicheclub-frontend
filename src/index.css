@@ -134,6 +134,8 @@ input::placeholder { color: var(--text3); letter-spacing: 0.1em; }
 @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
 .fade-in { animation: fadeUp 0.7s ease forwards; }
 
+@keyframes heroZoom { from { transform: scale(1); } to { transform: scale(1.1); } }
+
 @keyframes shimmer { 0% { background-position:-200% 0; } 100% { background-position:200% 0; } }
 .skeleton {
   background: linear-gradient(90deg, var(--black3) 25%, var(--black2) 50%, var(--black3) 75%);
@@ -193,6 +195,15 @@ input::placeholder { color: var(--text3); letter-spacing: 0.1em; }
   .editorial-grid img {
     max-height: 300px !important;
     object-fit: cover !important;
+  }
+
+  /* Hero block — empilha no mobile */
+  .hero-block {
+    grid-template-columns: 1fr !important;
+    min-height: auto !important;
+  }
+  .hero-block > div:last-child {
+    min-height: 300px !important;
   }
 }
 
