@@ -134,7 +134,7 @@ export default function Catalogo() {
 
         {/* Imagem */}
         <div style={{ position: 'relative', overflow: 'hidden' }}>
-          <img src="/banner-hero.jpg" alt="Decants" style={{
+          <img src="https://res.cloudinary.com/dafksmivt/image/upload/v1775268145/ChatGPT_Image_Apr_3_2026_11_02_07_PM_qlh1pt.png" alt="Decants" style={{
             width: '100%', height: '100%', objectFit: 'cover',
             animation: 'heroZoom 18s ease infinite alternate',
           }} />
