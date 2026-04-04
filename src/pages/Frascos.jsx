@@ -277,7 +277,7 @@ export default function Frascos() {
       <div style={{ textAlign: 'center', padding: '2rem 2rem 3rem' }}>
         <p style={{ fontSize: 10, letterSpacing: '0.5em', textTransform: 'uppercase', color: '#c9a84c', marginBottom: '0.75rem', fontWeight: 500 }}>Decants</p>
         <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 700, letterSpacing: '-0.02em', marginBottom: '0.5rem' }}>
-          Perfumes <span style={{ color: 'rgb(122, 96, 32)' }}>Disponíveis</span>
+          Perfumes <span style={{ color: '#c9a84c' }}>Disponíveis</span>
         </h1>
         <p style={{ fontSize: 15, color: '#888', marginBottom: '2rem' }}>
           {total > 0 ? `${total} fragrâncias` : 'Experimente fragrâncias premium!'}
