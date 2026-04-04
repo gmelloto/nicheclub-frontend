@@ -189,7 +189,7 @@ function FrascoCard({ perfume, isAdmin, onEditar, onExcluir }) {
         </div>
 
         <div style={{ padding: '1rem 1.25rem' }}>
-          <p style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#7a6020', marginBottom: 3, fontWeight: 600 }}>{perfume.marca}</p>
+          <p style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#111', marginBottom: 3, fontWeight: 600 }}>{perfume.marca}</p>
           <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: '1.05rem', fontWeight: 700, color: '#111', marginBottom: 4, lineHeight: 1.2 }}>{perfume.nome}</h3>
           {perfume.genero && <p style={{ fontSize: 11, color: '#888', marginBottom: 8 }}>{perfume.genero}</p>}
 
