@@ -144,12 +144,12 @@ export default function Catalogo() {
 
       {/* ─── BLOCO 2: Perfumes Lacrados ──────────────────────────────────── */}
       <div className="hero-section" style={{
-        position: 'relative', minHeight: '90vh',
+        position: 'relative', minHeight: '70vh', maxHeight: 600,
         display: 'flex', overflow: 'hidden',
       }}>
         <img src="https://res.cloudinary.com/dafksmivt/image/upload/v1775270482/ChatGPT_Image_Apr_3_2026_11_40_43_PM_rbnaj9.png" alt="Perfumes Lacrados" style={{
           position: 'absolute', inset: 0, width: '100%', height: '100%',
-          objectFit: 'cover', objectPosition: 'center',
+          objectFit: 'cover', objectPosition: 'center right',
           animation: 'heroZoom 18s ease infinite alternate',
         }} />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(0,0,0,0.7) 25%, rgba(0,0,0,0.15) 100%)' }} />
