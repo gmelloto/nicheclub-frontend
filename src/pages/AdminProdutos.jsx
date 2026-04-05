@@ -94,7 +94,7 @@ function StepFragrantica({ onPreview, onVoltar }) {
       const nome = decodeURIComponent(match[2]).replace(/-/g, ' ');
 
       const res = await fetch(`https://nicheclub-backend-production.up.railway.app/api/admin/fragrantica?marca=${encodeURIComponent(marca)}&nome=${encodeURIComponent(nome)}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       });
       const d = await res.json();
 
