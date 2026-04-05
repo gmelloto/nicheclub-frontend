@@ -343,6 +343,8 @@ const CORS_PROXIES = [
   url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
 ];
 
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
 // ─── STEP: carregar pelo Fragrantica ──────────────────────────────────────
 function StepFragrantica({ onPreview, onVoltar, token }) {
   const [linkFrag, setLinkFrag] = useState('');
@@ -354,22 +356,33 @@ function StepFragrantica({ onPreview, onVoltar, token }) {
       return setMsg({ tipo: 'erro', texto: 'Cole um link válido do Fragrantica. Ex: https://www.fragrantica.com.br/perfume/Marca/Nome-12345.html' });
     }
     setCarregando(true);
-    setMsg({ tipo: 'aviso', texto: 'Buscando dados do Fragrantica via navegador...' });
+    setMsg({ tipo: 'aviso', texto: 'Buscando dados do Fragrantica...' });
 
     let html = null;
 
-    // Tentar cada proxy CORS até um funcionar
-    for (let i = 0; i < CORS_PROXIES.length; i++) {
-      try {
-        const proxyUrl = CORS_PROXIES[i](linkFrag);
-        const resp = await fetch(proxyUrl);
-        if (resp.ok) {
-          html = await resp.text();
-          if (html && html.length > 500 && html.includes('fragrantica')) break;
-          html = null; // resposta inválida
-        }
-      } catch(e) {
-        // proxy falhou, tentar próximo
+    // 1. Tentar proxy do próprio backend primeiro (mais confiável)
+    try {
+      const resp = await fetch(`${API_BASE}/api/admin/proxy-fragrantica?url=${encodeURIComponent(linkFrag)}`, {
+        headers: { 'Authorization': `Bearer ${token || localStorage.getItem('nc_token')}` },
+      });
+      if (resp.ok) {
+        html = await resp.text();
+        if (!html || html.length < 500) html = null;
+      }
+    } catch(e) { /* backend indisponível, tentar proxies públicos */ }
+
+    // 2. Fallback: tentar cada proxy CORS público
+    if (!html) {
+      for (let i = 0; i < CORS_PROXIES.length; i++) {
+        try {
+          const proxyUrl = CORS_PROXIES[i](linkFrag);
+          const resp = await fetch(proxyUrl);
+          if (resp.ok) {
+            html = await resp.text();
+            if (html && html.length > 500 && html.includes('fragrantica')) break;
+            html = null;
+          }
+        } catch(e) { }
       }
     }
 
