@@ -157,16 +157,17 @@ export default function Perfume() {
   const precoPorMl  = opcaoSel ? (Number(opcaoSel.preco) / Number(opcaoSel.ml_quantidade || 1)).toFixed(2) : null;
   const totalAvulso = mlAvulso && precoPorMl ? (Number(mlAvulso) * Number(precoPorMl)).toFixed(2) : null;
   const acordes     = [perfume.acorde1, perfume.acorde2, perfume.acorde3, perfume.acorde4, perfume.acorde5].filter(Boolean);
-  const topoNotas   = (perfume.notas_topo    || '').split(',').map(n => n.trim()).filter(Boolean).map(traduzirNota);
-  const coracaoNotas= (perfume.notas_coracao || '').split(',').map(n => n.trim()).filter(Boolean).map(traduzirNota);
-  const baseNotas   = (perfume.notas_base    || '').split(',').map(n => n.trim()).filter(Boolean).map(traduzirNota);
+  const topoNotas   = (perfume.notas_topo    || '').split(',').map(n => n.trim()).filter(Boolean);
+  const coracaoNotas= (perfume.notas_coracao || '').split(',').map(n => n.trim()).filter(Boolean);
+  const baseNotas   = (perfume.notas_base    || '').split(',').map(n => n.trim()).filter(Boolean);
   const notasImgs   = perfume.notas_imagens  || {};
 
   const imgNota = nota => {
     const r = notasImgs[nota.toLowerCase().trim()];
-    if (!r) return { img: null, label: nota };
-    if (typeof r === 'string') return { img: r, label: nota };
-    return { img: r.img || r.cloudinary_url || null, label: r.ptb || nota };
+    const label = traduzirNota(nota);
+    if (!r) return { img: null, label };
+    if (typeof r === 'string') return { img: r, label };
+    return { img: r.img || r.cloudinary_url || null, label: r.ptb ? traduzirNota(r.ptb) : label };
   };
 
   const reservar = async () => {
