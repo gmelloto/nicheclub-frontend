@@ -237,11 +237,11 @@ export default function Perfume() {
         <p style={{ fontSize:11, letterSpacing:'0.22em', textTransform:'uppercase', color:'#8a6a10', marginBottom:4, fontWeight:600 }}>{perfume.marca}</p>
         <h1 style={{ fontSize:'clamp(1.6rem,3vw,2.8rem)', fontWeight:700, lineHeight:1.1, marginBottom:8, letterSpacing:'-0.02em', color:'#111' }}>{perfume.nome}</h1>
         <div style={{ display:'flex', gap:8, alignItems:'center', flexWrap:'wrap', fontSize:12, color:'#111' }}>
-          {perfume.genero    && <span>{perfume.genero}</span>}
-          {perfume.ano       && <><span style={{color:'#e8e4dc'}}>|</span><span>{perfume.ano}</span></>}
-          {perfume.pais      && <><span style={{color:'#e8e4dc'}}>|</span><span>{perfume.pais}</span></>}
-          {perfume.perfumista1 && <><span style={{color:'#e8e4dc'}}>|</span><span style={{fontStyle:'italic'}}>{perfume.perfumista1}</span></>}
-          {perfume.perfumista2 && <><span style={{color:'#e8e4dc'}}>|</span><span style={{fontStyle:'italic'}}>{perfume.perfumista2}</span></>}
+          {perfume.genero    && <span style={{color:'#111'}}>{perfume.genero}</span>}
+          {perfume.ano       && <><span style={{color:'#ccc'}}>|</span><span style={{color:'#111'}}>{perfume.ano}</span></>}
+          {perfume.pais      && <><span style={{color:'#ccc'}}>|</span><span style={{color:'#111'}}>{perfume.pais}</span></>}
+          {perfume.perfumista1 && <><span style={{color:'#ccc'}}>|</span><span style={{fontStyle:'italic', color:'#111'}}>{perfume.perfumista1}</span></>}
+          {perfume.perfumista2 && <><span style={{color:'#ccc'}}>|</span><span style={{fontStyle:'italic', color:'#111'}}>{perfume.perfumista2}</span></>}
         </div>
       </div>
 
