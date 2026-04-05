@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/index.jsx';
 import { api } from '../services/api';
@@ -744,6 +744,11 @@ export default function AdminProdutos() {
   const [resultado, setResultado] = useState(null);
   const [mensagemSucesso, setMensagemSucesso] = useState('');
   const [maisAberto, setMaisAberto] = useState(false);
+
+  useEffect(() => {
+    document.body.setAttribute('data-admin', 'true');
+    return () => document.body.removeAttribute('data-admin');
+  }, []);
 
   if (!token) { navigate('/admin/login'); return null; }
 
