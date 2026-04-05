@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context';
@@ -549,6 +549,7 @@ const TAMANHOS = [
 function PainelPerfumes({ token }) {
   const [perfumes, setPerfumes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [busca, setBusca] = useState('');
   const [buscaInput, setBuscaInput] = useState('');
   const [pagina, setPagina] = useState(1);
@@ -560,18 +561,21 @@ function PainelPerfumes({ token }) {
   const [salvando, setSalvando] = useState(false);
   const [excluindo, setExcluindo] = useState(null);
   const [detalhe, setDetalhe] = useState(null);
+  const sentinelRef = useRef(null);
 
-  const carregar = async (pag = 1, termo = busca) => {
-    setLoading(true);
+  const carregar = async (pag = 1, termo = busca, append = false) => {
+    if (pag === 1) setLoading(true); else setLoadingMore(true);
     try {
       const params = new URLSearchParams({ pagina: pag, limite, busca: termo, todos: true });
       const res = await fetch(`${API_URL}/api/perfumes?${params}`, { headers: { Authorization: `Bearer ${token}` } });
       const data = await res.json();
-      setPerfumes(data.perfumes || data);
+      const lista = data.perfumes || data;
+      if (append) setPerfumes(prev => [...prev, ...lista]);
+      else setPerfumes(lista);
       setTotal(data.total || 0);
       setPagina(pag);
     } catch(e) { console.error(e); }
-    finally { setLoading(false); }
+    finally { setLoading(false); setLoadingMore(false); }
   };
 
   useEffect(() => { carregar(1, ''); }, []);
@@ -580,7 +584,17 @@ function PainelPerfumes({ token }) {
     return () => clearTimeout(t);
   }, [buscaInput]);
 
-  const totalPaginas = Math.ceil(total / limite);
+  // Infinite scroll
+  useEffect(() => {
+    if (!sentinelRef.current) return;
+    const obs = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !loadingMore && perfumes.length < total) {
+        carregar(pagina + 1, busca, true);
+      }
+    }, { rootMargin: '200px' });
+    obs.observe(sentinelRef.current);
+    return () => obs.disconnect();
+  }, [pagina, total, busca, loadingMore, perfumes.length]);
 
   const filtrados = perfumes.filter(p => {
     if (filtro === 'ativos') return p.ativo !== false;
@@ -627,7 +641,7 @@ function PainelPerfumes({ token }) {
       });
       if (!res.ok) throw new Error('Erro ao salvar');
       setEditando(null);
-      carregar(pagina, busca);
+      carregar(1, busca);
     } catch(e) { alert(e.message); }
     finally { setSalvando(false); }
   };
@@ -641,7 +655,7 @@ function PainelPerfumes({ token }) {
       });
       if (!res.ok) throw new Error('Erro ao excluir');
       setDetalhe(null);
-      carregar(pagina, busca);
+      carregar(1, busca);
     } catch(e) { alert(e.message); }
     finally { setExcluindo(null); }
   };
@@ -904,20 +918,16 @@ function PainelPerfumes({ token }) {
       )}
       </div>
 
-      {/* Paginacao */}
-      {totalPaginas > 1 && (
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 24, flexWrap: 'wrap' }}>
-          <button onClick={() => carregar(pagina - 1, busca)} disabled={pagina === 1}
-            style={{ padding: '8px 16px', border: '1px solid #ddd', borderRadius: 8, background: '#fff', cursor: pagina === 1 ? 'not-allowed' : 'pointer', fontSize: 13, color: pagina === 1 ? '#ccc' : '#333' }}>
-            ←
-          </button>
-          <span style={{ display: 'flex', alignItems: 'center', fontSize: 13, color: '#666', padding: '0 8px' }}>{pagina} / {totalPaginas}</span>
-          <button onClick={() => carregar(pagina + 1, busca)} disabled={pagina === totalPaginas}
-            style={{ padding: '8px 16px', border: '1px solid #ddd', borderRadius: 8, background: '#fff', cursor: pagina === totalPaginas ? 'not-allowed' : 'pointer', fontSize: 13, color: pagina === totalPaginas ? '#ccc' : '#333' }}>
-            →
-          </button>
+      {/* Infinite scroll sentinel */}
+      {perfumes.length < total && (
+        <div ref={sentinelRef} style={{ display: 'flex', justifyContent: 'center', padding: '1.5rem 0' }}>
+          {loadingMore && <div style={{ width: 24, height: 24, border: '2px solid #e8e4dc', borderTop: '2px solid #c9a84c', borderRadius: '50%', animation: 'spin .6s linear infinite' }} />}
         </div>
       )}
+      {perfumes.length > 0 && perfumes.length >= total && (
+        <p style={{ textAlign: 'center', fontSize: 12, color: '#bbb', padding: '1rem 0' }}>{total} perfumes carregados</p>
+      )}
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   );
 }
