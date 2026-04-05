@@ -190,7 +190,7 @@ export default function Perfume() {
         <h3 style={{ fontSize:'0.95rem', fontWeight:700, marginBottom:'1rem', color:'#0d0b07' }}>Piramide Olfativa</h3>
         {topoNotas.length > 0 && (
           <div style={{ marginBottom:'1rem' }}>
-            <p style={{ fontSize:11, fontWeight:600, letterSpacing:'0.22em', textTransform:'uppercase', color:'#8a6a10', marginBottom:8 }}>Topo</p>
+            <p style={{ fontFamily:"'Inter', sans-serif", fontSize:11, fontWeight:600, letterSpacing:'0.22em', textTransform:'uppercase', color:'#8a6a10', marginBottom:8 }}>Topo</p>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
               {topoNotas.map(n => { const r=imgNota(n); return <NotaBadge key={n} nota={r.label} img={r.img} />; })}
             </div>
@@ -198,7 +198,7 @@ export default function Perfume() {
         )}
         {coracaoNotas.length > 0 && (
           <div style={{ marginBottom:'1rem' }}>
-            <p style={{ fontSize:11, fontWeight:600, letterSpacing:'0.22em', textTransform:'uppercase', color:'#8a6a10', marginBottom:8 }}>Coracao</p>
+            <p style={{ fontFamily:"'Inter', sans-serif", fontSize:11, fontWeight:600, letterSpacing:'0.22em', textTransform:'uppercase', color:'#8a6a10', marginBottom:8 }}>Coracao</p>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
               {coracaoNotas.map(n => { const r=imgNota(n); return <NotaBadge key={n} nota={r.label} img={r.img} />; })}
             </div>
@@ -206,7 +206,7 @@ export default function Perfume() {
         )}
         {baseNotas.length > 0 && (
           <div>
-            <p style={{ fontSize:11, fontWeight:600, letterSpacing:'0.22em', textTransform:'uppercase', color:'#8a6a10', marginBottom:8 }}>Base</p>
+            <p style={{ fontFamily:"'Inter', sans-serif", fontSize:11, fontWeight:600, letterSpacing:'0.22em', textTransform:'uppercase', color:'#8a6a10', marginBottom:8 }}>Base</p>
             <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
               {baseNotas.map(n => { const r=imgNota(n); return <NotaBadge key={n} nota={r.label} img={r.img} />; })}
             </div>
@@ -299,7 +299,7 @@ export default function Perfume() {
           </div>
 
           {/* Opcoes */}
-          <p style={{ fontSize:11, fontWeight:600, letterSpacing:'0.22em', textTransform:'uppercase', color:'#8a6a10', marginBottom:8 }}>Escolha sua opcao</p>
+          <p style={{ fontFamily:"'Inter', sans-serif", fontSize:11, fontWeight:600, letterSpacing:'0.22em', textTransform:'uppercase', color:'#8a6a10', marginBottom:8 }}>Escolha sua opcao</p>
           <div style={{ display:'flex', flexDirection:'column', gap:6, marginBottom:'1rem' }}>
             {TAMANHOS.map(t => {
               const op = perfume.opcoes?.find(o => o.tamanho === t.key);
@@ -374,7 +374,7 @@ export default function Perfume() {
 
           {reservas.length > 0 && (
             <div style={{ marginTop:'1.5rem' }}>
-              <p style={{ fontSize:11, fontWeight:600, letterSpacing:'0.22em', textTransform:'uppercase', color:'#8a6a10', marginBottom:8 }}>Reservas ({reservas.length})</p>
+              <p style={{ fontFamily:"'Inter', sans-serif", fontSize:11, fontWeight:600, letterSpacing:'0.22em', textTransform:'uppercase', color:'#8a6a10', marginBottom:8 }}>Reservas ({reservas.length})</p>
               <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
                 {reservas.map((r,i) => (
                   <div key={i} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'0.65rem 1rem', background:'#f8f7f4', border:'1px solid #e8e4dc', borderRadius:4 }}>
