@@ -325,7 +325,7 @@ function PainelEstoque({ token }) {
                 onMouseLeave={e => { e.currentTarget.style.borderColor = '#eee'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.04)'; }}>
 
                 {/* Foto */}
-                <div style={{ width: 60, height: 75, flexShrink: 0, borderRadius: 8, overflow: 'hidden', background: '#f5f3ef', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: 60, height: 75, flexShrink: 0, borderRadius: 8, overflow: 'hidden', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   {f.foto_url
                     ? <img src={f.foto_url} alt={f.perfume} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                     : <span style={{ fontSize: 24, color: '#ccc' }}>🧴</span>
