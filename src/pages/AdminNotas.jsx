@@ -225,7 +225,6 @@ export default function AdminNotas() {
       <div style={{ padding: '1rem', paddingBottom: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <button onClick={() => navigate('/admin')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#999', fontSize: 13 }}>← Admin</button>
             <h1 style={{ fontSize: 22, fontWeight: 700, color: '#111', fontFamily: "'Inter', sans-serif" }}>Notas</h1>
             <span style={{ fontSize: 11, color: '#999', background: '#f0f0f0', padding: '2px 8px', borderRadius: 10 }}>{total}</span>
           </div>
