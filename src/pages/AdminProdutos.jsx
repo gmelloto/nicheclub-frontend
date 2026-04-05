@@ -55,7 +55,7 @@ function StepEscolha({ onFragrantica, onManual }) {
       >
         <p style={{ fontSize: 18, marginBottom: 6 }}>⚡ Carregar pelo Fragrantica</p>
         <p style={{ fontSize: 13, color: S.text2 }}>Cole o link do Fragrantica e os dados serão preenchidos automaticamente.</p>
-        <p style={{ fontSize: 11, color: S.text3, marginTop: 8 }}>Requer servidor local rodando</p>
+        <p style={{ fontSize: 11, color: S.text3, marginTop: 8 }}>Extrai dados diretamente no navegador</p>
       </button>
 
       <button onClick={onManual} style={{
@@ -72,6 +72,170 @@ function StepEscolha({ onFragrantica, onManual }) {
   );
 }
 
+// ─── Parser HTML do Fragrantica (client-side) ────────────────────────────
+function parseFragranticaHTML(html) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const txt = s => { const el = doc.querySelector(s); return el ? el.textContent.trim() : ''; };
+
+  // Nome e marca
+  const h1 = doc.querySelector('h1[itemprop="name"]') || doc.querySelector('h1');
+  let nome = '', marca = '';
+  if (h1) {
+    const spans = h1.querySelectorAll('span');
+    if (spans.length >= 2) {
+      nome = spans[0].textContent.trim();
+      marca = spans[1].textContent.trim();
+    } else {
+      nome = h1.textContent.trim();
+    }
+  }
+
+  // Foto
+  let foto_url = '';
+  const imgEl = doc.querySelector('img[itemprop="image"]') || doc.querySelector('.perfume-big-img img') || doc.querySelector('#mainpic img');
+  if (imgEl) foto_url = imgEl.src || imgEl.getAttribute('src') || '';
+
+  // Ano
+  let ano = null;
+  const anoMatch = html.match(/foi\s+lan[çc]ado\s+em\s+(\d{4})/i) || html.match(/was\s+launched\s+in\s+(\d{4})/i);
+  if (anoMatch) ano = parseInt(anoMatch[1]);
+
+  // Genero
+  let genero = '';
+  const genTexto = (doc.querySelector('[itemprop="description"]') || doc.querySelector('.fragrance-description'))?.textContent || '';
+  if (/para\s+(mulheres\s+e\s+homens|homens\s+e\s+mulheres)/i.test(genTexto) || /for\s+(women\s+and\s+men|men\s+and\s+women)/i.test(genTexto)) genero = 'Unissex';
+  else if (/para\s+mulheres/i.test(genTexto) || /for\s+women/i.test(genTexto)) genero = 'Feminino';
+  else if (/para\s+homens/i.test(genTexto) || /for\s+men/i.test(genTexto)) genero = 'Masculino';
+
+  // Perfumistas
+  const perfumistas = [];
+  doc.querySelectorAll('a[href*="/noses/"]').forEach(a => {
+    const n = a.textContent.trim();
+    if (n && !perfumistas.includes(n)) perfumistas.push(n);
+  });
+
+  // Rating
+  let rating_valor = null, rating_count = null;
+  const ratingEl = doc.querySelector('[itemprop="ratingValue"]');
+  if (ratingEl) rating_valor = parseFloat(ratingEl.textContent.trim()) || null;
+  const countEl = doc.querySelector('[itemprop="ratingCount"]') || doc.querySelector('[itemprop="reviewCount"]');
+  if (countEl) rating_count = parseInt(countEl.textContent.replace(/\D/g, '')) || null;
+
+  // País
+  let pais = '';
+  const paisMatch = html.match(/flag-icon.*?title="([^"]+)"/i) || html.match(/country[^>]*>([^<]+)</i);
+  if (paisMatch) pais = paisMatch[1].trim();
+
+  // Família olfativa
+  let familia_olfativa = '';
+  const famMatch = html.match(/Grupo\s+(?:Olfativo|Principal)[^:]*:\s*<[^>]*>([^<]+)/i) ||
+                   html.match(/Main\s+Accords/i);
+  const breadcrumbs = doc.querySelectorAll('.breadcrumb a, nav a[href*="/grupos/"], nav a[href*="/groups/"]');
+  breadcrumbs.forEach(a => {
+    const t = a.textContent.trim();
+    if (t && !['Home','Perfumes','Fragrantica'].includes(t) && a.href && (a.href.includes('/grupos/') || a.href.includes('/groups/'))) {
+      if (!familia_olfativa) familia_olfativa = t;
+    }
+  });
+
+  // Acordes
+  const acordes = [];
+  doc.querySelectorAll('.accord-bar, .cell.accord-box, [style*="background"][class*="accord"], div[style*="width"][style*="background"]').forEach(el => {
+    const t = el.textContent.trim();
+    if (t && t.length < 40 && !acordes.includes(t)) acordes.push(t);
+  });
+  // Fallback: buscar no bloco "Main Accords"
+  if (acordes.length === 0) {
+    const accordSection = html.match(/mainaccords.*?<\/div>/is) || html.match(/Main\s*Accords.*?<\/div>/is);
+    if (accordSection) {
+      const re = />([^<]{2,30})</g;
+      let m;
+      while ((m = re.exec(accordSection[0])) !== null) {
+        const t = m[1].trim();
+        if (t && !t.match(/^[\d.%]+$/) && !acordes.includes(t) && acordes.length < 5) acordes.push(t);
+      }
+    }
+  }
+
+  // Notas olfativas
+  const notasMap = { topo: [], coracao: [], base: [] };
+  const pyramidDivs = doc.querySelectorAll('[style*="padding"], div, h4, p');
+  let currentLayer = null;
+  pyramidDivs.forEach(el => {
+    const t = el.textContent.trim().toLowerCase();
+    if (t.includes('notas de topo') || t.includes('top notes') || t === 'topo') currentLayer = 'topo';
+    else if (t.includes('notas de cora') || t.includes('middle notes') || t.includes('heart notes') || t === 'coração') currentLayer = 'coracao';
+    else if (t.includes('notas de base') || t.includes('base notes') || t === 'base') currentLayer = 'base';
+  });
+
+  // Extrair notas dos blocos de pirâmide
+  const extractNotas = (sectionHtml) => {
+    const notas = [];
+    const re = /<(?:img|span|div|a)[^>]*(?:title|alt)="([^"]+)"[^>]*>/gi;
+    let m;
+    while ((m = re.exec(sectionHtml)) !== null) {
+      const n = m[1].trim();
+      if (n && n.length < 50 && !notas.includes(n) && !n.match(/^\d+$/)) notas.push(n);
+    }
+    return notas;
+  };
+
+  // Tentar identificar blocos de notas pelo HTML
+  const topMatch = html.match(/(?:notas?\s*de\s*topo|top\s*notes?)[\s\S]*?<div[^>]*>([\s\S]*?)<\/div>\s*<\/div>/i);
+  const midMatch = html.match(/(?:notas?\s*(?:de\s*)?cora[çc][ãa]o|(?:middle|heart)\s*notes?)[\s\S]*?<div[^>]*>([\s\S]*?)<\/div>\s*<\/div>/i);
+  const baseMatch = html.match(/(?:notas?\s*de\s*base|base\s*notes?)[\s\S]*?<div[^>]*>([\s\S]*?)<\/div>\s*<\/div>/i);
+
+  if (topMatch) notasMap.topo = extractNotas(topMatch[1]);
+  if (midMatch) notasMap.coracao = extractNotas(midMatch[1]);
+  if (baseMatch) notasMap.base = extractNotas(baseMatch[1]);
+
+  // Fallback: buscar pyramid-level blocks
+  if (notasMap.topo.length === 0 && notasMap.coracao.length === 0 && notasMap.base.length === 0) {
+    const pyramidBlocks = doc.querySelectorAll('[class*="pyramid"], [id*="pyramid"], .notes-box');
+    pyramidBlocks.forEach(block => {
+      const imgs = block.querySelectorAll('img[alt], span[title]');
+      const notes = [];
+      imgs.forEach(img => {
+        const n = (img.alt || img.title || '').trim();
+        if (n && n.length < 50) notes.push(n);
+      });
+      const blockText = block.textContent.toLowerCase();
+      if (blockText.includes('topo') || blockText.includes('top')) notasMap.topo = notes;
+      else if (blockText.includes('cora') || blockText.includes('heart') || blockText.includes('middle')) notasMap.coracao = notes;
+      else if (blockText.includes('base')) notasMap.base = notes;
+    });
+  }
+
+  // Descrição
+  let descricao = '';
+  const descEl = doc.querySelector('[itemprop="description"]') || doc.querySelector('.fragrance-description');
+  if (descEl) {
+    descricao = descEl.textContent.trim().replace(/\s+/g, ' ');
+    // Remover partes padrão do template
+    descricao = descricao.replace(/^.*?(foi lan[çc]ado|was launched)/i, (m) => m);
+  }
+
+  return {
+    encontrado: !!nome,
+    nome, marca, foto_url, ano, genero, pais, familia_olfativa,
+    rating_valor, rating_count,
+    perfumista1: perfumistas[0] || '',
+    perfumista2: perfumistas[1] || '',
+    acorde1: acordes[0] || '', acorde2: acordes[1] || '', acorde3: acordes[2] || '',
+    acorde4: acordes[3] || '', acorde5: acordes[4] || '',
+    notas_topo: notasMap.topo.join(', '),
+    notas_coracao: notasMap.coracao.join(', '),
+    notas_base: notasMap.base.join(', '),
+    descricao,
+  };
+}
+
+const CORS_PROXIES = [
+  url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+  url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+  url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+];
+
 // ─── STEP: carregar pelo Fragrantica ──────────────────────────────────────
 function StepFragrantica({ onPreview, onVoltar, token }) {
   const [linkFrag, setLinkFrag] = useState('');
@@ -83,24 +247,49 @@ function StepFragrantica({ onPreview, onVoltar, token }) {
       return setMsg({ tipo: 'erro', texto: 'Cole um link válido do Fragrantica. Ex: https://www.fragrantica.com.br/perfume/Marca/Nome-12345.html' });
     }
     setCarregando(true);
-    setMsg({ tipo: '', texto: '' });
+    setMsg({ tipo: 'aviso', texto: 'Buscando dados do Fragrantica via navegador...' });
+
+    let html = null;
+
+    // Tentar cada proxy CORS até um funcionar
+    for (let i = 0; i < CORS_PROXIES.length; i++) {
+      try {
+        const proxyUrl = CORS_PROXIES[i](linkFrag);
+        const resp = await fetch(proxyUrl);
+        if (resp.ok) {
+          html = await resp.text();
+          if (html && html.length > 500 && html.includes('fragrantica')) break;
+          html = null; // resposta inválida
+        }
+      } catch(e) {
+        // proxy falhou, tentar próximo
+      }
+    }
+
+    if (!html) {
+      setCarregando(false);
+      return setMsg({ tipo: 'erro', texto: 'Não foi possível acessar o Fragrantica. Tente novamente ou use o cadastro manual.' });
+    }
+
     try {
-      // Extrair marca e nome da URL: /perfume/Marca/Nome-ID.html
-      const match = linkFrag.match(/fragrantica\.com(?:\.br)?\/perfume\/([^/]+)\/([^/]+?)(?:-\d+)?\.html/);
-      if (!match) throw new Error('URL inválida. Use o formato: fragrantica.com.br/perfume/Marca/Nome.html');
+      const d = parseFragranticaHTML(html);
 
-      const marca = decodeURIComponent(match[1]).replace(/-/g, ' ');
-      const nome = decodeURIComponent(match[2]).replace(/-/g, ' ');
+      if (!d.encontrado) throw new Error('Não foi possível extrair os dados da página. Tente outro link ou cadastre manualmente.');
 
-      const d = await api.adminFragrantica(marca, nome);
-
-      if (!d.encontrado) throw new Error('Perfume não encontrado no Fragrantica.');
+      // Fallback: extrair marca/nome da URL se não encontrou no HTML
+      if (!d.marca || !d.nome) {
+        const match = linkFrag.match(/fragrantica\.com(?:\.br)?\/perfume\/([^/]+)\/([^/]+?)(?:-\d+)?\.html/);
+        if (match) {
+          if (!d.marca) d.marca = decodeURIComponent(match[1]).replace(/-/g, ' ');
+          if (!d.nome) d.nome = decodeURIComponent(match[2]).replace(/-/g, ' ');
+        }
+      }
 
       onPreview({
         sucesso: true,
         dados: {
-          nome: d.nome || nome,
-          marca: d.marca || marca,
+          nome: d.nome,
+          marca: d.marca,
           foto_url: d.foto_url || '',
           ano: d.ano || null,
           genero: d.genero || '',
@@ -113,11 +302,11 @@ function StepFragrantica({ onPreview, onVoltar, token }) {
           perfumista1: d.perfumista1 || '', perfumista2: d.perfumista2 || '',
           familia_olfativa: d.familia_olfativa || '', descricao: d.descricao || '',
         },
-        slug: d.slug || null,
-        atualizado: d.atualizado || false,
+        slug: null,
+        atualizado: false,
       });
     } catch(e) {
-      setMsg({ tipo: 'erro', texto: e.message || 'Erro ao carregar dados.' });
+      setMsg({ tipo: 'erro', texto: e.message || 'Erro ao processar dados do Fragrantica.' });
     } finally {
       setCarregando(false);
     }
@@ -130,7 +319,7 @@ function StepFragrantica({ onPreview, onVoltar, token }) {
       <div style={{ background: S.bg2, border: `1px solid ${S.border}`, borderRadius: 8, padding: '1.5rem' }}>
         <Label>Link do Fragrantica</Label>
         <p style={{ fontSize: 11, color: S.text3, marginBottom: 8 }}>
-          Cole a URL completa do perfume no Fragrantica.
+          Cole a URL completa do perfume no Fragrantica. Os dados serão extraídos diretamente no navegador.
         </p>
         <Input
           value={linkFrag}
