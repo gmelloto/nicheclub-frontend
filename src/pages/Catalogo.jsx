@@ -245,7 +245,7 @@ export default function Catalogo() {
           <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, marginBottom: '3.5rem' }}>Como Funciona</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: '2rem', position: 'relative' }}>
             {[
-              { n: '01', t: 'Escolha', d: 'Navegue pelo catálogo e selecione o perfume desejado.', emoji: '📦' },
+              { n: '01', t: 'Escolha', d: 'Navegue pelo catálogo e selecione o perfume desejado.', img: 'https://res.cloudinary.com/dafksmivt/image/upload/v1775353324/Luxury_perfume_bottles_display_ilcin0.png' },
               { n: '02', t: 'Reserve', d: 'Escolha o tamanho do decant e faça sua reserva.', emoji: '🧴' },
               { n: '03', t: 'Receba', d: 'Finalize o pedido e receba seu decant em casa.', emoji: '🎁' },
             ].map((s, i) => (
@@ -253,7 +253,10 @@ export default function Catalogo() {
                 <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(2.5rem, 4vw, 3.5rem)', fontWeight: 600, color: S.gold, lineHeight: 1 }}>{s.n}</span>
                 <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.1rem, 2vw, 1.4rem)', fontWeight: 600 }}>{s.t}</h3>
                 <div style={{ width: 'clamp(120px, 18vw, 180px)', height: 'clamp(120px, 18vw, 180px)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0.5rem 0' }}>
-                  <span style={{ fontSize: 'clamp(60px, 10vw, 90px)' }}>{s.emoji}</span>
+                  {s.img
+                    ? <img src={s.img} alt={s.t} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                    : <span style={{ fontSize: 'clamp(60px, 10vw, 90px)' }}>{s.emoji}</span>
+                  }
                 </div>
                 <p style={{ fontSize: 14, color: S.text2, lineHeight: 1.7, maxWidth: 260, textAlign: 'center' }}>{s.d}</p>
                 {i < 2 && (
