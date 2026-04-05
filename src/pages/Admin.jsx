@@ -742,7 +742,7 @@ function PainelPerfumes({ token }) {
 
         {/* Foto + info */}
         <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
-          <div style={{ width: 90, height: 110, flexShrink: 0, borderRadius: 8, overflow: 'hidden', background: '#f5f3ef', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 90, height: 110, flexShrink: 0, borderRadius: 8, overflow: 'hidden', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {detalhe.foto_url
               ? <img src={detalhe.foto_url} alt={detalhe.nome} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
               : <span style={{ fontSize: 32, color: '#ccc' }}>🧴</span>
@@ -881,7 +881,7 @@ function PainelPerfumes({ token }) {
                 onMouseLeave={e => { e.currentTarget.style.borderColor = '#eee'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.04)'; }}>
 
                 {/* Foto */}
-                <div style={{ width: 70, height: 85, flexShrink: 0, borderRadius: 8, overflow: 'hidden', background: '#f5f3ef', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: 70, height: 85, flexShrink: 0, borderRadius: 8, overflow: 'hidden', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   {p.foto_url
                     ? <img src={p.foto_url} alt={p.nome} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                     : <span style={{ fontSize: 28, color: '#ccc' }}>🧴</span>
