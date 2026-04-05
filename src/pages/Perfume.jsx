@@ -187,7 +187,7 @@ export default function Perfume() {
     if (!topoNotas.length && !coracaoNotas.length && !baseNotas.length) return null;
     return (
       <div style={{ background:'#f8f7f4', border:'1px solid #e8e4dc', borderRadius:4, padding:'1.25rem', marginTop:'1rem' }}>
-        <h3 style={{ fontSize:'0.95rem', fontWeight:700, marginBottom:'1rem', color:'#0d0b07' }}>Piramide Olfativa</h3>
+        <h3 style={{ fontFamily:"'Inter', sans-serif", fontSize:'0.95rem', fontWeight:700, marginBottom:'1rem', color:'#0d0b07', textTransform:'uppercase', letterSpacing:'0.15em' }}>Pirâmide Olfativa</h3>
         {topoNotas.length > 0 && (
           <div style={{ marginBottom:'1rem' }}>
             <p style={{ fontFamily:"'Inter', sans-serif", fontSize:11, fontWeight:600, letterSpacing:'0.22em', textTransform:'uppercase', color:'#8a6a10', marginBottom:8 }}>Topo</p>
