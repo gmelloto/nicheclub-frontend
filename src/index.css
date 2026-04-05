@@ -153,6 +153,10 @@ input::placeholder { color: var(--text3); letter-spacing: 0.1em; }
     padding-right: 1rem !important;
   }
 
+  .como-funciona-seta {
+    display: none !important;
+  }
+
   /* Perfume page */
   .perfume-grid {
     grid-template-columns: 1fr !important;

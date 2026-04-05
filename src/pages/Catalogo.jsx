@@ -246,36 +246,43 @@ export default function Catalogo() {
       <div id="como-funciona" style={{ background: S.black2, borderTop: `1px solid ${S.border}`, borderBottom: `1px solid ${S.border}`, padding: '5rem 2.5rem' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', textAlign: 'center' }}>
           <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, marginBottom: '3.5rem' }}>Como Funciona</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '2rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: '2rem', position: 'relative' }}>
             {[
-              { n: '01', t: 'Escolha', d: 'Navegue pelo catálogo e selecione o perfume desejado.' },
-              { n: '02', t: 'Reserve', d: 'Escolha o tamanho do decant e faça sua reserva.' },
-              { n: '03', t: 'Receba', d: 'Finalize o pedido e receba seu decant em casa.' },
-            ].map(s => (
-              <div key={s.n} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-                <span style={{ fontFamily: "'Playfair Display', serif", fontSize: '3.5rem', fontWeight: 600, color: S.gold, lineHeight: 1 }}>{s.n}</span>
-                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.4rem', fontWeight: 600 }}>{s.t}</h3>
-                <p style={{ fontSize: 14, color: S.text2, lineHeight: 1.7, maxWidth: 220 }}>{s.d}</p>
+              { n: '01', t: 'Escolha', d: 'Navegue pelo catálogo e selecione o perfume desejado.', emoji: '📦' },
+              { n: '02', t: 'Reserve', d: 'Escolha o tamanho do decant e faça sua reserva.', emoji: '🧴' },
+              { n: '03', t: 'Receba', d: 'Finalize o pedido e receba seu decant em casa.', emoji: '🎁' },
+            ].map((s, i) => (
+              <div key={s.n} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem', position: 'relative' }}>
+                <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(2.5rem, 4vw, 3.5rem)', fontWeight: 600, color: S.gold, lineHeight: 1 }}>{s.n}</span>
+                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.1rem, 2vw, 1.4rem)', fontWeight: 600 }}>{s.t}</h3>
+                <div style={{ width: 'clamp(120px, 18vw, 180px)', height: 'clamp(120px, 18vw, 180px)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0.5rem 0' }}>
+                  <span style={{ fontSize: 'clamp(60px, 10vw, 90px)' }}>{s.emoji}</span>
+                </div>
+                <p style={{ fontSize: 14, color: S.text2, lineHeight: 1.7, maxWidth: 260, textAlign: 'center' }}>{s.d}</p>
+                {i < 2 && (
+                  <div className="como-funciona-seta" style={{ position: 'absolute', right: '-1.25rem', top: '50%', transform: 'translateY(-50%)', color: S.gold, fontSize: 20, opacity: 0.5 }}>→</div>
+                )}
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* ─── PRAZO DE ENTREGA ─────────────────────────────────────────────── */}
+      {/* ─── ENTREGA ──────────────────────────────────────────────────────── */}
       <div style={{ padding: '5rem 2.5rem' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', color: S.gold, marginBottom: '0.75rem', fontWeight: 500 }}>Entregas</p>
-          <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, marginBottom: '3rem' }}>Prazo de Entrega</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '1.25rem' }}>
+          <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, marginBottom: '3rem' }}>Entrega</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: '1.25rem' }}>
             {[
-              { icon: '📦', t: 'Preparação', d: 'Seu pedido é preparado com cuidado em até 2 dias úteis.' },
-              { icon: '🚚', t: 'Envio', d: 'Enviamos para todo o Brasil via transportadora rastreável.' },
-              { icon: '📍', t: 'Prazo', d: 'Capitais: 3-5 dias úteis.\nInterior: 5-10 dias úteis.' },
+              { emoji: '📦', t: 'Preparação', d: 'Seu pedido é preparado com cuidado em até 2 dias úteis.' },
+              { emoji: '🚚', t: 'Envio', d: 'Enviamos para todo o Brasil via transportadora rastreável.' },
+              { emoji: '📍', t: 'Prazo', d: 'Capitais: 3-5 dias úteis.\nInterior: 5-10 dias úteis.' },
             ].map(s => (
-              <div key={s.t} style={{ background: S.black2, border: `1px solid ${S.border}`, padding: '2.5rem 2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-                <span style={{ fontSize: 36 }}>{s.icon}</span>
-                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.3rem', fontWeight: 600 }}>{s.t}</h3>
+              <div key={s.t} style={{ background: S.black2, border: `1px solid ${S.border}`, borderRadius: 8, padding: '2.5rem 2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                <div style={{ width: 'clamp(80px, 12vw, 120px)', height: 'clamp(80px, 12vw, 120px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <span style={{ fontSize: 'clamp(50px, 8vw, 70px)' }}>{s.emoji}</span>
+                </div>
+                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.1rem, 2vw, 1.3rem)', fontWeight: 600 }}>{s.t}</h3>
                 <p style={{ fontSize: 14, color: S.text2, lineHeight: 1.7, whiteSpace: 'pre-line', textAlign: 'center' }}>{s.d}</p>
               </div>
             ))}
