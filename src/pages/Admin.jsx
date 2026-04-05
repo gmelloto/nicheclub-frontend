@@ -10,10 +10,35 @@ export default function Admin() {
   const navigate = useNavigate();
   const [aba, setAba] = useState('pedidos');
   const [maisAberto, setMaisAberto] = useState(false);
+  const [showTop, setShowTop] = useState(false);
 
   useEffect(() => {
     if (!token) navigate('/admin/login');
   }, [token, navigate]);
+
+  // Botao voltar ao topo - escuta todos os scrolls possiveis
+  useEffect(() => {
+    let ticking = false;
+    const check = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const container = document.querySelector('.admin-content');
+        const y = Math.max(container?.scrollTop || 0, window.scrollY || 0, document.documentElement.scrollTop || 0);
+        setShowTop(y > 50);
+        ticking = false;
+      });
+    };
+    const container = document.querySelector('.admin-content');
+    container?.addEventListener('scroll', check, { passive: true });
+    window.addEventListener('scroll', check, { passive: true });
+    document.addEventListener('scroll', check, { passive: true });
+    return () => {
+      container?.removeEventListener('scroll', check);
+      window.removeEventListener('scroll', check);
+      document.removeEventListener('scroll', check);
+    };
+  }, []);
 
   if (!token) return null;
 
@@ -111,6 +136,18 @@ export default function Admin() {
           </div>
         </div>
       , document.body)}
+
+      {/* Botao voltar ao topo */}
+      {showTop && (
+        <button onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); document.documentElement.scrollTop = 0; document.querySelector('.admin-content')?.scrollTo({ top: 0, behavior: 'smooth' }); }}
+          style={{ position: 'fixed', bottom: 80, right: 16, zIndex: 900, width: 44, height: 44, borderRadius: '50%',
+            background: '#111', border: 'none', cursor: 'pointer', boxShadow: '0 4px 14px rgba(0,0,0,0.25)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="18 15 12 9 6 15" />
+          </svg>
+        </button>
+      )}
 
       {/* Bottom Nav - Mobile */}
       <div className="admin-bottom-nav">
@@ -550,7 +587,7 @@ function PainelPerfumes({ token }) {
   const [perfumes, setPerfumes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [showTop, setShowTop] = useState(false);
+  const [showTop] = useState(false); // moved to Admin component
   const [busca, setBusca] = useState('');
   const [buscaInput, setBuscaInput] = useState('');
   const [pagina, setPagina] = useState(1);
@@ -597,20 +634,7 @@ function PainelPerfumes({ token }) {
     return () => obs.disconnect();
   }, [pagina, total, busca, loadingMore, perfumes.length]);
 
-  // Scroll to top button - aparece com qualquer scroll, some só no topo
-  useEffect(() => {
-    const container = document.querySelector('.admin-content');
-    const check = () => {
-      const scrolled = (container?.scrollTop || 0) + (window.scrollY || 0);
-      setShowTop(scrolled > 50);
-    };
-    container?.addEventListener('scroll', check, { passive: true });
-    window.addEventListener('scroll', check, { passive: true });
-    return () => {
-      container?.removeEventListener('scroll', check);
-      window.removeEventListener('scroll', check);
-    };
-  }, []);
+  // scroll to top moved to Admin component
 
   const filtrados = perfumes.filter(p => {
     if (filtro === 'ativos') return p.ativo !== false;
@@ -945,19 +969,6 @@ function PainelPerfumes({ token }) {
       )}
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
 
-      {/* Botao voltar ao topo */}
-      {showTop && (
-        <button onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); document.querySelector('.admin-content')?.scrollTo({ top: 0, behavior: 'smooth' }); }}
-          style={{ position: 'fixed', bottom: 80, right: 16, zIndex: 900, width: 44, height: 44, borderRadius: '50%',
-            background: '#111', border: 'none', cursor: 'pointer', boxShadow: '0 4px 14px rgba(0,0,0,0.25)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'opacity .2s', opacity: 0.9 }}
-          onMouseEnter={e => e.currentTarget.style.opacity = '1'}
-          onMouseLeave={e => e.currentTarget.style.opacity = '0.9'}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="18 15 12 9 6 15" />
-          </svg>
-        </button>
-      )}
     </div>
   );
 }
