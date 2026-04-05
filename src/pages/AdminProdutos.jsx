@@ -73,8 +73,7 @@ function StepEscolha({ onFragrantica, onManual }) {
 }
 
 // ─── STEP: carregar pelo Fragrantica ──────────────────────────────────────
-function StepFragrantica({ onPreview, onVoltar }) {
-  const { token } = useAuth();
+function StepFragrantica({ onPreview, onVoltar, token }) {
   const [linkFrag, setLinkFrag] = useState('');
   const [carregando, setCarregando] = useState(false);
   const [msg, setMsg] = useState({ tipo: '', texto: '' });
@@ -494,6 +493,7 @@ export default function AdminProdutos() {
           <StepFragrantica
             onPreview={r => { setResultado(r); setStep('preview'); }}
             onVoltar={() => setStep('escolha')}
+            token={token}
           />
         )}
 
