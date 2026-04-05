@@ -520,6 +520,7 @@ function PainelPerfumes({ token }) {
       notas_topo: p.notas_topo || '', notas_coracao: p.notas_coracao || '', notas_base: p.notas_base || '',
       foto_url: p.foto_url || '', link_fragrantica: p.link_fragrantica || '',
       descricao: p.descricao || '', ativo: p.ativo !== false,
+      preco_lacrado: p.preco_lacrado || '',
       ...precos,
     });
   };
@@ -615,7 +616,7 @@ function PainelPerfumes({ token }) {
                 <textarea value={editForm.descricao || ''} onChange={e => setEditForm(f => ({ ...f, descricao: e.target.value }))}
                   style={{ width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, outline: 'none', color: '#0d0b07', background: '#fff', minHeight: 80, resize: 'vertical', boxSizing: 'border-box' }} />
               </div>
-              <p style={{ fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 0 }}>PREÇOS</p>
+              <p style={{ fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 0 }}>PREÇOS DECANT</p>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 100px), 1fr))', gap: 8 }}>
                 {TAMANHOS.map(t => (
                   <div key={t.key}>
@@ -623,6 +624,11 @@ function PainelPerfumes({ token }) {
                     <input type="number" step="0.01" placeholder="R$" {...inp(`preco_${t.key}`)} />
                   </div>
                 ))}
+              </div>
+
+              <div>
+                <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>PREÇO LACRADO</label>
+                <input type="number" step="0.01" placeholder="R$" {...inp('preco_lacrado')} />
               </div>
 
               <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#333', cursor: 'pointer' }}>
