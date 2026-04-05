@@ -295,7 +295,7 @@ export default function AdminNotas() {
 
       {/* Cards */}
       <div style={{ padding: '0 1rem 2rem' }}>
-        <div style={{ background: '#f5f5f3', borderRadius: 14, padding: 12 }}>
+        <div style={{ background: '#f5f5f3', borderRadius: 14, padding: 12, margin: '0 -4px' }}>
           {loading ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {[1,2,3,4,5,6].map(i => <div key={i} style={{ height: 64, background: '#eee', borderRadius: 12 }} />)}
@@ -309,10 +309,10 @@ export default function AdminNotas() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {notas.map(nota => (
                 <div key={nota.id} onClick={() => { setDetalhe(nota); setEditForm({ nota_en: nota.nota_en || '', nota_ptb: nota.nota_ptb || '', fragrantica_id: '' }); }}
-                  style={{ display: 'flex', gap: 12, padding: 12, background: '#fff', borderRadius: 12, border: '1px solid #eee',
+                  style={{ display: 'flex', gap: 14, padding: 14, background: '#fff', borderRadius: 12, border: '1px solid #eee',
                     cursor: 'pointer', transition: 'all .15s', boxShadow: '0 1px 4px rgba(0,0,0,0.04)', alignItems: 'center' }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#c9a84c'; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = '#eee'; }}>
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#c9a84c'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(201,168,76,0.15)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = '#eee'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.04)'; }}>
 
                   {/* Foto */}
                   <div style={{ width: 48, height: 48, flexShrink: 0, borderRadius: 10, overflow: 'hidden', background: '#f8f7f4', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #e8e4dc' }}>
