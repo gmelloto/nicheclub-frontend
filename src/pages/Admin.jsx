@@ -20,6 +20,38 @@ export default function Admin() {
   const selecionarAba = (a) => { setAba(a); setMenuAberto(false); };
 
   const abaLabels = { pedidos: 'Pedidos', estoque: 'Decants', perfumes: 'Perfumes', whatsapp: 'WhatsApp' };
+
+  const bottomTabs = [
+    { key: 'pedidos', label: 'Pedidos', icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" />
+        <rect x="9" y="3" width="6" height="4" rx="1" />
+        <path d="M9 14l2 2 4-4" />
+      </svg>
+    )},
+    { key: 'perfumes', label: 'Perfumes', icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="6" y="8" width="12" height="13" rx="2" />
+        <path d="M10 4h4v4h-4z" />
+        <path d="M9 8V6a1 1 0 011-1h4a1 1 0 011 1v2" />
+        <path d="M12 12v5" />
+      </svg>
+    )},
+    { key: 'estoque', label: 'Decants', icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M8 2h8l2 4v14a2 2 0 01-2 2H8a2 2 0 01-2-2V6l2-4z" />
+        <path d="M6 6h12" />
+        <path d="M10 10v6" />
+        <path d="M14 10v6" />
+      </svg>
+    )},
+    { key: 'whatsapp', label: 'Chat', icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" />
+      </svg>
+    )},
+  ];
+
   return (
     <div className="admin-page">
       <div className={`admin-sidebar-overlay ${menuAberto ? 'open' : ''}`} onClick={() => setMenuAberto(false)} />
@@ -40,7 +72,7 @@ export default function Admin() {
           Notas Olfativas
         </button>
       </div>
-      <div className="admin-content">
+      <div className="admin-content" style={{ paddingBottom: 80 }}>
         <button className="admin-menu-btn" onClick={() => setMenuAberto(v => !v)} aria-label="Menu">
           {menuAberto ? '✕' : '☰'}
         </button>
@@ -48,6 +80,17 @@ export default function Admin() {
         {aba === 'estoque' && <PainelEstoque token={token} />}
         {aba === 'perfumes' && <PainelPerfumes token={token} />}
         {aba === 'whatsapp' && <PainelWhatsApp token={token} />}
+      </div>
+
+      {/* Bottom Nav - Mobile */}
+      <div className="admin-bottom-nav">
+        {bottomTabs.map(tab => (
+          <button key={tab.key} onClick={() => selecionarAba(tab.key)}
+            className={`admin-bottom-tab ${aba === tab.key ? 'active' : ''}`}>
+            {tab.icon}
+            <span>{tab.label}</span>
+          </button>
+        ))}
       </div>
     </div>
   );
