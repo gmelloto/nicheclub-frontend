@@ -80,15 +80,15 @@ function StepFragrantica({ onPreview, onVoltar }) {
   const [msg, setMsg] = useState({ tipo: '', texto: '' });
 
   const carregar = async () => {
-    if (!linkFrag || !linkFrag.includes('fragrantica.com/perfume/')) {
-      return setMsg({ tipo: 'erro', texto: 'Cole um link válido do Fragrantica. Ex: https://www.fragrantica.com/perfume/Marca/Nome-12345.html' });
+    if (!linkFrag || !linkFrag.match(/fragrantica\.com(\.br)?\/perfume\//)) {
+      return setMsg({ tipo: 'erro', texto: 'Cole um link válido do Fragrantica. Ex: https://www.fragrantica.com.br/perfume/Marca/Nome-12345.html' });
     }
     setCarregando(true);
     setMsg({ tipo: '', texto: '' });
     try {
       // Extrair marca e nome da URL: /perfume/Marca/Nome-ID.html
-      const match = linkFrag.match(/fragrantica\.com\/perfume\/([^/]+)\/([^/]+?)(?:-\d+)?\.html/);
-      if (!match) throw new Error('URL inválida. Use o formato: fragrantica.com/perfume/Marca/Nome.html');
+      const match = linkFrag.match(/fragrantica\.com(?:\.br)?\/perfume\/([^/]+)\/([^/]+?)(?:-\d+)?\.html/);
+      if (!match) throw new Error('URL inválida. Use o formato: fragrantica.com.br/perfume/Marca/Nome.html');
 
       const marca = decodeURIComponent(match[1]).replace(/-/g, ' ');
       const nome = decodeURIComponent(match[2]).replace(/-/g, ' ');
@@ -138,7 +138,7 @@ function StepFragrantica({ onPreview, onVoltar }) {
         <Input
           value={linkFrag}
           onChange={e => setLinkFrag(e.target.value)}
-          placeholder="https://www.fragrantica.com/perfume/Marca/Nome-12345.html"
+          placeholder="https://www.fragrantica.com.br/perfume/Marca/Nome-12345.html"
         />
       </div>
 
