@@ -92,10 +92,7 @@ function StepFragrantica({ onPreview, onVoltar, token }) {
       const marca = decodeURIComponent(match[1]).replace(/-/g, ' ');
       const nome = decodeURIComponent(match[2]).replace(/-/g, ' ');
 
-      const res = await fetch(`https://nicheclub-backend-production.up.railway.app/api/admin/fragrantica?marca=${encodeURIComponent(marca)}&nome=${encodeURIComponent(nome)}`, {
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      });
-      const d = await res.json();
+      const d = await api.adminFragrantica(marca, nome, token);
 
       if (!d.encontrado) throw new Error('Perfume não encontrado no Fragrantica.');
 
