@@ -172,7 +172,10 @@ function parseFragranticaHTML(html, urlOriginal) {
     // Extrair topo
     const topoIdx = lowerDesc.indexOf('notas de topo');
     const coracaoIdx = lowerDesc.search(/notas\s+de\s+cora/);
-    const baseIdx = lowerDesc.indexOf('notas de base');
+    // "notas de base" OU "notas de fundo" (Fragrantica BR usa ambos)
+    const baseIdx1 = lowerDesc.indexOf('notas de base');
+    const baseIdx2 = lowerDesc.indexOf('notas de fundo');
+    const baseIdx = baseIdx1 >= 0 ? baseIdx1 : baseIdx2;
 
     const extractAfterColon = (text) => {
       // Pegar tudo após "são:" ou ":"
