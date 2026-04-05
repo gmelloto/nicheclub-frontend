@@ -786,7 +786,7 @@ export default function AdminProdutos() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: S.bg, padding: '1rem' }}>
+    <div style={{ minHeight: '100vh', background: S.bg, padding: '1rem', paddingBottom: 80 }}>
       <div style={{ maxWidth: 720, margin: '0 auto' }}>
 
         {/* Header */}
@@ -833,6 +833,31 @@ export default function AdminProdutos() {
           />
         )}
 
+      </div>
+
+      {/* Bottom Nav */}
+      <div style={{ display: 'flex', position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 999, background: '#fff', borderTop: '1px solid #e8e4dc',
+        padding: '6px 0 max(6px, env(safe-area-inset-bottom))', justifyContent: 'space-around', boxShadow: '0 -2px 12px rgba(0,0,0,0.06)' }}>
+        {[
+          { key: 'pedidos', label: 'Pedidos', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg> },
+          { key: 'perfumes', label: 'Perfumes', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="8" width="12" height="13" rx="2"/><path d="M10 4h4v4h-4z"/><path d="M9 8V6a1 1 0 011-1h4a1 1 0 011 1v2"/><path d="M12 12v5"/></svg> },
+          { key: 'estoque', label: 'Decants', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2h8l2 4v14a2 2 0 01-2 2H8a2 2 0 01-2-2V6l2-4z"/><path d="M6 6h12"/><path d="M10 10v6"/><path d="M14 10v6"/></svg> },
+          { key: 'whatsapp', label: 'Chat', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg> },
+        ].map(tab => (
+          <button key={tab.key} onClick={() => navigate('/admin', { state: { aba: tab.key } })}
+            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, padding: '6px 12px', background: 'none', border: 'none',
+              cursor: 'pointer', fontFamily: "'Inter', sans-serif", fontSize: 10, fontWeight: 500, color: '#999', WebkitTapHighlightColor: 'transparent' }}>
+            {tab.icon}
+            <span>{tab.label}</span>
+          </button>
+        ))}
+        <button style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, padding: '6px 12px', background: 'none', border: 'none',
+          cursor: 'pointer', fontFamily: "'Inter', sans-serif", fontSize: 10, fontWeight: 700, color: '#111', WebkitTapHighlightColor: 'transparent' }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+          <span>Mais</span>
+        </button>
       </div>
     </div>
   );
