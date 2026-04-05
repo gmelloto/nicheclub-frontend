@@ -2,7 +2,8 @@ const BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 async function req(method, path, body, token) {
   const headers = { 'Content-Type': 'application/json' };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
+  const authToken = token || localStorage.getItem('nc_token');
+  if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
   const res = await fetch(`${BASE}/api${path}`, {
     method, headers,
     body: body ? JSON.stringify(body) : undefined,
