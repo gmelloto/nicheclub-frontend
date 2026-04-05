@@ -301,7 +301,7 @@ function StepManual({ onVoltar, onSalvo }) {
     try {
       await api.adminCadastrarPerfume({
         ...form,
-        precos: precos.filter(p => p.preco).map(p => ({ tamanho: p.key, preco: Number(p.preco) })),
+        precos: precos.filter(p => p.preco).map(p => ({ tamanho: p.key, preco: Number(p.preco), ml_quantidade: p.ml })),
         ml_inicial: form.ml_inicial ? Number(form.ml_inicial) : null,
       });
       onSalvo();
@@ -455,7 +455,7 @@ export default function AdminProdutos() {
       url_fragrantica: resultado.slug ? `https://nicheclub-frontend.vercel.app/perfume/${resultado.slug}` : '',
       rating_valor: d.rating_valor || '',
       ml_inicial: ml_inicial ? Number(ml_inicial) : null,
-      precos: precos.filter(p => p.preco).map(p => ({ tamanho: p.key, preco: Number(p.preco) })),
+      precos: precos.filter(p => p.preco).map(p => ({ tamanho: p.key, preco: Number(p.preco), ml_quantidade: p.ml })),
     });
     setMensagemSucesso(resultado.atualizado ? 'Perfume atualizado com sucesso!' : 'Perfume cadastrado com sucesso!');
     setStep('sucesso');
