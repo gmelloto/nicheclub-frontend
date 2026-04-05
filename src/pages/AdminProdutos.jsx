@@ -161,7 +161,9 @@ function parseFragranticaHTML(html, urlOriginal) {
         .replace(/\s+and\s+/gi, ', ')
         .replace(/\s*,\s*/g, ', ')
         .replace(/\s+/g, ' ')
-        .replace(/[.;]$/, '')
+        .replace(/\.?\s*As$/i, '')        // remove ". As" residual da próxima seção
+        .replace(/[.;,\s]+$/, '')          // remove pontos, vírgulas e espaços finais
+        .replace(/\.{2,}/g, '')            // remove ".." ou "..."
         .trim();
     };
 
