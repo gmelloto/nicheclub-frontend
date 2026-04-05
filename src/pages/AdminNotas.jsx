@@ -123,7 +123,7 @@ export default function AdminNotas() {
   const ModalAdicionar = () => modal && createPortal(
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
       onClick={e => e.target === e.currentTarget && setModal(false)}>
-      <div style={{ background: '#fff', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '90vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
+      <div style={{ background: '#fff', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '90vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease', fontFamily: "'Inter', sans-serif" }}>
         <div style={{ width: 40, height: 4, background: '#ddd', borderRadius: 2, margin: '0 auto 16px' }} />
         <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111', marginBottom: 12 }}>Adicionar Nota</h3>
 
@@ -136,17 +136,17 @@ export default function AdminNotas() {
           <div>
             <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4 }}>NOME EM INGLES *</label>
             <input value={form.nota_en} onChange={e => setForm(f => ({ ...f, nota_en: e.target.value }))} placeholder="Ex: Bergamot"
-              style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box' }} />
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box', color: '#111', fontFamily: "'Inter', sans-serif" }} />
           </div>
           <div>
             <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4 }}>NOME EM PORTUGUES</label>
             <input value={form.nota_ptb} onChange={e => setForm(f => ({ ...f, nota_ptb: e.target.value }))} placeholder="Ex: Bergamota"
-              style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box' }} />
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box', color: '#111', fontFamily: "'Inter', sans-serif" }} />
           </div>
           <div>
             <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4 }}>ID FRAGRANTICA *</label>
             <input value={form.fragrantica_id} onChange={e => setForm(f => ({ ...f, fragrantica_id: e.target.value.replace(/\D/g, '') }))} placeholder="Ex: 75" type="number"
-              style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box' }} />
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box', color: '#111', fontFamily: "'Inter', sans-serif" }} />
           </div>
 
           {preview && (
@@ -170,8 +170,8 @@ export default function AdminNotas() {
         </div>
 
         <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
-          <button onClick={() => setModal(false)} style={{ flex: 0.5, padding: '12px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#666' }}>Cancelar</button>
-          <button onClick={importar} disabled={importando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07', opacity: importando ? 0.7 : 1 }}>
+          <button onClick={() => setModal(false)} style={{ flex: 0.5, padding: '12px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#666', fontFamily: "'Inter', sans-serif" }}>Cancelar</button>
+          <button onClick={importar} disabled={importando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07', fontFamily: "'Inter', sans-serif", opacity: importando ? 0.7 : 1 }}>
             {importando ? 'Importando...' : 'Importar'}
           </button>
         </div>
@@ -185,7 +185,7 @@ export default function AdminNotas() {
   const ModalDetalhe = () => detalhe && createPortal(
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9998, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
       onClick={e => e.target === e.currentTarget && setDetalhe(null)}>
-      <div style={{ background: '#fff', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '90vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
+      <div style={{ background: '#fff', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '90vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease', fontFamily: "'Inter', sans-serif" }}>
         <div style={{ width: 40, height: 4, background: '#ddd', borderRadius: 2, margin: '0 auto 16px' }} />
 
         {/* Foto + status */}
@@ -212,12 +212,12 @@ export default function AdminNotas() {
           <div>
             <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4 }}>NOME EM INGLES</label>
             <input value={editForm.nota_en} onChange={e => setEditForm(f => ({ ...f, nota_en: e.target.value }))}
-              style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box' }} />
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box', color: '#111', fontFamily: "'Inter', sans-serif" }} />
           </div>
           <div>
             <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4 }}>NOME EM PORTUGUES</label>
             <input value={editForm.nota_ptb} onChange={e => setEditForm(f => ({ ...f, nota_ptb: e.target.value }))}
-              style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box' }} />
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box', color: '#111', fontFamily: "'Inter', sans-serif" }} />
           </div>
         </div>
 
@@ -227,10 +227,10 @@ export default function AdminNotas() {
           <div style={{ display: 'flex', gap: 8 }}>
             <input value={editForm.fragrantica_id} onChange={e => setEditForm(f => ({ ...f, fragrantica_id: e.target.value.replace(/\D/g, '') }))}
               placeholder="Ex: 75" type="number"
-              style={{ flex: 1, padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box' }} />
+              style={{ flex: 1, padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box', color: '#111', fontFamily: "'Inter', sans-serif" }} />
             <button onClick={importarImagem} disabled={importandoImg || !editForm.fragrantica_id}
               style={{ padding: '10px 16px', background: editForm.fragrantica_id ? '#111' : '#ddd', border: 'none', borderRadius: 8, cursor: editForm.fragrantica_id ? 'pointer' : 'not-allowed',
-                fontSize: 12, fontWeight: 700, color: '#fff', whiteSpace: 'nowrap', opacity: importandoImg ? 0.7 : 1 }}>
+                fontSize: 12, fontWeight: 700, color: '#fff', whiteSpace: 'nowrap', opacity: importandoImg ? 0.7 : 1, fontFamily: "'Inter', sans-serif" }}>
               {importandoImg ? 'Salvando...' : 'Salvar Imagem'}
             </button>
           </div>
@@ -252,10 +252,10 @@ export default function AdminNotas() {
 
         <div style={{ display: 'flex', gap: 8 }}>
           <button onClick={() => setDetalhe(null)} style={{ padding: '12px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#666', flex: 0.4 }}>Fechar</button>
-          <button onClick={salvarEdicao} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>
+          <button onClick={salvarEdicao} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07', fontFamily: "'Inter', sans-serif" }}>
             {salvando ? 'Salvando...' : 'Salvar'}
           </button>
-          <button onClick={deletar} style={{ padding: '12px 16px', background: '#fce4ec', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#c62828' }}>Excluir</button>
+          <button onClick={deletar} style={{ padding: '12px 16px', background: '#fce4ec', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#c62828', fontFamily: "'Inter', sans-serif" }}>Excluir</button>
         </div>
       </div>
     </div>
@@ -311,7 +311,7 @@ export default function AdminNotas() {
                 }, 3000);
               } catch(e) { setFixResult({ erro: e.message }); setFixando(false); }
             }} disabled={fixando}
-              style={{ padding: '10px 14px', background: '#111', border: 'none', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: fixando ? 'not-allowed' : 'pointer', color: '#fff', opacity: fixando ? 0.7 : 1 }}>
+              style={{ padding: '10px 14px', background: '#111', border: 'none', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: fixando ? 'not-allowed' : 'pointer', color: '#fff', opacity: fixando ? 0.7 : 1, fontFamily: "'Inter', sans-serif" }}>
               {fixando ? 'Verificando...' : 'Corrigir Imagens'}
             </button>
             <button onClick={() => setModal(true)}
@@ -380,16 +380,16 @@ export default function AdminNotas() {
                   onMouseLeave={e => { e.currentTarget.style.borderColor = '#eee'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.04)'; }}>
 
                   {/* Foto */}
-                  <div style={{ width: 48, height: 48, flexShrink: 0, borderRadius: 10, overflow: 'hidden', background: '#f8f7f4', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #e8e4dc' }}>
+                  <div style={{ width: 56, height: 56, flexShrink: 0, borderRadius: 10, overflow: 'hidden', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #eee' }}>
                     {nota.cloudinary_url
                       ? <img src={nota.cloudinary_url} alt={nota.nota_en} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      : <span style={{ fontSize: 20 }}>🌿</span>
+                      : <span style={{ fontSize: 22 }}>🌿</span>
                     }
                   </div>
 
                   {/* Info */}
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontSize: 14, fontWeight: 600, color: '#111', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nota.nota_ptb || nota.nota_en}</p>
+                    <p style={{ fontSize: 15, fontWeight: 700, color: '#111', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nota.nota_ptb || nota.nota_en}</p>
                     <p style={{ fontSize: 12, color: '#888' }}>{nota.nota_en}</p>
                   </div>
 
