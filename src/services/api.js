@@ -31,7 +31,7 @@ export const api = {
   // Admin - Produtos
   adminMarcas: (q) => req('GET', `/admin/marcas?q=${encodeURIComponent(q)}`),
   adminBuscaPerfume: (marca, q) => req('GET', `/admin/busca-perfume?marca=${encodeURIComponent(marca)}&q=${encodeURIComponent(q)}`),
-  adminFragrantica: (marca, nome, token) => req('GET', `/admin/fragrantica?marca=${encodeURIComponent(marca)}&nome=${encodeURIComponent(nome)}`, null, token),
+  adminFragrantica: (marca, nome) => req('GET', `/admin/fragrantica?marca=${encodeURIComponent(marca)}&nome=${encodeURIComponent(nome)}`),
   adminUploadFoto: (data) => req('POST', '/admin/upload-foto', data),
   adminCadastrarPerfume: (data, token) => req('POST', '/admin/perfumes', data, token),
   notas: () => req('GET', '/notas'),
