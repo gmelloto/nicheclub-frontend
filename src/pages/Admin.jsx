@@ -9,7 +9,7 @@ export default function Admin() {
   const { token, usuario } = useAuth();
   const navigate = useNavigate();
   const [aba, setAba] = useState('pedidos');
-  const [menuAberto, setMenuAberto] = useState(false);
+  const [maisAberto, setMaisAberto] = useState(false);
 
   useEffect(() => {
     if (!token) navigate('/admin/login');
@@ -17,7 +17,7 @@ export default function Admin() {
 
   if (!token) return null;
 
-  const selecionarAba = (a) => { setAba(a); setMenuAberto(false); };
+  const selecionarAba = (a) => { setAba(a); setMaisAberto(false); };
 
   const abaLabels = { pedidos: 'Pedidos', estoque: 'Decants', perfumes: 'Perfumes', whatsapp: 'WhatsApp' };
 
@@ -52,10 +52,22 @@ export default function Admin() {
     )},
   ];
 
+  const maisOpcoes = [
+    { label: 'Cadastrar Produto', icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+    ), onClick: () => { setMaisAberto(false); navigate('/admin/produtos'); }},
+    { label: 'Notas Olfativas', icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22c-4 0-8-2-8-6 0-6 8-14 8-14s8 8 8 14c0 4-4 6-8 6z"/></svg>
+    ), onClick: () => { setMaisAberto(false); navigate('/admin/notas'); }},
+    { label: 'Ver Loja', icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+    ), onClick: () => { setMaisAberto(false); navigate('/'); }},
+  ];
+
   return (
     <div className="admin-page">
-      <div className={`admin-sidebar-overlay ${menuAberto ? 'open' : ''}`} onClick={() => setMenuAberto(false)} />
-      <div className={`admin-sidebar ${menuAberto ? 'open' : ''}`}>
+      {/* Sidebar desktop */}
+      <div className="admin-sidebar">
         <div className="admin-brand">
           <span className="gold">◈</span> Admin
         </div>
@@ -65,22 +77,40 @@ export default function Admin() {
             {abaLabels[a] || a.charAt(0).toUpperCase() + a.slice(1)}
           </button>
         ))}
-        <button className="admin-nav-btn" onClick={() => { setMenuAberto(false); navigate('/admin/produtos'); }} style={{ marginTop: '1rem', color: '#c9a84c', borderTop: '1px solid #e8e4dc', paddingTop: '1rem' }}>
+        <button className="admin-nav-btn" onClick={() => navigate('/admin/produtos')} style={{ marginTop: '1rem', color: '#c9a84c', borderTop: '1px solid #e8e4dc', paddingTop: '1rem' }}>
           + Cadastrar Produto
         </button>
-        <button className="admin-nav-btn" onClick={() => { setMenuAberto(false); navigate('/admin/notas'); }} style={{ color: '#c9a84c' }}>
+        <button className="admin-nav-btn" onClick={() => navigate('/admin/notas')} style={{ color: '#c9a84c' }}>
           Notas Olfativas
         </button>
       </div>
       <div className="admin-content" style={{ paddingBottom: 80 }}>
-        <button className="admin-menu-btn" onClick={() => setMenuAberto(v => !v)} aria-label="Menu">
-          {menuAberto ? '✕' : '☰'}
-        </button>
         {aba === 'pedidos' && <PainelPedidos token={token} />}
         {aba === 'estoque' && <PainelEstoque token={token} />}
         {aba === 'perfumes' && <PainelPerfumes token={token} />}
         {aba === 'whatsapp' && <PainelWhatsApp token={token} />}
       </div>
+
+      {/* Menu "Mais" overlay */}
+      {maisAberto && createPortal(
+        <div style={{ position: 'fixed', inset: 0, zIndex: 9997 }} onClick={() => setMaisAberto(false)}>
+          <div style={{ position: 'absolute', bottom: 70, left: '50%', transform: 'translateX(-50%)', width: '90%', maxWidth: 340,
+            background: '#fff', borderRadius: 14, boxShadow: '0 8px 30px rgba(0,0,0,0.18)', padding: 8, animation: 'slideUp .2s ease' }}
+            onClick={e => e.stopPropagation()}>
+            {maisOpcoes.map((op, i) => (
+              <button key={i} onClick={op.onClick}
+                style={{ display: 'flex', alignItems: 'center', gap: 14, width: '100%', padding: '14px 16px', background: 'none', border: 'none',
+                  cursor: 'pointer', fontSize: 14, fontWeight: 500, color: '#333', borderRadius: 8, fontFamily: "'Inter', sans-serif",
+                  transition: 'background .15s' }}
+                onMouseEnter={e => e.currentTarget.style.background = '#f5f3ef'}
+                onMouseLeave={e => e.currentTarget.style.background = 'none'}>
+                <span style={{ color: '#c9a84c' }}>{op.icon}</span>
+                {op.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      , document.body)}
 
       {/* Bottom Nav - Mobile */}
       <div className="admin-bottom-nav">
@@ -91,6 +121,13 @@ export default function Admin() {
             <span>{tab.label}</span>
           </button>
         ))}
+        <button onClick={() => setMaisAberto(v => !v)}
+          className={`admin-bottom-tab ${maisAberto ? 'active' : ''}`}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+          <span>Mais</span>
+        </button>
       </div>
     </div>
   );
