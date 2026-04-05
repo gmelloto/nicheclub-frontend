@@ -284,22 +284,32 @@ export default function AdminNotas() {
           <div style={{ display: 'flex', gap: 8 }}>
             <button onClick={async () => {
               if (fixando) return;
+              const BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+              const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` };
               setFixando(true); setFixResult(null);
               try {
-                const BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-                const resp = await fetch(`${BASE}/api/admin/notas/fix-images`, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                  body: '{}',
-                });
+                // Iniciar processamento em background
+                const resp = await fetch(`${BASE}/api/admin/notas/fix-images`, { method: 'POST', headers, body: '{}' });
                 const text = await resp.text();
-                let res;
-                try { res = JSON.parse(text); } catch { throw new Error('Backend retornou resposta inválida. Verifique se o deploy foi concluído.'); }
-                if (!resp.ok) throw new Error(res.erro || 'Erro no servidor');
-                setFixResult(res);
-                if (res.corrigidas > 0) carregar(1, busca);
-              } catch(e) { setFixResult({ erro: e.message }); }
-              finally { setFixando(false); }
+                let data;
+                try { data = JSON.parse(text); } catch { throw new Error('Backend retornou resposta inválida. Verifique se o deploy foi concluído.'); }
+                if (!resp.ok) throw new Error(data.erro || 'Erro no servidor');
+                setFixResult({ running: true, verificadas: 0, total: 0, mensagem: data.mensagem || 'Processando...' });
+
+                // Polling do status a cada 3 segundos
+                const poll = setInterval(async () => {
+                  try {
+                    const r = await fetch(`${BASE}/api/admin/notas/fix-images`, { headers });
+                    const status = await r.json();
+                    setFixResult(status);
+                    if (!status.running) {
+                      clearInterval(poll);
+                      setFixando(false);
+                      if (status.corrigidas > 0) carregar(1, busca);
+                    }
+                  } catch(e) { clearInterval(poll); setFixando(false); }
+                }, 3000);
+              } catch(e) { setFixResult({ erro: e.message }); setFixando(false); }
             }} disabled={fixando}
               style={{ padding: '10px 14px', background: '#111', border: 'none', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: fixando ? 'not-allowed' : 'pointer', color: '#fff', opacity: fixando ? 0.7 : 1 }}>
               {fixando ? 'Verificando...' : 'Corrigir Imagens'}
@@ -313,13 +323,20 @@ export default function AdminNotas() {
 
         {/* Resultado fix images */}
         {fixResult && (
-          <div style={{ background: fixResult.erro ? '#fce4ec' : '#e8f5e9', borderRadius: 8, padding: '10px 14px', marginBottom: 12, fontSize: 13 }}>
+          <div style={{ background: fixResult.erro ? '#fce4ec' : fixResult.running ? '#fff3e0' : '#e8f5e9', borderRadius: 8, padding: '10px 14px', marginBottom: 12, fontSize: 13 }}>
             {fixResult.erro ? (
               <span style={{ color: '#c62828' }}>Erro: {fixResult.erro}</span>
+            ) : fixResult.running ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ width: 18, height: 18, border: '2px solid #e8e4dc', borderTop: '2px solid #e65100', borderRadius: '50%', animation: 'spin .6s linear infinite', flexShrink: 0 }} />
+                <span style={{ color: '#e65100', fontWeight: 600 }}>
+                  Verificando... {fixResult.verificadas || 0}/{fixResult.total || '?'} — {fixResult.corrigidas || 0} corrigidas
+                </span>
+              </div>
             ) : (
               <div>
                 <span style={{ color: '#2e7d32', fontWeight: 600 }}>
-                  {fixResult.corrigidas} corrigidas de {fixResult.quebradas} quebradas ({fixResult.verificadas} verificadas)
+                  Concluído! {fixResult.corrigidas || 0} corrigidas de {fixResult.quebradas || 0} quebradas ({fixResult.verificadas || 0} verificadas)
                 </span>
                 {fixResult.erros?.length > 0 && (
                   <details style={{ marginTop: 6, fontSize: 12, color: '#888' }}>
