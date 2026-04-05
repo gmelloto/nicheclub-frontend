@@ -74,33 +74,53 @@ function StepEscolha({ onFragrantica, onManual }) {
 
 // ─── STEP: carregar pelo Fragrantica ──────────────────────────────────────
 function StepFragrantica({ onPreview, onVoltar }) {
-  const [tunnelUrl, setTunnelUrl] = useState(localStorage.getItem('scraper_tunnel') || '');
+  const { token } = useAuth();
   const [linkFrag, setLinkFrag] = useState('');
   const [carregando, setCarregando] = useState(false);
   const [msg, setMsg] = useState({ tipo: '', texto: '' });
 
   const carregar = async () => {
-    if (!tunnelUrl) return setMsg({ tipo: 'erro', texto: 'Configure a URL do servidor local.' });
     if (!linkFrag || !linkFrag.includes('fragrantica.com/perfume/')) {
-      return setMsg({ tipo: 'erro', texto: 'Cole um link valido do Fragrantica.' });
+      return setMsg({ tipo: 'erro', texto: 'Cole um link válido do Fragrantica. Ex: https://www.fragrantica.com/perfume/Marca/Nome-12345.html' });
     }
     setCarregando(true);
     setMsg({ tipo: '', texto: '' });
     try {
-      const base = tunnelUrl.replace(/\/$/, '');
-      const resp = await fetch(`${base}/scrape`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: linkFrag }),
+      // Extrair marca e nome da URL: /perfume/Marca/Nome-ID.html
+      const match = linkFrag.match(/fragrantica\.com\/perfume\/([^/]+)\/([^/]+?)(?:-\d+)?\.html/);
+      if (!match) throw new Error('URL inválida. Use o formato: fragrantica.com/perfume/Marca/Nome.html');
+
+      const marca = decodeURIComponent(match[1]).replace(/-/g, ' ');
+      const nome = decodeURIComponent(match[2]).replace(/-/g, ' ');
+
+      const res = await fetch(`https://nicheclub-backend-production.up.railway.app/api/admin/fragrantica?marca=${encodeURIComponent(marca)}&nome=${encodeURIComponent(nome)}`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
-      const d = await resp.json();
-      if (d.sucesso) {
-        onPreview(d);
-      } else {
-        setMsg({ tipo: 'erro', texto: d.erro || 'Erro ao processar.' });
-      }
+      const d = await res.json();
+
+      if (!d.encontrado) throw new Error('Perfume não encontrado no Fragrantica.');
+
+      onPreview({
+        sucesso: true,
+        dados: {
+          nome: d.nome || nome,
+          marca: d.marca || marca,
+          foto_url: d.foto_url || '',
+          ano: d.ano || null,
+          genero: d.genero || '',
+          pais: d.pais || '',
+          rating_valor: d.rating_valor || null,
+          rating_count: d.rating_count || null,
+          acorde1: d.acorde1 || '', acorde2: d.acorde2 || '', acorde3: d.acorde3 || '',
+          acorde4: d.acorde4 || '', acorde5: d.acorde5 || '',
+          notas_topo: d.notas_topo || '', notas_coracao: d.notas_coracao || '', notas_base: d.notas_base || '',
+          perfumista1: d.perfumista1 || '', perfumista2: d.perfumista2 || '',
+        },
+        slug: d.slug || null,
+        atualizado: d.atualizado || false,
+      });
     } catch(e) {
-      setMsg({ tipo: 'erro', texto: 'Nao foi possivel conectar ao servidor local. Verifique se esta rodando.' });
+      setMsg({ tipo: 'erro', texto: e.message || 'Erro ao carregar dados.' });
     } finally {
       setCarregando(false);
     }
@@ -109,30 +129,16 @@ function StepFragrantica({ onPreview, onVoltar }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
 
-      {/* Configuracao do servidor */}
-      <div style={{ background: S.bg2, border: `1px solid ${S.border}`, borderRadius: 8, padding: '1.5rem' }}>
-        <Label>URL do Servidor Local</Label>
-        <p style={{ fontSize: 11, color: S.text3, marginBottom: 8 }}>
-          Rode <code style={{ background: '#eee', padding: '2px 6px', borderRadius: 3 }}>python3 scrape_server.py</code> e depois{' '}
-          <code style={{ background: '#eee', padding: '2px 6px', borderRadius: 3 }}>npx localtunnel --port 4000</code>
-        </p>
-        <Input
-          value={tunnelUrl}
-          onChange={e => { setTunnelUrl(e.target.value); localStorage.setItem('scraper_tunnel', e.target.value); }}
-          placeholder="https://xxx.loca.lt"
-        />
-        {tunnelUrl && (
-          <p style={{ fontSize: 11, color: '#2a7a2a', marginTop: 6 }}>🟢 {tunnelUrl}</p>
-        )}
-      </div>
-
       {/* Link do Fragrantica */}
       <div style={{ background: S.bg2, border: `1px solid ${S.border}`, borderRadius: 8, padding: '1.5rem' }}>
         <Label>Link do Fragrantica</Label>
+        <p style={{ fontSize: 11, color: S.text3, marginBottom: 8 }}>
+          Cole a URL completa do perfume no Fragrantica.
+        </p>
         <Input
           value={linkFrag}
           onChange={e => setLinkFrag(e.target.value)}
-          placeholder="https://www.fragrantica.com/perfume/..."
+          placeholder="https://www.fragrantica.com/perfume/Marca/Nome-12345.html"
         />
       </div>
 
@@ -142,11 +148,11 @@ function StepFragrantica({ onPreview, onVoltar }) {
         <button onClick={onVoltar} style={{ padding: '12px 20px', background: '#fff', border: `1px solid ${S.border}`, borderRadius: 4, fontSize: 13, cursor: 'pointer', color: S.text2 }}>
           ← Voltar
         </button>
-        <button onClick={carregar} disabled={carregando || !linkFrag || !tunnelUrl} style={{
+        <button onClick={carregar} disabled={carregando || !linkFrag} style={{
           flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)',
           border: 'none', borderRadius: 4, fontSize: 13, fontWeight: 700,
           cursor: carregando ? 'not-allowed' : 'pointer', color: '#0d0b07',
-          opacity: carregando || !linkFrag || !tunnelUrl ? 0.6 : 1,
+          opacity: carregando || !linkFrag ? 0.6 : 1,
         }}>
           {carregando ? '⏳ Carregando...' : '⚡ Carregar dados'}
         </button>
