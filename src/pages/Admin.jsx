@@ -432,6 +432,14 @@ const DEMO_PEDIDOS = [
 
 const API_URL = 'https://nicheclub-backend-production.up.railway.app';
 
+const TAMANHOS = [
+  { key: 'apc', label: 'APC +50ml' },
+  { key: '3ml', label: '3ml' },
+  { key: '5ml', label: '5ml' },
+  { key: '10ml', label: '10ml' },
+  { key: '15ml', label: '15ml' },
+];
+
 function PainelPerfumes({ token }) {
   const [perfumes, setPerfumes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -497,6 +505,11 @@ function PainelPerfumes({ token }) {
 
   const abrirEditar = (p) => {
     setEditando(p);
+    const precos = {};
+    TAMANHOS.forEach(t => {
+      const op = p.opcoes?.find(o => o.tamanho === t.key);
+      precos[`preco_${t.key}`] = op ? String(op.preco) : '';
+    });
     setEditForm({
       nome: p.nome || '', marca: p.marca || '', ano: p.ano || '',
       genero: p.genero || '', pais: p.pais || '', familia_olfativa: p.familia_olfativa || '',
@@ -507,16 +520,24 @@ function PainelPerfumes({ token }) {
       notas_topo: p.notas_topo || '', notas_coracao: p.notas_coracao || '', notas_base: p.notas_base || '',
       foto_url: p.foto_url || '', link_fragrantica: p.link_fragrantica || '',
       descricao: p.descricao || '', ativo: p.ativo !== false,
+      ...precos,
     });
   };
 
   const salvarEdicao = async () => {
     setSalvando(true);
     try {
+      const body = { ...editForm };
+      const precos = TAMANHOS.filter(t => body[`preco_${t.key}`]).map(t => ({
+        tamanho: t.key, preco: Number(body[`preco_${t.key}`]),
+      }));
+      TAMANHOS.forEach(t => delete body[`preco_${t.key}`]);
+      if (precos.length > 0) body.precos = precos;
+
       const res = await fetch(`${API_URL}/api/admin/perfumes/${editando.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify(editForm),
+        body: JSON.stringify(body),
       });
       if (!res.ok) throw new Error('Erro ao salvar');
       setEditando(null);
@@ -594,6 +615,16 @@ function PainelPerfumes({ token }) {
                 <textarea value={editForm.descricao || ''} onChange={e => setEditForm(f => ({ ...f, descricao: e.target.value }))}
                   style={{ width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, outline: 'none', color: '#0d0b07', background: '#fff', minHeight: 80, resize: 'vertical', boxSizing: 'border-box' }} />
               </div>
+              <p style={{ fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 0 }}>PREÇOS</p>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 100px), 1fr))', gap: 8 }}>
+                {TAMANHOS.map(t => (
+                  <div key={t.key}>
+                    <label style={{ fontSize: 10, fontWeight: 600, color: '#aaa', display: 'block', marginBottom: 2 }}>{t.label}</label>
+                    <input type="number" step="0.01" placeholder="R$" {...inp(`preco_${t.key}`)} />
+                  </div>
+                ))}
+              </div>
+
               <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#333', cursor: 'pointer' }}>
                 <input type="checkbox" checked={editForm.ativo !== false} onChange={e => setEditForm(f => ({ ...f, ativo: e.target.checked }))} style={{ flexShrink: 0 }} />
                 Ativo no catálogo
