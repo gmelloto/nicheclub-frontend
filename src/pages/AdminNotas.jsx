@@ -125,7 +125,7 @@ export default function AdminNotas() {
       onClick={e => e.target === e.currentTarget && setModal(false)}>
       <div style={{ background: '#fff', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '90vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease', fontFamily: "'Inter', sans-serif" }}>
         <div style={{ width: 40, height: 4, background: '#ddd', borderRadius: 2, margin: '0 auto 16px' }} />
-        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111', marginBottom: 12 }}>Adicionar Nota</h3>
+        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111', fontFamily: "'Inter', sans-serif", marginBottom: 12 }}>Adicionar Nota</h3>
 
         <div style={{ background: '#fffbf0', border: '1px solid #e8d840', borderRadius: 8, padding: '10px 12px', marginBottom: 16, fontSize: 12, color: '#8a6a10' }}>
           Acesse <a href={FRAGRANTICA_BASE} target="_blank" rel="noreferrer" style={{ color: '#8a6a10', fontWeight: 600 }}>fragrantica.com/notes</a> e copie o ID da URL.<br />
@@ -134,17 +134,17 @@ export default function AdminNotas() {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div>
-            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4 }}>NOME EM INGLES *</label>
+            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4, fontFamily: "'Inter', sans-serif" }}>NOME EM INGLES *</label>
             <input value={form.nota_en} onChange={e => setForm(f => ({ ...f, nota_en: e.target.value }))} placeholder="Ex: Bergamot"
               style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box', color: '#111', fontFamily: "'Inter', sans-serif" }} />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4 }}>NOME EM PORTUGUES</label>
+            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4, fontFamily: "'Inter', sans-serif" }}>NOME EM PORTUGUES</label>
             <input value={form.nota_ptb} onChange={e => setForm(f => ({ ...f, nota_ptb: e.target.value }))} placeholder="Ex: Bergamota"
               style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box', color: '#111', fontFamily: "'Inter', sans-serif" }} />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4 }}>ID FRAGRANTICA *</label>
+            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4, fontFamily: "'Inter', sans-serif" }}>ID FRAGRANTICA *</label>
             <input value={form.fragrantica_id} onChange={e => setForm(f => ({ ...f, fragrantica_id: e.target.value.replace(/\D/g, '') }))} placeholder="Ex: 75" type="number"
               style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box', color: '#111', fontFamily: "'Inter', sans-serif" }} />
           </div>
@@ -197,7 +197,7 @@ export default function AdminNotas() {
             }
           </div>
           <div style={{ flex: 1 }}>
-            <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111', marginBottom: 2 }}>{detalhe.nota_ptb || detalhe.nota_en}</h3>
+            <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111', fontFamily: "'Inter', sans-serif", marginBottom: 2 }}>{detalhe.nota_ptb || detalhe.nota_en}</h3>
             <p style={{ fontSize: 13, color: '#888' }}>{detalhe.nota_en}</p>
             <span style={{ display: 'inline-block', marginTop: 6, padding: '2px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600,
               background: detalhe.cloudinary_url ? '#e8f5e9' : '#fce4ec',
@@ -210,12 +210,12 @@ export default function AdminNotas() {
         {/* Campos editaveis */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 16 }}>
           <div>
-            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4 }}>NOME EM INGLES</label>
+            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4, fontFamily: "'Inter', sans-serif" }}>NOME EM INGLES</label>
             <input value={editForm.nota_en} onChange={e => setEditForm(f => ({ ...f, nota_en: e.target.value }))}
               style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box', color: '#111', fontFamily: "'Inter', sans-serif" }} />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4 }}>NOME EM PORTUGUES</label>
+            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4, fontFamily: "'Inter', sans-serif" }}>NOME EM PORTUGUES</label>
             <input value={editForm.nota_ptb} onChange={e => setEditForm(f => ({ ...f, nota_ptb: e.target.value }))}
               style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box', color: '#111', fontFamily: "'Inter', sans-serif" }} />
           </div>
@@ -223,7 +223,7 @@ export default function AdminNotas() {
 
         {/* Importar imagem */}
         <div style={{ background: '#f8f7f4', borderRadius: 10, padding: 14, marginBottom: 16 }}>
-          <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4 }}>ID FRAGRANTICA (para importar/atualizar imagem)</label>
+          <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4, fontFamily: "'Inter', sans-serif" }}>ID FRAGRANTICA (para importar/atualizar imagem)</label>
           <div style={{ display: 'flex', gap: 8 }}>
             <input value={editForm.fragrantica_id} onChange={e => setEditForm(f => ({ ...f, fragrantica_id: e.target.value.replace(/\D/g, '') }))}
               placeholder="Ex: 75" type="number"
