@@ -288,38 +288,8 @@ function parseFragranticaHTML(html, urlOriginal) {
     }
   });
 
-  // ── Acordes ──
+  // ── Acordes (extraídos via Puppeteer scraper — não disponíveis no HTML estático) ──
   const acordes = [];
-  // Buscar divs com style contendo width e background (barras de acorde)
-  doc.querySelectorAll('.accord-bar, .cell.accord-box').forEach(el => {
-    const t = el.textContent.trim();
-    if (t && t.length > 1 && t.length < 40 && !acordes.includes(t) && acordes.length < 5) acordes.push(t);
-  });
-  // Fallback: buscar por barras com style width + background no HTML
-  if (acordes.length === 0) {
-    // Padrão: <div style="width: XX%; background: ...">nome do acorde</div>
-    const accordRe = /style="[^"]*width:\s*\d+[^"]*background[^"]*"[^>]*>\s*([^<]{2,35})\s*</gi;
-    let m;
-    while ((m = accordRe.exec(html)) !== null) {
-      const t = m[1].trim();
-      if (t && !t.match(/^\d/) && !acordes.includes(t) && acordes.length < 5) acordes.push(t);
-    }
-  }
-  // Fallback 2: buscar no bloco "Principais Acordes" ou "Main Accords"
-  if (acordes.length === 0) {
-    const accordBlock = html.match(/(?:Principais\s*Acordes|Main\s*Accords)([\s\S]{0,2000}?)(?:<h|<script|Avalia[çc])/i);
-    if (accordBlock) {
-      const re = />([a-záàâãéèêíïóôõúüçñ\s]{3,30})</gi;
-      let m;
-      while ((m = re.exec(accordBlock[1])) !== null) {
-        const t = m[1].trim();
-        if (t && !acordes.includes(t) && acordes.length < 5 &&
-            !t.match(/^(div|span|img|class|style|Fragrantica|Light|Dark|sobre)/i)) {
-          acordes.push(t);
-        }
-      }
-    }
-  }
 
   return {
     encontrado: !!(nome || marca),
