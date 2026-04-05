@@ -501,36 +501,117 @@ router.get('/admin/fragrantica', autenticar, apenasAdmin, async (req, res) => {
 
   try {
     const axios = require('axios');
-    const slug_marca = marca.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-    const slug_nome  = nome.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const headers = { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' };
 
-    // Busca no Google via Fragrantica
+    // Busca no Fragrantica
     const searchUrl = `https://www.fragrantica.com/search/?query=${encodeURIComponent(marca + ' ' + nome)}`;
-    const { data: html } = await axios.get(searchUrl, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36' },
-      timeout: 10000,
-    });
+    const { data: html } = await axios.get(searchUrl, { headers, timeout: 15000 });
 
     // Extrai primeiro resultado
     const urlMatch = html.match(/href="(\/perfume\/[^"]+\.html)"/);
     if (!urlMatch) return res.json({ encontrado: false });
 
     const perfumeUrl = 'https://www.fragrantica.com' + urlMatch[1];
-    const { data: pHtml } = await axios.get(perfumeUrl, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36' },
-      timeout: 10000,
-    });
+    const { data: pHtml } = await axios.get(perfumeUrl, { headers, timeout: 15000 });
 
-    // Extrai dados básicos
+    // Dados básicos
     const nomeMatch   = pHtml.match(/<h1[^>]*itemprop="name"[^>]*>([^<]+)<\/h1>/);
-    const marcaMatch  = pHtml.match(/<span[^>]*itemprop="name"[^>]*>([^<]+)<\/span>/);
     const fotoMatch   = pHtml.match(/src="(https:\/\/fimgs\.net\/[^"]+mdimg\/perfume\/[^"]+\.jpg)"/);
-    const anoMatch    = pHtml.match(/class="[^"]*year[^"]*"[^>]*>(\d{4})</);
-    const ratingMatch = pHtml.match(/itemprop="ratingValue"[^>]*>([0-9.]+)</);
+    const anoMatch    = pHtml.match(/class="[^"]*year[^"]*"[^>]*>(\d{4})/);
+    const ratingMatch = pHtml.match(/itemprop="ratingValue"[^>]*>([0-9.]+)/);
+    const votosMatch  = pHtml.match(/itemprop="ratingCount"[^>]*>([0-9,]+)/);
 
-    // Extrai notas
-    const notasMatch = pHtml.match(/class="[^"]*note-box[^"]*"[\s\S]*?alt="([^"]+)"/g) || [];
-    const notas = notasMatch.map(m => { const r = m.match(/alt="([^"]+)"/); return r ? r[1] : null; }).filter(Boolean);
+    // Gênero
+    let genero = null;
+    if (pHtml.match(/for (women and men|unisex)/i)) genero = 'Unissex';
+    else if (pHtml.match(/for (women|her)/i)) genero = 'Feminino';
+    else if (pHtml.match(/for (men|him)/i)) genero = 'Masculino';
+
+    // País (da marca)
+    const paisMatch = pHtml.match(/country[^>]*>([^<]+)</i);
+
+    // Perfumistas
+    const perfumistas = [];
+    const perfumistaRegex = /perfumer[^>]*>[\s\S]*?<a[^>]*>([^<]+)<\/a>/gi;
+    let pm;
+    while ((pm = perfumistaRegex.exec(pHtml)) !== null && perfumistas.length < 2) {
+      const nome_p = pm[1].trim();
+      if (nome_p && !perfumistas.includes(nome_p)) perfumistas.push(nome_p);
+    }
+    // Fallback: buscar na seção de perfumistas
+    if (perfumistas.length === 0) {
+      const perfSecao = pHtml.match(/Perfumer[^<]*<\/b>[\s\S]*?<a[^>]*>([^<]+)<\/a>/gi) || [];
+      for (const m of perfSecao) {
+        const r = m.match(/<a[^>]*>([^<]+)<\/a>/);
+        if (r && perfumistas.length < 2) {
+          const nome_p = r[1].trim();
+          if (!perfumistas.includes(nome_p)) perfumistas.push(nome_p);
+        }
+      }
+    }
+
+    // Acordes principais
+    const acordes = [];
+    const acordeRegex = /class="[^"]*accord-bar[^"]*"[^>]*>([^<]+)/gi;
+    let am;
+    while ((am = acordeRegex.exec(pHtml)) !== null && acordes.length < 5) {
+      acordes.push(am[1].trim());
+    }
+    // Fallback
+    if (acordes.length === 0) {
+      const acordeAlt = pHtml.match(/vote-button-name[^>]*>([^<]+)/gi) || [];
+      for (const m of acordeAlt) {
+        const r = m.match(/>([^<]+)/);
+        if (r && acordes.length < 5) acordes.push(r[1].trim());
+      }
+    }
+
+    // Notas olfativas por camada
+    let notas_topo = [], notas_coracao = [], notas_base = [];
+
+    // Tentar extrair notas por seção (Top, Heart/Middle, Base)
+    const topMatch = pHtml.match(/Top Notes?[\s\S]*?<\/div>/i);
+    const midMatch = pHtml.match(/(Heart|Middle) Notes?[\s\S]*?<\/div>/i);
+    const baseMatch = pHtml.match(/Base Notes?[\s\S]*?<\/div>/i);
+
+    const extrairNotas = (secao) => {
+      if (!secao) return [];
+      const nomes = [];
+      const re = /alt="([^"]+)"/g;
+      let n;
+      while ((n = re.exec(secao[0])) !== null) {
+        if (n[1] && n[1] !== 'perfume' && n[1].length > 1) nomes.push(n[1].trim());
+      }
+      return nomes;
+    };
+
+    notas_topo = extrairNotas(topMatch);
+    notas_coracao = extrairNotas(midMatch);
+    notas_base = extrairNotas(baseMatch);
+
+    // Fallback: todas as notas genéricas
+    if (!notas_topo.length && !notas_coracao.length && !notas_base.length) {
+      const notasMatch = pHtml.match(/class="[^"]*note-box[^"]*"[\s\S]*?alt="([^"]+)"/g) || [];
+      const todasNotas = notasMatch.map(m => { const r = m.match(/alt="([^"]+)"/); return r ? r[1] : null; }).filter(Boolean);
+      // Dividir em 3 partes
+      const t = Math.ceil(todasNotas.length / 3);
+      notas_topo = todasNotas.slice(0, t);
+      notas_coracao = todasNotas.slice(t, t * 2);
+      notas_base = todasNotas.slice(t * 2);
+    }
+
+    // Descrição
+    const descMatch = pHtml.match(/itemprop="description"[^>]*>([\s\S]*?)<\/div>/i);
+    let descricao = '';
+    if (descMatch) {
+      descricao = descMatch[1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+      if (descricao.length > 1000) descricao = descricao.slice(0, 1000);
+    }
+
+    // Família olfativa
+    const familiaMatch = pHtml.match(/Fragrance Family[^<]*<\/b>[\s\S]*?<a[^>]*>([^<]+)<\/a>/i)
+                       || pHtml.match(/olfactive[^>]*group[^>]*>([^<]+)/i)
+                       || pHtml.match(/class="[^"]*group-name[^"]*"[^>]*>([^<]+)/i);
 
     res.json({
       encontrado: true,
@@ -539,7 +620,22 @@ router.get('/admin/fragrantica', autenticar, apenasAdmin, async (req, res) => {
       marca: marca,
       foto_url: fotoMatch?.[1] || null,
       ano: anoMatch?.[1] ? Number(anoMatch[1]) : null,
+      genero,
+      pais: paisMatch?.[1]?.trim() || null,
+      familia_olfativa: familiaMatch?.[1]?.trim() || null,
       rating_valor: ratingMatch?.[1] ? Number(ratingMatch[1]) : null,
+      rating_count: votosMatch?.[1] ? Number(votosMatch[1].replace(/,/g, '')) : null,
+      perfumista1: perfumistas[0] || null,
+      perfumista2: perfumistas[1] || null,
+      acorde1: acordes[0] || null,
+      acorde2: acordes[1] || null,
+      acorde3: acordes[2] || null,
+      acorde4: acordes[3] || null,
+      acorde5: acordes[4] || null,
+      notas_topo: notas_topo.join(', ') || null,
+      notas_coracao: notas_coracao.join(', ') || null,
+      notas_base: notas_base.join(', ') || null,
+      descricao: descricao || null,
     });
   } catch(e) {
     res.json({ encontrado: false, erro: e.message });

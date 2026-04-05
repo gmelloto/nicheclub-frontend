@@ -111,6 +111,7 @@ function StepFragrantica({ onPreview, onVoltar, token }) {
           acorde4: d.acorde4 || '', acorde5: d.acorde5 || '',
           notas_topo: d.notas_topo || '', notas_coracao: d.notas_coracao || '', notas_base: d.notas_base || '',
           perfumista1: d.perfumista1 || '', perfumista2: d.perfumista2 || '',
+          familia_olfativa: d.familia_olfativa || '', descricao: d.descricao || '',
         },
         slug: d.slug || null,
         atualizado: d.atualizado || false,
@@ -194,10 +195,16 @@ function StepPreview({ resultado, onConfirmar, onVoltar, onEditar }) {
           <div>
             <p style={{ fontSize: 11, color: S.text3, textTransform: 'uppercase', letterSpacing: '0.15em' }}>{d?.marca}</p>
             <p style={{ fontSize: 20, fontWeight: 700, color: S.text, marginBottom: 4 }}>{d?.nome}</p>
-            <p style={{ fontSize: 12, color: S.text2, marginBottom: 8 }}>
-              {d?.genero} {d?.ano ? `· ${d.ano}` : ''}
-              {d?.rating_valor ? ` · ⭐ ${d.rating_valor} (${d?.rating_count?.toLocaleString()} votos)` : ''}
+            <p style={{ fontSize: 12, color: S.text2, marginBottom: 4 }}>
+              {d?.genero} {d?.ano ? `· ${d.ano}` : ''} {d?.pais ? `· ${d.pais}` : ''}
+              {d?.rating_valor ? ` · ⭐ ${d.rating_valor}${d?.rating_count ? ` (${d.rating_count.toLocaleString()} votos)` : ''}` : ''}
             </p>
+            {d?.familia_olfativa && <p style={{ fontSize: 11, color: S.text3, marginBottom: 4 }}>Família: {d.familia_olfativa}</p>}
+            {(d?.perfumista1 || d?.perfumista2) && (
+              <p style={{ fontSize: 11, color: S.text3, fontStyle: 'italic', marginBottom: 8 }}>
+                {[d.perfumista1, d.perfumista2].filter(Boolean).join(', ')}
+              </p>
+            )}
 
             {/* Acordes */}
             {d?.acorde1 && (
@@ -212,6 +219,9 @@ function StepPreview({ resultado, onConfirmar, onVoltar, onEditar }) {
             {d?.notas_topo && <p style={{ fontSize: 11, color: S.text3 }}><b>Topo:</b> {d.notas_topo}</p>}
             {d?.notas_coracao && <p style={{ fontSize: 11, color: S.text3 }}><b>Coração:</b> {d.notas_coracao}</p>}
             {d?.notas_base && <p style={{ fontSize: 11, color: S.text3 }}><b>Base:</b> {d.notas_base}</p>}
+
+            {/* Descrição */}
+            {d?.descricao && <p style={{ fontSize: 11, color: S.text3, marginTop: 8 }}>{d.descricao.slice(0, 200)}{d.descricao.length > 200 ? '...' : ''}</p>}
           </div>
         </div>
 
@@ -455,6 +465,16 @@ export default function AdminProdutos() {
       foto_url: d.foto_url || '',
       url_fragrantica: resultado.slug ? `https://nicheclub-frontend.vercel.app/perfume/${resultado.slug}` : '',
       rating_valor: d.rating_valor || '',
+      rating_count: d.rating_count || '',
+      familia_olfativa: d.familia_olfativa || '',
+      perfumista1: d.perfumista1 || '',
+      perfumista2: d.perfumista2 || '',
+      acorde1: d.acorde1 || '', acorde2: d.acorde2 || '', acorde3: d.acorde3 || '',
+      acorde4: d.acorde4 || '', acorde5: d.acorde5 || '',
+      notas_topo: d.notas_topo || '',
+      notas_coracao: d.notas_coracao || '',
+      notas_base: d.notas_base || '',
+      descricao: d.descricao || '',
       ml_inicial: ml_inicial ? Number(ml_inicial) : null,
     };
     if (precosFormatados.length > 0) payload.precos = precosFormatados;
