@@ -27,8 +27,9 @@ export default function AdminNotas() {
 
   // Detalhe / editar
   const [detalhe, setDetalhe] = useState(null);
-  const [editPtb, setEditPtb] = useState('');
+  const [editForm, setEditForm] = useState({ nota_en: '', nota_ptb: '', fragrantica_id: '' });
   const [salvando, setSalvando] = useState(false);
+  const [importandoImg, setImportandoImg] = useState(false);
   const [maisAberto, setMaisAberto] = useState(false);
 
   const sentinelRef = useRef(null);
@@ -85,11 +86,28 @@ export default function AdminNotas() {
     if (!detalhe) return;
     setSalvando(true);
     try {
-      await api.adminNotasAtualizar(detalhe.id, { nota_ptb: editPtb });
-      setNotas(n => n.map(x => x.id === detalhe.id ? { ...x, nota_ptb: editPtb } : x));
+      const body = { nota_en: editForm.nota_en, nota_ptb: editForm.nota_ptb };
+      const res = await api.adminNotasAtualizar(detalhe.id, body);
+      setNotas(n => n.map(x => x.id === detalhe.id ? { ...x, nota_en: editForm.nota_en, nota_ptb: editForm.nota_ptb } : x));
       setDetalhe(null);
     } catch(e) { alert(e.message); }
     finally { setSalvando(false); }
+  };
+
+  const importarImagem = async () => {
+    if (!detalhe || !editForm.fragrantica_id) return alert('Preencha o ID do Fragrantica.');
+    setImportandoImg(true);
+    try {
+      const res = await api.adminNotasAtualizar(detalhe.id, {
+        nota_en: editForm.nota_en,
+        nota_ptb: editForm.nota_ptb,
+        fragrantica_id: editForm.fragrantica_id,
+      });
+      setNotas(n => n.map(x => x.id === detalhe.id ? { ...x, nota_en: editForm.nota_en, nota_ptb: editForm.nota_ptb, cloudinary_url: res.cloudinary_url || x.cloudinary_url } : x));
+      setDetalhe(null);
+      carregar(1, busca);
+    } catch(e) { alert(e.message); }
+    finally { setImportandoImg(false); }
   };
 
   const deletar = async () => {
@@ -160,12 +178,15 @@ export default function AdminNotas() {
   , document.body);
 
   // ── Modal Detalhe ──
+  const editPreviewUrl = editForm.fragrantica_id ? `https://fimgs.net/mdimg/sastojci/t.${editForm.fragrantica_id}.jpg` : '';
+
   const ModalDetalhe = () => detalhe && createPortal(
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9998, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
       onClick={e => e.target === e.currentTarget && setDetalhe(null)}>
-      <div style={{ background: '#fff', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
+      <div style={{ background: '#fff', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '90vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
         <div style={{ width: 40, height: 4, background: '#ddd', borderRadius: 2, margin: '0 auto 16px' }} />
 
+        {/* Foto + status */}
         <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
           <div style={{ width: 80, height: 80, flexShrink: 0, borderRadius: 12, overflow: 'hidden', background: '#f8f7f4', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #e8e4dc' }}>
             {detalhe.cloudinary_url
@@ -174,8 +195,8 @@ export default function AdminNotas() {
             }
           </div>
           <div style={{ flex: 1 }}>
-            <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111', marginBottom: 2 }}>{detalhe.nota_en}</h3>
-            <p style={{ fontSize: 14, color: '#888' }}>{detalhe.nota_ptb || '—'}</p>
+            <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111', marginBottom: 2 }}>{detalhe.nota_ptb || detalhe.nota_en}</h3>
+            <p style={{ fontSize: 13, color: '#888' }}>{detalhe.nota_en}</p>
             <span style={{ display: 'inline-block', marginTop: 6, padding: '2px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600,
               background: detalhe.cloudinary_url ? '#e8f5e9' : '#fce4ec',
               color: detalhe.cloudinary_url ? '#2e7d32' : '#c62828' }}>
@@ -184,11 +205,40 @@ export default function AdminNotas() {
           </div>
         </div>
 
-        {/* Editar traducao */}
-        <div style={{ marginBottom: 16 }}>
-          <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4 }}>NOME EM PORTUGUES</label>
-          <input value={editPtb} onChange={e => setEditPtb(e.target.value)} placeholder="Traducao em portugues"
-            style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box' }} />
+        {/* Campos editaveis */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 16 }}>
+          <div>
+            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4 }}>NOME EM INGLES</label>
+            <input value={editForm.nota_en} onChange={e => setEditForm(f => ({ ...f, nota_en: e.target.value }))}
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box' }} />
+          </div>
+          <div>
+            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4 }}>NOME EM PORTUGUES</label>
+            <input value={editForm.nota_ptb} onChange={e => setEditForm(f => ({ ...f, nota_ptb: e.target.value }))}
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box' }} />
+          </div>
+        </div>
+
+        {/* Importar imagem */}
+        <div style={{ background: '#f8f7f4', borderRadius: 10, padding: 14, marginBottom: 16 }}>
+          <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4 }}>ID FRAGRANTICA (para importar/atualizar imagem)</label>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <input value={editForm.fragrantica_id} onChange={e => setEditForm(f => ({ ...f, fragrantica_id: e.target.value.replace(/\D/g, '') }))}
+              placeholder="Ex: 75" type="number"
+              style={{ flex: 1, padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box' }} />
+            <button onClick={importarImagem} disabled={importandoImg || !editForm.fragrantica_id}
+              style={{ padding: '10px 16px', background: editForm.fragrantica_id ? '#111' : '#ddd', border: 'none', borderRadius: 8, cursor: editForm.fragrantica_id ? 'pointer' : 'not-allowed',
+                fontSize: 12, fontWeight: 700, color: '#fff', whiteSpace: 'nowrap', opacity: importandoImg ? 0.7 : 1 }}>
+              {importandoImg ? 'Salvando...' : 'Salvar Imagem'}
+            </button>
+          </div>
+          {editPreviewUrl && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 10 }}>
+              <img src={editPreviewUrl} alt="preview" style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: 8, border: '1px solid #e8e4dc' }}
+                onError={e => { e.target.style.display='none'; }} />
+              <span style={{ fontSize: 11, color: '#999' }}>Preview ID {editForm.fragrantica_id}</span>
+            </div>
+          )}
         </div>
 
         {detalhe.link_fragrantica && (
@@ -258,7 +308,7 @@ export default function AdminNotas() {
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {notas.map(nota => (
-                <div key={nota.id} onClick={() => { setDetalhe(nota); setEditPtb(nota.nota_ptb || nota.nota_en); }}
+                <div key={nota.id} onClick={() => { setDetalhe(nota); setEditForm({ nota_en: nota.nota_en || '', nota_ptb: nota.nota_ptb || '', fragrantica_id: '' }); }}
                   style={{ display: 'flex', gap: 12, padding: 12, background: '#fff', borderRadius: 12, border: '1px solid #eee',
                     cursor: 'pointer', transition: 'all .15s', boxShadow: '0 1px 4px rgba(0,0,0,0.04)', alignItems: 'center' }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = '#c9a84c'; }}
