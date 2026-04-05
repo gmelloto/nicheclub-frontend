@@ -235,9 +235,9 @@ export default function AdminNotas() {
         </div>
 
         {/* Busca */}
-        <div style={{ position: 'relative', marginBottom: 16 }}>
-          <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#bbb', fontSize: 15 }}>🔍</span>
-          <input value={buscaInput} onChange={e => setBuscaInput(e.target.value)} placeholder="Buscar nota..."
+        <div style={{ position: 'relative', marginBottom: 12 }}>
+          <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#bbb', fontSize: 15 }}>&#128269;</span>
+          <input value={buscaInput} onChange={e => setBuscaInput(e.target.value)} placeholder="Buscar..."
             style={{ width: '100%', padding: '12px 16px 12px 42px', border: '1.5px solid #e0e0e0', borderRadius: 10, fontSize: 14, outline: 'none', background: '#fff', boxSizing: 'border-box' }} />
         </div>
       </div>
