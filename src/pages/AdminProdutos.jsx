@@ -222,14 +222,13 @@ function parseFragranticaHTML(html, urlOriginal) {
     return notas;
   };
 
-  // Primeiro tentar da descrição
-  let notasDesc = parseNotasFromDesc(descricao);
-  // Se coração ou base faltam, tentar do body text completo (meta desc pode estar truncada)
-  if (!notasDesc.coracao || !notasDesc.base) {
-    const notasBody = parseNotasFromDesc(bodyText);
-    if (!notasDesc.topo && notasBody.topo) notasDesc.topo = notasBody.topo;
-    if (!notasDesc.coracao && notasBody.coracao) notasDesc.coracao = notasBody.coracao;
-    if (!notasDesc.base && notasBody.base) notasDesc.base = notasBody.base;
+  // Usar body text primeiro (completo), meta description como fallback (pode estar truncada)
+  let notasDesc = parseNotasFromDesc(bodyText);
+  if (!notasDesc.topo || !notasDesc.coracao || !notasDesc.base) {
+    const notasMeta = parseNotasFromDesc(descricao);
+    if (!notasDesc.topo && notasMeta.topo) notasDesc.topo = notasMeta.topo;
+    if (!notasDesc.coracao && notasMeta.coracao) notasDesc.coracao = notasMeta.coracao;
+    if (!notasDesc.base && notasMeta.base) notasDesc.base = notasMeta.base;
   }
 
   // ── Perfumistas ──
