@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/index.jsx';
 import { api } from '../services/api';
+import SwipeDelete from '../components/SwipeDelete.jsx';
 
 const FRAGRANTICA_BASE = 'https://www.fragrantica.com/notes/';
 
@@ -379,31 +380,35 @@ export default function AdminNotas() {
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {notas.map(nota => (
-                <div key={nota.id} onClick={() => { setDetalhe(nota); setEditForm({ nota_en: nota.nota_en || '', nota_ptb: nota.nota_ptb || '', fragrantica_id: '' }); }}
-                  style={{ display: 'flex', gap: 14, padding: 14, background: '#fff', borderRadius: 12, border: '1px solid #eee',
-                    cursor: 'pointer', transition: 'all .15s', boxShadow: '0 1px 4px rgba(0,0,0,0.04)', alignItems: 'center' }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#c9a84c'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(201,168,76,0.15)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = '#eee'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.04)'; }}>
+                <SwipeDelete key={nota.id} onDelete={async () => {
+                  await api.adminNotasDeletar(nota.id);
+                  setNotas(n => n.filter(x => x.id !== nota.id));
+                  setTotal(t => t - 1);
+                }}>
+                  <div onClick={() => { setDetalhe(nota); setEditForm({ nota_en: nota.nota_en || '', nota_ptb: nota.nota_ptb || '', fragrantica_id: '' }); }}
+                    style={{ display: 'flex', gap: 14, padding: 14, background: '#fff', borderRadius: 12, border: '1px solid #eee',
+                      cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.04)', alignItems: 'center' }}>
 
-                  {/* Foto */}
-                  <div style={{ width: 56, height: 56, flexShrink: 0, borderRadius: 10, overflow: 'hidden', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #eee' }}>
-                    {nota.cloudinary_url
-                      ? <img src={nota.cloudinary_url} alt={nota.nota_en} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      : <span style={{ fontSize: 22 }}>🌿</span>
-                    }
+                    {/* Foto */}
+                    <div style={{ width: 56, height: 56, flexShrink: 0, borderRadius: 10, overflow: 'hidden', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #eee' }}>
+                      {nota.cloudinary_url
+                        ? <img src={nota.cloudinary_url} alt={nota.nota_en} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        : <span style={{ fontSize: 22 }}>🌿</span>
+                      }
+                    </div>
+
+                    {/* Info */}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{ fontSize: 15, fontWeight: 700, color: '#111', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nota.nota_ptb || nota.nota_en}</p>
+                      <p style={{ fontSize: 12, color: '#888' }}>{nota.nota_en}</p>
+                    </div>
+
+                    {/* Status */}
+                    <div style={{ flexShrink: 0, width: 8, height: 8, borderRadius: '50%', background: nota.cloudinary_url ? '#2e7d32' : '#ccc' }} />
+
+                    <div style={{ flexShrink: 0, color: '#ccc', fontSize: 18 }}>›</div>
                   </div>
-
-                  {/* Info */}
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontSize: 15, fontWeight: 700, color: '#111', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nota.nota_ptb || nota.nota_en}</p>
-                    <p style={{ fontSize: 12, color: '#888' }}>{nota.nota_en}</p>
-                  </div>
-
-                  {/* Status */}
-                  <div style={{ flexShrink: 0, width: 8, height: 8, borderRadius: '50%', background: nota.cloudinary_url ? '#2e7d32' : '#ccc' }} />
-
-                  <div style={{ flexShrink: 0, color: '#ccc', fontSize: 18 }}>›</div>
-                </div>
+                </SwipeDelete>
               ))}
             </div>
           )}
