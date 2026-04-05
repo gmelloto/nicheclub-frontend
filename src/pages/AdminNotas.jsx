@@ -286,7 +286,16 @@ export default function AdminNotas() {
               if (fixando) return;
               setFixando(true); setFixResult(null);
               try {
-                const res = await api.adminNotasFixImages();
+                const BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+                const resp = await fetch(`${BASE}/api/admin/notas/fix-images`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                  body: '{}',
+                });
+                const text = await resp.text();
+                let res;
+                try { res = JSON.parse(text); } catch { throw new Error('Backend retornou resposta inválida. Verifique se o deploy foi concluído.'); }
+                if (!resp.ok) throw new Error(res.erro || 'Erro no servidor');
                 setFixResult(res);
                 if (res.corrigidas > 0) carregar(1, busca);
               } catch(e) { setFixResult({ erro: e.message }); }
