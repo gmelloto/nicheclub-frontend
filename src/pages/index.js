@@ -159,22 +159,23 @@ router.get('/perfumes/:id', async (req, res) => {
 
     const perfume = rows[0];
 
-    // Coleta todas as notas unicas (em ingles)
+    // Coleta todas as notas unicas (pode estar em PT ou EN)
     const notas = [
       ...(perfume.notas_topo    || '').split(','),
       ...(perfume.notas_coracao || '').split(','),
       ...(perfume.notas_base    || '').split(','),
     ].map(n => n.trim().toLowerCase()).filter(Boolean);
 
-    // Busca imagens por nota_en — uma query só
+    // Busca imagens por nota_en OU nota_pt — suporta ambos os idiomas
     let notas_imagens = {};
     if (notas.length > 0) {
       const { rows: notasRows } = await db.query(
-        `SELECT nota_en, cloudinary_url FROM notas_olfativas WHERE LOWER(nota_en) = ANY($1::text[])`,
+        `SELECT nota_en, nota_pt, cloudinary_url FROM notas_olfativas WHERE LOWER(nota_en) = ANY($1::text[]) OR LOWER(nota_pt) = ANY($1::text[])`,
         [notas]
       );
       for (const n of notasRows) {
-        notas_imagens[n.nota_en.toLowerCase()] = n.cloudinary_url;
+        if (n.nota_en) notas_imagens[n.nota_en.toLowerCase()] = n.cloudinary_url;
+        if (n.nota_pt) notas_imagens[n.nota_pt.toLowerCase()] = n.cloudinary_url;
       }
     }
 
