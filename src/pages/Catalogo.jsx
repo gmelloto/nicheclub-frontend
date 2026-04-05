@@ -245,7 +245,7 @@ export default function Catalogo() {
           <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, marginBottom: '3.5rem' }}>Como Funciona</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: '2rem', position: 'relative' }}>
             {[
-              { n: '01', t: 'Escolha', d: 'Navegue pelo catálogo e selecione o perfume desejado.', img: 'https://res.cloudinary.com/dafksmivt/image/upload/v1775353324/Luxury_perfume_bottles_display_ilcin0.png' },
+              { n: '01', t: 'Escolha', d: 'Navegue pelo catálogo e selecione o perfume desejado.', img: 'https://res.cloudinary.com/dafksmivt/image/upload/v1775365434/Luxury_perfume_collection_in_gold_pplajb.png' },
               { n: '02', t: 'Reserve', d: 'Escolha o tamanho do decant e faça sua reserva.', emoji: '🧴' },
               { n: '03', t: 'Receba', d: 'Finalize o pedido e receba seu decant em casa.', emoji: '🎁' },
             ].map((s, i) => (
