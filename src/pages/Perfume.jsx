@@ -146,7 +146,7 @@ export default function Perfume() {
       {/* Header */}
       <div style={{ maxWidth:1280, margin:'0 auto', padding:'0 2rem 1rem', borderBottom:'1px solid #e8e4dc' }}>
         <p style={{ fontSize:11, letterSpacing:'0.22em', textTransform:'uppercase', color:'#8a6a10', marginBottom:4, fontWeight:600 }}>{perfume.marca}</p>
-        <h1 style={{ fontSize:'clamp(1.6rem,3vw,2.8rem)', fontWeight:700, lineHeight:1.1, marginBottom:8, letterSpacing:'-0.02em' }}>{perfume.nome}</h1>
+        <h1 style={{ fontSize:'clamp(1.6rem,3vw,2.8rem)', fontWeight:700, lineHeight:1.1, marginBottom:8, letterSpacing:'-0.02em', color:'#111' }}>{perfume.nome}</h1>
         <div style={{ display:'flex', gap:8, alignItems:'center', flexWrap:'wrap', fontSize:12, color:'#5a5550' }}>
           {perfume.genero    && <span>{perfume.genero}</span>}
           {perfume.ano       && <><span style={{color:'#e8e4dc'}}>|</span><span>{perfume.ano}</span></>}
