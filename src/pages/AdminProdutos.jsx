@@ -301,7 +301,7 @@ function StepManual({ onVoltar, onSalvo }) {
     try {
       await api.adminCadastrarPerfume({
         ...form,
-        precos: precos.filter(p => p.preco).map(p => ({ tamanho: p.key, preco: Number(p.preco), ml_quantidade: p.ml })),
+        precos: precos.filter(p => p.preco).map(p => ({ tamanho: p.key, preco: Number(p.preco), ml: p.ml })),
         ml_inicial: form.ml_inicial ? Number(form.ml_inicial) : null,
       });
       onSalvo();
@@ -445,7 +445,8 @@ export default function AdminProdutos() {
 
   const confirmarECadastrar = async (resultado, precos, ml_inicial) => {
     const d = resultado.dados;
-    await api.adminCadastrarPerfume({
+    const precosFormatados = (precos || []).filter(p => p.preco).map(p => ({ tamanho: p.key, preco: Number(p.preco), ml: p.ml }));
+    const payload = {
       nome: d.nome,
       marca: d.marca,
       ano: d.ano,
@@ -455,8 +456,9 @@ export default function AdminProdutos() {
       url_fragrantica: resultado.slug ? `https://nicheclub-frontend.vercel.app/perfume/${resultado.slug}` : '',
       rating_valor: d.rating_valor || '',
       ml_inicial: ml_inicial ? Number(ml_inicial) : null,
-      precos: precos.filter(p => p.preco).map(p => ({ tamanho: p.key, preco: Number(p.preco), ml_quantidade: p.ml })),
-    });
+    };
+    if (precosFormatados.length > 0) payload.precos = precosFormatados;
+    await api.adminCadastrarPerfume(payload);
     setMensagemSucesso(resultado.atualizado ? 'Perfume atualizado com sucesso!' : 'Perfume cadastrado com sucesso!');
     setStep('sucesso');
   };
