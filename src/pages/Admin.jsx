@@ -301,9 +301,10 @@ function PainelEstoque({ token }) {
       </div>
 
       {/* Cards */}
+      <div style={{ background: '#f5f5f3', borderRadius: 14, padding: 12, margin: '0 -4px' }}>
       {loading ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {[1,2,3,4].map(i => <div key={i} style={{ height: 90, background: '#f0f0f0', borderRadius: 12 }} />)}
+          {[1,2,3,4].map(i => <div key={i} style={{ height: 90, background: '#eee', borderRadius: 12 }} />)}
         </div>
       ) : filtrados.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '3rem 0', color: '#999' }}>
@@ -363,6 +364,7 @@ function PainelEstoque({ token }) {
           })}
         </div>
       )}
+      </div>
     </div>
   );
 }
@@ -755,9 +757,10 @@ function PainelPerfumes({ token }) {
       </div>
 
       {/* Cards */}
+      <div style={{ background: '#f5f5f3', borderRadius: 14, padding: 12, margin: '0 -4px' }}>
       {loading ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {[1,2,3,4].map(i => <div key={i} style={{ height: 100, background: '#f0f0f0', borderRadius: 12 }} />)}
+          {[1,2,3,4].map(i => <div key={i} style={{ height: 100, background: '#eee', borderRadius: 12 }} />)}
         </div>
       ) : filtrados.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '3rem 0', color: '#999' }}>
@@ -819,6 +822,7 @@ function PainelPerfumes({ token }) {
           })}
         </div>
       )}
+      </div>
 
       {/* Paginacao */}
       {totalPaginas > 1 && (
