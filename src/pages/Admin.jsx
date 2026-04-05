@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import SwipeDelete from '../components/SwipeDelete.jsx';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context';
 import { api } from '../services/api';
@@ -584,47 +585,47 @@ function PainelEstoque({ token }) {
             const pct = total > 0 ? Math.round((disp / total) * 100) : 0;
             const st = getStatus(f);
             return (
-              <div key={f.id} onClick={() => setDetalhe(f)}
-                style={{ display: 'flex', gap: 14, padding: 14, background: '#fff', borderRadius: 12, border: '1px solid #eee',
-                  cursor: 'pointer', transition: 'all .15s', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = '#c9a84c'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(201,168,76,0.15)'; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = '#eee'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.04)'; }}>
+              <SwipeDelete key={f.id} onDelete={() => confirmarExcluir(f)}>
+                <div onClick={() => setDetalhe(f)}
+                  style={{ display: 'flex', gap: 14, padding: 14, background: '#fff', borderRadius: 12, border: '1px solid #eee',
+                    cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
 
-                {/* Foto */}
-                <div style={{ width: 60, height: 75, flexShrink: 0, borderRadius: 8, overflow: 'hidden', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  {f.foto_url
-                    ? <img src={f.foto_url} alt={f.perfume} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                    : <span style={{ fontSize: 24, color: '#ccc' }}>🧴</span>
-                  }
-                </div>
-
-                {/* Info */}
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
-                    <div style={{ minWidth: 0 }}>
-                      <p style={{ fontSize: 15, fontWeight: 700, color: '#111', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.perfume}</p>
-                      <p style={{ fontSize: 12, color: '#888' }}>{f.marca}</p>
-                    </div>
-                    <span style={{ flexShrink: 0, padding: '2px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: st.bg, color: st.color }}>
-                      {st.label}
-                    </span>
+                  {/* Foto */}
+                  <div style={{ width: 60, height: 75, flexShrink: 0, borderRadius: 8, overflow: 'hidden', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {f.foto_url
+                      ? <img src={f.foto_url} alt={f.perfume} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                      : <span style={{ fontSize: 24, color: '#ccc' }}>🧴</span>
+                    }
                   </div>
 
-                  {/* Barra de progresso */}
-                  <div style={{ marginTop: 10 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#888', marginBottom: 4 }}>
-                      <span>{disp}ml disponivel</span>
-                      <span>{total}ml total</span>
+                  {/* Info */}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
+                      <div style={{ minWidth: 0 }}>
+                        <p style={{ fontSize: 15, fontWeight: 700, color: '#111', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.perfume}</p>
+                        <p style={{ fontSize: 12, color: '#888' }}>{f.marca}</p>
+                      </div>
+                      <span style={{ flexShrink: 0, padding: '2px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: st.bg, color: st.color }}>
+                        {st.label}
+                      </span>
                     </div>
-                    <div style={{ height: 4, background: '#e8e4dc', borderRadius: 2 }}>
-                      <div style={{ height: '100%', background: st.key === 'esgotado' ? '#c62828' : 'linear-gradient(90deg,#c9a84c,#e8c870)', borderRadius: 2, width: `${pct}%`, transition: 'width .3s' }} />
+
+                    {/* Barra de progresso */}
+                    <div style={{ marginTop: 10 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#888', marginBottom: 4 }}>
+                        <span>{disp}ml disponivel</span>
+                        <span>{total}ml total</span>
+                      </div>
+                      <div style={{ height: 4, background: '#e8e4dc', borderRadius: 2 }}>
+                        <div style={{ height: '100%', background: st.key === 'esgotado' ? '#c62828' : 'linear-gradient(90deg,#c9a84c,#e8c870)', borderRadius: 2, width: `${pct}%`, transition: 'width .3s' }} />
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Seta */}
-                <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0, color: '#ccc', fontSize: 18 }}>›</div>
-              </div>
+                  {/* Seta */}
+                  <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0, color: '#ccc', fontSize: 18 }}>›</div>
+                </div>
+              </SwipeDelete>
             );
           })}
         </div>
@@ -1054,52 +1055,52 @@ function PainelPerfumes({ token }) {
           {filtrados.map(p => {
             const acordes = [p.acorde1, p.acorde2, p.acorde3].filter(Boolean);
             return (
-              <div key={p.id} onClick={() => setDetalhe(p)}
-                style={{ display: 'flex', gap: 14, padding: 14, background: '#fff', borderRadius: 12, border: '1px solid #eee',
-                  cursor: 'pointer', transition: 'all .15s', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = '#c9a84c'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(201,168,76,0.15)'; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = '#eee'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.04)'; }}>
+              <SwipeDelete key={p.id} onDelete={() => excluir(p)}>
+                <div onClick={() => setDetalhe(p)}
+                  style={{ display: 'flex', gap: 14, padding: 14, background: '#fff', borderRadius: 12, border: '1px solid #eee',
+                    cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
 
-                {/* Foto */}
-                <div style={{ width: 70, height: 85, flexShrink: 0, borderRadius: 8, overflow: 'hidden', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  {p.foto_url
-                    ? <img src={p.foto_url} alt={p.nome} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                    : <span style={{ fontSize: 28, color: '#ccc' }}>🧴</span>
-                  }
-                </div>
-
-                {/* Info */}
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
-                    <div style={{ minWidth: 0 }}>
-                      <p style={{ fontSize: 15, fontWeight: 700, color: '#111', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.nome}</p>
-                      <p style={{ fontSize: 12, color: '#888' }}>{p.marca}</p>
-                    </div>
-                    <span style={{ flexShrink: 0, padding: '2px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600,
-                      background: p.ativo !== false ? '#e8f5e9' : '#fce4ec',
-                      color: p.ativo !== false ? '#2e7d32' : '#c62828' }}>
-                      {p.ativo !== false ? 'Ativo' : 'Inativo'}
-                    </span>
+                  {/* Foto */}
+                  <div style={{ width: 70, height: 85, flexShrink: 0, borderRadius: 8, overflow: 'hidden', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {p.foto_url
+                      ? <img src={p.foto_url} alt={p.nome} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                      : <span style={{ fontSize: 28, color: '#ccc' }}>🧴</span>
+                    }
                   </div>
 
-                  <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 6, fontSize: 12, color: '#999' }}>
-                    {p.genero && <span>{p.genero}</span>}
-                    {p.ano && <span>· {p.ano}</span>}
-                    {p.rating_valor && <span>· <span style={{ color: '#c9a84c' }}>★</span> {Number(p.rating_valor).toFixed(1)}</span>}
+                  {/* Info */}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
+                      <div style={{ minWidth: 0 }}>
+                        <p style={{ fontSize: 15, fontWeight: 700, color: '#111', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.nome}</p>
+                        <p style={{ fontSize: 12, color: '#888' }}>{p.marca}</p>
+                      </div>
+                      <span style={{ flexShrink: 0, padding: '2px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600,
+                        background: p.ativo !== false ? '#e8f5e9' : '#fce4ec',
+                        color: p.ativo !== false ? '#2e7d32' : '#c62828' }}>
+                        {p.ativo !== false ? 'Ativo' : 'Inativo'}
+                      </span>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 6, fontSize: 12, color: '#999' }}>
+                      {p.genero && <span>{p.genero}</span>}
+                      {p.ano && <span>· {p.ano}</span>}
+                      {p.rating_valor && <span>· <span style={{ color: '#c9a84c' }}>★</span> {Number(p.rating_valor).toFixed(1)}</span>}
+                    </div>
+
+                    {acordes.length > 0 && (
+                      <div style={{ display: 'flex', gap: 4, marginTop: 6, flexWrap: 'wrap' }}>
+                        {acordes.map(a => (
+                          <span key={a} style={{ padding: '2px 8px', background: '#f5f3ef', borderRadius: 12, fontSize: 10, color: '#777' }}>{a}</span>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
-                  {acordes.length > 0 && (
-                    <div style={{ display: 'flex', gap: 4, marginTop: 6, flexWrap: 'wrap' }}>
-                      {acordes.map(a => (
-                        <span key={a} style={{ padding: '2px 8px', background: '#f5f3ef', borderRadius: 12, fontSize: 10, color: '#777' }}>{a}</span>
-                      ))}
-                    </div>
-                  )}
+                  {/* Seta */}
+                  <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0, color: '#ccc', fontSize: 18 }}>›</div>
                 </div>
-
-                {/* Seta */}
-                <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0, color: '#ccc', fontSize: 18 }}>›</div>
-              </div>
+              </SwipeDelete>
             );
           })}
         </div>
