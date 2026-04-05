@@ -174,56 +174,199 @@ function PainelPedidos({ token }) {
   const [pedidos, setPedidos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filtro, setFiltro] = useState('');
+  const [detalhe, setDetalhe] = useState(null);
+  const [statusEdit, setStatusEdit] = useState('');
+  const [rastreio, setRastreio] = useState('');
+  const [salvando, setSalvando] = useState(false);
 
-  useEffect(() => {
+  const carregar = () => {
+    setLoading(true);
     api.listarPedidos(token, filtro || undefined)
       .then(setPedidos).catch(() => setPedidos(DEMO_PEDIDOS))
       .finally(() => setLoading(false));
-  }, [token, filtro]);
-
-  const statusLabel = {
-    aguardando_pagamento: { label: 'Aguardando pgto', cls: 'badge-gray' },
-    pagamento_aprovado: { label: 'Pago', cls: 'badge-green' },
-    em_separacao: { label: 'Em separação', cls: 'badge-gold' },
-    enviado: { label: 'Enviado', cls: 'badge-gold' },
-    entregue: { label: 'Entregue', cls: 'badge-green' },
-    cancelado: { label: 'Cancelado', cls: 'badge-red' },
   };
+
+  useEffect(() => { carregar(); }, [token, filtro]);
+
+  const statusMap = {
+    aguardando_pagamento: { label: 'Aguardando', bg: '#f5f5f5', color: '#888' },
+    pagamento_aprovado: { label: 'Pago', bg: '#e8f5e9', color: '#2e7d32' },
+    em_separacao: { label: 'Separando', bg: '#fff3e0', color: '#e65100' },
+    enviado: { label: 'Enviado', bg: '#e3f2fd', color: '#1565c0' },
+    entregue: { label: 'Entregue', bg: '#e8f5e9', color: '#2e7d32' },
+    cancelado: { label: 'Cancelado', bg: '#fce4ec', color: '#c62828' },
+  };
+
+  const getStatus = (s) => statusMap[s] || { label: s, bg: '#f5f5f5', color: '#888' };
+
+  const abrirDetalhe = (p) => {
+    setDetalhe(p);
+    setStatusEdit(p.status || '');
+    setRastreio(p.codigo_rastreio || '');
+  };
+
+  const salvarStatus = async () => {
+    if (!detalhe) return;
+    setSalvando(true);
+    try {
+      await api.atualizarStatus(token, detalhe.id, statusEdit, rastreio);
+      setDetalhe(null);
+      carregar();
+    } catch(e) { alert(e.message); }
+    finally { setSalvando(false); }
+  };
+
+  const filtroTabs = [
+    ['', 'Todos'],
+    ['pagamento_aprovado', 'Pagos'],
+    ['em_separacao', 'Separando'],
+    ['enviado', 'Enviados'],
+    ['entregue', 'Entregues'],
+  ];
+
+  // Modal Detalhe
+  const ModalDetalhe = () => detalhe && createPortal(
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9998, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+      onClick={e => e.target === e.currentTarget && setDetalhe(null)}>
+      <div style={{ background: '#fff', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '85vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
+        <div style={{ width: 40, height: 4, background: '#ddd', borderRadius: 2, margin: '0 auto 16px' }} />
+
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+          <div>
+            <p style={{ fontSize: 11, color: '#c9a84c', fontWeight: 600, letterSpacing: '0.1em' }}>{detalhe.numero}</p>
+            <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111', marginTop: 2 }}>{detalhe.cliente}</h3>
+          </div>
+          {(() => { const st = getStatus(detalhe.status); return (
+            <span style={{ padding: '4px 12px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: st.bg, color: st.color }}>{st.label}</span>
+          ); })()}
+        </div>
+
+        {/* Info */}
+        <div style={{ background: '#f8f7f4', borderRadius: 10, padding: 16, marginBottom: 16 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+            <span style={{ fontSize: 13, color: '#555' }}>Total</span>
+            <span style={{ fontSize: 16, fontWeight: 700, color: '#111' }}>R$ {Number(detalhe.total || 0).toFixed(2).replace('.', ',')}</span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: 13, color: '#555' }}>Data</span>
+            <span style={{ fontSize: 13, color: '#333' }}>{detalhe.criado_em ? new Date(detalhe.criado_em).toLocaleDateString('pt-BR') : '—'}</span>
+          </div>
+          {detalhe.codigo_rastreio && (
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8 }}>
+              <span style={{ fontSize: 13, color: '#555' }}>Rastreio</span>
+              <span style={{ fontSize: 13, color: '#1565c0', fontWeight: 600 }}>{detalhe.codigo_rastreio}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Itens do pedido */}
+        {detalhe.itens?.length > 0 && (
+          <div style={{ marginBottom: 16 }}>
+            <p style={{ fontSize: 11, fontWeight: 600, color: '#888', letterSpacing: '0.1em', marginBottom: 8 }}>ITENS</p>
+            {detalhe.itens.map((item, i) => (
+              <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #f0f0f0', fontSize: 13 }}>
+                <span style={{ color: '#333' }}>{item.nome || item.perfume} {item.tamanho && `(${item.tamanho})`}</span>
+                <span style={{ color: '#555', fontWeight: 500 }}>R$ {Number(item.preco || 0).toFixed(2).replace('.', ',')}</span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Alterar status */}
+        <div style={{ marginBottom: 16 }}>
+          <p style={{ fontSize: 11, fontWeight: 600, color: '#888', letterSpacing: '0.1em', marginBottom: 6 }}>ALTERAR STATUS</p>
+          <select value={statusEdit} onChange={e => setStatusEdit(e.target.value)}
+            style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', background: '#fff', color: '#333', marginBottom: 8, boxSizing: 'border-box' }}>
+            <option value="aguardando_pagamento">Aguardando pagamento</option>
+            <option value="pagamento_aprovado">Pagamento aprovado</option>
+            <option value="em_separacao">Em separacao</option>
+            <option value="enviado">Enviado</option>
+            <option value="entregue">Entregue</option>
+            <option value="cancelado">Cancelado</option>
+          </select>
+          <input value={rastreio} onChange={e => setRastreio(e.target.value)} placeholder="Codigo de rastreio (opcional)"
+            style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box' }} />
+        </div>
+
+        {/* Acoes */}
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button onClick={() => setDetalhe(null)} style={{ flex: 0.5, padding: '12px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#666' }}>Fechar</button>
+          <button onClick={salvarStatus} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>
+            {salvando ? 'Salvando...' : 'Salvar'}
+          </button>
+        </div>
+      </div>
+    </div>
+  , document.body);
 
   return (
     <div className="fade-in">
-      <div className="painel-header">
-        <h2>Pedidos</h2>
-        <select value={filtro} onChange={e => setFiltro(e.target.value)} style={{ width: 'auto', minWidth: 140, maxWidth: '100%' }}>
-          <option value="">Todos os status</option>
-          <option value="aguardando_pagamento">Aguardando pagamento</option>
-          <option value="pagamento_aprovado">Pagamento aprovado</option>
-          <option value="em_separacao">Em separação</option>
-          <option value="enviado">Enviado</option>
-          <option value="entregue">Entregue</option>
-        </select>
+      <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}`}</style>
+      <ModalDetalhe />
+
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+        <h2 style={{ fontSize: 22, fontWeight: 700, color: '#111' }}>Pedidos</h2>
+        <span style={{ fontSize: 12, color: '#999' }}>{pedidos.length} pedidos</span>
       </div>
-      {loading ? <p className="muted">Carregando...</p> : (
-        <div className="admin-table-wrap">
-          <table className="admin-table">
-            <thead><tr><th>Pedido</th><th>Cliente</th><th>Total</th><th>Status</th><th>Data</th></tr></thead>
-            <tbody>
-              {pedidos.map(p => {
-                const s = statusLabel[p.status] || { label: p.status, cls: 'badge-gray' };
-                return (
-                  <tr key={p.id}>
-                    <td className="gold">{p.numero}</td>
-                    <td>{p.cliente}</td>
-                    <td>R$ {Number(p.total).toFixed(2).replace('.', ',')}</td>
-                    <td><span className={`badge ${s.cls}`}>{s.label}</span></td>
-                    <td className="muted small">{new Date(p.criado_em).toLocaleDateString('pt-BR')}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+
+      {/* Filtros */}
+      <div style={{ display: 'flex', gap: 8, marginBottom: 16, overflowX: 'auto', paddingBottom: 4 }}>
+        {filtroTabs.map(([key, label]) => (
+          <button key={key} onClick={() => setFiltro(key)}
+            style={{ padding: '8px 18px', borderRadius: 20, fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap',
+              border: filtro === key ? 'none' : '1.5px solid #ddd',
+              background: filtro === key ? '#111' : '#fff', color: filtro === key ? '#fff' : '#555', transition: 'all .2s' }}>
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {/* Cards */}
+      <div style={{ background: '#f5f5f3', borderRadius: 14, padding: 12, margin: '0 -4px' }}>
+      {loading ? (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {[1,2,3].map(i => <div key={i} style={{ height: 80, background: '#eee', borderRadius: 12 }} />)}
+        </div>
+      ) : pedidos.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '3rem 0', color: '#999' }}>
+          <p style={{ fontSize: 32, marginBottom: 8 }}>📋</p>
+          <p>Nenhum pedido encontrado</p>
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {pedidos.map(p => {
+            const st = getStatus(p.status);
+            return (
+              <div key={p.id} onClick={() => abrirDetalhe(p)}
+                style={{ display: 'flex', gap: 14, padding: 14, background: '#fff', borderRadius: 12, border: '1px solid #eee',
+                  cursor: 'pointer', transition: 'all .15s', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = '#c9a84c'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(201,168,76,0.15)'; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = '#eee'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.04)'; }}>
+
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
+                    <div style={{ minWidth: 0 }}>
+                      <p style={{ fontSize: 15, fontWeight: 700, color: '#111', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.cliente}</p>
+                      <p style={{ fontSize: 12, color: '#c9a84c', fontWeight: 500 }}>{p.numero}</p>
+                    </div>
+                    <span style={{ flexShrink: 0, padding: '2px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: st.bg, color: st.color }}>
+                      {st.label}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>
+                    <span style={{ fontSize: 15, fontWeight: 700, color: '#111' }}>R$ {Number(p.total || 0).toFixed(2).replace('.', ',')}</span>
+                    <span style={{ fontSize: 12, color: '#999' }}>{p.criado_em ? new Date(p.criado_em).toLocaleDateString('pt-BR') : ''}</span>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0, color: '#ccc', fontSize: 18 }}>›</div>
+              </div>
+            );
+          })}
         </div>
       )}
+      </div>
     </div>
   );
 }
