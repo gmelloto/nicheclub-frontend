@@ -743,6 +743,7 @@ export default function AdminProdutos() {
   const [step, setStep] = useState('escolha');
   const [resultado, setResultado] = useState(null);
   const [mensagemSucesso, setMensagemSucesso] = useState('');
+  const [maisAberto, setMaisAberto] = useState(false);
 
   if (!token) { navigate('/admin/login'); return null; }
 
@@ -787,11 +788,11 @@ export default function AdminProdutos() {
 
   return (
     <div style={{ minHeight: '100vh', background: S.bg, padding: '1rem', paddingBottom: 80 }}>
+      <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}`}</style>
       <div style={{ maxWidth: 720, margin: '0 auto' }}>
 
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: '2rem' }}>
-          <button onClick={() => navigate('/admin')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: S.text3, fontSize: 13 }}>← Admin</button>
           <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: S.text }}>{titulos[step]}</h1>
         </div>
 
@@ -835,6 +836,28 @@ export default function AdminProdutos() {
 
       </div>
 
+      {/* Menu Mais popup */}
+      {maisAberto && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 9997 }} onClick={() => setMaisAberto(false)}>
+          <div style={{ position: 'absolute', bottom: 70, left: '50%', transform: 'translateX(-50%)', width: '90%', maxWidth: 340,
+            background: '#fff', borderRadius: 14, boxShadow: '0 8px 30px rgba(0,0,0,0.18)', padding: 8, animation: 'slideUp .2s ease' }}
+            onClick={e => e.stopPropagation()}>
+            {[
+              { label: 'Cadastrar Produto', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>, onClick: () => { setMaisAberto(false); navigate('/admin/produtos'); }},
+              { label: 'Notas Olfativas', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22c-4 0-8-2-8-6 0-6 8-14 8-14s8 8 8 14c0 4-4 6-8 6z"/></svg>, onClick: () => { setMaisAberto(false); navigate('/admin/notas'); }},
+              { label: 'Ver Loja', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>, onClick: () => { setMaisAberto(false); navigate('/'); }},
+            ].map((op, i) => (
+              <button key={i} onClick={op.onClick}
+                style={{ display: 'flex', alignItems: 'center', gap: 14, width: '100%', padding: '14px 16px', background: 'none', border: 'none',
+                  cursor: 'pointer', fontSize: 14, fontWeight: 500, color: '#333', borderRadius: 8, fontFamily: "'Inter', sans-serif" }}>
+                <span style={{ color: '#c9a84c' }}>{op.icon}</span>
+                {op.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Bottom Nav */}
       <div style={{ display: 'flex', position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 999, background: '#fff', borderTop: '1px solid #e8e4dc',
         padding: '6px 0 max(6px, env(safe-area-inset-bottom))', justifyContent: 'space-around', boxShadow: '0 -2px 12px rgba(0,0,0,0.06)' }}>
@@ -851,9 +874,10 @@ export default function AdminProdutos() {
             <span>{tab.label}</span>
           </button>
         ))}
-        <button style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, padding: '6px 12px', background: 'none', border: 'none',
-          cursor: 'pointer', fontFamily: "'Inter', sans-serif", fontSize: 10, fontWeight: 700, color: '#111', WebkitTapHighlightColor: 'transparent' }}>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <button onClick={() => setMaisAberto(v => !v)}
+          style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, padding: '6px 12px', background: 'none', border: 'none',
+            cursor: 'pointer', fontFamily: "'Inter', sans-serif", fontSize: 10, fontWeight: maisAberto ? 700 : 500, color: maisAberto ? '#111' : '#999', WebkitTapHighlightColor: 'transparent' }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={maisAberto ? '#c9a84c' : 'currentColor'} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
           </svg>
           <span>Mais</span>
