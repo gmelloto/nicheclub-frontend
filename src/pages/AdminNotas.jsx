@@ -38,6 +38,12 @@ export default function AdminNotas() {
 
   useEffect(() => { if (!token) navigate('/admin/login', { state: { from: '/admin/notas' } }); }, [token]);
 
+  // Marcar body como admin para CSS global
+  useEffect(() => {
+    document.body.setAttribute('data-admin', 'true');
+    return () => document.body.removeAttribute('data-admin');
+  }, []);
+
   const carregar = useCallback(async (p = 1, q = busca, append = false) => {
     if (p === 1) setLoading(true); else setLoadingMore(true);
     try {

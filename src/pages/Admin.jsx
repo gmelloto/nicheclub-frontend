@@ -13,6 +13,11 @@ export default function Admin() {
   const [showTop, setShowTop] = useState(false);
 
   useEffect(() => {
+    document.body.setAttribute('data-admin', 'true');
+    return () => document.body.removeAttribute('data-admin');
+  }, []);
+
+  useEffect(() => {
     if (!token) navigate('/admin/login');
   }, [token, navigate]);
 
