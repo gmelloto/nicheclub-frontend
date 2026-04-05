@@ -210,9 +210,12 @@ function parseFragranticaHTML(html, urlOriginal) {
 
   // Primeiro tentar da descrição
   let notasDesc = parseNotasFromDesc(descricao);
-  // Se não encontrou na descrição curta, buscar no HTML completo (texto)
-  if (!notasDesc.topo && !notasDesc.coracao && !notasDesc.base) {
-    notasDesc = parseNotasFromDesc(bodyText);
+  // Se coração ou base faltam, tentar do body text completo (meta desc pode estar truncada)
+  if (!notasDesc.coracao || !notasDesc.base) {
+    const notasBody = parseNotasFromDesc(bodyText);
+    if (!notasDesc.topo && notasBody.topo) notasDesc.topo = notasBody.topo;
+    if (!notasDesc.coracao && notasBody.coracao) notasDesc.coracao = notasBody.coracao;
+    if (!notasDesc.base && notasBody.base) notasDesc.base = notasBody.base;
   }
 
   // ── Perfumistas ──
@@ -246,12 +249,20 @@ function parseFragranticaHTML(html, urlOriginal) {
 
   // ── País ──
   let pais = '';
+  const paisIgnorar = ['países', 'paises', 'country', 'countries', 'home', 'perfumes', ''];
   // Buscar pelo padrão de bandeira ou link de país
-  const paisLinks = doc.querySelectorAll('a[href*="/country/"], a[href*="/pais/"]');
+  const paisLinks = doc.querySelectorAll('a[href*="/country/"], a[href*="/pais/"], a[href*="/paises/"]');
   paisLinks.forEach(a => {
     const t = a.textContent.trim();
-    if (t && t.length > 1 && t.length < 30 && !pais) pais = t;
+    if (t && t.length > 1 && t.length < 30 && !pais && !paisIgnorar.includes(t.toLowerCase())) pais = t;
   });
+  // Fallback: buscar "País:" seguido de texto
+  if (!pais) {
+    const paisTextMatch = html.match(/(?:Pa[ií]s|Country)\s*(?:de\s*Origem)?[:\s]*<[^>]*>([^<]{2,25})</i);
+    if (paisTextMatch && !paisIgnorar.includes(paisTextMatch[1].trim().toLowerCase())) {
+      pais = paisTextMatch[1].trim();
+    }
+  }
 
   // ── Família olfativa ──
   let familia_olfativa = '';
@@ -371,6 +382,7 @@ function StepFragrantica({ onPreview, onVoltar, token }) {
           notas_topo: d.notas_topo || '', notas_coracao: d.notas_coracao || '', notas_base: d.notas_base || '',
           perfumista1: d.perfumista1 || '', perfumista2: d.perfumista2 || '',
           familia_olfativa: d.familia_olfativa || '', descricao: d.descricao || '',
+          url_fragrantica: linkFrag,
         },
         slug: null,
         atualizado: false,
@@ -722,7 +734,7 @@ export default function AdminProdutos() {
       genero: d.genero,
       pais: d.pais || '',
       foto_url: d.foto_url || '',
-      url_fragrantica: resultado.slug ? `https://nicheclub-frontend.vercel.app/perfume/${resultado.slug}` : '',
+      url_fragrantica: d.url_fragrantica || '',
       rating_valor: d.rating_valor || '',
       rating_count: d.rating_count || '',
       familia_olfativa: d.familia_olfativa || '',
