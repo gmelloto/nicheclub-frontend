@@ -85,6 +85,10 @@ function StepFragrantica({ onPreview, onVoltar, token }) {
     setCarregando(true);
     setMsg({ tipo: '', texto: '' });
     try {
+      // Usar token do localStorage se não vier via prop
+      const authToken = token || localStorage.getItem('nc_token');
+      if (!authToken) throw new Error('Você precisa estar logado como admin.');
+
       // Extrair marca e nome da URL: /perfume/Marca/Nome-ID.html
       const match = linkFrag.match(/fragrantica\.com(?:\.br)?\/perfume\/([^/]+)\/([^/]+?)(?:-\d+)?\.html/);
       if (!match) throw new Error('URL inválida. Use o formato: fragrantica.com.br/perfume/Marca/Nome.html');
@@ -92,7 +96,7 @@ function StepFragrantica({ onPreview, onVoltar, token }) {
       const marca = decodeURIComponent(match[1]).replace(/-/g, ' ');
       const nome = decodeURIComponent(match[2]).replace(/-/g, ' ');
 
-      const d = await api.adminFragrantica(marca, nome, token);
+      const d = await api.adminFragrantica(marca, nome, authToken);
 
       if (!d.encontrado) throw new Error('Perfume não encontrado no Fragrantica.');
 
