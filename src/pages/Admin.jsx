@@ -597,16 +597,18 @@ function PainelPerfumes({ token }) {
     return () => obs.disconnect();
   }, [pagina, total, busca, loadingMore, perfumes.length]);
 
-  // Scroll to top button
+  // Scroll to top button - aparece com qualquer scroll, some só no topo
   useEffect(() => {
     const container = document.querySelector('.admin-content');
-    if (!container) return;
-    const onScroll = () => setShowTop((container.scrollTop || window.scrollY) > 400);
-    container.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('scroll', onScroll, { passive: true });
+    const check = () => {
+      const scrolled = (container?.scrollTop || 0) + (window.scrollY || 0);
+      setShowTop(scrolled > 50);
+    };
+    container?.addEventListener('scroll', check, { passive: true });
+    window.addEventListener('scroll', check, { passive: true });
     return () => {
-      container.removeEventListener('scroll', onScroll);
-      window.removeEventListener('scroll', onScroll);
+      container?.removeEventListener('scroll', check);
+      window.removeEventListener('scroll', check);
     };
   }, []);
 
