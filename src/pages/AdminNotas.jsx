@@ -31,6 +31,8 @@ export default function AdminNotas() {
   const [salvando, setSalvando] = useState(false);
   const [importandoImg, setImportandoImg] = useState(false);
   const [maisAberto, setMaisAberto] = useState(false);
+  const [fixando, setFixando] = useState(false);
+  const [fixResult, setFixResult] = useState(null);
 
   const sentinelRef = useRef(null);
 
@@ -279,11 +281,48 @@ export default function AdminNotas() {
             <h1 style={{ fontSize: 22, fontWeight: 700, color: '#111', fontFamily: "'Inter', sans-serif" }}>Notas</h1>
             <span style={{ fontSize: 11, color: '#999', background: '#f0f0f0', padding: '2px 8px', borderRadius: 10 }}>{total}</span>
           </div>
-          <button onClick={() => setModal(true)}
-            style={{ padding: '10px 20px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: '#0d0b07' }}>
-            + Adicionar
-          </button>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button onClick={async () => {
+              if (fixando) return;
+              setFixando(true); setFixResult(null);
+              try {
+                const res = await api.adminNotasFixImages();
+                setFixResult(res);
+                if (res.corrigidas > 0) carregar(1, busca);
+              } catch(e) { setFixResult({ erro: e.message }); }
+              finally { setFixando(false); }
+            }} disabled={fixando}
+              style={{ padding: '10px 14px', background: '#111', border: 'none', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: fixando ? 'not-allowed' : 'pointer', color: '#fff', opacity: fixando ? 0.7 : 1 }}>
+              {fixando ? 'Verificando...' : 'Corrigir Imagens'}
+            </button>
+            <button onClick={() => setModal(true)}
+              style={{ padding: '10px 20px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: '#0d0b07' }}>
+              + Adicionar
+            </button>
+          </div>
         </div>
+
+        {/* Resultado fix images */}
+        {fixResult && (
+          <div style={{ background: fixResult.erro ? '#fce4ec' : '#e8f5e9', borderRadius: 8, padding: '10px 14px', marginBottom: 12, fontSize: 13 }}>
+            {fixResult.erro ? (
+              <span style={{ color: '#c62828' }}>Erro: {fixResult.erro}</span>
+            ) : (
+              <div>
+                <span style={{ color: '#2e7d32', fontWeight: 600 }}>
+                  {fixResult.corrigidas} corrigidas de {fixResult.quebradas} quebradas ({fixResult.verificadas} verificadas)
+                </span>
+                {fixResult.erros?.length > 0 && (
+                  <details style={{ marginTop: 6, fontSize: 12, color: '#888' }}>
+                    <summary style={{ cursor: 'pointer' }}>{fixResult.erros.length} erros</summary>
+                    {fixResult.erros.map((e, i) => <p key={i}>{e.nota}: {e.erro}</p>)}
+                  </details>
+                )}
+                <button onClick={() => setFixResult(null)} style={{ marginTop: 6, background: 'none', border: 'none', fontSize: 12, color: '#888', cursor: 'pointer', textDecoration: 'underline' }}>Fechar</button>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Busca */}
         <div style={{ position: 'relative', marginBottom: 12 }}>

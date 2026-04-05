@@ -29,6 +29,7 @@ export const api = {
   adminNotasImportar: (data) => req('POST', '/admin/notas/importar', data),
   adminNotasAtualizar: (id, data) => req('PATCH', `/admin/notas/${id}`, data),
   adminNotasDeletar: (id) => req('DELETE', `/admin/notas/${id}`),
+  adminNotasFixImages: () => req('POST', '/admin/notas/fix-images'),
   // Admin - Produtos
   adminMarcas: (q) => req('GET', `/admin/marcas?q=${encodeURIComponent(q)}`),
   adminBuscaPerfume: (marca, q) => req('GET', `/admin/busca-perfume?marca=${encodeURIComponent(marca)}&q=${encodeURIComponent(q)}`),
