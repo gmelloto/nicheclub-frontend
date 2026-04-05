@@ -128,6 +128,11 @@ function parseFragranticaHTML(html, urlOriginal) {
     if (imgEl) foto_url = imgEl.getAttribute('src') || '';
   }
 
+  // ── Foto social (og:image) ──
+  let foto_social_url = '';
+  const ogImage = doc.querySelector('meta[property="og:image"]');
+  if (ogImage) foto_social_url = ogImage.getAttribute('content') || '';
+
   // ── Ano (da descrição ou do HTML) ──
   let ano = null;
   const anoMatch = descricao.match(/lan[çc]ado\s+em\s+(\d{4})/i) ||
@@ -293,7 +298,7 @@ function parseFragranticaHTML(html, urlOriginal) {
 
   return {
     encontrado: !!(nome || marca),
-    nome, marca, foto_url, ano, genero, pais, familia_olfativa,
+    nome, marca, foto_url, foto_social_url, ano, genero, pais, familia_olfativa,
     rating_valor, rating_count,
     perfumista1: perfumistas[0] || '',
     perfumista2: perfumistas[1] || '',
@@ -388,6 +393,7 @@ function StepFragrantica({ onPreview, onVoltar, token }) {
           nome: d.nome,
           marca: d.marca,
           foto_url: d.foto_url || '',
+          foto_social_url: d.foto_social_url || '',
           ano: d.ano || null,
           genero: d.genero || '',
           pais: d.pais || '',
@@ -750,6 +756,7 @@ export default function AdminProdutos() {
       genero: d.genero,
       pais: d.pais || '',
       foto_url: d.foto_url || '',
+      foto_social_url: d.foto_social_url || '',
       url_fragrantica: d.url_fragrantica || '',
       rating_valor: d.rating_valor || '',
       rating_count: d.rating_count || '',
