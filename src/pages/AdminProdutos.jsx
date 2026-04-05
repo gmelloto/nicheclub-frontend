@@ -165,40 +165,49 @@ function parseFragranticaHTML(html, urlOriginal) {
         .trim();
     };
 
-    // PT: "As notas de topo são: X, Y e Z. As notas de coração são: ..."
-    // Usar split por "notas de" para separar seções
     const lowerDesc = desc.toLowerCase();
 
-    // Extrair topo
-    const topoIdx = lowerDesc.indexOf('notas de topo');
-    const coracaoIdx = lowerDesc.search(/notas\s+de\s+cora/);
-    // "notas de base" OU "notas de fundo" (Fragrantica BR usa ambos)
-    const baseIdx1 = lowerDesc.indexOf('notas de base');
-    const baseIdx2 = lowerDesc.indexOf('notas de fundo');
-    const baseIdx = baseIdx1 >= 0 ? baseIdx1 : baseIdx2;
+    // Encontrar todas as posições de marcadores de notas
+    // PT: "notas de topo", "notas de coração/meio", "notas de base/fundo"
+    const findAllIndices = (pattern) => {
+      const indices = [];
+      let m;
+      const re = new RegExp(pattern, 'gi');
+      while ((m = re.exec(lowerDesc)) !== null) indices.push(m.index);
+      return indices;
+    };
 
-    const extractAfterColon = (text) => {
-      // Pegar tudo após "são:" ou ":"
+    const topoPositions = findAllIndices('notas\\s+de\\s+topo');
+    const coracaoPositions = findAllIndices('notas\\s+de\\s+cora[çc]');
+    const basePositions = [
+      ...findAllIndices('notas\\s+de\\s+base'),
+      ...findAllIndices('notas\\s+de\\s+fundo'),
+    ].sort((a, b) => a - b);
+
+    // Pegar a posição que faz sentido na sequência (topo < coracao < base)
+    const topoIdx = topoPositions.length > 0 ? topoPositions[0] : -1;
+    const coracaoIdx = coracaoPositions.find(i => i > topoIdx) ?? (coracaoPositions[0] ?? -1);
+    const baseIdx = basePositions.find(i => i > coracaoIdx && coracaoIdx >= 0) ??
+                    basePositions.find(i => i > topoIdx) ?? (basePositions[0] ?? -1);
+
+    const extractAfterSao = (text) => {
       const m = text.match(/(?:s[aã]o|incluem|are|include)\s*:?\s*(.+)/i);
       return m ? m[1].trim() : '';
     };
 
     if (topoIdx >= 0) {
       const end = coracaoIdx > topoIdx ? coracaoIdx : (baseIdx > topoIdx ? baseIdx : desc.length);
-      const section = desc.substring(topoIdx, end);
-      notas.topo = cleanNotas(extractAfterColon(section));
+      notas.topo = cleanNotas(extractAfterSao(desc.substring(topoIdx, end)));
     }
     if (coracaoIdx >= 0) {
       const end = baseIdx > coracaoIdx ? baseIdx : desc.length;
-      const section = desc.substring(coracaoIdx, end);
-      notas.coracao = cleanNotas(extractAfterColon(section));
+      notas.coracao = cleanNotas(extractAfterSao(desc.substring(coracaoIdx, end)));
     }
     if (baseIdx >= 0) {
-      const section = desc.substring(baseIdx);
-      notas.base = cleanNotas(extractAfterColon(section));
+      notas.base = cleanNotas(extractAfterSao(desc.substring(baseIdx)));
     }
 
-    // EN fallback: "Top notes are X; middle notes are Y; base notes are Z."
+    // EN fallback
     if (!notas.topo && !notas.coracao && !notas.base) {
       const topoEN = desc.match(/top\s*notes?\s*(?:are|include|:)\s*:?\s*(.+?)(?:;|\.|middle|heart)/i);
       const coracaoEN = desc.match(/(?:middle|heart)\s*notes?\s*(?:are|include|:)\s*:?\s*(.+?)(?:;|\.|base)/i);
@@ -269,10 +278,13 @@ function parseFragranticaHTML(html, urlOriginal) {
 
   // ── Família olfativa ──
   let familia_olfativa = '';
+  const famIgnorar = ['grupos', 'groups', 'grupo', 'group', 'home', 'perfumes', 'fragrantica', ''];
   const famLinks = doc.querySelectorAll('a[href*="/grupos/"], a[href*="/groups/"]');
   famLinks.forEach(a => {
     const t = a.textContent.trim();
-    if (t && t.length > 2 && t.length < 40 && !familia_olfativa) familia_olfativa = t;
+    if (t && t.length > 2 && t.length < 40 && !familia_olfativa && !famIgnorar.includes(t.toLowerCase())) {
+      familia_olfativa = t;
+    }
   });
 
   // ── Acordes ──
