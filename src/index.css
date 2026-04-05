@@ -39,15 +39,13 @@ h1, h2, h3, h4 {
   letter-spacing: -0.02em;
   color: var(--text);
 }
-/* Admin pages: force Inter on all headings (overrides Playfair) */
-.admin-page h1, .admin-page h2, .admin-page h3, .admin-page h4,
-[data-admin] h1, [data-admin] h2, [data-admin] h3, [data-admin] h4 {
+/* Admin pages: force Inter everywhere (overrides Playfair) */
+body[data-admin] h1, body[data-admin] h2, body[data-admin] h3, body[data-admin] h4,
+body[data-admin] p, body[data-admin] span, body[data-admin] label, body[data-admin] a,
+body[data-admin] div, body[data-admin] button {
   font-family: 'Inter', sans-serif !important;
-  letter-spacing: -0.01em;
 }
-/* Inputs inside admin should always be Inter with dark text */
-.admin-page input, .admin-page select, .admin-page textarea,
-[data-admin] input, [data-admin] select, [data-admin] textarea {
+body[data-admin] input, body[data-admin] select, body[data-admin] textarea {
   font-family: 'Inter', sans-serif !important;
   color: #111 !important;
 }
