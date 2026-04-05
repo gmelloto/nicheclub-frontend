@@ -395,6 +395,23 @@ function StepFragrantica({ onPreview, onVoltar, token }) {
 
       if (!d.encontrado) throw new Error('Não foi possível extrair os dados da página. Tente outro link ou cadastre manualmente.');
 
+      // Se acordes faltam, enriquecer via Puppeteer scraper do backend
+      if (!d.acorde1) {
+        try {
+          setMsg({ tipo: 'aviso', texto: 'Buscando acordes via scraper...' });
+          const scrapeData = await api.scrapeFragrantica(linkFrag);
+          if (scrapeData.encontrado) {
+            if (scrapeData.acorde1) d.acorde1 = scrapeData.acorde1;
+            if (scrapeData.acorde2) d.acorde2 = scrapeData.acorde2;
+            if (scrapeData.acorde3) d.acorde3 = scrapeData.acorde3;
+            if (scrapeData.acorde4) d.acorde4 = scrapeData.acorde4;
+            if (scrapeData.acorde5) d.acorde5 = scrapeData.acorde5;
+            if (!d.familia_olfativa && scrapeData.familia_olfativa) d.familia_olfativa = scrapeData.familia_olfativa;
+            if (!d.pais && scrapeData.pais) d.pais = scrapeData.pais;
+          }
+        } catch(e) { /* scraper indisponível, continuar sem acordes */ }
+      }
+
       onPreview({
         sucesso: true,
         dados: {
