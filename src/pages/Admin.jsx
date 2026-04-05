@@ -550,6 +550,7 @@ function PainelPerfumes({ token }) {
   const [perfumes, setPerfumes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [showTop, setShowTop] = useState(false);
   const [busca, setBusca] = useState('');
   const [buscaInput, setBuscaInput] = useState('');
   const [pagina, setPagina] = useState(1);
@@ -595,6 +596,13 @@ function PainelPerfumes({ token }) {
     obs.observe(sentinelRef.current);
     return () => obs.disconnect();
   }, [pagina, total, busca, loadingMore, perfumes.length]);
+
+  // Scroll to top button
+  useEffect(() => {
+    const onScroll = () => setShowTop(window.scrollY > 400);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const filtrados = perfumes.filter(p => {
     if (filtro === 'ativos') return p.ativo !== false;
@@ -928,6 +936,20 @@ function PainelPerfumes({ token }) {
         <p style={{ textAlign: 'center', fontSize: 12, color: '#bbb', padding: '1rem 0' }}>{total} perfumes carregados</p>
       )}
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+
+      {/* Botao voltar ao topo */}
+      {showTop && (
+        <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          style={{ position: 'fixed', bottom: 80, right: 16, zIndex: 900, width: 44, height: 44, borderRadius: '50%',
+            background: '#111', border: 'none', cursor: 'pointer', boxShadow: '0 4px 14px rgba(0,0,0,0.25)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'opacity .2s', opacity: 0.9 }}
+          onMouseEnter={e => e.currentTarget.style.opacity = '1'}
+          onMouseLeave={e => e.currentTarget.style.opacity = '0.9'}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="18 15 12 9 6 15" />
+          </svg>
+        </button>
+      )}
     </div>
   );
 }
