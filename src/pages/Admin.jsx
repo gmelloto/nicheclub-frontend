@@ -599,9 +599,15 @@ function PainelPerfumes({ token }) {
 
   // Scroll to top button
   useEffect(() => {
-    const onScroll = () => setShowTop(window.scrollY > 400);
+    const container = document.querySelector('.admin-content');
+    if (!container) return;
+    const onScroll = () => setShowTop((container.scrollTop || window.scrollY) > 400);
+    container.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    return () => {
+      container.removeEventListener('scroll', onScroll);
+      window.removeEventListener('scroll', onScroll);
+    };
   }, []);
 
   const filtrados = perfumes.filter(p => {
@@ -939,7 +945,7 @@ function PainelPerfumes({ token }) {
 
       {/* Botao voltar ao topo */}
       {showTop && (
-        <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        <button onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); document.querySelector('.admin-content')?.scrollTo({ top: 0, behavior: 'smooth' }); }}
           style={{ position: 'fixed', bottom: 80, right: 16, zIndex: 900, width: 44, height: 44, borderRadius: '50%',
             background: '#111', border: 'none', cursor: 'pointer', boxShadow: '0 4px 14px rgba(0,0,0,0.25)',
             display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'opacity .2s', opacity: 0.9 }}
