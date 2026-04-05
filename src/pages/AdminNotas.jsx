@@ -273,8 +273,8 @@ export default function AdminNotas() {
 
                   {/* Info */}
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontSize: 14, fontWeight: 600, color: '#111', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nota.nota_en}</p>
-                    <p style={{ fontSize: 12, color: '#888' }}>{nota.nota_ptb && nota.nota_ptb !== nota.nota_en ? nota.nota_ptb : '—'}</p>
+                    <p style={{ fontSize: 14, fontWeight: 600, color: '#111', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nota.nota_ptb || nota.nota_en}</p>
+                    <p style={{ fontSize: 12, color: '#888' }}>{nota.nota_en}</p>
                   </div>
 
                   {/* Status */}
