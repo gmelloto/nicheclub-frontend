@@ -22,6 +22,94 @@ const ACORDES_COR = {
 };
 const corAcorde = n => ACORDES_COR[n] || '#c9a84c';
 
+const NOTAS_EN_PT = {
+  'amber': 'Âmbar', 'ambergris': 'Âmbar Cinza', 'apple': 'Maçã', 'apricot': 'Damasco',
+  'basil': 'Manjericão', 'bay leaf': 'Louro', 'benzoin': 'Benjoim', 'bergamot': 'Bergamota',
+  'birch': 'Bétula', 'bitter almond': 'Amêndoa Amarga', 'black currant': 'Groselha Negra',
+  'black pepper': 'Pimenta Preta', 'blackberry': 'Amora', 'blood orange': 'Laranja Sanguínea',
+  'blueberry': 'Mirtilo', 'cacao': 'Cacau', 'caramel': 'Caramelo', 'cardamom': 'Cardamomo',
+  'carnation': 'Cravo', 'cashmere': 'Cashmere', 'cashmere wood': 'Madeira de Cashmere',
+  'cassis': 'Cassis', 'cedar': 'Cedro', 'cedarwood': 'Madeira de Cedro',
+  'cherry': 'Cereja', 'cherry blossom': 'Flor de Cerejeira', 'cinnamon': 'Canela',
+  'citron': 'Cidra', 'clove': 'Cravo-da-Índia', 'cloves': 'Cravo-da-Índia',
+  'cocoa': 'Cacau', 'coconut': 'Coco', 'coffee': 'Café', 'coriander': 'Coentro',
+  'cotton': 'Algodão', 'cypress': 'Cipreste', 'elemi': 'Elemi',
+  'fig': 'Figo', 'fir': 'Abeto', 'frankincense': 'Olíbano', 'freesia': 'Frésia',
+  'galbanum': 'Gálbano', 'gardenia': 'Gardênia', 'geranium': 'Gerânio',
+  'ginger': 'Gengibre', 'grapefruit': 'Toranja', 'green apple': 'Maçã Verde',
+  'green tea': 'Chá Verde', 'guaiac wood': 'Guaiaco', 'hazelnut': 'Avelã',
+  'heliotrope': 'Heliotrópio', 'honey': 'Mel', 'honeysuckle': 'Madressilva',
+  'hyacinth': 'Jacinto', 'incense': 'Incenso', 'iris': 'Íris', 'ivy': 'Hera',
+  'jasmine': 'Jasmim', 'juniper': 'Zimbro', 'juniper berries': 'Bagas de Zimbro',
+  'labdanum': 'Ládano', 'lavender': 'Lavanda', 'leather': 'Couro',
+  'lemon': 'Limão', 'lemon verbena': 'Verbena', 'licorice': 'Alcaçuz',
+  'lily': 'Lírio', 'lily of the valley': 'Lírio do Vale', 'lime': 'Lima',
+  'linden': 'Tília', 'linden blossom': 'Flor de Tília',
+  'magnolia': 'Magnólia', 'mandarin': 'Mandarina', 'mandarin orange': 'Tangerina',
+  'mango': 'Manga', 'maple': 'Bordo', 'marigold': 'Calêndula',
+  'mint': 'Menta', 'moss': 'Musgo', 'musk': 'Almíscar', 'white musk': 'Almíscar Branco',
+  'myrrh': 'Mirra', 'neroli': 'Neroli', 'nutmeg': 'Noz-Moscada',
+  'oak': 'Carvalho', 'oakmoss': 'Musgo de Carvalho', 'olive': 'Oliva',
+  'orange': 'Laranja', 'orange blossom': 'Flor de Laranjeira',
+  'orchid': 'Orquídea', 'orris': 'Orris', 'orris root': 'Raiz de Íris',
+  'osmanthus': 'Osmanto', 'oud': 'Oud', 'agarwood': 'Oud',
+  'papyrus': 'Papiro', 'passion fruit': 'Maracujá', 'patchouli': 'Patchouli',
+  'peach': 'Pêssego', 'pear': 'Pera', 'peony': 'Peônia',
+  'pepper': 'Pimenta', 'peppermint': 'Hortelã-Pimenta',
+  'petitgrain': 'Petitgrain', 'pine': 'Pinho', 'pink pepper': 'Pimenta Rosa',
+  'pistachio': 'Pistache', 'plum': 'Ameixa', 'pomegranate': 'Romã',
+  'praline': 'Praliné', 'quince': 'Marmelo',
+  'raspberry': 'Framboesa', 'rose': 'Rosa', 'rosemary': 'Alecrim',
+  'rosewood': 'Pau-Rosa', 'rum': 'Rum',
+  'saffron': 'Açafrão', 'sage': 'Sálvia', 'sandalwood': 'Sândalo',
+  'sea salt': 'Sal Marinho', 'sesame': 'Gergelim', 'smoke': 'Fumaça',
+  'spearmint': 'Hortelã', 'star anise': 'Anis Estrelado',
+  'strawberry': 'Morango', 'sugar': 'Açúcar', 'suede': 'Camurça',
+  'tangerine': 'Tangerina', 'tea': 'Chá', 'thyme': 'Tomilho',
+  'tobacco': 'Tabaco', 'toffee': 'Toffee', 'tonka bean': 'Fava Tonka',
+  'tuberose': 'Tuberosa', 'tulip': 'Tulipa', 'turmeric': 'Açafrão-da-Terra',
+  'vanilla': 'Baunilha', 'vetiver': 'Vetiver', 'violet': 'Violeta',
+  'violet leaf': 'Folha de Violeta', 'water lily': 'Nenúfar',
+  'watermelon': 'Melancia', 'wheat': 'Trigo', 'white tea': 'Chá Branco',
+  'wisteria': 'Glicínia', 'ylang-ylang': 'Ylang-Ylang',
+  'yuzu': 'Yuzu', 'woodsy notes': 'Notas Amadeiradas', 'woody notes': 'Notas Amadeiradas',
+  'powdery notes': 'Notas Empoadas', 'floral notes': 'Notas Florais',
+  'fresh notes': 'Notas Frescas', 'sweet notes': 'Notas Doces',
+  'spicy notes': 'Notas Picantes', 'earthy notes': 'Notas Terrosas',
+  'green notes': 'Notas Verdes', 'fruity notes': 'Notas Frutadas',
+  'citrus': 'Cítrico', 'woody': 'Amadeirado', 'musky': 'Almiscarado',
+  'powdery': 'Empoado', 'floral': 'Floral', 'fresh': 'Fresco',
+  'sweet': 'Doce', 'spicy': 'Picante', 'earthy': 'Terroso',
+  'aquatic': 'Aquático', 'aromatic': 'Aromático', 'gourmand': 'Gourmet',
+  'balsamic': 'Balsâmico', 'ozonic': 'Ozônico', 'marine': 'Marinho',
+  'white flowers': 'Flores Brancas', 'tropical fruits': 'Frutas Tropicais',
+  'dried fruits': 'Frutas Secas', 'red fruits': 'Frutas Vermelhas',
+  'dark chocolate': 'Chocolate Amargo', 'milk chocolate': 'Chocolate ao Leite',
+  'white chocolate': 'Chocolate Branco', 'chocolate': 'Chocolate',
+  'almond': 'Amêndoa', 'anise': 'Anis', 'bamboo': 'Bambu',
+  'birch leaf': 'Folha de Bétula', 'black tea': 'Chá Preto',
+  'champaca': 'Champaca', 'davana': 'Davana', 'driftwood': 'Madeira Flutuante',
+  'eucalyptus': 'Eucalipto', 'frangipani': 'Jasmim-Manga',
+  'green cardamom': 'Cardamomo Verde', 'hemp': 'Cânhamo',
+  'immortelle': 'Immortelle', 'jasmine sambac': 'Jasmim Sambac',
+  'lemongrass': 'Capim-Limão', 'lotus': 'Lótus', 'mimosa': 'Mimosa',
+  'myrtle': 'Murta', 'narcissus': 'Narciso', 'opoponax': 'Opoponax',
+  'palmarosa': 'Palmarosa', 'plumeria': 'Plumeria', 'poppy': 'Papoula',
+  'resins': 'Resinas', 'rhubarb': 'Ruibarbo', 'rice': 'Arroz',
+  'sea notes': 'Notas Marinhas', 'seaweed': 'Alga Marinha',
+  'teak': 'Teca', 'teak wood': 'Madeira de Teca', 'tiare flower': 'Flor de Tiaré',
+  'virginia cedar': 'Cedro da Virgínia', 'white cedar': 'Cedro Branco',
+  'white pepper': 'Pimenta Branca', 'wild strawberry': 'Morango Silvestre',
+  'birch tar': 'Alcatrão de Bétula', 'castoreum': 'Castóreo',
+  'civet': 'Algália', 'ambrette': 'Ambrette', 'ambroxan': 'Ambroxan',
+  'iso e super': 'Iso E Super', 'cashmeran': 'Cashmeran',
+};
+
+function traduzirNota(nota) {
+  const traduzida = NOTAS_EN_PT[nota.toLowerCase().trim()] || nota;
+  return traduzida.charAt(0).toUpperCase() + traduzida.slice(1);
+}
+
 export default function Perfume() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -69,9 +157,9 @@ export default function Perfume() {
   const precoPorMl  = opcaoSel ? (Number(opcaoSel.preco) / Number(opcaoSel.ml_quantidade || 1)).toFixed(2) : null;
   const totalAvulso = mlAvulso && precoPorMl ? (Number(mlAvulso) * Number(precoPorMl)).toFixed(2) : null;
   const acordes     = [perfume.acorde1, perfume.acorde2, perfume.acorde3, perfume.acorde4, perfume.acorde5].filter(Boolean);
-  const topoNotas   = (perfume.notas_topo    || '').split(',').map(n => n.trim()).filter(Boolean);
-  const coracaoNotas= (perfume.notas_coracao || '').split(',').map(n => n.trim()).filter(Boolean);
-  const baseNotas   = (perfume.notas_base    || '').split(',').map(n => n.trim()).filter(Boolean);
+  const topoNotas   = (perfume.notas_topo    || '').split(',').map(n => n.trim()).filter(Boolean).map(traduzirNota);
+  const coracaoNotas= (perfume.notas_coracao || '').split(',').map(n => n.trim()).filter(Boolean).map(traduzirNota);
+  const baseNotas   = (perfume.notas_base    || '').split(',').map(n => n.trim()).filter(Boolean).map(traduzirNota);
   const notasImgs   = perfume.notas_imagens  || {};
 
   const imgNota = nota => {
