@@ -447,20 +447,18 @@ function PainelPerfumes({ token }) {
   const [buscaInput, setBuscaInput] = useState('');
   const [pagina, setPagina] = useState(1);
   const [total, setTotal] = useState(0);
-  const [limite, setLimite] = useState(20);
+  const [filtro, setFiltro] = useState('todos');
+  const limite = 20;
   const [editando, setEditando] = useState(null);
   const [editForm, setEditForm] = useState({});
   const [salvando, setSalvando] = useState(false);
   const [excluindo, setExcluindo] = useState(null);
-  const [selsp, setSelsp] = useState([]);
-  const [showMassaP, setShowMassaP] = useState(false);
-  const [massaFormP, setMassaFormP] = useState({ genero: '', ativo: '' });
-  const [salvandoMassaP, setSalvandoMassaP] = useState(false);
+  const [detalhe, setDetalhe] = useState(null);
 
-  const carregar = async (pag = 1, termo = busca, lim = limite) => {
+  const carregar = async (pag = 1, termo = busca) => {
     setLoading(true);
     try {
-      const params = new URLSearchParams({ pagina: pag, limite: lim, busca: termo, todos: true });
+      const params = new URLSearchParams({ pagina: pag, limite, busca: termo, todos: true });
       const res = await fetch(`${API_URL}/api/perfumes?${params}`, { headers: { Authorization: `Bearer ${token}` } });
       const data = await res.json();
       setPerfumes(data.perfumes || data);
@@ -470,41 +468,21 @@ function PainelPerfumes({ token }) {
     finally { setLoading(false); }
   };
 
-  useEffect(() => { carregar(1, '', limite); }, []);
-
+  useEffect(() => { carregar(1, ''); }, []);
   useEffect(() => {
-    const t = setTimeout(() => { setBusca(buscaInput); carregar(1, buscaInput, limite); }, 400);
+    const t = setTimeout(() => { setBusca(buscaInput); carregar(1, buscaInput); }, 400);
     return () => clearTimeout(t);
   }, [buscaInput]);
 
   const totalPaginas = Math.ceil(total / limite);
 
-  const toggleSelP = (id) => setSelsp(p => p.includes(id) ? p.filter(x => x !== id) : [...p, id]);
-  const toggleTodosP = () => setSelsp(p => p.length === perfumes.length ? [] : perfumes.map(x => x.id));
-
-  const excluirMassaP = async () => {
-    const ok = window.confirm('Excluir ' + selsp.length + ' perfume(s)? Isso remove tambem os frascos e precos.');
-    if (!ok) return;
-    setSalvandoMassaP(true);
-    for (const id of selsp) {
-      await fetch(API_URL + '/api/admin/perfumes/' + id, { method: 'DELETE', headers: { Authorization: 'Bearer ' + token } });
-    }
-    setSelsp([]); setSalvandoMassaP(false); carregar(pagina, busca, limite);
-  };
-
-  const salvarMassaP = async () => {
-    setSalvandoMassaP(true);
-    const body = {};
-    if (massaFormP.genero) body.genero = massaFormP.genero;
-    if (massaFormP.ativo !== '') body.ativo = massaFormP.ativo === 'true';
-    for (const id of selsp) {
-      await fetch(API_URL + '/api/admin/perfumes/' + id, { method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }, body: JSON.stringify(body) });
-    }
-    setSelsp([]); setMassaFormP({ genero: '', ativo: '' }); setShowMassaP(false); setSalvandoMassaP(false); carregar(pagina, busca, limite);
-  };
+  const filtrados = perfumes.filter(p => {
+    if (filtro === 'ativos') return p.ativo !== false;
+    if (filtro === 'inativos') return p.ativo === false;
+    return true;
+  });
 
   const abrirEditar = (p) => {
-    setEditando(p);
     const precos = {};
     TAMANHOS.forEach(t => {
       const op = p.opcoes?.find(o => o.tamanho === t.key);
@@ -523,6 +501,8 @@ function PainelPerfumes({ token }) {
       preco_lacrado: p.preco_lacrado || '',
       ...precos,
     });
+    setEditando(p);
+    setDetalhe(null);
   };
 
   const salvarEdicao = async () => {
@@ -534,7 +514,6 @@ function PainelPerfumes({ token }) {
       }));
       TAMANHOS.forEach(t => delete body[`preco_${t.key}`]);
       if (precos.length > 0) body.precos = precos;
-
       const res = await fetch(`${API_URL}/api/admin/perfumes/${editando.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
@@ -542,7 +521,7 @@ function PainelPerfumes({ token }) {
       });
       if (!res.ok) throw new Error('Erro ao salvar');
       setEditando(null);
-      carregar(pagina, busca, limite);
+      carregar(pagina, busca);
     } catch(e) { alert(e.message); }
     finally { setSalvando(false); }
   };
@@ -555,7 +534,8 @@ function PainelPerfumes({ token }) {
         method: 'DELETE', headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error('Erro ao excluir');
-      carregar(pagina, busca, limite);
+      setDetalhe(null);
+      carregar(pagina, busca);
     } catch(e) { alert(e.message); }
     finally { setExcluindo(null); }
   };
@@ -566,221 +546,269 @@ function PainelPerfumes({ token }) {
     style: { width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, boxSizing: 'border-box', outline: 'none', color: '#0d0b07', background: '#fff' }
   });
 
-  return (
-    <div className="fade-in">
-      {/* Modal editar */}
-      {editando && createPortal(
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ background: '#fff', borderRadius: 10, padding: '1.5rem', width: 440, maxWidth: '92vw', boxShadow: '0 8px 32px rgba(0,0,0,0.2)', maxHeight: '90vh', overflowY: 'auto', overflowX: 'hidden', boxSizing: 'border-box' }}>
-            <h3 style={{ marginBottom: 16, color: '#0d0b07' }}>Editar Perfume</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, overflow: 'hidden' }}>
-
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 140px), 1fr))', gap: 12 }}>
-                <div style={{ gridColumn: '1/-1' }}><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>NOME</label><input {...inp('nome')} /></div>
-                <div style={{ gridColumn: '1/-1' }}><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>MARCA</label><input {...inp('marca')} /></div>
-                <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>ANO</label><input {...inp('ano')} type="number" /></div>
-                <div>
-                  <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>GÊNERO</label>
-                  <select value={editForm.genero || ''} onChange={e => setEditForm(f => ({ ...f, genero: e.target.value }))}
-                    style={{ width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, outline: 'none', color: '#0d0b07', background: '#fff' }}>
-                    <option value="">Selecione</option>
-                    <option value="Masculino">Masculino</option>
-                    <option value="Feminino">Feminino</option>
-                    <option value="Unissex">Unissex</option>
-                  </select>
-                </div>
-                <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>PAÍS</label><input {...inp('pais')} /></div>
-                <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>FAMÍLIA OLFATIVA</label><input {...inp('familia_olfativa')} /></div>
-                <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>RATING</label><input {...inp('rating_valor')} type="number" step="0.01" /></div>
-                <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>VOTOS</label><input {...inp('rating_count')} type="number" /></div>
-                <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>PERFUMISTA 1</label><input {...inp('perfumista1')} /></div>
-                <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>PERFUMISTA 2</label><input {...inp('perfumista2')} /></div>
-              </div>
-
-              <p style={{ fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 0 }}>ACORDES</p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 100px), 1fr))', gap: 8 }}>
-                <input {...inp('acorde1')} placeholder="Acorde 1" />
-                <input {...inp('acorde2')} placeholder="Acorde 2" />
-                <input {...inp('acorde3')} placeholder="Acorde 3" />
-                <input {...inp('acorde4')} placeholder="Acorde 4" />
-                <input {...inp('acorde5')} placeholder="Acorde 5" />
-              </div>
-
-              <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>NOTAS DE TOPO</label><input {...inp('notas_topo')} /></div>
-              <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>NOTAS DE CORAÇÃO</label><input {...inp('notas_coracao')} /></div>
-              <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>NOTAS DE BASE</label><input {...inp('notas_base')} /></div>
-              <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>URL FOTO</label><input {...inp('foto_url')} /></div>
-              <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>LINK FRAGRANTICA</label><input {...inp('link_fragrantica')} /></div>
-              <div>
-                <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>DESCRIÇÃO</label>
-                <textarea value={editForm.descricao || ''} onChange={e => setEditForm(f => ({ ...f, descricao: e.target.value }))}
-                  style={{ width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, outline: 'none', color: '#0d0b07', background: '#fff', minHeight: 80, resize: 'vertical', boxSizing: 'border-box' }} />
-              </div>
-              <p style={{ fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 0 }}>PREÇOS DECANT</p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 100px), 1fr))', gap: 8 }}>
-                {TAMANHOS.map(t => (
-                  <div key={t.key}>
-                    <label style={{ fontSize: 10, fontWeight: 600, color: '#aaa', display: 'block', marginBottom: 2 }}>{t.label}</label>
-                    <input type="number" step="0.01" placeholder="R$" {...inp(`preco_${t.key}`)} />
-                  </div>
-                ))}
-              </div>
-
-              <div>
-                <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>PREÇO LACRADO</label>
-                <input type="number" step="0.01" placeholder="R$" {...inp('preco_lacrado')} />
-              </div>
-
-              <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#333', cursor: 'pointer' }}>
-                <input type="checkbox" checked={editForm.ativo !== false} onChange={e => setEditForm(f => ({ ...f, ativo: e.target.checked }))} style={{ flexShrink: 0 }} />
-                Ativo no catálogo
-              </label>
+  // ── Modal Editar ──
+  const ModalEditar = () => editando && createPortal(
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+      onClick={e => e.target === e.currentTarget && setEditando(null)}>
+      <div style={{ background: '#fff', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '90vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
+        <div style={{ width: 40, height: 4, background: '#ddd', borderRadius: 2, margin: '0 auto 16px' }} />
+        <h3 style={{ marginBottom: 16, color: '#0d0b07', fontSize: 18, fontWeight: 700 }}>Editar Perfume</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+            <div style={{ gridColumn: '1/-1' }}><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>NOME</label><input {...inp('nome')} /></div>
+            <div style={{ gridColumn: '1/-1' }}><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>MARCA</label><input {...inp('marca')} /></div>
+            <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>ANO</label><input {...inp('ano')} type="number" /></div>
+            <div>
+              <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>GENERO</label>
+              <select value={editForm.genero || ''} onChange={e => setEditForm(f => ({ ...f, genero: e.target.value }))}
+                style={{ width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, outline: 'none', color: '#0d0b07', background: '#fff' }}>
+                <option value="">Selecione</option><option value="Masculino">Masculino</option><option value="Feminino">Feminino</option><option value="Unissex">Unissex</option>
+              </select>
             </div>
-            <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
-              <button onClick={() => setEditando(null)} style={{ flex: 1, padding: '10px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 4, cursor: 'pointer', fontSize: 13 }}>Cancelar</button>
-              <button onClick={salvarEdicao} disabled={salvando} style={{ flex: 1, padding: '10px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 13, fontWeight: 700, color: '#0d0b07' }}>
-                {salvando ? 'Salvando...' : 'Salvar'}
-              </button>
+            <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>PAIS</label><input {...inp('pais')} /></div>
+            <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>FAMILIA</label><input {...inp('familia_olfativa')} /></div>
+            <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>RATING</label><input {...inp('rating_valor')} type="number" step="0.01" /></div>
+            <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>VOTOS</label><input {...inp('rating_count')} type="number" /></div>
+          </div>
+          <label style={{ fontSize: 11, fontWeight: 600, color: '#888' }}>ACORDES</label>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(90px, 1fr))', gap: 6 }}>
+            <input {...inp('acorde1')} placeholder="1" /><input {...inp('acorde2')} placeholder="2" /><input {...inp('acorde3')} placeholder="3" />
+            <input {...inp('acorde4')} placeholder="4" /><input {...inp('acorde5')} placeholder="5" />
+          </div>
+          <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>NOTAS TOPO</label><input {...inp('notas_topo')} /></div>
+          <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>NOTAS CORACAO</label><input {...inp('notas_coracao')} /></div>
+          <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>NOTAS BASE</label><input {...inp('notas_base')} /></div>
+          <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>URL FOTO</label><input {...inp('foto_url')} /></div>
+          <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>DESCRICAO</label>
+            <textarea value={editForm.descricao || ''} onChange={e => setEditForm(f => ({ ...f, descricao: e.target.value }))}
+              style={{ width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, outline: 'none', color: '#0d0b07', background: '#fff', minHeight: 60, resize: 'vertical', boxSizing: 'border-box' }} />
+          </div>
+          <label style={{ fontSize: 11, fontWeight: 600, color: '#888' }}>PRECOS DECANT</label>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(80px, 1fr))', gap: 6 }}>
+            {TAMANHOS.map(t => (
+              <div key={t.key}><label style={{ fontSize: 10, color: '#aaa', display: 'block', marginBottom: 2 }}>{t.label}</label><input type="number" step="0.01" placeholder="R$" {...inp(`preco_${t.key}`)} /></div>
+            ))}
+          </div>
+          <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>PRECO LACRADO</label><input type="number" step="0.01" placeholder="R$" {...inp('preco_lacrado')} /></div>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#333', cursor: 'pointer' }}>
+            <input type="checkbox" checked={editForm.ativo !== false} onChange={e => setEditForm(f => ({ ...f, ativo: e.target.checked }))} />
+            Ativo no catalogo
+          </label>
+        </div>
+        <div style={{ display: 'flex', gap: 8, marginTop: 20, position: 'sticky', bottom: 0, background: '#fff', paddingTop: 12 }}>
+          <button onClick={() => setEditando(null)} style={{ flex: 1, padding: '12px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 8, cursor: 'pointer', fontSize: 14 }}>Cancelar</button>
+          <button onClick={salvarEdicao} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>
+            {salvando ? 'Salvando...' : 'Salvar'}
+          </button>
+        </div>
+      </div>
+    </div>
+  , document.body);
+
+  // ── Modal Detalhe ──
+  const ModalDetalhe = () => detalhe && createPortal(
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9998, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+      onClick={e => e.target === e.currentTarget && setDetalhe(null)}>
+      <div style={{ background: '#fff', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '85vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
+        <div style={{ width: 40, height: 4, background: '#ddd', borderRadius: 2, margin: '0 auto 16px' }} />
+
+        {/* Foto + info */}
+        <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
+          <div style={{ width: 90, height: 110, flexShrink: 0, borderRadius: 8, overflow: 'hidden', background: '#f5f3ef', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {detalhe.foto_url
+              ? <img src={detalhe.foto_url} alt={detalhe.nome} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+              : <span style={{ fontSize: 32, color: '#ccc' }}>🧴</span>
+            }
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={{ fontSize: 11, color: '#8a6a10', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase' }}>{detalhe.marca}</p>
+            <h3 style={{ fontSize: 18, fontWeight: 700, margin: '2px 0 6px', color: '#111' }}>{detalhe.nome}</h3>
+            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', fontSize: 12, color: '#666' }}>
+              {detalhe.genero && <span>{detalhe.genero}</span>}
+              {detalhe.ano && <span>· {detalhe.ano}</span>}
+              {detalhe.pais && <span>· {detalhe.pais}</span>}
             </div>
+            {detalhe.rating_valor && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 6 }}>
+                <span style={{ fontSize: 16, fontWeight: 700, color: '#111' }}>{Number(detalhe.rating_valor).toFixed(1)}</span>
+                <span style={{ color: '#c9a84c', fontSize: 12 }}>★</span>
+                {detalhe.rating_count && <span style={{ fontSize: 11, color: '#999' }}>({Number(detalhe.rating_count).toLocaleString()})</span>}
+              </div>
+            )}
+            <span style={{ display: 'inline-block', marginTop: 6, padding: '2px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600,
+              background: detalhe.ativo !== false ? '#e8f5e9' : '#fce4ec',
+              color: detalhe.ativo !== false ? '#2e7d32' : '#c62828' }}>
+              {detalhe.ativo !== false ? 'Ativo' : 'Inativo'}
+            </span>
           </div>
         </div>
-      , document.body)}
+
+        {/* Acordes */}
+        {detalhe.acorde1 && (
+          <div style={{ marginBottom: 12 }}>
+            <p style={{ fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 6, letterSpacing: '0.1em' }}>ACORDES</p>
+            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+              {[detalhe.acorde1, detalhe.acorde2, detalhe.acorde3, detalhe.acorde4, detalhe.acorde5].filter(Boolean).map(a => (
+                <span key={a} style={{ padding: '4px 12px', background: '#f5f3ef', borderRadius: 20, fontSize: 12, color: '#555' }}>{a}</span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Notas */}
+        {(detalhe.notas_topo || detalhe.notas_coracao || detalhe.notas_base) && (
+          <div style={{ marginBottom: 12 }}>
+            <p style={{ fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 6, letterSpacing: '0.1em' }}>NOTAS</p>
+            {detalhe.notas_topo && <p style={{ fontSize: 12, color: '#555', marginBottom: 2 }}><b style={{ color: '#8a6a10' }}>Topo:</b> {detalhe.notas_topo}</p>}
+            {detalhe.notas_coracao && <p style={{ fontSize: 12, color: '#555', marginBottom: 2 }}><b style={{ color: '#8a6a10' }}>Coracao:</b> {detalhe.notas_coracao}</p>}
+            {detalhe.notas_base && <p style={{ fontSize: 12, color: '#555' }}><b style={{ color: '#8a6a10' }}>Base:</b> {detalhe.notas_base}</p>}
+          </div>
+        )}
+
+        {/* Descricao */}
+        {detalhe.descricao && (
+          <div style={{ marginBottom: 12 }}>
+            <p style={{ fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4, letterSpacing: '0.1em' }}>DESCRICAO</p>
+            <p style={{ fontSize: 12, color: '#555', lineHeight: 1.6 }}>{detalhe.descricao}</p>
+          </div>
+        )}
+
+        {/* Familia + Perfumistas */}
+        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 16 }}>
+          {detalhe.familia_olfativa && (
+            <div><p style={{ fontSize: 10, fontWeight: 600, color: '#888' }}>FAMILIA</p><p style={{ fontSize: 13, color: '#333' }}>{detalhe.familia_olfativa}</p></div>
+          )}
+          {detalhe.perfumista1 && (
+            <div><p style={{ fontSize: 10, fontWeight: 600, color: '#888' }}>PERFUMISTA</p><p style={{ fontSize: 13, color: '#333', fontStyle: 'italic' }}>{[detalhe.perfumista1, detalhe.perfumista2].filter(Boolean).join(', ')}</p></div>
+          )}
+        </div>
+
+        {/* Acoes */}
+        <div style={{ display: 'flex', gap: 8, position: 'sticky', bottom: 0, background: '#fff', paddingTop: 12 }}>
+          <button onClick={() => setDetalhe(null)} style={{ padding: '12px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#666', flex: 0.5 }}>Fechar</button>
+          <button onClick={() => abrirEditar(detalhe)} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>Editar</button>
+          <button onClick={() => excluir(detalhe)} disabled={excluindo === detalhe.id}
+            style={{ padding: '12px 16px', background: '#fce4ec', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#c62828' }}>
+            {excluindo === detalhe.id ? '...' : 'Excluir'}
+          </button>
+        </div>
+      </div>
+    </div>
+  , document.body);
+
+  return (
+    <div className="fade-in">
+      <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}`}</style>
+      <ModalEditar />
+      <ModalDetalhe />
 
       {/* Header */}
-      <div className="painel-header" style={{ marginBottom: 16 }}>
-        <h2>Perfumes</h2>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+        <h2 style={{ fontSize: 22, fontWeight: 700, color: '#111' }}>Produtos</h2>
         <button onClick={() => window.location.href = '/admin/produtos'}
-          style={{ padding: '10px 22px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: '#0d0b07', boxShadow: '0 2px 8px rgba(201,168,76,0.3)' }}>
-          + Novo perfume
+          style={{ padding: '10px 20px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: '#0d0b07', boxShadow: '0 2px 8px rgba(201,168,76,0.3)' }}>
+          + Novo Produto
         </button>
       </div>
 
-      {/* Filtros */}
-      <div style={{ background: '#f8f8f8', border: '1px solid #eee', borderRadius: 12, padding: '1rem 1.25rem', marginBottom: 20, display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
-        <div style={{ position: 'relative', flex: '1 1 200px', minWidth: 0 }}>
-          <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#bbb', fontSize: 15 }}>&#128269;</span>
-          <input value={buscaInput} onChange={e => setBuscaInput(e.target.value)} placeholder="Buscar perfume ou marca..."
-            style={{ width: '100%', padding: '10px 16px 10px 42px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 13, outline: 'none', background: '#fff', boxSizing: 'border-box', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }} />
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: 13, color: '#888' }}>Mostrar:</span>
-          <select value={limite} onChange={e => { setLimite(Number(e.target.value)); carregar(1, busca, Number(e.target.value)); }}
-            style={{ padding: '9px 14px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 13, outline: 'none', background: '#fff', cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-            <option value={10}>10</option>
-            <option value={20}>20</option>
-            <option value={50}>50</option>
-            <option value={100}>100</option>
-          </select>
-        </div>
+      {/* Busca */}
+      <div style={{ position: 'relative', marginBottom: 12 }}>
+        <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#bbb', fontSize: 15 }}>&#128269;</span>
+        <input value={buscaInput} onChange={e => setBuscaInput(e.target.value)} placeholder="Buscar..."
+          style={{ width: '100%', padding: '12px 16px 12px 42px', border: '1.5px solid #e0e0e0', borderRadius: 10, fontSize: 14, outline: 'none', background: '#fff', boxSizing: 'border-box' }} />
       </div>
 
-      {/* Tabela */}
-      {loading ? <p className="muted">Carregando...</p> : (
-        <>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, flexWrap: 'wrap', gap: 8 }}>
-            <p style={{ fontSize: 12, color: '#888' }}>{total} perfumes no total — pag. {pagina}/{totalPaginas || 1}</p>
-            {selsp.length > 0 && (
-              <div style={{ display: 'flex', gap: 8, alignItems: 'center', background: '#fffbf0', border: '1px solid #e8c870', borderRadius: 6, padding: '8px 14px', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: 13, fontWeight: 600, color: '#8a6a10' }}>{selsp.length} sel.</span>
-                <button onClick={() => setShowMassaP(v => !v)} style={{ padding: '4px 12px', background: '#c9a84c', border: 'none', borderRadius: 4, fontSize: 12, fontWeight: 600, cursor: 'pointer', color: '#0d0b07' }}>Editar</button>
-                <button onClick={excluirMassaP} disabled={salvandoMassaP} style={{ padding: '4px 12px', background: '#fff0f0', border: '1px solid #fcc', borderRadius: 4, fontSize: 12, cursor: 'pointer', color: '#c0392b' }}>Excluir</button>
-                <button onClick={() => setSelsp([])} style={{ padding: '4px 8px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 4, fontSize: 12, cursor: 'pointer' }}>X</button>
-              </div>
-            )}
-          </div>
-          {showMassaP && selsp.length > 0 && (
-            <div style={{ background: '#fffbf0', border: '1px solid #e8c870', borderRadius: 6, padding: '12px 16px', marginBottom: 12, display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
-              <span style={{ fontSize: 12, color: '#888' }}>Aplicar a {selsp.length} perfume(s):</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <label style={{ fontSize: 12, color: '#888' }}>Gênero:</label>
-                <select value={massaFormP.genero} onChange={e => setMassaFormP(m => ({ ...m, genero: e.target.value }))} style={{ padding: '6px 10px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, outline: 'none', background: '#fff', color: '#333' }}>
-                  <option value=''>Manter</option>
-                  <option value='Masculino'>Masculino</option>
-                  <option value='Feminino'>Feminino</option>
-                  <option value='Unissex'>Unissex</option>
-                </select>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <label style={{ fontSize: 12, color: '#888' }}>Status:</label>
-                <select value={massaFormP.ativo} onChange={e => setMassaFormP(m => ({ ...m, ativo: e.target.value }))} style={{ padding: '6px 10px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, outline: 'none', background: '#fff', color: '#333' }}>
-                  <option value=''>Manter</option>
-                  <option value='true'>Ativo</option>
-                  <option value='false'>Inativo</option>
-                </select>
-              </div>
-              <button onClick={salvarMassaP} disabled={salvandoMassaP} style={{ padding: '6px 16px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 4, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: '#0d0b07' }}>
-                {salvandoMassaP ? 'Salvando...' : 'Aplicar'}
-              </button>
-            </div>
-          )}
-          <div className="admin-table-wrap">
-            <table className="admin-table">
-              <thead style={{ fontWeight: 700 }}>
-                <tr>
-                  <th style={{ width: 36 }}><input type='checkbox' checked={selsp.length === perfumes.length && perfumes.length > 0} onChange={toggleTodosP} style={{ cursor: 'pointer' }} /></th>
-                  <th>Foto</th><th>Nome</th><th>Marca</th><th>Ano</th><th>Gênero</th><th>Rating</th><th>Status</th><th>Ações</th></tr>
-              </thead>
-              <tbody>
-                {perfumes.map(p => (
-                  <tr key={p.id} style={{ background: selsp.includes(p.id) ? '#fffbf0' : '' }}>
-                    <td><input type='checkbox' checked={selsp.includes(p.id)} onChange={() => toggleSelP(p.id)} style={{ cursor: 'pointer' }} /></td>
-                    <td>
-                      {p.foto_url
-                        ? <img src={p.foto_url} alt={p.nome} style={{ width: 36, height: 44, objectFit: 'contain', borderRadius: 4, background: '#f5f5f5' }} />
-                        : <div style={{ width: 36, height: 44, background: '#f0f0f0', borderRadius: 4 }} />
-                      }
-                    </td>
-                    <td style={{ fontWeight: 500 }}>{p.nome}</td>
-                    <td className="muted small">{p.marca}</td>
-                    <td className="muted small">{p.ano || '—'}</td>
-                    <td className="muted small">{p.genero || '—'}</td>
-                    <td className="muted small">{p.rating_valor ? Number(p.rating_valor).toFixed(1) : '—'}</td>
-                    <td>
-                      <span className={`badge ${p.ativo !== false ? 'badge-green' : 'badge-red'}`}>
-                        {p.ativo !== false ? 'Ativo' : 'Inativo'}
-                      </span>
-                    </td>
-                    <td>
-                      <div style={{ display: 'flex', gap: 6 }}>
-                        <button onClick={() => abrirEditar(p)}
-                          style={{ padding: '4px 10px', background: '#f0f0f0', border: '1px solid #ddd', borderRadius: 4, cursor: 'pointer', fontSize: 12, color: '#333' }}>
-                          ✏️ Editar
-                        </button>
-                        <button onClick={() => excluir(p)} disabled={excluindo === p.id}
-                          style={{ padding: '4px 10px', background: '#fff0f0', border: '1px solid #fcc', borderRadius: 4, cursor: 'pointer', fontSize: 12, color: '#c0392b' }}>
-                          {excluindo === p.id ? '...' : '🗑️'}
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+      {/* Filtros */}
+      <div style={{ display: 'flex', gap: 8, marginBottom: 16, overflowX: 'auto' }}>
+        {[['todos', 'Todos'], ['ativos', 'Ativos'], ['inativos', 'Inativos']].map(([key, label]) => (
+          <button key={key} onClick={() => setFiltro(key)}
+            style={{ padding: '8px 18px', borderRadius: 20, fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', border: filtro === key ? 'none' : '1.5px solid #ddd',
+              background: filtro === key ? '#111' : '#fff', color: filtro === key ? '#fff' : '#555', transition: 'all .2s' }}>
+            {label}
+          </button>
+        ))}
+        <span style={{ display: 'flex', alignItems: 'center', fontSize: 12, color: '#999', marginLeft: 'auto', whiteSpace: 'nowrap' }}>{total} total</span>
+      </div>
 
-          {/* Paginacao */}
-          {totalPaginas > 1 && (
-            <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 24, flexWrap: 'wrap' }}>
-              <button onClick={() => carregar(pagina - 1, busca, limite)} disabled={pagina === 1}
-                style={{ padding: '6px 14px', border: '1px solid #ddd', borderRadius: 4, background: '#fff', cursor: pagina === 1 ? 'not-allowed' : 'pointer', fontSize: 13, color: pagina === 1 ? '#ccc' : '#333' }}>
-                ← Anterior
-              </button>
-              {[...Array(Math.min(totalPaginas, 7))].map((_, i) => {
-                const p = i + 1;
-                return (
-                  <button key={p} onClick={() => carregar(p, busca, limite)}
-                    style={{ padding: '6px 12px', border: '1px solid #ddd', borderRadius: 4, background: pagina === p ? 'linear-gradient(135deg,#c9a84c,#e8c870)' : '#fff', cursor: 'pointer', fontSize: 13, fontWeight: pagina === p ? 700 : 400, color: pagina === p ? '#0d0b07' : '#333' }}>
-                    {p}
-                  </button>
-                );
-              })}
-              <button onClick={() => carregar(pagina + 1, busca, limite)} disabled={pagina === totalPaginas}
-                style={{ padding: '6px 14px', border: '1px solid #ddd', borderRadius: 4, background: '#fff', cursor: pagina === totalPaginas ? 'not-allowed' : 'pointer', fontSize: 13, color: pagina === totalPaginas ? '#ccc' : '#333' }}>
-                Próxima →
-              </button>
-            </div>
-          )}
-        </>
+      {/* Cards */}
+      {loading ? (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {[1,2,3,4].map(i => <div key={i} style={{ height: 100, background: '#f0f0f0', borderRadius: 12 }} />)}
+        </div>
+      ) : filtrados.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '3rem 0', color: '#999' }}>
+          <p style={{ fontSize: 32, marginBottom: 8 }}>🔍</p>
+          <p>Nenhum perfume encontrado</p>
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {filtrados.map(p => {
+            const acordes = [p.acorde1, p.acorde2, p.acorde3].filter(Boolean);
+            return (
+              <div key={p.id} onClick={() => setDetalhe(p)}
+                style={{ display: 'flex', gap: 14, padding: 14, background: '#fff', borderRadius: 12, border: '1px solid #eee',
+                  cursor: 'pointer', transition: 'all .15s', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = '#c9a84c'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(201,168,76,0.15)'; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = '#eee'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.04)'; }}>
+
+                {/* Foto */}
+                <div style={{ width: 70, height: 85, flexShrink: 0, borderRadius: 8, overflow: 'hidden', background: '#f5f3ef', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {p.foto_url
+                    ? <img src={p.foto_url} alt={p.nome} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                    : <span style={{ fontSize: 28, color: '#ccc' }}>🧴</span>
+                  }
+                </div>
+
+                {/* Info */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
+                    <div style={{ minWidth: 0 }}>
+                      <p style={{ fontSize: 15, fontWeight: 700, color: '#111', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.nome}</p>
+                      <p style={{ fontSize: 12, color: '#888' }}>{p.marca}</p>
+                    </div>
+                    <span style={{ flexShrink: 0, padding: '2px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600,
+                      background: p.ativo !== false ? '#e8f5e9' : '#fce4ec',
+                      color: p.ativo !== false ? '#2e7d32' : '#c62828' }}>
+                      {p.ativo !== false ? 'Ativo' : 'Inativo'}
+                    </span>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 6, fontSize: 12, color: '#999' }}>
+                    {p.genero && <span>{p.genero}</span>}
+                    {p.ano && <span>· {p.ano}</span>}
+                    {p.rating_valor && <span>· <span style={{ color: '#c9a84c' }}>★</span> {Number(p.rating_valor).toFixed(1)}</span>}
+                  </div>
+
+                  {acordes.length > 0 && (
+                    <div style={{ display: 'flex', gap: 4, marginTop: 6, flexWrap: 'wrap' }}>
+                      {acordes.map(a => (
+                        <span key={a} style={{ padding: '2px 8px', background: '#f5f3ef', borderRadius: 12, fontSize: 10, color: '#777' }}>{a}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Seta */}
+                <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0, color: '#ccc', fontSize: 18 }}>›</div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Paginacao */}
+      {totalPaginas > 1 && (
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 24, flexWrap: 'wrap' }}>
+          <button onClick={() => carregar(pagina - 1, busca)} disabled={pagina === 1}
+            style={{ padding: '8px 16px', border: '1px solid #ddd', borderRadius: 8, background: '#fff', cursor: pagina === 1 ? 'not-allowed' : 'pointer', fontSize: 13, color: pagina === 1 ? '#ccc' : '#333' }}>
+            ←
+          </button>
+          <span style={{ display: 'flex', alignItems: 'center', fontSize: 13, color: '#666', padding: '0 8px' }}>{pagina} / {totalPaginas}</span>
+          <button onClick={() => carregar(pagina + 1, busca)} disabled={pagina === totalPaginas}
+            style={{ padding: '8px 16px', border: '1px solid #ddd', borderRadius: 8, background: '#fff', cursor: pagina === totalPaginas ? 'not-allowed' : 'pointer', fontSize: 13, color: pagina === totalPaginas ? '#ccc' : '#333' }}>
+            →
+          </button>
+        </div>
       )}
     </div>
   );
