@@ -55,7 +55,7 @@ function StepEscolha({ onFragrantica, onManual }) {
       >
         <p style={{ fontSize: 18, marginBottom: 6 }}>⚡ Carregar pelo Fragrantica</p>
         <p style={{ fontSize: 13, color: S.text2 }}>Cole o link do Fragrantica e os dados serão preenchidos automaticamente.</p>
-        <p style={{ fontSize: 11, color: S.text3, marginTop: 8 }}>Requer servidor local rodando</p>
+        <p style={{ fontSize: 11, color: S.text3, marginTop: 8 }}>Extrai dados diretamente no navegador</p>
       </button>
 
       <button onClick={onManual} style={{
@@ -72,35 +72,241 @@ function StepEscolha({ onFragrantica, onManual }) {
   );
 }
 
+// ─── Parser HTML do Fragrantica (client-side) ────────────────────────────
+function parseFragranticaHTML(html) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const txt = s => { const el = doc.querySelector(s); return el ? el.textContent.trim() : ''; };
+
+  // Nome e marca
+  const h1 = doc.querySelector('h1[itemprop="name"]') || doc.querySelector('h1');
+  let nome = '', marca = '';
+  if (h1) {
+    const spans = h1.querySelectorAll('span');
+    if (spans.length >= 2) {
+      nome = spans[0].textContent.trim();
+      marca = spans[1].textContent.trim();
+    } else {
+      nome = h1.textContent.trim();
+    }
+  }
+
+  // Foto
+  let foto_url = '';
+  const imgEl = doc.querySelector('img[itemprop="image"]') || doc.querySelector('.perfume-big-img img') || doc.querySelector('#mainpic img');
+  if (imgEl) foto_url = imgEl.src || imgEl.getAttribute('src') || '';
+
+  // Ano
+  let ano = null;
+  const anoMatch = html.match(/foi\s+lan[çc]ado\s+em\s+(\d{4})/i) || html.match(/was\s+launched\s+in\s+(\d{4})/i);
+  if (anoMatch) ano = parseInt(anoMatch[1]);
+
+  // Genero
+  let genero = '';
+  const genTexto = (doc.querySelector('[itemprop="description"]') || doc.querySelector('.fragrance-description'))?.textContent || '';
+  if (/para\s+(mulheres\s+e\s+homens|homens\s+e\s+mulheres)/i.test(genTexto) || /for\s+(women\s+and\s+men|men\s+and\s+women)/i.test(genTexto)) genero = 'Unissex';
+  else if (/para\s+mulheres/i.test(genTexto) || /for\s+women/i.test(genTexto)) genero = 'Feminino';
+  else if (/para\s+homens/i.test(genTexto) || /for\s+men/i.test(genTexto)) genero = 'Masculino';
+
+  // Perfumistas
+  const perfumistas = [];
+  doc.querySelectorAll('a[href*="/noses/"]').forEach(a => {
+    const n = a.textContent.trim();
+    if (n && !perfumistas.includes(n)) perfumistas.push(n);
+  });
+
+  // Rating
+  let rating_valor = null, rating_count = null;
+  const ratingEl = doc.querySelector('[itemprop="ratingValue"]');
+  if (ratingEl) rating_valor = parseFloat(ratingEl.textContent.trim()) || null;
+  const countEl = doc.querySelector('[itemprop="ratingCount"]') || doc.querySelector('[itemprop="reviewCount"]');
+  if (countEl) rating_count = parseInt(countEl.textContent.replace(/\D/g, '')) || null;
+
+  // País
+  let pais = '';
+  const paisMatch = html.match(/flag-icon.*?title="([^"]+)"/i) || html.match(/country[^>]*>([^<]+)</i);
+  if (paisMatch) pais = paisMatch[1].trim();
+
+  // Família olfativa
+  let familia_olfativa = '';
+  const famMatch = html.match(/Grupo\s+(?:Olfativo|Principal)[^:]*:\s*<[^>]*>([^<]+)/i) ||
+                   html.match(/Main\s+Accords/i);
+  const breadcrumbs = doc.querySelectorAll('.breadcrumb a, nav a[href*="/grupos/"], nav a[href*="/groups/"]');
+  breadcrumbs.forEach(a => {
+    const t = a.textContent.trim();
+    if (t && !['Home','Perfumes','Fragrantica'].includes(t) && a.href && (a.href.includes('/grupos/') || a.href.includes('/groups/'))) {
+      if (!familia_olfativa) familia_olfativa = t;
+    }
+  });
+
+  // Acordes
+  const acordes = [];
+  doc.querySelectorAll('.accord-bar, .cell.accord-box, [style*="background"][class*="accord"], div[style*="width"][style*="background"]').forEach(el => {
+    const t = el.textContent.trim();
+    if (t && t.length < 40 && !acordes.includes(t)) acordes.push(t);
+  });
+  // Fallback: buscar no bloco "Main Accords"
+  if (acordes.length === 0) {
+    const accordSection = html.match(/mainaccords.*?<\/div>/is) || html.match(/Main\s*Accords.*?<\/div>/is);
+    if (accordSection) {
+      const re = />([^<]{2,30})</g;
+      let m;
+      while ((m = re.exec(accordSection[0])) !== null) {
+        const t = m[1].trim();
+        if (t && !t.match(/^[\d.%]+$/) && !acordes.includes(t) && acordes.length < 5) acordes.push(t);
+      }
+    }
+  }
+
+  // Notas olfativas
+  const notasMap = { topo: [], coracao: [], base: [] };
+  const pyramidDivs = doc.querySelectorAll('[style*="padding"], div, h4, p');
+  let currentLayer = null;
+  pyramidDivs.forEach(el => {
+    const t = el.textContent.trim().toLowerCase();
+    if (t.includes('notas de topo') || t.includes('top notes') || t === 'topo') currentLayer = 'topo';
+    else if (t.includes('notas de cora') || t.includes('middle notes') || t.includes('heart notes') || t === 'coração') currentLayer = 'coracao';
+    else if (t.includes('notas de base') || t.includes('base notes') || t === 'base') currentLayer = 'base';
+  });
+
+  // Extrair notas dos blocos de pirâmide
+  const extractNotas = (sectionHtml) => {
+    const notas = [];
+    const re = /<(?:img|span|div|a)[^>]*(?:title|alt)="([^"]+)"[^>]*>/gi;
+    let m;
+    while ((m = re.exec(sectionHtml)) !== null) {
+      const n = m[1].trim();
+      if (n && n.length < 50 && !notas.includes(n) && !n.match(/^\d+$/)) notas.push(n);
+    }
+    return notas;
+  };
+
+  // Tentar identificar blocos de notas pelo HTML
+  const topMatch = html.match(/(?:notas?\s*de\s*topo|top\s*notes?)[\s\S]*?<div[^>]*>([\s\S]*?)<\/div>\s*<\/div>/i);
+  const midMatch = html.match(/(?:notas?\s*(?:de\s*)?cora[çc][ãa]o|(?:middle|heart)\s*notes?)[\s\S]*?<div[^>]*>([\s\S]*?)<\/div>\s*<\/div>/i);
+  const baseMatch = html.match(/(?:notas?\s*de\s*base|base\s*notes?)[\s\S]*?<div[^>]*>([\s\S]*?)<\/div>\s*<\/div>/i);
+
+  if (topMatch) notasMap.topo = extractNotas(topMatch[1]);
+  if (midMatch) notasMap.coracao = extractNotas(midMatch[1]);
+  if (baseMatch) notasMap.base = extractNotas(baseMatch[1]);
+
+  // Fallback: buscar pyramid-level blocks
+  if (notasMap.topo.length === 0 && notasMap.coracao.length === 0 && notasMap.base.length === 0) {
+    const pyramidBlocks = doc.querySelectorAll('[class*="pyramid"], [id*="pyramid"], .notes-box');
+    pyramidBlocks.forEach(block => {
+      const imgs = block.querySelectorAll('img[alt], span[title]');
+      const notes = [];
+      imgs.forEach(img => {
+        const n = (img.alt || img.title || '').trim();
+        if (n && n.length < 50) notes.push(n);
+      });
+      const blockText = block.textContent.toLowerCase();
+      if (blockText.includes('topo') || blockText.includes('top')) notasMap.topo = notes;
+      else if (blockText.includes('cora') || blockText.includes('heart') || blockText.includes('middle')) notasMap.coracao = notes;
+      else if (blockText.includes('base')) notasMap.base = notes;
+    });
+  }
+
+  // Descrição
+  let descricao = '';
+  const descEl = doc.querySelector('[itemprop="description"]') || doc.querySelector('.fragrance-description');
+  if (descEl) {
+    descricao = descEl.textContent.trim().replace(/\s+/g, ' ');
+    // Remover partes padrão do template
+    descricao = descricao.replace(/^.*?(foi lan[çc]ado|was launched)/i, (m) => m);
+  }
+
+  return {
+    encontrado: !!nome,
+    nome, marca, foto_url, ano, genero, pais, familia_olfativa,
+    rating_valor, rating_count,
+    perfumista1: perfumistas[0] || '',
+    perfumista2: perfumistas[1] || '',
+    acorde1: acordes[0] || '', acorde2: acordes[1] || '', acorde3: acordes[2] || '',
+    acorde4: acordes[3] || '', acorde5: acordes[4] || '',
+    notas_topo: notasMap.topo.join(', '),
+    notas_coracao: notasMap.coracao.join(', '),
+    notas_base: notasMap.base.join(', '),
+    descricao,
+  };
+}
+
+const CORS_PROXIES = [
+  url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+  url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+  url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+];
+
 // ─── STEP: carregar pelo Fragrantica ──────────────────────────────────────
-function StepFragrantica({ onPreview, onVoltar }) {
-  const [tunnelUrl, setTunnelUrl] = useState(localStorage.getItem('scraper_tunnel') || '');
+function StepFragrantica({ onPreview, onVoltar, token }) {
   const [linkFrag, setLinkFrag] = useState('');
   const [carregando, setCarregando] = useState(false);
   const [msg, setMsg] = useState({ tipo: '', texto: '' });
 
   const carregar = async () => {
-    if (!tunnelUrl) return setMsg({ tipo: 'erro', texto: 'Configure a URL do servidor local.' });
-    if (!linkFrag || !linkFrag.includes('fragrantica.com/perfume/')) {
-      return setMsg({ tipo: 'erro', texto: 'Cole um link valido do Fragrantica.' });
+    if (!linkFrag || !linkFrag.match(/fragrantica\.com(\.br)?\/perfume\//)) {
+      return setMsg({ tipo: 'erro', texto: 'Cole um link válido do Fragrantica. Ex: https://www.fragrantica.com.br/perfume/Marca/Nome-12345.html' });
     }
     setCarregando(true);
-    setMsg({ tipo: '', texto: '' });
-    try {
-      const base = tunnelUrl.replace(/\/$/, '');
-      const resp = await fetch(`${base}/scrape`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: linkFrag }),
-      });
-      const d = await resp.json();
-      if (d.sucesso) {
-        onPreview(d);
-      } else {
-        setMsg({ tipo: 'erro', texto: d.erro || 'Erro ao processar.' });
+    setMsg({ tipo: 'aviso', texto: 'Buscando dados do Fragrantica via navegador...' });
+
+    let html = null;
+
+    // Tentar cada proxy CORS até um funcionar
+    for (let i = 0; i < CORS_PROXIES.length; i++) {
+      try {
+        const proxyUrl = CORS_PROXIES[i](linkFrag);
+        const resp = await fetch(proxyUrl);
+        if (resp.ok) {
+          html = await resp.text();
+          if (html && html.length > 500 && html.includes('fragrantica')) break;
+          html = null; // resposta inválida
+        }
+      } catch(e) {
+        // proxy falhou, tentar próximo
       }
+    }
+
+    if (!html) {
+      setCarregando(false);
+      return setMsg({ tipo: 'erro', texto: 'Não foi possível acessar o Fragrantica. Tente novamente ou use o cadastro manual.' });
+    }
+
+    try {
+      const d = parseFragranticaHTML(html);
+
+      if (!d.encontrado) throw new Error('Não foi possível extrair os dados da página. Tente outro link ou cadastre manualmente.');
+
+      // Fallback: extrair marca/nome da URL se não encontrou no HTML
+      if (!d.marca || !d.nome) {
+        const match = linkFrag.match(/fragrantica\.com(?:\.br)?\/perfume\/([^/]+)\/([^/]+?)(?:-\d+)?\.html/);
+        if (match) {
+          if (!d.marca) d.marca = decodeURIComponent(match[1]).replace(/-/g, ' ');
+          if (!d.nome) d.nome = decodeURIComponent(match[2]).replace(/-/g, ' ');
+        }
+      }
+
+      onPreview({
+        sucesso: true,
+        dados: {
+          nome: d.nome,
+          marca: d.marca,
+          foto_url: d.foto_url || '',
+          ano: d.ano || null,
+          genero: d.genero || '',
+          pais: d.pais || '',
+          rating_valor: d.rating_valor || null,
+          rating_count: d.rating_count || null,
+          acorde1: d.acorde1 || '', acorde2: d.acorde2 || '', acorde3: d.acorde3 || '',
+          acorde4: d.acorde4 || '', acorde5: d.acorde5 || '',
+          notas_topo: d.notas_topo || '', notas_coracao: d.notas_coracao || '', notas_base: d.notas_base || '',
+          perfumista1: d.perfumista1 || '', perfumista2: d.perfumista2 || '',
+          familia_olfativa: d.familia_olfativa || '', descricao: d.descricao || '',
+        },
+        slug: null,
+        atualizado: false,
+      });
     } catch(e) {
-      setMsg({ tipo: 'erro', texto: 'Nao foi possivel conectar ao servidor local. Verifique se esta rodando.' });
+      setMsg({ tipo: 'erro', texto: e.message || 'Erro ao processar dados do Fragrantica.' });
     } finally {
       setCarregando(false);
     }
@@ -109,30 +315,16 @@ function StepFragrantica({ onPreview, onVoltar }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
 
-      {/* Configuracao do servidor */}
-      <div style={{ background: S.bg2, border: `1px solid ${S.border}`, borderRadius: 8, padding: '1.5rem' }}>
-        <Label>URL do Servidor Local</Label>
-        <p style={{ fontSize: 11, color: S.text3, marginBottom: 8 }}>
-          Rode <code style={{ background: '#eee', padding: '2px 6px', borderRadius: 3 }}>python3 scrape_server.py</code> e depois{' '}
-          <code style={{ background: '#eee', padding: '2px 6px', borderRadius: 3 }}>npx localtunnel --port 4000</code>
-        </p>
-        <Input
-          value={tunnelUrl}
-          onChange={e => { setTunnelUrl(e.target.value); localStorage.setItem('scraper_tunnel', e.target.value); }}
-          placeholder="https://xxx.loca.lt"
-        />
-        {tunnelUrl && (
-          <p style={{ fontSize: 11, color: '#2a7a2a', marginTop: 6 }}>🟢 {tunnelUrl}</p>
-        )}
-      </div>
-
       {/* Link do Fragrantica */}
       <div style={{ background: S.bg2, border: `1px solid ${S.border}`, borderRadius: 8, padding: '1.5rem' }}>
         <Label>Link do Fragrantica</Label>
+        <p style={{ fontSize: 11, color: S.text3, marginBottom: 8 }}>
+          Cole a URL completa do perfume no Fragrantica. Os dados serão extraídos diretamente no navegador.
+        </p>
         <Input
           value={linkFrag}
           onChange={e => setLinkFrag(e.target.value)}
-          placeholder="https://www.fragrantica.com/perfume/..."
+          placeholder="https://www.fragrantica.com.br/perfume/Marca/Nome-12345.html"
         />
       </div>
 
@@ -142,11 +334,11 @@ function StepFragrantica({ onPreview, onVoltar }) {
         <button onClick={onVoltar} style={{ padding: '12px 20px', background: '#fff', border: `1px solid ${S.border}`, borderRadius: 4, fontSize: 13, cursor: 'pointer', color: S.text2 }}>
           ← Voltar
         </button>
-        <button onClick={carregar} disabled={carregando || !linkFrag || !tunnelUrl} style={{
+        <button onClick={carregar} disabled={carregando || !linkFrag} style={{
           flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)',
           border: 'none', borderRadius: 4, fontSize: 13, fontWeight: 700,
           cursor: carregando ? 'not-allowed' : 'pointer', color: '#0d0b07',
-          opacity: carregando || !linkFrag || !tunnelUrl ? 0.6 : 1,
+          opacity: carregando || !linkFrag ? 0.6 : 1,
         }}>
           {carregando ? '⏳ Carregando...' : '⚡ Carregar dados'}
         </button>
@@ -192,10 +384,16 @@ function StepPreview({ resultado, onConfirmar, onVoltar, onEditar }) {
           <div>
             <p style={{ fontSize: 11, color: S.text3, textTransform: 'uppercase', letterSpacing: '0.15em' }}>{d?.marca}</p>
             <p style={{ fontSize: 20, fontWeight: 700, color: S.text, marginBottom: 4 }}>{d?.nome}</p>
-            <p style={{ fontSize: 12, color: S.text2, marginBottom: 8 }}>
-              {d?.genero} {d?.ano ? `· ${d.ano}` : ''}
-              {d?.rating_valor ? ` · ⭐ ${d.rating_valor} (${d?.rating_count?.toLocaleString()} votos)` : ''}
+            <p style={{ fontSize: 12, color: S.text2, marginBottom: 4 }}>
+              {d?.genero} {d?.ano ? `· ${d.ano}` : ''} {d?.pais ? `· ${d.pais}` : ''}
+              {d?.rating_valor ? ` · ⭐ ${d.rating_valor}${d?.rating_count ? ` (${d.rating_count.toLocaleString()} votos)` : ''}` : ''}
             </p>
+            {d?.familia_olfativa && <p style={{ fontSize: 11, color: S.text3, marginBottom: 4 }}>Família: {d.familia_olfativa}</p>}
+            {(d?.perfumista1 || d?.perfumista2) && (
+              <p style={{ fontSize: 11, color: S.text3, fontStyle: 'italic', marginBottom: 8 }}>
+                {[d.perfumista1, d.perfumista2].filter(Boolean).join(', ')}
+              </p>
+            )}
 
             {/* Acordes */}
             {d?.acorde1 && (
@@ -210,6 +408,9 @@ function StepPreview({ resultado, onConfirmar, onVoltar, onEditar }) {
             {d?.notas_topo && <p style={{ fontSize: 11, color: S.text3 }}><b>Topo:</b> {d.notas_topo}</p>}
             {d?.notas_coracao && <p style={{ fontSize: 11, color: S.text3 }}><b>Coração:</b> {d.notas_coracao}</p>}
             {d?.notas_base && <p style={{ fontSize: 11, color: S.text3 }}><b>Base:</b> {d.notas_base}</p>}
+
+            {/* Descrição */}
+            {d?.descricao && <p style={{ fontSize: 11, color: S.text3, marginTop: 8 }}>{d.descricao.slice(0, 200)}{d.descricao.length > 200 ? '...' : ''}</p>}
           </div>
         </div>
 
@@ -299,7 +500,7 @@ function StepManual({ onVoltar, onSalvo }) {
     try {
       await api.adminCadastrarPerfume({
         ...form,
-        precos: precos.filter(p => p.preco),
+        precos: precos.filter(p => p.preco).map(p => ({ tamanho: p.key, preco: Number(p.preco), ml: p.ml })),
         ml_inicial: form.ml_inicial ? Number(form.ml_inicial) : null,
       });
       onSalvo();
@@ -443,7 +644,8 @@ export default function AdminProdutos() {
 
   const confirmarECadastrar = async (resultado, precos, ml_inicial) => {
     const d = resultado.dados;
-    await api.adminCadastrarPerfume({
+    const precosFormatados = (precos || []).filter(p => p.preco).map(p => ({ tamanho: p.key, preco: Number(p.preco), ml: p.ml }));
+    const payload = {
       nome: d.nome,
       marca: d.marca,
       ano: d.ano,
@@ -452,9 +654,20 @@ export default function AdminProdutos() {
       foto_url: d.foto_url || '',
       url_fragrantica: resultado.slug ? `https://nicheclub-frontend.vercel.app/perfume/${resultado.slug}` : '',
       rating_valor: d.rating_valor || '',
+      rating_count: d.rating_count || '',
+      familia_olfativa: d.familia_olfativa || '',
+      perfumista1: d.perfumista1 || '',
+      perfumista2: d.perfumista2 || '',
+      acorde1: d.acorde1 || '', acorde2: d.acorde2 || '', acorde3: d.acorde3 || '',
+      acorde4: d.acorde4 || '', acorde5: d.acorde5 || '',
+      notas_topo: d.notas_topo || '',
+      notas_coracao: d.notas_coracao || '',
+      notas_base: d.notas_base || '',
+      descricao: d.descricao || '',
       ml_inicial: ml_inicial ? Number(ml_inicial) : null,
-      precos: precos.filter(p => p.preco),
-    });
+    };
+    if (precosFormatados.length > 0) payload.precos = precosFormatados;
+    await api.adminCadastrarPerfume(payload);
     setMensagemSucesso(resultado.atualizado ? 'Perfume atualizado com sucesso!' : 'Perfume cadastrado com sucesso!');
     setStep('sucesso');
   };
@@ -488,6 +701,7 @@ export default function AdminProdutos() {
           <StepFragrantica
             onPreview={r => { setResultado(r); setStep('preview'); }}
             onVoltar={() => setStep('escolha')}
+            token={token}
           />
         )}
 
