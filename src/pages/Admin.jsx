@@ -115,19 +115,12 @@ function PainelEstoque({ token }) {
   const [frascos, setFrascos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [busca, setBusca] = useState('');
-  const [filtroStatus, setFiltroStatus] = useState('');
+  const [filtro, setFiltro] = useState('todos');
   const [editando, setEditando] = useState(null);
   const [editForm, setEditForm] = useState({ ml_total: '', ml_vendido: '' });
   const [salvando, setSalvando] = useState(false);
   const [excluindo, setExcluindo] = useState(null);
-  const [sels, setSels] = useState([]);
-  const [massaForm, setMassaForm] = useState({ ml_total: '', ml_vendido: '' });
-  const [salvandoMassa, setSalvandoMassa] = useState(false);
-  const [showMassa, setShowMassa] = useState(false);
-  const [filtroCriadoInicio, setFiltroCriadoInicio] = useState('');
-  const [filtroCriadoFim, setFiltroCriadoFim] = useState('');
-  const [filtroEsgotadoInicio, setFiltroEsgotadoInicio] = useState('');
-  const [filtroEsgotadoFim, setFiltroEsgotadoFim] = useState('');
+  const [detalhe, setDetalhe] = useState(null);
   const API = 'https://nicheclub-backend-production.up.railway.app';
 
   const carregar = () => {
@@ -139,23 +132,26 @@ function PainelEstoque({ token }) {
 
   useEffect(() => { carregar(); }, [token]);
 
+  const getStatus = (f) => {
+    const disp = Number(f.ml_disponivel || 0);
+    if (disp === 0) return { key: 'esgotado', label: 'Esgotado', bg: '#fce4ec', color: '#c62828' };
+    if (disp < 20) return { key: 'baixo', label: 'Baixo Estoque', bg: '#fff3e0', color: '#e65100' };
+    return { key: 'aberto', label: 'Ativo', bg: '#e8f5e9', color: '#2e7d32' };
+  };
+
   const filtrados = frascos.filter(f => {
     const matchBusca = !busca || f.perfume?.toLowerCase().includes(busca.toLowerCase()) || f.marca?.toLowerCase().includes(busca.toLowerCase());
-    const disp = Number(f.ml_disponivel || 0);
-    const status = disp === 0 ? 'esgotado' : disp < 20 ? 'fechado' : 'aberto';
-    const matchStatus = !filtroStatus || status === filtroStatus;
-    const criado = f.criado_em ? new Date(f.criado_em) : null;
-    const esgotado = f.esgotado_em ? new Date(f.esgotado_em) : null;
-    const matchCriado = (!filtroCriadoInicio || (criado && criado >= new Date(filtroCriadoInicio))) &&
-                        (!filtroCriadoFim || (criado && criado <= new Date(filtroCriadoFim + 'T23:59:59')));
-    const matchEsgotado = (!filtroEsgotadoInicio || (esgotado && esgotado >= new Date(filtroEsgotadoInicio))) &&
-                          (!filtroEsgotadoFim || (esgotado && esgotado <= new Date(filtroEsgotadoFim + 'T23:59:59')));
-    return matchBusca && matchStatus && matchCriado && matchEsgotado;
+    const st = getStatus(f).key;
+    if (filtro === 'aberto') return matchBusca && st === 'aberto';
+    if (filtro === 'baixo') return matchBusca && st === 'baixo';
+    if (filtro === 'esgotado') return matchBusca && st === 'esgotado';
+    return matchBusca;
   });
 
   const abrirEditar = (f) => {
-    setEditando(f);
     setEditForm({ ml_total: String(f.ml_total), ml_vendido: String(f.ml_vendido) });
+    setEditando(f);
+    setDetalhe(null);
   };
 
   const salvarEdicao = async () => {
@@ -174,170 +170,190 @@ function PainelEstoque({ token }) {
   };
 
   const confirmarExcluir = async (f) => {
-    if (!window.confirm(`Excluir frasco de "${f.perfume}"? Esta ação não pode ser desfeita.`)) return;
+    if (!window.confirm(`Excluir frasco de "${f.perfume}"?`)) return;
     setExcluindo(f.id);
     try {
       const res = await fetch(`${API}/api/admin/frascos/${f.id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` },
+        method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` },
       });
       if (!res.ok) throw new Error('Erro ao excluir');
+      setDetalhe(null);
       carregar();
     } catch(e) { alert(e.message); }
     finally { setExcluindo(null); }
   };
 
+  // ── Modal Editar ──
+  const ModalEditar = () => editando && createPortal(
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+      onClick={e => e.target === e.currentTarget && setEditando(null)}>
+      <div style={{ background: '#fff', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
+        <div style={{ width: 40, height: 4, background: '#ddd', borderRadius: 2, margin: '0 auto 16px' }} />
+        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111', marginBottom: 4 }}>Editar Frasco</h3>
+        <p style={{ color: '#888', fontSize: 13, marginBottom: 20 }}>{editando.perfume} — {editando.marca}</p>
+        <div style={{ marginBottom: 14 }}>
+          <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>ML TOTAL</label>
+          <input type="number" value={editForm.ml_total} onChange={e => setEditForm(f => ({ ...f, ml_total: e.target.value }))}
+            style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none' }} />
+        </div>
+        <div style={{ marginBottom: 20 }}>
+          <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>ML VENDIDO</label>
+          <input type="number" value={editForm.ml_vendido} onChange={e => setEditForm(f => ({ ...f, ml_vendido: e.target.value }))}
+            style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none' }} />
+          <p style={{ fontSize: 12, color: '#888', marginTop: 6 }}>Disponivel: <b style={{ color: '#c9a84c' }}>{Math.max(0, Number(editForm.ml_total) - Number(editForm.ml_vendido))}ml</b></p>
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button onClick={() => setEditando(null)} style={{ flex: 1, padding: '12px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 8, cursor: 'pointer', fontSize: 14 }}>Cancelar</button>
+          <button onClick={salvarEdicao} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>
+            {salvando ? 'Salvando...' : 'Salvar'}
+          </button>
+        </div>
+      </div>
+    </div>
+  , document.body);
+
+  // ── Modal Detalhe ──
+  const ModalDetalhe = () => detalhe && createPortal(
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9998, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+      onClick={e => e.target === e.currentTarget && setDetalhe(null)}>
+      <div style={{ background: '#fff', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
+        <div style={{ width: 40, height: 4, background: '#ddd', borderRadius: 2, margin: '0 auto 16px' }} />
+
+        <p style={{ fontSize: 11, color: '#8a6a10', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase' }}>{detalhe.marca}</p>
+        <h3 style={{ fontSize: 20, fontWeight: 700, color: '#111', marginBottom: 12 }}>{detalhe.perfume}</h3>
+
+        {/* Barra de progresso */}
+        {(() => {
+          const total = Number(detalhe.ml_total || 0);
+          const vendido = Number(detalhe.ml_vendido || 0);
+          const disp = Number(detalhe.ml_disponivel || 0);
+          const pct = total > 0 ? Math.round((disp / total) * 100) : 0;
+          const st = getStatus(detalhe);
+          return (
+            <div style={{ background: '#f8f7f4', borderRadius: 10, padding: 16, marginBottom: 16 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+                <span style={{ fontSize: 13, color: '#555' }}>Disponivel</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: '#111' }}>{disp}ml / {total}ml</span>
+              </div>
+              <div style={{ height: 6, background: '#e8e4dc', borderRadius: 3, marginBottom: 8 }}>
+                <div style={{ height: '100%', background: st.key === 'esgotado' ? '#c62828' : 'linear-gradient(90deg,#c9a84c,#e8c870)', borderRadius: 3, width: `${pct}%`, transition: 'width .3s' }} />
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
+                <span style={{ color: '#999' }}>Vendido: {vendido}ml</span>
+                <span style={{ padding: '2px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: st.bg, color: st.color }}>{st.label}</span>
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* Datas */}
+        <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
+          <div><p style={{ fontSize: 10, fontWeight: 600, color: '#888', letterSpacing: '0.1em' }}>CRIADO</p><p style={{ fontSize: 13, color: '#333' }}>{detalhe.criado_em ? new Date(detalhe.criado_em).toLocaleDateString('pt-BR') : '—'}</p></div>
+          {detalhe.esgotado_em && <div><p style={{ fontSize: 10, fontWeight: 600, color: '#888', letterSpacing: '0.1em' }}>ESGOTADO</p><p style={{ fontSize: 13, color: '#c62828' }}>{new Date(detalhe.esgotado_em).toLocaleDateString('pt-BR')}</p></div>}
+          {detalhe.lote && <div><p style={{ fontSize: 10, fontWeight: 600, color: '#888', letterSpacing: '0.1em' }}>LOTE</p><p style={{ fontSize: 13, color: '#333' }}>{detalhe.lote}</p></div>}
+        </div>
+
+        {/* Acoes */}
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button onClick={() => setDetalhe(null)} style={{ padding: '12px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#666', flex: 0.5 }}>Fechar</button>
+          <button onClick={() => abrirEditar(detalhe)} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>Editar</button>
+          <button onClick={() => confirmarExcluir(detalhe)} disabled={excluindo === detalhe.id}
+            style={{ padding: '12px 16px', background: '#fce4ec', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#c62828' }}>
+            {excluindo === detalhe.id ? '...' : 'Excluir'}
+          </button>
+        </div>
+      </div>
+    </div>
+  , document.body);
+
   return (
     <div className="fade-in">
-      {/* Modal editar */}
-      {editando && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ background: '#fff', borderRadius: 8, padding: '2rem', width: 360, maxWidth: '92vw', boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}>
-            <h3 style={{ marginBottom: 4, color: '#0d0b07' }}>Editar Frasco</h3>
-            <p style={{ color: '#888', fontSize: 13, marginBottom: 20 }}>{editando.perfume} — {editando.marca}</p>
-            <div style={{ marginBottom: 12 }}>
-              <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>ML TOTAL</label>
-              <input type="number" value={editForm.ml_total} onChange={e => setEditForm(f => ({ ...f, ml_total: e.target.value }))}
-                style={{ width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: 4, fontSize: 14, boxSizing: 'border-box' }} />
-            </div>
-            <div style={{ marginBottom: 20 }}>
-              <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>ML VENDIDO</label>
-              <input type="number" value={editForm.ml_vendido} onChange={e => setEditForm(f => ({ ...f, ml_vendido: e.target.value }))}
-                style={{ width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: 4, fontSize: 14, boxSizing: 'border-box' }} />
-              <p style={{ fontSize: 11, color: '#888', marginTop: 4 }}>Disponível: {Math.max(0, Number(editForm.ml_total) - Number(editForm.ml_vendido))}ml</p>
-            </div>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <button onClick={() => setEditando(null)} style={{ flex: 1, padding: '10px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 4, cursor: 'pointer', fontSize: 13 }}>Cancelar</button>
-              <button onClick={salvarEdicao} disabled={salvando} style={{ flex: 1, padding: '10px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 13, fontWeight: 700, color: '#0d0b07' }}>
-                {salvando ? 'Salvando...' : 'Salvar'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}`}</style>
+      <ModalEditar />
+      <ModalDetalhe />
 
-      <div className="painel-header" style={{ marginBottom: 0 }}>
-        <h2>Decants</h2>
-        <button className="btn-primary" style={{ width: 'auto', padding: '10px 20px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', color: '#0d0b07', fontWeight: 700, border: 'none', borderRadius: 6, cursor: 'pointer' }}
-          onClick={() => window.location.href = '/admin/produtos'}>
-          + Novo perfume
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+        <h2 style={{ fontSize: 22, fontWeight: 700, color: '#111' }}>Decants</h2>
+        <button onClick={() => window.location.href = '/admin/produtos'}
+          style={{ padding: '10px 20px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: '#0d0b07', boxShadow: '0 2px 8px rgba(201,168,76,0.3)' }}>
+          + Novo Perfume
         </button>
       </div>
-      <div style={{ background: '#f8f8f8', border: '1px solid #eee', borderRadius: 12, padding: '1rem 1.25rem', marginBottom: 20, marginTop: 16, display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center' }}>
-        <div style={{ position: 'relative', flex: '1 1 200px', minWidth: 0 }}>
-          <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#aaa', fontSize: 15 }}>&#128269;</span>
-          <input
-            value={busca}
-            onChange={e => setBusca(e.target.value)}
-            placeholder="Buscar perfume ou marca..."
-            style={{ width: '100%', padding: '10px 16px 10px 40px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 13, outline: 'none', background: '#fff', boxSizing: 'border-box', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}
-          />
-        </div>
-        <select value={filtroStatus} onChange={e => setFiltroStatus(e.target.value)}
-          style={{ flex: '1 1 160px', padding: '9px 14px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 13, outline: 'none', background: '#fff', cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-          <option value="">Todos os status</option>
-          <option value="aberto">✅ Aberto</option>
-          <option value="fechado">⚠️ Fechado</option>
-          <option value="esgotado">🔴 Esgotado</option>
-        </select>
-          <div style={{ flex: '1 1 100%', display: 'flex', gap: 6, alignItems: 'center' }}>
-            <span style={{ fontSize: 12, color: '#555', fontWeight: 500, flexShrink: 0, width: 62 }}>Criado:</span>
-            <input type="date" value={filtroCriadoInicio} onChange={e => setFiltroCriadoInicio(e.target.value)}
-              style={{ padding: '8px 6px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 12, outline: 'none', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', color: '#333', flex: 1, minWidth: 0, boxSizing: 'border-box' }} />
-            <span style={{ fontSize: 13, color: '#aaa' }}>–</span>
-            <input type="date" value={filtroCriadoFim} onChange={e => setFiltroCriadoFim(e.target.value)}
-              style={{ padding: '8px 6px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 12, outline: 'none', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', color: '#333', flex: 1, minWidth: 0, boxSizing: 'border-box' }} />
-          </div>
-          <div style={{ flex: '1 1 100%', display: 'flex', gap: 6, alignItems: 'center' }}>
-            <span style={{ fontSize: 12, color: '#555', fontWeight: 500, flexShrink: 0, width: 62 }}>Esgotado:</span>
-            <input type="date" value={filtroEsgotadoInicio} onChange={e => setFiltroEsgotadoInicio(e.target.value)}
-              style={{ padding: '8px 6px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 12, outline: 'none', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', color: '#333', flex: 1, minWidth: 0, boxSizing: 'border-box' }} />
-            <span style={{ fontSize: 13, color: '#aaa' }}>–</span>
-            <input type="date" value={filtroEsgotadoFim} onChange={e => setFiltroEsgotadoFim(e.target.value)}
-              style={{ padding: '8px 6px', border: '1.5px solid #e0e0e0', borderRadius: 6, fontSize: 12, outline: 'none', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', color: '#333', flex: 1, minWidth: 0, boxSizing: 'border-box' }} />
-          </div>
-          {(filtroCriadoInicio || filtroCriadoFim || filtroEsgotadoInicio || filtroEsgotadoFim) && (
-            <button onClick={() => { setFiltroCriadoInicio(''); setFiltroCriadoFim(''); setFiltroEsgotadoInicio(''); setFiltroEsgotadoFim(''); }}
-              style={{ padding: '6px 12px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 6, fontSize: 12, cursor: 'pointer', color: '#666' }}>Limpar datas</button>
-          )}
+
+      {/* Busca */}
+      <div style={{ position: 'relative', marginBottom: 12 }}>
+        <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#bbb', fontSize: 15 }}>&#128269;</span>
+        <input value={busca} onChange={e => setBusca(e.target.value)} placeholder="Buscar..."
+          style={{ width: '100%', padding: '12px 16px 12px 42px', border: '1.5px solid #e0e0e0', borderRadius: 10, fontSize: 14, outline: 'none', background: '#fff', boxSizing: 'border-box' }} />
       </div>
 
-      {loading ? <p className="muted">Carregando...</p> : (
-        <>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, flexWrap: 'wrap', gap: 8 }}>
-            <p style={{ fontSize: 12, color: '#888' }}>{filtrados.length} de {frascos.length} frascos</p>
-            {sels.length > 0 && (
-              <div style={{ display: 'flex', gap: 8, alignItems: 'center', background: '#fffbf0', border: '1px solid #e8c870', borderRadius: 6, padding: '8px 14px', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: 13, fontWeight: 600, color: '#8a6a10' }}>{sels.length} sel.</span>
-                <button onClick={() => setShowMassa(v => !v)} style={{ padding: '4px 12px', background: '#c9a84c', border: 'none', borderRadius: 4, fontSize: 12, fontWeight: 600, cursor: 'pointer', color: '#0d0b07' }}>Editar</button>
-                <button onClick={async () => { const ok = window.confirm('Excluir ' + sels.length + ' frasco(s)?'); if (!ok) return; setSalvandoMassa(true); for (const id of sels) { await fetch(API + '/api/admin/frascos/' + id, { method: 'DELETE', headers: { Authorization: 'Bearer ' + token } }); } setSels([]); setSalvandoMassa(false); carregar(); }} disabled={salvandoMassa} style={{ padding: '4px 12px', background: '#fff0f0', border: '1px solid #fcc', borderRadius: 4, fontSize: 12, cursor: 'pointer', color: '#c0392b' }}>Excluir</button>
-                <button onClick={() => setSels([])} style={{ padding: '4px 8px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 4, fontSize: 12, cursor: 'pointer' }}>X</button>
+      {/* Filtros */}
+      <div style={{ display: 'flex', gap: 8, marginBottom: 16, overflowX: 'auto' }}>
+        {[['todos', 'Todos'], ['aberto', 'Ativos'], ['baixo', 'Baixo Estoque'], ['esgotado', 'Esgotados']].map(([key, label]) => (
+          <button key={key} onClick={() => setFiltro(key)}
+            style={{ padding: '8px 18px', borderRadius: 20, fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', border: filtro === key ? 'none' : '1.5px solid #ddd',
+              background: filtro === key ? '#111' : '#fff', color: filtro === key ? '#fff' : '#555', transition: 'all .2s' }}>
+            {label}
+          </button>
+        ))}
+        <span style={{ display: 'flex', alignItems: 'center', fontSize: 12, color: '#999', marginLeft: 'auto', whiteSpace: 'nowrap' }}>{frascos.length} total</span>
+      </div>
+
+      {/* Cards */}
+      {loading ? (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {[1,2,3,4].map(i => <div key={i} style={{ height: 90, background: '#f0f0f0', borderRadius: 12 }} />)}
+        </div>
+      ) : filtrados.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '3rem 0', color: '#999' }}>
+          <p style={{ fontSize: 32, marginBottom: 8 }}>🧴</p>
+          <p>Nenhum frasco encontrado</p>
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {filtrados.map(f => {
+            const disp = Number(f.ml_disponivel || 0);
+            const total = Number(f.ml_total || 0);
+            const pct = total > 0 ? Math.round((disp / total) * 100) : 0;
+            const st = getStatus(f);
+            return (
+              <div key={f.id} onClick={() => setDetalhe(f)}
+                style={{ display: 'flex', gap: 14, padding: 14, background: '#fff', borderRadius: 12, border: '1px solid #eee',
+                  cursor: 'pointer', transition: 'all .15s', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = '#c9a84c'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(201,168,76,0.15)'; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = '#eee'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.04)'; }}>
+
+                {/* Info */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
+                    <div style={{ minWidth: 0 }}>
+                      <p style={{ fontSize: 15, fontWeight: 700, color: '#111', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.perfume}</p>
+                      <p style={{ fontSize: 12, color: '#888' }}>{f.marca}</p>
+                    </div>
+                    <span style={{ flexShrink: 0, padding: '2px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: st.bg, color: st.color }}>
+                      {st.label}
+                    </span>
+                  </div>
+
+                  {/* Barra de progresso */}
+                  <div style={{ marginTop: 10 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#888', marginBottom: 4 }}>
+                      <span>{disp}ml disponivel</span>
+                      <span>{total}ml total</span>
+                    </div>
+                    <div style={{ height: 4, background: '#e8e4dc', borderRadius: 2 }}>
+                      <div style={{ height: '100%', background: st.key === 'esgotado' ? '#c62828' : 'linear-gradient(90deg,#c9a84c,#e8c870)', borderRadius: 2, width: `${pct}%`, transition: 'width .3s' }} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Seta */}
+                <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0, color: '#ccc', fontSize: 18 }}>›</div>
               </div>
-            )}
-          </div>
-          {showMassa && sels.length > 0 && (
-            <div style={{ background: '#fffbf0', border: '1px solid #e8c870', borderRadius: 6, padding: '12px 16px', marginBottom: 12, display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
-              <span style={{ fontSize: 12, color: '#888' }}>Aplicar a {sels.length} frasco(s):</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <label style={{ fontSize: 12, color: '#888' }}>ML Total:</label>
-                <input type="number" value={massaForm.ml_total} onChange={e => setMassaForm(m => ({ ...m, ml_total: e.target.value }))} placeholder="Manter" style={{ padding: '6px 10px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, width: 100, outline: 'none' }} />
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <label style={{ fontSize: 12, color: '#888' }}>ML Vendido:</label>
-                <input type="number" value={massaForm.ml_vendido} onChange={e => setMassaForm(m => ({ ...m, ml_vendido: e.target.value }))} placeholder="Manter" style={{ padding: '6px 10px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, width: 100, outline: 'none' }} />
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <label style={{ fontSize: 12, color: '#888' }}>Status:</label>
-                <select value={massaForm.status || ''} onChange={e => setMassaForm(m => ({ ...m, status: e.target.value }))} style={{ padding: '6px 10px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, outline: 'none', background: '#fff' }}>
-                  <option value=''>Manter</option>
-                  <option value='aberto'>Aberto</option>
-                  <option value='fechado'>Fechado</option>
-                  <option value='esgotado'>Esgotado</option>
-                </select>
-              </div>
-              <button onClick={async () => { setSalvandoMassa(true); const body = {}; if (massaForm.ml_total !== '') body.ml_total = Number(massaForm.ml_total); if (massaForm.ml_vendido !== '') body.ml_vendido = Number(massaForm.ml_vendido); if (massaForm.status) body.status = massaForm.status; for (const id of sels) { await fetch(API + '/api/admin/frascos/' + id, { method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }, body: JSON.stringify(body) }); } setSels([]); setMassaForm({ ml_total: '', ml_vendido: '' }); setShowMassa(false); setSalvandoMassa(false); carregar(); }} disabled={salvandoMassa} style={{ padding: '6px 16px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 4, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: '#0d0b07' }}>
-                {salvandoMassa ? 'Salvando...' : 'Aplicar'}
-              </button>
-            </div>
-          )}
-          <div className="admin-table-wrap">
-            <table className="admin-table">
-              <thead style={{ fontWeight: 700 }}><tr><th style={{ width: 36 }}><input type="checkbox" checked={sels.length === filtrados.length && filtrados.length > 0} onChange={() => setSels(p => p.length === filtrados.length ? [] : filtrados.map(x => x.id))} style={{ cursor: "pointer" }} /></th><th>Perfume</th><th>Marca</th><th>Total</th><th>Vendido</th><th>Disponível</th><th>Status</th><th>Criado em</th><th>Esgotado em</th><th>Ações</th></tr></thead>
-              <tbody>
-                {filtrados.map(f => {
-                  const disp = Number(f.ml_disponivel || 0);
-                  const cls = disp === 0 ? 'badge-red' : disp < 20 ? 'badge-gold' : 'badge-green';
-                  const label = disp === 0 ? 'Esgotado' : disp < 20 ? 'Fechado' : 'Aberto';
-                  return (
-                    <tr key={f.id} style={{ background: sels.includes(f.id) ? "#fffbf0" : "" }}>
-                      <td><input type="checkbox" checked={sels.includes(f.id)} onChange={() => setSels(p => p.includes(f.id) ? p.filter(x => x !== f.id) : [...p, f.id])} style={{ cursor: "pointer" }} /></td>
-                      <td>{f.perfume}</td>
-                      <td className="muted small">{f.marca}</td>
-                      <td>{f.ml_total}ml</td>
-                      <td>{f.ml_vendido}ml</td>
-                      <td className="gold">{f.ml_disponivel}ml</td>
-                      <td><span className={`badge ${cls}`}>{label}</span></td>
-                      <td className='muted small'>{f.criado_em ? new Date(f.criado_em).toLocaleString('pt-BR') : '-'}</td>
-                      <td className='muted small'>{f.esgotado_em ? new Date(f.esgotado_em).toLocaleString('pt-BR') : '-'}</td>
-                      <td>
-                        <div style={{ display: 'flex', gap: 6 }}>
-                          <button onClick={() => abrirEditar(f)}
-                            style={{ padding: '4px 10px', background: '#f0f0f0', border: '1px solid #ddd', borderRadius: 4, cursor: 'pointer', fontSize: 12, color: '#333' }}>
-                            ✏️ Editar
-                          </button>
-                          <button onClick={() => confirmarExcluir(f)} disabled={excluindo === f.id}
-                            style={{ padding: '4px 10px', background: '#fff0f0', border: '1px solid #fcc', borderRadius: 4, cursor: 'pointer', fontSize: 12, color: '#c0392b' }}>
-                            {excluindo === f.id ? '...' : '🗑️'}
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </>
+            );
+          })}
+        </div>
       )}
     </div>
   );
