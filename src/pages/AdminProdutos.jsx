@@ -79,16 +79,23 @@ function parseFragranticaHTML(html, urlOriginal) {
 
   // ── Descrição (fonte mais confiável de dados) ──
   let descricao = '';
-  // Buscar o bloco de texto descritivo que contém "é um perfume"
-  const descMatch = html.match(/([^<]{20,}é\s+um\s+perfume[^<]{10,})/i) ||
-                    html.match(/([^<]{20,}is\s+a\s+fragrance[^<]{10,})/i);
-  if (descMatch) {
-    descricao = descMatch[1].replace(/\s+/g, ' ').trim();
+  // 1. Extrair do meta description (mais completo)
+  const metaDesc = doc.querySelector('meta[name="description"]');
+  if (metaDesc) {
+    const content = metaDesc.getAttribute('content') || '';
+    if (content.match(/é\s+um\s+perfume|is\s+a\s+fragrance/i)) {
+      descricao = content.replace(/\s+/g, ' ').trim();
+    }
   }
-  // Fallback: itemprop description
+  // 2. Fallback: buscar no texto visível da página
   if (!descricao) {
     const descEl = doc.querySelector('[itemprop="description"]');
     if (descEl) descricao = descEl.textContent.trim().replace(/\s+/g, ' ');
+  }
+  // 3. Fallback: buscar qualquer texto com "é um perfume" no body
+  if (!descricao) {
+    const bodyMatch = bodyText.match(/([^\n]{20,}é\s+um\s+perfume[^\n]{10,})/i);
+    if (bodyMatch) descricao = bodyMatch[1].replace(/\s+/g, ' ').trim();
   }
 
   // ── Nome e Marca (da descrição: "X de Y é um perfume") ──
@@ -108,13 +115,16 @@ function parseFragranticaHTML(html, urlOriginal) {
     }
   }
 
-  // ── Foto ──
+  // ── Foto (preferir perfume-thumbs, evitar social-cards) ──
   let foto_url = '';
-  const fotoMatch = html.match(/https?:\/\/fimgs\.net\/[^"'\s]+/i) ||
-                    html.match(/https?:\/\/img\.fragrantica\.com\/[^"'\s]+/i);
-  if (fotoMatch) foto_url = fotoMatch[0];
+  // Buscar todas as URLs de imagem de perfume
+  const allImgUrls = html.match(/https?:\/\/fimgs\.net\/[^"'\s\)]+/gi) || [];
+  // Preferir perfume-thumbs (foto do frasco)
+  const thumbUrl = allImgUrls.find(u => u.includes('perfume-thumbs'));
+  const nonSocialUrl = allImgUrls.find(u => !u.includes('social-cards') && !u.includes('logo'));
+  foto_url = thumbUrl || nonSocialUrl || allImgUrls[0] || '';
   if (!foto_url) {
-    const imgEl = doc.querySelector('img[itemprop="image"]') || doc.querySelector('img[src*="fimgs.net"]') || doc.querySelector('img[src*="fragrantica"]');
+    const imgEl = doc.querySelector('img[itemprop="image"]') || doc.querySelector('img[src*="fimgs.net"]');
     if (imgEl) foto_url = imgEl.getAttribute('src') || '';
   }
 
@@ -143,14 +153,6 @@ function parseFragranticaHTML(html, urlOriginal) {
   // ── Notas olfativas (da descrição - mais confiável) ──
   const parseNotasFromDesc = (desc) => {
     const notas = { topo: '', coracao: '', base: '' };
-    // PT: "As notas de topo são: X, Y e Z."
-    const topoM = desc.match(/notas?\s*de\s*topo\s*(?:são|incluem|:)\s*:?\s*(.+?)(?:\.|As\s+notas)/i);
-    const coracaoM = desc.match(/notas?\s*(?:de\s*)?cora[çc][ãa]o\s*(?:são|incluem|:)\s*:?\s*(.+?)(?:\.|As\s+notas)/i);
-    const baseM = desc.match(/notas?\s*de\s*base\s*(?:são|incluem|:)\s*:?\s*(.+?)(?:\.|$)/i);
-    // EN: "Top notes are X, Y and Z;"
-    const topoEN = desc.match(/top\s*notes?\s*(?:are|include|:)\s*:?\s*(.+?)(?:;|\.|middle|heart)/i);
-    const coracaoEN = desc.match(/(?:middle|heart)\s*notes?\s*(?:are|include|:)\s*:?\s*(.+?)(?:;|\.|base)/i);
-    const baseEN = desc.match(/base\s*notes?\s*(?:are|include|:)\s*:?\s*(.+?)(?:;|\.|$)/i);
 
     const cleanNotas = (str) => {
       if (!str) return '';
@@ -163,9 +165,46 @@ function parseFragranticaHTML(html, urlOriginal) {
         .trim();
     };
 
-    notas.topo = cleanNotas((topoM && topoM[1]) || (topoEN && topoEN[1]) || '');
-    notas.coracao = cleanNotas((coracaoM && coracaoM[1]) || (coracaoEN && coracaoEN[1]) || '');
-    notas.base = cleanNotas((baseM && baseM[1]) || (baseEN && baseEN[1]) || '');
+    // PT: "As notas de topo são: X, Y e Z. As notas de coração são: ..."
+    // Usar split por "notas de" para separar seções
+    const lowerDesc = desc.toLowerCase();
+
+    // Extrair topo
+    const topoIdx = lowerDesc.indexOf('notas de topo');
+    const coracaoIdx = lowerDesc.search(/notas\s+de\s+cora/);
+    const baseIdx = lowerDesc.indexOf('notas de base');
+
+    const extractAfterColon = (text) => {
+      // Pegar tudo após "são:" ou ":"
+      const m = text.match(/(?:s[aã]o|incluem|are|include)\s*:?\s*(.+)/i);
+      return m ? m[1].trim() : '';
+    };
+
+    if (topoIdx >= 0) {
+      const end = coracaoIdx > topoIdx ? coracaoIdx : (baseIdx > topoIdx ? baseIdx : desc.length);
+      const section = desc.substring(topoIdx, end);
+      notas.topo = cleanNotas(extractAfterColon(section));
+    }
+    if (coracaoIdx >= 0) {
+      const end = baseIdx > coracaoIdx ? baseIdx : desc.length;
+      const section = desc.substring(coracaoIdx, end);
+      notas.coracao = cleanNotas(extractAfterColon(section));
+    }
+    if (baseIdx >= 0) {
+      const section = desc.substring(baseIdx);
+      notas.base = cleanNotas(extractAfterColon(section));
+    }
+
+    // EN fallback: "Top notes are X; middle notes are Y; base notes are Z."
+    if (!notas.topo && !notas.coracao && !notas.base) {
+      const topoEN = desc.match(/top\s*notes?\s*(?:are|include|:)\s*:?\s*(.+?)(?:;|\.|middle|heart)/i);
+      const coracaoEN = desc.match(/(?:middle|heart)\s*notes?\s*(?:are|include|:)\s*:?\s*(.+?)(?:;|\.|base)/i);
+      const baseEN = desc.match(/base\s*notes?\s*(?:are|include|:)\s*:?\s*(.+?)(?:;|\.|$)/i);
+      notas.topo = cleanNotas(topoEN?.[1] || '');
+      notas.coracao = cleanNotas(coracaoEN?.[1] || '');
+      notas.base = cleanNotas(baseEN?.[1] || '');
+    }
+
     return notas;
   };
 
