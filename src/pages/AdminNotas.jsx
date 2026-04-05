@@ -125,8 +125,8 @@ export default function AdminNotas() {
     carregar(1, busca);
   };
 
-  // ── Modal Adicionar ──
-  const ModalAdicionar = () => modal && createPortal(
+  // ── Modal Adicionar (renderizado inline) ──
+  const modalAdicionarJSX = modal && createPortal(
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
       onClick={e => e.target === e.currentTarget && setModal(false)}>
       <div style={{ background: '#fff', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '90vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease', fontFamily: "'Inter', sans-serif" }}>
@@ -185,10 +185,10 @@ export default function AdminNotas() {
     </div>
   , document.body);
 
-  // ── Modal Detalhe ──
+  // ── Modal Detalhe (renderizado inline) ──
   const editPreviewUrl = editForm.fragrantica_id ? `https://fimgs.net/mdimg/sastojci/t.${editForm.fragrantica_id}.jpg` : '';
 
-  const ModalDetalhe = () => detalhe && createPortal(
+  const modalDetalheJSX = detalhe && createPortal(
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9998, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
       onClick={e => e.target === e.currentTarget && setDetalhe(null)}>
       <div style={{ background: '#fff', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '90vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease', fontFamily: "'Inter', sans-serif" }}>
@@ -277,8 +277,8 @@ export default function AdminNotas() {
   return (
     <div style={{ minHeight: '100vh', background: '#fff', fontFamily: "'Inter', sans-serif", paddingBottom: 70 }}>
       <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}} @keyframes spin{to{transform:rotate(360deg)}}`}</style>
-      <ModalAdicionar />
-      <ModalDetalhe />
+      {modalAdicionarJSX}
+      {modalDetalheJSX}
 
       {/* Header */}
       <div style={{ padding: '1rem', paddingBottom: 0 }}>
