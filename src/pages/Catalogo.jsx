@@ -241,26 +241,26 @@ export default function Catalogo() {
 
       {/* ─── COMO FUNCIONA ────────────────────────────────────────────────── */}
       <div id="como-funciona" style={{ background: S.black2, borderTop: `1px solid ${S.border}`, borderBottom: `1px solid ${S.border}`, padding: '5rem 2.5rem' }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto', textAlign: 'center' }}>
-          <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, marginBottom: '3.5rem' }}>Como Funciona</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: '2rem', position: 'relative' }}>
+        <div style={{ maxWidth: 900, margin: '0 auto', textAlign: 'center' }}>
+          <p style={{ fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', color: S.gold, marginBottom: '0.75rem', fontWeight: 500 }}>Simples e Rápido</p>
+          <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, marginBottom: '4rem' }}>Como Funciona</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: '3rem' }}>
             {[
-              { n: '01', t: 'Escolha', d: 'Navegue pelo catálogo e selecione o perfume desejado.', img: 'https://res.cloudinary.com/dafksmivt/image/upload/v1775353324/Luxury_perfume_bottles_display_ilcin0.png' },
-              { n: '02', t: 'Reserve', d: 'Escolha o tamanho do decant e faça sua reserva.', emoji: '🧴' },
-              { n: '03', t: 'Receba', d: 'Finalize o pedido e receba seu decant em casa.', emoji: '🎁' },
+              { n: '01', t: 'Escolha', d: 'Navegue pelo catálogo e selecione a fragrância desejada.', icon: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> },
+              { n: '02', t: 'Reserve', d: 'Escolha o tamanho do decant e faça sua reserva pelo site.', icon: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg> },
+              { n: '03', t: 'Receba', d: 'Finalize o pedido e receba seu decant em casa com total segurança.', icon: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> },
             ].map((s, i) => (
-              <div key={s.n} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem', position: 'relative' }}>
-                <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(2.5rem, 4vw, 3.5rem)', fontWeight: 600, color: S.gold, lineHeight: 1 }}>{s.n}</span>
-                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.1rem, 2vw, 1.4rem)', fontWeight: 600 }}>{s.t}</h3>
-                <div style={{ width: 'clamp(120px, 18vw, 180px)', height: 'clamp(120px, 18vw, 180px)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0.5rem 0' }}>
-                  {s.img
-                    ? <img src={s.img} alt={s.t} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                    : <span style={{ fontSize: 'clamp(60px, 10vw, 90px)' }}>{s.emoji}</span>
-                  }
+              <div key={s.n} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', position: 'relative' }}>
+                <div style={{ width: 72, height: 72, borderRadius: '50%', border: `1px solid ${S.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: S.gold, marginBottom: 4 }}>
+                  {s.icon}
                 </div>
-                <p style={{ fontSize: 14, color: S.text2, lineHeight: 1.7, maxWidth: 260, textAlign: 'center' }}>{s.d}</p>
+                <span style={{ fontSize: 11, letterSpacing: '0.3em', color: S.gold, fontWeight: 600 }}>{s.n}</span>
+                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.15rem, 2vw, 1.4rem)', fontWeight: 600, margin: 0 }}>{s.t}</h3>
+                <p style={{ fontSize: 14, color: S.text2, lineHeight: 1.8, maxWidth: 240, textAlign: 'center' }}>{s.d}</p>
                 {i < 2 && (
-                  <div className="como-funciona-seta" style={{ position: 'absolute', right: '-1.25rem', top: '50%', transform: 'translateY(-50%)', color: S.gold, fontSize: 20, opacity: 0.5 }}>→</div>
+                  <div className="como-funciona-seta" style={{ position: 'absolute', right: '-1.5rem', top: '36px', color: 'rgba(201,168,76,0.25)', fontSize: 18 }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="9 18 15 12 9 6"/></svg>
+                  </div>
                 )}
               </div>
             ))}
@@ -270,20 +270,21 @@ export default function Catalogo() {
 
       {/* ─── ENTREGA ──────────────────────────────────────────────────────── */}
       <div style={{ padding: '5rem 2.5rem' }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto', textAlign: 'center' }}>
+        <div style={{ maxWidth: 900, margin: '0 auto', textAlign: 'center' }}>
+          <p style={{ fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', color: S.gold, marginBottom: '0.75rem', fontWeight: 500 }}>Envio Nacional</p>
           <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, marginBottom: '3rem' }}>Entrega</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: '1.25rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: '1.5rem' }}>
             {[
-              { emoji: '📦', t: 'Preparação', d: 'Seu pedido é preparado com cuidado em até 2 dias úteis.' },
-              { emoji: '🚚', t: 'Envio', d: 'Enviamos para todo o Brasil via transportadora rastreável.' },
-              { emoji: '📍', t: 'Prazo', d: 'Capitais: 3-5 dias úteis.\nInterior: 5-10 dias úteis.' },
+              { t: 'Preparação', d: 'Seu pedido é preparado com cuidado em até 2 dias úteis.', icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg> },
+              { t: 'Envio', d: 'Enviamos para todo o Brasil via transportadora rastreável.', icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg> },
+              { t: 'Prazo', d: 'Capitais: 3-5 dias úteis.\nInterior: 5-10 dias úteis.', icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> },
             ].map(s => (
-              <div key={s.t} style={{ background: S.black2, border: `1px solid ${S.border}`, borderRadius: 8, padding: '2.5rem 2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-                <div style={{ width: 'clamp(80px, 12vw, 120px)', height: 'clamp(80px, 12vw, 120px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <span style={{ fontSize: 'clamp(50px, 8vw, 70px)' }}>{s.emoji}</span>
-                </div>
-                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.1rem, 2vw, 1.3rem)', fontWeight: 600 }}>{s.t}</h3>
-                <p style={{ fontSize: 14, color: S.text2, lineHeight: 1.7, whiteSpace: 'pre-line', textAlign: 'center' }}>{s.d}</p>
+              <div key={s.t} style={{ border: `1px solid ${S.border}`, borderRadius: 12, padding: '2.5rem 2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', transition: 'border-color 0.3s' }}
+                onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(201,168,76,0.4)'}
+                onMouseLeave={e => e.currentTarget.style.borderColor = S.border}>
+                <div style={{ color: S.gold }}>{s.icon}</div>
+                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.1rem, 2vw, 1.3rem)', fontWeight: 600, margin: 0 }}>{s.t}</h3>
+                <p style={{ fontSize: 14, color: S.text2, lineHeight: 1.8, whiteSpace: 'pre-line', textAlign: 'center' }}>{s.d}</p>
               </div>
             ))}
           </div>
