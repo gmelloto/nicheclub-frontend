@@ -751,6 +751,8 @@ function PainelPerfumes({ token }) {
   const sentinelRef = useRef(null);
   const [fixSocial, setFixSocial] = useState(false);
   const [fixSocialResult, setFixSocialResult] = useState(null);
+  const [fixData, setFixData] = useState(false);
+  const [fixDataResult, setFixDataResult] = useState(null);
 
   const carregar = async (pag = 1, termo = busca, append = false) => {
     if (pag === 1) setLoading(true); else setLoadingMore(true);
@@ -1039,6 +1041,28 @@ function PainelPerfumes({ token }) {
             style={{ padding: '10px 14px', background: '#111', border: 'none', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: fixSocial ? 'not-allowed' : 'pointer', color: '#fff', opacity: fixSocial ? 0.7 : 1 }}>
             {fixSocial ? 'Buscando...' : 'Fotos Social'}
           </button>
+          <button onClick={async () => {
+            if (fixData) return;
+            setFixData(true); setFixDataResult(null);
+            try {
+              const resp = await fetch(`${API_URL}/api/admin/perfumes/fix-data`, {
+                method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: '{}',
+              });
+              const data = await resp.json();
+              setFixDataResult({ running: true, processados: 0, total: 0, mensagem: data.mensagem });
+              const poll = setInterval(async () => {
+                try {
+                  const r = await fetch(`${API_URL}/api/admin/perfumes/fix-data`, { headers: { Authorization: `Bearer ${token}` } });
+                  const status = await r.json();
+                  setFixDataResult(status);
+                  if (!status.running) { clearInterval(poll); setFixData(false); if (status.atualizados > 0) carregar(1, busca); }
+                } catch { clearInterval(poll); setFixData(false); }
+              }, 3000);
+            } catch(e) { setFixDataResult({ erro: e.message }); setFixData(false); }
+          }} disabled={fixData}
+            style={{ padding: '10px 14px', background: '#111', border: 'none', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: fixData ? 'not-allowed' : 'pointer', color: '#fff', opacity: fixData ? 0.7 : 1 }}>
+            {fixData ? 'Buscando...' : 'Acordes'}
+          </button>
           <button onClick={() => window.location.href = '/admin/produtos'}
             style={{ padding: '10px 20px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: '#0d0b07', boxShadow: '0 2px 8px rgba(201,168,76,0.3)' }}>
             + Novo Produto
@@ -1066,6 +1090,31 @@ function PainelPerfumes({ token }) {
                 </details>
               )}
               <button onClick={() => setFixSocialResult(null)} style={{ marginTop: 6, background: 'none', border: 'none', fontSize: 12, color: '#888', cursor: 'pointer', textDecoration: 'underline' }}>Fechar</button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Resultado fix-data */}
+      {fixDataResult && (
+        <div style={{ background: fixDataResult.erro ? '#fce4ec' : fixDataResult.running ? '#fff3e0' : '#e8f5e9', borderRadius: 8, padding: '10px 14px', marginBottom: 12, fontSize: 13 }}>
+          {fixDataResult.erro ? (
+            <span style={{ color: '#c62828' }}>Erro: {fixDataResult.erro}</span>
+          ) : fixDataResult.running ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ width: 18, height: 18, border: '2px solid #e8e4dc', borderTop: '2px solid #e65100', borderRadius: '50%', animation: 'spin .6s linear infinite', flexShrink: 0 }} />
+              <span style={{ color: '#e65100', fontWeight: 600 }}>Enriquecendo... {fixDataResult.processados || 0}/{fixDataResult.total || '?'} — {fixDataResult.atualizados || 0} atualizados</span>
+            </div>
+          ) : (
+            <div>
+              <span style={{ color: '#2e7d32', fontWeight: 600 }}>Concluído! {fixDataResult.atualizados || 0} perfumes enriquecidos ({fixDataResult.processados || 0} processados)</span>
+              {fixDataResult.erros?.length > 0 && (
+                <details style={{ marginTop: 6, fontSize: 12, color: '#888' }}>
+                  <summary style={{ cursor: 'pointer' }}>{fixDataResult.erros.length} erros</summary>
+                  {fixDataResult.erros.map((e, i) => <p key={i}>{e.nome}: {e.erro}</p>)}
+                </details>
+              )}
+              <button onClick={() => setFixDataResult(null)} style={{ marginTop: 6, background: 'none', border: 'none', fontSize: 12, color: '#888', cursor: 'pointer', textDecoration: 'underline' }}>Fechar</button>
             </div>
           )}
         </div>
