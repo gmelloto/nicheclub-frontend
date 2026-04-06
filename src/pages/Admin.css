@@ -2,7 +2,8 @@
  --bg: #ffffff; --bg2: #f8f7f4; --bg3: #f0ede8; --border: #e8e4dc; --text: #0d0b07; --text2: #5a5550; --text3: #9a9080; --gold: #8a6a10; --gold2: #c9a84c; }
 .admin-page h1, .admin-page h2, .admin-page h3, .admin-page h4 { font-family: 'Inter', sans-serif; }
 .admin-sidebar { background: var(--bg2); border-right: 1px solid var(--border); padding: 2rem 1.5rem; }
-.admin-brand { font-size: 15px; font-weight: 500; letter-spacing: 0.1em; margin-bottom: 4px; }
+.admin-brand { display: flex; align-items: center; font-size: 15px; font-weight: 500; letter-spacing: 0.1em; margin-bottom: 4px; }
+.admin-brand img { border: none; outline: none; box-shadow: none; }
 .admin-nav-btn { display: block; width: 100%; text-align: left; padding: 10px 12px; border-radius: var(--radius); font-size: 13px; color: var(--text2); background: none; border: none; cursor: pointer; transition: all 0.2s; text-transform: capitalize; letter-spacing: 0.05em; margin-bottom: 4px; }
 .admin-nav-btn:hover { color: var(--text); background: var(--bg3); }
 .admin-nav-btn.active { color: var(--gold); background: rgba(201,169,110,0.08); }
