@@ -30,8 +30,7 @@ export default function Login() {
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
       <div style={{ width: '100%', maxWidth: 380 }}>
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-          <img src="/logo.jpeg" alt="Niche Club" style={{ width: 100, height: 100, borderRadius: 12, objectFit: 'cover', marginBottom: '0.5rem' }} />
-          <h1 style={{ fontSize: '1.8rem', fontWeight: 300 }}>Niche Club</h1>
+          <img src="/images/logo/logo-banner.jpeg" alt="Niche Club" style={{ height: 50, objectFit: 'contain', marginBottom: '0.5rem' }} />
           <p className="muted small caps" style={{ marginTop: 8 }}>Painel Admin</p>
         </div>
         <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
