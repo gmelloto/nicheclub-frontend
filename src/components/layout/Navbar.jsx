@@ -41,12 +41,8 @@ export default function Navbar() {
           <div className="nav-desktop" style={{ width: 120, flexShrink: 0 }} />
 
           {/* Logo centralizado (absolute para ficar sempre no centro) */}
-          <Link to="/" style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, textDecoration: 'none', zIndex: 1 }}>
-            <span style={{
-              fontFamily: "'Playfair Display', serif", fontSize: 24, fontWeight: 700,
-              color: 'rgb(201,168,76)', letterSpacing: '0.15em', lineHeight: 1,
-            }}>NICHE CLUB</span>
-            <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 9, letterSpacing: '0.3em', color: 'rgba(201,168,76,0.75)', textTransform: 'uppercase', fontWeight: 500 }}>Luxury Perfumes</span>
+          <Link to="/" style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none', zIndex: 1 }}>
+            <img src="/images/logo/logo-banner.jpeg" alt="Niche Club" style={{ height: 36, objectFit: 'contain' }} />
           </Link>
 
           {/* Ícones à direita */}

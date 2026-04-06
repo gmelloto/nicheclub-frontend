@@ -329,7 +329,8 @@ export default function Catalogo() {
 
       {/* ─── FOOTER ───────────────────────────────────────────────────────── */}
       <div style={{ borderTop: `1px solid ${S.border}`, padding: '2rem', textAlign: 'center' }}>
-        <p style={{ fontSize: 13, color: S.text3 }}>© 2026 Niche Club — Luxury Perfumes. Todos os direitos reservados.</p>
+        <img src="/images/logo/logo-banner.jpeg" alt="Niche Club" style={{ height: 30, objectFit: 'contain', marginBottom: 8 }} />
+        <p style={{ fontSize: 13, color: S.text3 }}>© 2026 Todos os direitos reservados.</p>
       </div>
     </div>
   );
