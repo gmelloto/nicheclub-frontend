@@ -246,15 +246,14 @@ export default function Catalogo() {
           <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, marginBottom: '4rem' }}>Como Funciona</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: '3rem' }}>
             {[
-              { n: '01', t: 'Escolha', d: 'Navegue pelo catálogo e selecione a fragrância desejada.', icon: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> },
-              { n: '02', t: 'Reserve', d: 'Escolha o tamanho do decant e faça sua reserva pelo site.', icon: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg> },
-              { n: '03', t: 'Receba', d: 'Finalize o pedido e receba seu decant em casa com total segurança.', icon: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> },
+              { t: 'Escolha', d: 'Navegue pelo catálogo e selecione a fragrância desejada.', icon: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> },
+              { t: 'Reserve', d: 'Escolha o tamanho do decant e faça sua reserva pelo site.', icon: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg> },
+              { t: 'Receba', d: 'Finalize o pedido e receba seu decant em casa com total segurança.', icon: <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> },
             ].map((s, i) => (
-              <div key={s.n} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', position: 'relative' }}>
+              <div key={s.t} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', position: 'relative' }}>
                 <div style={{ width: 72, height: 72, borderRadius: '50%', border: `1px solid ${S.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: S.gold, marginBottom: 4 }}>
                   {s.icon}
                 </div>
-                <span style={{ fontSize: 11, letterSpacing: '0.3em', color: S.gold, fontWeight: 600 }}>{s.n}</span>
                 <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.15rem, 2vw, 1.4rem)', fontWeight: 600, margin: 0 }}>{s.t}</h3>
                 <p style={{ fontSize: 14, color: S.text2, lineHeight: 1.8, maxWidth: 240, textAlign: 'center' }}>{s.d}</p>
                 {i < 2 && (
