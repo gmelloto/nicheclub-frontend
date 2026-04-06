@@ -100,7 +100,7 @@ export default function Admin() {
       {/* Sidebar desktop */}
       <div className="admin-sidebar">
         <div className="admin-brand">
-          <img src="/images/logo/logo-banner.jpeg" alt="Niche Club" style={{ height: 28, objectFit: 'contain' }} />
+          <img src="/images/logo/logo-dark.png" alt="Niche Club" style={{ height: 28, objectFit: 'contain' }} />
         </div>
         <p className="small muted" style={{ marginBottom: '2rem' }}>{usuario?.nome}</p>
         {['pedidos', 'estoque', 'perfumes', 'whatsapp'].map(a => (
