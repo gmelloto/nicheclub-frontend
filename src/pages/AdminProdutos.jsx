@@ -148,7 +148,7 @@ function parseFragranticaHTML(html, urlOriginal) {
       genLower.includes('mulheres e homens') || genLower.includes('homens e mulheres') ||
       genLower.includes('women and men') || genLower.includes('men and women') ||
       genLower.includes('unissex') || genLower.includes('unisex')) {
-    genero = 'Unissex';
+    genero = 'Compartilhável';
   } else if (genLower.includes('para mulheres') || genLower.includes('feminino') || genLower.includes('for women')) {
     genero = 'Feminino';
   } else if (genLower.includes('para homens') || genLower.includes('masculino') || genLower.includes('for men')) {
@@ -661,7 +661,7 @@ function StepManual({ onVoltar, onSalvo }) {
             <select value={form.genero} onChange={e => setForm(f => ({ ...f, genero: e.target.value }))}
               style={{ width: '100%', padding: '10px 12px', background: '#fff', border: `1px solid ${S.border}`, borderRadius: 4, color: S.text, fontSize: 13, outline: 'none' }}>
               <option value="">Selecione</option>
-              <option value="Unissex">Unissex</option>
+              <option value="Compartilhável">Compartilhável</option>
               <option value="Feminino">Feminino</option>
               <option value="Masculino">Masculino</option>
             </select>

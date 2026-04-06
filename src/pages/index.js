@@ -524,7 +524,7 @@ router.get('/admin/fragrantica', autenticar, apenasAdmin, async (req, res) => {
 
     // Gênero
     let genero = null;
-    if (pHtml.match(/for (women and men|unisex)/i)) genero = 'Unissex';
+    if (pHtml.match(/for (women and men|unisex)/i)) genero = 'Compartilhável';
     else if (pHtml.match(/for (women|her)/i)) genero = 'Feminino';
     else if (pHtml.match(/for (men|him)/i)) genero = 'Masculino';
 
