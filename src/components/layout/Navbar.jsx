@@ -42,7 +42,7 @@ export default function Navbar() {
 
           {/* Logo centralizado (absolute para ficar sempre no centro) */}
           <Link to="/" style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none', zIndex: 1 }}>
-            <img src="/images/logo/logo-gold.png" alt="Niche Club" style={{ height: 80, maxWidth: '55vw', objectFit: 'contain' }} />
+            <img src="/images/logo/logo-banner.jpeg" alt="Niche Club" style={{ height: 40, objectFit: 'contain' }} />
           </Link>
 
           {/* Ícones à direita */}
