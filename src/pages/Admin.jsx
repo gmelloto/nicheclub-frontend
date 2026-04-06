@@ -749,6 +749,8 @@ function PainelPerfumes({ token }) {
   const [excluindo, setExcluindo] = useState(null);
   const [detalhe, setDetalhe] = useState(null);
   const sentinelRef = useRef(null);
+  const [fixSocial, setFixSocial] = useState(false);
+  const [fixSocialResult, setFixSocialResult] = useState(null);
 
   const carregar = async (pag = 1, termo = busca, append = false) => {
     if (pag === 1) setLoading(true); else setLoadingMore(true);
@@ -1012,13 +1014,62 @@ function PainelPerfumes({ token }) {
       <ModalDetalhe />
 
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap', gap: 8 }}>
         <h2 style={{ fontSize: 22, fontWeight: 700, color: '#111' }}>Produtos</h2>
-        <button onClick={() => window.location.href = '/admin/produtos'}
-          style={{ padding: '10px 20px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: '#0d0b07', boxShadow: '0 2px 8px rgba(201,168,76,0.3)' }}>
-          + Novo Produto
-        </button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button onClick={async () => {
+            if (fixSocial) return;
+            setFixSocial(true); setFixSocialResult(null);
+            try {
+              const resp = await fetch(`${API_URL}/api/admin/perfumes/fix-social`, {
+                method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: '{}',
+              });
+              const data = await resp.json();
+              setFixSocialResult({ running: true, processados: 0, total: 0, mensagem: data.mensagem });
+              const poll = setInterval(async () => {
+                try {
+                  const r = await fetch(`${API_URL}/api/admin/perfumes/fix-social`, { headers: { Authorization: `Bearer ${token}` } });
+                  const status = await r.json();
+                  setFixSocialResult(status);
+                  if (!status.running) { clearInterval(poll); setFixSocial(false); }
+                } catch { clearInterval(poll); setFixSocial(false); }
+              }, 3000);
+            } catch(e) { setFixSocialResult({ erro: e.message }); setFixSocial(false); }
+          }} disabled={fixSocial}
+            style={{ padding: '10px 14px', background: '#111', border: 'none', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: fixSocial ? 'not-allowed' : 'pointer', color: '#fff', opacity: fixSocial ? 0.7 : 1 }}>
+            {fixSocial ? 'Buscando...' : 'Fotos Social'}
+          </button>
+          <button onClick={() => window.location.href = '/admin/produtos'}
+            style={{ padding: '10px 20px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: '#0d0b07', boxShadow: '0 2px 8px rgba(201,168,76,0.3)' }}>
+            + Novo Produto
+          </button>
+        </div>
       </div>
+
+      {/* Resultado fix-social */}
+      {fixSocialResult && (
+        <div style={{ background: fixSocialResult.erro ? '#fce4ec' : fixSocialResult.running ? '#fff3e0' : '#e8f5e9', borderRadius: 8, padding: '10px 14px', marginBottom: 12, fontSize: 13 }}>
+          {fixSocialResult.erro ? (
+            <span style={{ color: '#c62828' }}>Erro: {fixSocialResult.erro}</span>
+          ) : fixSocialResult.running ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ width: 18, height: 18, border: '2px solid #e8e4dc', borderTop: '2px solid #e65100', borderRadius: '50%', animation: 'spin .6s linear infinite', flexShrink: 0 }} />
+              <span style={{ color: '#e65100', fontWeight: 600 }}>Buscando... {fixSocialResult.processados || 0}/{fixSocialResult.total || '?'} — {fixSocialResult.atualizados || 0} atualizados</span>
+            </div>
+          ) : (
+            <div>
+              <span style={{ color: '#2e7d32', fontWeight: 600 }}>Concluído! {fixSocialResult.atualizados || 0} fotos sociais carregadas ({fixSocialResult.processados || 0} processados)</span>
+              {fixSocialResult.erros?.length > 0 && (
+                <details style={{ marginTop: 6, fontSize: 12, color: '#888' }}>
+                  <summary style={{ cursor: 'pointer' }}>{fixSocialResult.erros.length} erros</summary>
+                  {fixSocialResult.erros.map((e, i) => <p key={i}>{e.nome}: {e.erro}</p>)}
+                </details>
+              )}
+              <button onClick={() => setFixSocialResult(null)} style={{ marginTop: 6, background: 'none', border: 'none', fontSize: 12, color: '#888', cursor: 'pointer', textDecoration: 'underline' }}>Fechar</button>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Busca */}
       <div style={{ position: 'relative', marginBottom: 12 }}>
