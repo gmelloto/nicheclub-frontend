@@ -297,7 +297,7 @@ function PainelDashboard() {
   return (
     <div className="fade-in">
       <div style={{ marginBottom: 28 }}>
-        <h1 style={{ fontSize: 28, fontWeight: 800, color: '#111', margin: 0 }}>{saudacao()}</h1>
+        <h1 style={{ fontSize: 26, fontWeight: 700, color: '#111', letterSpacing: '-0.02em', margin: 0 }}>{saudacao()}</h1>
         <p style={{ fontSize: 14, color: '#888', marginTop: 4 }}>{new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
       </div>
 
@@ -478,10 +478,10 @@ function PainelPedidos({ token }) {
       {/* Header */}
       <div style={{ marginBottom: 20 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <h1 style={{ fontSize: 26, fontWeight: 800, color: '#111', margin: 0 }}>Pedidos</h1>
+          <h1 style={{ fontSize: 24, fontWeight: 700, color: '#111', letterSpacing: '-0.02em', margin: 0 }}>Pedidos</h1>
           <span style={{ padding: '4px 12px', borderRadius: 20, fontSize: 12, fontWeight: 600, background: '#f0f0f0', color: '#666' }}>{pedidos.length}</span>
         </div>
-        <p style={{ fontSize: 13, color: '#888', marginTop: 4 }}>Gerencie pedidos e atualize status de entrega</p>
+        <p style={{ fontSize: 14, color: '#999', marginTop: 6 }}>Gerencie pedidos e atualize status de entrega</p>
       </div>
 
       {/* Filtros com contagem */}
@@ -798,8 +798,8 @@ function PainelEstoque({ token }) {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 20 }}>
         <div>
-          <h1 style={{ fontSize: 26, fontWeight: 800, color: '#111', margin: 0 }}>Decants</h1>
-          <p style={{ fontSize: 13, color: '#888', marginTop: 4 }}>Controle de frascos e disponibilidade de ML</p>
+          <h1 style={{ fontSize: 24, fontWeight: 700, color: '#111', letterSpacing: '-0.02em', margin: 0 }}>Decants</h1>
+          <p style={{ fontSize: 14, color: '#999', marginTop: 6 }}>Controle de frascos e disponibilidade de ML</p>
         </div>
         <button onClick={abrirNovo}
           style={{ padding: '10px 20px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: '#0d0b07', boxShadow: '0 2px 8px rgba(201,168,76,0.3)' }}>
@@ -1635,10 +1635,10 @@ function PainelReservas({ token }) {
 
       <div style={{ marginBottom: 20 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <h1 style={{ fontSize: 26, fontWeight: 800, color: '#111', margin: 0 }}>Reservas</h1>
+          <h1 style={{ fontSize: 24, fontWeight: 700, color: '#111', letterSpacing: '-0.02em', margin: 0 }}>Reservas</h1>
           <span style={{ padding: '4px 12px', borderRadius: 20, fontSize: 12, fontWeight: 600, background: '#f0f0f0', color: '#666' }}>{reservas.length}</span>
         </div>
-        <p style={{ fontSize: 13, color: '#888', marginTop: 4 }}>Gerencie reservas de clientes e atualize status</p>
+        <p style={{ fontSize: 14, color: '#999', marginTop: 6 }}>Gerencie reservas de clientes e atualize status</p>
       </div>
 
       <div style={{ display: 'flex', gap: 6, marginBottom: 16, overflowX: 'auto', paddingBottom: 4, background: '#f5f5f3', borderRadius: 14, padding: 6 }}>
