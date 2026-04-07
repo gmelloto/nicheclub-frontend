@@ -448,16 +448,16 @@ function PainelPedidos({ token }) {
   ];
 
   // Modal Detalhe
-  const ModalDetalhe = () => detalhe && createPortal(
+  const modalDetalhe = detalhe && createPortal(
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9998, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
       onClick={e => e.target === e.currentTarget && setDetalhe(null)}>
-      <div style={{ background: '#fff', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '85vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
-        <div style={{ width: 40, height: 4, background: '#ddd', borderRadius: 2, margin: '0 auto 16px' }} />
+      <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '85vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
+        <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 16px' }} />
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
           <div>
             <p style={{ fontSize: 11, color: '#c9a84c', fontWeight: 600, letterSpacing: '0.1em' }}>{detalhe.numero}</p>
-            <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111', marginTop: 2 }}>{detalhe.cliente}</h3>
+            <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginTop: 2 }}>{detalhe.cliente}</h3>
           </div>
           {(() => { const st = getStatus(detalhe.status); return (
             <span style={{ padding: '4px 12px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: st.bg, color: st.color }}>{st.label}</span>
@@ -465,18 +465,18 @@ function PainelPedidos({ token }) {
         </div>
 
         {/* Info */}
-        <div style={{ background: '#f8f7f4', borderRadius: 10, padding: 16, marginBottom: 16 }}>
+        <div style={{ background: 'var(--filter-bg)', borderRadius: 10, padding: 16, marginBottom: 16 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-            <span style={{ fontSize: 13, color: '#555' }}>Total</span>
-            <span style={{ fontSize: 16, fontWeight: 700, color: '#111' }}>R$ {Number(detalhe.total || 0).toFixed(2).replace('.', ',')}</span>
+            <span style={{ fontSize: 13, color: 'var(--text2)' }}>Total</span>
+            <span style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)' }}>R$ {Number(detalhe.total || 0).toFixed(2).replace('.', ',')}</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: 13, color: '#555' }}>Data</span>
-            <span style={{ fontSize: 13, color: '#333' }}>{detalhe.criado_em ? new Date(detalhe.criado_em).toLocaleDateString('pt-BR') : '—'}</span>
+            <span style={{ fontSize: 13, color: 'var(--text2)' }}>Data</span>
+            <span style={{ fontSize: 13, color: 'var(--text2)' }}>{detalhe.criado_em ? new Date(detalhe.criado_em).toLocaleDateString('pt-BR') : '—'}</span>
           </div>
           {detalhe.codigo_rastreio && (
             <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8 }}>
-              <span style={{ fontSize: 13, color: '#555' }}>Rastreio</span>
+              <span style={{ fontSize: 13, color: 'var(--text2)' }}>Rastreio</span>
               <span style={{ fontSize: 13, color: '#1565c0', fontWeight: 600 }}>{detalhe.codigo_rastreio}</span>
             </div>
           )}
@@ -499,7 +499,7 @@ function PainelPedidos({ token }) {
         <div style={{ marginBottom: 16 }}>
           <p style={{ fontSize: 11, fontWeight: 600, color: '#888', letterSpacing: '0.1em', marginBottom: 6 }}>ALTERAR STATUS</p>
           <select value={statusEdit} onChange={e => setStatusEdit(e.target.value)}
-            style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', background: '#fff', color: '#333', marginBottom: 8, boxSizing: 'border-box' }}>
+            style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 13, outline: 'none', background: '#fff', color: '#333', marginBottom: 8, boxSizing: 'border-box' }}>
             <option value="aguardando_pagamento">Aguardando pagamento</option>
             <option value="pagamento_aprovado">Pagamento aprovado</option>
             <option value="em_separacao">Em separacao</option>
@@ -508,12 +508,12 @@ function PainelPedidos({ token }) {
             <option value="cancelado">Cancelado</option>
           </select>
           <input value={rastreio} onChange={e => setRastreio(e.target.value)} placeholder="Codigo de rastreio (opcional)"
-            style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box' }} />
+            style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box' }} />
         </div>
 
         {/* Acoes */}
         <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={() => setDetalhe(null)} style={{ flex: 0.5, padding: '12px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#666' }}>Fechar</button>
+          <button onClick={() => setDetalhe(null)} style={{ flex: 0.5, padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)' }}>Fechar</button>
           <button onClick={salvarStatus} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>
             {salvando ? 'Salvando...' : 'Salvar'}
           </button>
@@ -525,7 +525,7 @@ function PainelPedidos({ token }) {
   return (
     <div className="fade-in">
       <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}`}</style>
-      <ModalDetalhe />
+      {modalDetalhe}
 
       {/* Header */}
       <div style={{ marginBottom: 20 }}>
@@ -700,18 +700,18 @@ function PainelEstoque({ token }) {
   );
 
   // ── Modal Novo Frasco ──
-  const ModalNovo = () => novoAberto && createPortal(
+  const modalNovo = novoAberto && createPortal(
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
       onClick={e => e.target === e.currentTarget && setNovoAberto(false)}>
-      <div style={{ background: '#fff', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '85vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
-        <div style={{ width: 40, height: 4, background: '#ddd', borderRadius: 2, margin: '0 auto 16px' }} />
-        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111', marginBottom: 16 }}>Novo Frasco</h3>
+      <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '85vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
+        <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 16px' }} />
+        <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 16 }}>Novo Frasco</h3>
 
         {/* Busca perfume */}
         <div style={{ marginBottom: 12 }}>
           <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>PERFUME</label>
           <input value={buscaPerfume} onChange={e => setBuscaPerfume(e.target.value)} placeholder="Buscar perfume..."
-            style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, boxSizing: 'border-box', outline: 'none', marginBottom: 8 }} />
+            style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 13, boxSizing: 'border-box', outline: 'none', marginBottom: 8 }} />
           <div style={{ maxHeight: 180, overflowY: 'auto', border: '1px solid #eee', borderRadius: 8 }}>
             {perfumesFiltrados.slice(0, 30).map(p => (
               <div key={p.id} onClick={() => { setNovoForm(f => ({ ...f, perfume_id: p.id })); setBuscaPerfume(p.nome + ' — ' + p.marca); }}
@@ -736,17 +736,17 @@ function PainelEstoque({ token }) {
           <div>
             <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>ML TOTAL</label>
             <input type="number" value={novoForm.ml_total} onChange={e => setNovoForm(f => ({ ...f, ml_total: e.target.value }))} placeholder="Ex: 100"
-              style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none' }} />
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none' }} />
           </div>
           <div>
             <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>LOTE (opcional)</label>
             <input value={novoForm.lote} onChange={e => setNovoForm(f => ({ ...f, lote: e.target.value }))} placeholder="Ex: L001"
-              style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none' }} />
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none' }} />
           </div>
         </div>
 
         <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={() => setNovoAberto(false)} style={{ flex: 0.5, padding: '12px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#666' }}>Cancelar</button>
+          <button onClick={() => setNovoAberto(false)} style={{ flex: 0.5, padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)' }}>Cancelar</button>
           <button onClick={salvarNovo} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>
             {salvando ? 'Salvando...' : 'Adicionar Frasco'}
           </button>
@@ -756,28 +756,28 @@ function PainelEstoque({ token }) {
   , document.body);
 
   // ── Modal Editar ──
-  const ModalEditar = () => editando && createPortal(
+  const modalEditar = editando && createPortal(
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
       onClick={e => e.target === e.currentTarget && setEditando(null)}>
-      <div style={{ background: '#fff', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
-        <div style={{ width: 40, height: 4, background: '#ddd', borderRadius: 2, margin: '0 auto 16px' }} />
-        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111', marginBottom: 4 }}>Editar Frasco</h3>
-        <p style={{ color: '#888', fontSize: 13, marginBottom: 20 }}>{editando.perfume} — {editando.marca}</p>
+      <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
+        <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 16px' }} />
+        <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>Editar Frasco</h3>
+        <p style={{ color: 'var(--text3)', fontSize: 13, marginBottom: 20 }}>{editando.perfume} — {editando.marca}</p>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
           <div>
             <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>ML TOTAL</label>
             <input type="number" value={editForm.ml_total} onChange={e => setEditForm(f => ({ ...f, ml_total: e.target.value }))}
-              style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none' }} />
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none' }} />
           </div>
           <div>
             <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>ML VENDIDO</label>
             <input type="number" value={editForm.ml_vendido} onChange={e => setEditForm(f => ({ ...f, ml_vendido: e.target.value }))}
-              style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none' }} />
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none' }} />
           </div>
         </div>
         <p style={{ fontSize: 12, color: '#888', marginBottom: 20 }}>Disponivel: <b style={{ color: '#c9a84c' }}>{Math.max(0, Number(editForm.ml_total) - Number(editForm.ml_vendido))}ml</b></p>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={() => setEditando(null)} style={{ flex: 0.5, padding: '12px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#666' }}>Cancelar</button>
+          <button onClick={() => setEditando(null)} style={{ flex: 0.5, padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)' }}>Cancelar</button>
           <button onClick={salvarEdicao} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>
             {salvando ? 'Salvando...' : 'Salvar'}
           </button>
@@ -787,11 +787,11 @@ function PainelEstoque({ token }) {
   , document.body);
 
   // ── Modal Detalhe ──
-  const ModalDetalhe = () => detalhe && createPortal(
+  const modalDetalhe = detalhe && createPortal(
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9998, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
       onClick={e => e.target === e.currentTarget && setDetalhe(null)}>
-      <div style={{ background: '#fff', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
-        <div style={{ width: 40, height: 4, background: '#ddd', borderRadius: 2, margin: '0 auto 16px' }} />
+      <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
+        <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 16px' }} />
 
         <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start', marginBottom: 16 }}>
           {detalhe.foto_url && (
@@ -811,10 +811,10 @@ function PainelEstoque({ token }) {
           const pct = total > 0 ? Math.round((disp / total) * 100) : 0;
           const st = getStatus(detalhe);
           return (
-            <div style={{ background: '#f8f7f4', borderRadius: 10, padding: 16, marginBottom: 16 }}>
+            <div style={{ background: 'var(--filter-bg)', borderRadius: 10, padding: 16, marginBottom: 16 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                <span style={{ fontSize: 13, color: '#555' }}>Disponivel</span>
-                <span style={{ fontSize: 13, fontWeight: 700, color: '#111' }}>{disp}ml / {total}ml</span>
+                <span style={{ fontSize: 13, color: 'var(--text2)' }}>Disponivel</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text)' }}>{disp}ml / {total}ml</span>
               </div>
               <div style={{ height: 6, background: '#e8e4dc', borderRadius: 3, marginBottom: 8 }}>
                 <div style={{ height: '100%', background: st.key === 'esgotado' ? '#c62828' : 'linear-gradient(90deg,#c9a84c,#e8c870)', borderRadius: 3, width: `${pct}%`, transition: 'width .3s' }} />
@@ -829,15 +829,15 @@ function PainelEstoque({ token }) {
 
         {/* Info */}
         <div style={{ display: 'flex', gap: 16, marginBottom: 16, flexWrap: 'wrap' }}>
-          <div><p style={{ fontSize: 10, fontWeight: 600, color: '#888', letterSpacing: '0.1em' }}>CRIADO</p><p style={{ fontSize: 13, color: '#333' }}>{detalhe.criado_em ? new Date(detalhe.criado_em).toLocaleDateString('pt-BR') : '—'}</p></div>
+          <div><p style={{ fontSize: 10, fontWeight: 600, color: '#888', letterSpacing: '0.1em' }}>CRIADO</p><p style={{ fontSize: 13, color: 'var(--text2)' }}>{detalhe.criado_em ? new Date(detalhe.criado_em).toLocaleDateString('pt-BR') : '—'}</p></div>
           {detalhe.esgotado_em && <div><p style={{ fontSize: 10, fontWeight: 600, color: '#888', letterSpacing: '0.1em' }}>ESGOTADO</p><p style={{ fontSize: 13, color: '#c62828' }}>{new Date(detalhe.esgotado_em).toLocaleDateString('pt-BR')}</p></div>}
-          {detalhe.lote && <div><p style={{ fontSize: 10, fontWeight: 600, color: '#888', letterSpacing: '0.1em' }}>LOTE</p><p style={{ fontSize: 13, color: '#333' }}>{detalhe.lote}</p></div>}
+          {detalhe.lote && <div><p style={{ fontSize: 10, fontWeight: 600, color: '#888', letterSpacing: '0.1em' }}>LOTE</p><p style={{ fontSize: 13, color: 'var(--text2)' }}>{detalhe.lote}</p></div>}
         </div>
 
         {/* Acoes */}
         <div style={{ display: 'flex', gap: 8 }}>
           <button onClick={() => confirmarExcluir(detalhe)} style={{ padding: '12px', background: '#fce4ec', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 13, color: '#c62828', fontWeight: 600 }}>Excluir</button>
-          <button onClick={() => setDetalhe(null)} style={{ padding: '12px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#666', flex: 0.5 }}>Fechar</button>
+          <button onClick={() => setDetalhe(null)} style={{ padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)', flex: 0.5 }}>Fechar</button>
           <button onClick={() => abrirEditar(detalhe)} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>Editar</button>
         </div>
       </div>
@@ -847,9 +847,9 @@ function PainelEstoque({ token }) {
   return (
     <div className="fade-in">
       <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}`}</style>
-      <ModalNovo />
-      <ModalEditar />
-      <ModalDetalhe />
+      {modalNovo}
+      {modalEditar}
+      {modalDetalhe}
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 20 }}>
@@ -1151,22 +1151,24 @@ function PainelPerfumes({ token }) {
         body: JSON.stringify(body),
       });
       if (!res.ok) throw new Error('Erro ao salvar');
+      const atualizado = { ...editando, ...editForm };
+      setPerfumes(prev => prev.map(x => x.id === editando.id ? atualizado : x));
+      setDetalhe(atualizado);
       setEditando(null);
-      carregar(1, busca);
     } catch(e) { alert(e.message); }
     finally { setSalvando(false); }
   };
 
   const excluir = async (p) => {
-    if (!window.confirm(`Excluir "${p.nome}"? Isso remove também os frascos e preços.`)) return;
     setExcluindo(p.id);
     try {
       const res = await fetch(`${API_URL}/api/admin/perfumes/${p.id}`, {
         method: 'DELETE', headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error('Erro ao excluir');
+      setPerfumes(prev => prev.filter(x => x.id !== p.id));
+      setTotal(prev => prev - 1);
       setDetalhe(null);
-      carregar(1, busca);
     } catch(e) { alert(e.message); }
     finally { setExcluindo(null); }
   };
@@ -1178,11 +1180,11 @@ function PainelPerfumes({ token }) {
   });
 
   // ── Modal Editar ──
-  const ModalEditar = () => editando && createPortal(
+  const modalEditar = editando && createPortal(
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
       onClick={e => e.target === e.currentTarget && setEditando(null)}>
-      <div style={{ background: '#fff', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '90vh', overflowY: 'auto', overflowX: 'hidden', boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
-        <div style={{ width: 40, height: 4, background: '#ddd', borderRadius: 2, margin: '0 auto 16px' }} />
+      <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '90vh', overflowY: 'auto', overflowX: 'hidden', boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
+        <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 16px' }} />
         <h3 style={{ marginBottom: 16, color: '#0d0b07', fontSize: 18, fontWeight: 700 }}>Editar Perfume</h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, overflow: 'hidden' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
@@ -1221,7 +1223,7 @@ function PainelPerfumes({ token }) {
             ))}
           </div>
           <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>PRECO LACRADO</label><input type="number" step="0.01" placeholder="R$" {...inp('preco_lacrado')} /></div>
-          <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#333', cursor: 'pointer', flexShrink: 0 }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--text2)', cursor: 'pointer', flexShrink: 0 }}>
             <input type="checkbox" checked={editForm.ativo !== false} onChange={e => setEditForm(f => ({ ...f, ativo: e.target.checked }))} style={{ width: 18, height: 18, flexShrink: 0 }} />
             Ativo no catalogo
           </label>
@@ -1237,11 +1239,11 @@ function PainelPerfumes({ token }) {
   , document.body);
 
   // ── Modal Detalhe ──
-  const ModalDetalhe = () => detalhe && createPortal(
+  const modalDetalhe = detalhe && createPortal(
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9998, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
       onClick={e => e.target === e.currentTarget && setDetalhe(null)}>
-      <div style={{ background: '#fff', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '85vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
-        <div style={{ width: 40, height: 4, background: '#ddd', borderRadius: 2, margin: '0 auto 16px' }} />
+      <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '85vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
+        <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 16px' }} />
 
         {/* Foto + info */}
         <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
@@ -1261,7 +1263,7 @@ function PainelPerfumes({ token }) {
             </div>
             {detalhe.rating_valor && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 6 }}>
-                <span style={{ fontSize: 16, fontWeight: 700, color: '#111' }}>{Number(detalhe.rating_valor).toFixed(1)}</span>
+                <span style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)' }}>{Number(detalhe.rating_valor).toFixed(1)}</span>
                 <span style={{ color: '#c9a84c', fontSize: 12 }}>★</span>
                 {detalhe.rating_count && <span style={{ fontSize: 11, color: '#999' }}>({Number(detalhe.rating_count).toLocaleString()})</span>}
               </div>
@@ -1307,16 +1309,16 @@ function PainelPerfumes({ token }) {
         {/* Familia + Perfumistas */}
         <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 16 }}>
           {detalhe.familia_olfativa && (
-            <div><p style={{ fontSize: 10, fontWeight: 600, color: '#888' }}>FAMILIA</p><p style={{ fontSize: 13, color: '#333' }}>{detalhe.familia_olfativa}</p></div>
+            <div><p style={{ fontSize: 10, fontWeight: 600, color: '#888' }}>FAMILIA</p><p style={{ fontSize: 13, color: 'var(--text2)' }}>{detalhe.familia_olfativa}</p></div>
           )}
           {detalhe.perfumista1 && (
-            <div><p style={{ fontSize: 10, fontWeight: 600, color: '#888' }}>PERFUMISTA</p><p style={{ fontSize: 13, color: '#333', fontStyle: 'italic' }}>{[detalhe.perfumista1, detalhe.perfumista2].filter(Boolean).join(', ')}</p></div>
+            <div><p style={{ fontSize: 10, fontWeight: 600, color: '#888' }}>PERFUMISTA</p><p style={{ fontSize: 13, color: 'var(--text2)', fontStyle: 'italic' }}>{[detalhe.perfumista1, detalhe.perfumista2].filter(Boolean).join(', ')}</p></div>
           )}
         </div>
 
         {/* Acoes */}
         <div style={{ display: 'flex', gap: 8, position: 'sticky', bottom: 0, background: '#fff', paddingTop: 12 }}>
-          <button onClick={() => setDetalhe(null)} style={{ padding: '12px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#666', flex: 0.5 }}>Fechar</button>
+          <button onClick={() => setDetalhe(null)} style={{ padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)', flex: 0.5 }}>Fechar</button>
           <button onClick={() => abrirEditar(detalhe)} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>Editar</button>
           <button onClick={() => excluir(detalhe)} disabled={excluindo === detalhe.id}
             style={{ padding: '12px 16px', background: '#fce4ec', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#c62828' }}>
@@ -1330,8 +1332,8 @@ function PainelPerfumes({ token }) {
   return (
     <div className="fade-in">
       <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}`}</style>
-      <ModalEditar />
-      <ModalDetalhe />
+      {modalEditar}
+      {modalDetalhe}
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap', gap: 8 }}>
@@ -1619,11 +1621,11 @@ function PainelReservas({ token }) {
     ['cancelada', 'Canceladas'],
   ];
 
-  const ModalDetalhe = () => detalhe && createPortal(
+  const modalDetalhe = detalhe && createPortal(
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9998, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
       onClick={e => e.target === e.currentTarget && setDetalhe(null)}>
-      <div style={{ background: '#fff', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '85vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
-        <div style={{ width: 40, height: 4, background: '#ddd', borderRadius: 2, margin: '0 auto 16px' }} />
+      <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '85vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
+        <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 16px' }} />
 
         <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start', marginBottom: 16 }}>
           {detalhe.foto_url && (
@@ -1631,40 +1633,40 @@ function PainelReservas({ token }) {
           )}
           <div style={{ flex: 1, minWidth: 0 }}>
             <p style={{ fontSize: 11, color: '#c9a84c', fontWeight: 600, letterSpacing: '0.1em' }}>{detalhe.marca}</p>
-            <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111', marginTop: 2 }}>{detalhe.perfume_nome}</h3>
+            <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginTop: 2 }}>{detalhe.perfume_nome}</h3>
           </div>
           {(() => { const st = getStatus(detalhe.status); return (
             <span style={{ padding: '4px 12px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: st.bg, color: st.color, flexShrink: 0 }}>{st.label}</span>
           ); })()}
         </div>
 
-        <div style={{ background: '#f8f7f4', borderRadius: 10, padding: 16, marginBottom: 16 }}>
+        <div style={{ background: 'var(--filter-bg)', borderRadius: 10, padding: 16, marginBottom: 16 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-            <span style={{ fontSize: 13, color: '#555' }}>Cliente</span>
-            <span style={{ fontSize: 14, fontWeight: 600, color: '#111' }}>{detalhe.nome}</span>
+            <span style={{ fontSize: 13, color: 'var(--text2)' }}>Cliente</span>
+            <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)' }}>{detalhe.nome}</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-            <span style={{ fontSize: 13, color: '#555' }}>Telefone</span>
-            <span style={{ fontSize: 13, color: '#333' }}>{formatarTelefone(detalhe.telefone)}</span>
+            <span style={{ fontSize: 13, color: 'var(--text2)' }}>Telefone</span>
+            <span style={{ fontSize: 13, color: 'var(--text2)' }}>{formatarTelefone(detalhe.telefone)}</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-            <span style={{ fontSize: 13, color: '#555' }}>Tamanho</span>
-            <span style={{ fontSize: 13, color: '#333' }}>{detalhe.tamanho || `${detalhe.ml_quantidade}ml (avulso)`}</span>
+            <span style={{ fontSize: 13, color: 'var(--text2)' }}>Tamanho</span>
+            <span style={{ fontSize: 13, color: 'var(--text2)' }}>{detalhe.tamanho || `${detalhe.ml_quantidade}ml (avulso)`}</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-            <span style={{ fontSize: 13, color: '#555' }}>Valor</span>
-            <span style={{ fontSize: 16, fontWeight: 700, color: '#111' }}>R$ {Number(detalhe.preco_total || 0).toFixed(2).replace('.', ',')}</span>
+            <span style={{ fontSize: 13, color: 'var(--text2)' }}>Valor</span>
+            <span style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)' }}>R$ {Number(detalhe.preco_total || 0).toFixed(2).replace('.', ',')}</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: 13, color: '#555' }}>Data</span>
-            <span style={{ fontSize: 13, color: '#333' }}>{detalhe.criado_em ? new Date(detalhe.criado_em).toLocaleDateString('pt-BR') : '—'}</span>
+            <span style={{ fontSize: 13, color: 'var(--text2)' }}>Data</span>
+            <span style={{ fontSize: 13, color: 'var(--text2)' }}>{detalhe.criado_em ? new Date(detalhe.criado_em).toLocaleDateString('pt-BR') : '—'}</span>
           </div>
         </div>
 
         <div style={{ marginBottom: 16 }}>
           <p style={{ fontSize: 11, fontWeight: 600, color: '#888', letterSpacing: '0.1em', marginBottom: 6 }}>ALTERAR STATUS</p>
           <select value={statusEdit} onChange={e => setStatusEdit(e.target.value)}
-            style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', background: '#fff', color: '#333', boxSizing: 'border-box' }}>
+            style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 13, outline: 'none', background: '#fff', color: '#333', boxSizing: 'border-box' }}>
             <option value="pendente">Pendente</option>
             <option value="confirmada">Confirmada</option>
             <option value="separando">Separando</option>
@@ -1676,7 +1678,7 @@ function PainelReservas({ token }) {
 
         <div style={{ display: 'flex', gap: 8 }}>
           <button onClick={() => deletarReserva(detalhe.id)} style={{ padding: '12px', background: '#fce4ec', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 13, color: '#c62828', fontWeight: 600 }}>Excluir</button>
-          <button onClick={() => setDetalhe(null)} style={{ flex: 0.5, padding: '12px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#666' }}>Fechar</button>
+          <button onClick={() => setDetalhe(null)} style={{ flex: 0.5, padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)' }}>Fechar</button>
           <button onClick={salvarStatus} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>
             {salvando ? 'Salvando...' : 'Salvar'}
           </button>
@@ -1688,7 +1690,7 @@ function PainelReservas({ token }) {
   return (
     <div className="fade-in">
       <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}`}</style>
-      <ModalDetalhe />
+      {modalDetalhe}
 
       <div style={{ marginBottom: 20 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -1842,7 +1844,7 @@ function PainelUsuarios({ token }) {
   };
 
   // ── Modal Novo ──
-  const ModalNovo = () => novoAberto && createPortal(
+  const modalNovo = novoAberto && createPortal(
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
       onClick={e => e.target === e.currentTarget && setNovoAberto(false)}>
       <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
@@ -1902,7 +1904,7 @@ function PainelUsuarios({ token }) {
   , document.body);
 
   // ── Modal Editar ──
-  const ModalEditar = () => editando && createPortal(
+  const modalEditar = editando && createPortal(
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
       onClick={e => e.target === e.currentTarget && setEditando(null)}>
       <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
@@ -1966,7 +1968,7 @@ function PainelUsuarios({ token }) {
   , document.body);
 
   // ── Modal Senha ──
-  const ModalSenha = () => senhaAberto && createPortal(
+  const modalSenha = senhaAberto && createPortal(
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
       onClick={e => e.target === e.currentTarget && setSenhaAberto(null)}>
       <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
@@ -1989,7 +1991,7 @@ function PainelUsuarios({ token }) {
   , document.body);
 
   // ── Modal Detalhe ──
-  const ModalDetalhe = () => detalhe && createPortal(
+  const modalDetalhe = detalhe && createPortal(
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9998, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
       onClick={e => e.target === e.currentTarget && setDetalhe(null)}>
       <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
@@ -2032,10 +2034,10 @@ function PainelUsuarios({ token }) {
   return (
     <div className="fade-in">
       <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}`}</style>
-      <ModalNovo />
-      <ModalEditar />
-      <ModalSenha />
-      <ModalDetalhe />
+      {modalNovo}
+      {modalEditar}
+      {modalSenha}
+      {modalDetalhe}
 
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 20 }}>
         <div>
