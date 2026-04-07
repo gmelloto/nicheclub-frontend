@@ -7,6 +7,48 @@ import { api } from '../services/api';
 import { PainelNotas } from './AdminNotas.jsx';
 import './Admin.css';
 
+const ACORDE_CORES = {
+  amadeirado: { bg: 'rgba(121,85,72,0.15)', color: '#8d6e63' },
+  woody: { bg: 'rgba(121,85,72,0.15)', color: '#8d6e63' },
+  floral: { bg: 'rgba(233,30,99,0.12)', color: '#e91e63' },
+  frutado: { bg: 'rgba(255,87,34,0.12)', color: '#ff5722' },
+  fruity: { bg: 'rgba(255,87,34,0.12)', color: '#ff5722' },
+  cítrico: { bg: 'rgba(255,193,7,0.15)', color: '#f9a825' },
+  citrus: { bg: 'rgba(255,193,7,0.15)', color: '#f9a825' },
+  'picante quente': { bg: 'rgba(230,74,25,0.12)', color: '#e64a19' },
+  spicy: { bg: 'rgba(230,74,25,0.12)', color: '#e64a19' },
+  aromático: { bg: 'rgba(76,175,80,0.12)', color: '#43a047' },
+  aromatic: { bg: 'rgba(76,175,80,0.12)', color: '#43a047' },
+  verde: { bg: 'rgba(56,142,60,0.12)', color: '#388e3c' },
+  green: { bg: 'rgba(56,142,60,0.12)', color: '#388e3c' },
+  adocicado: { bg: 'rgba(244,143,177,0.2)', color: '#ec407a' },
+  sweet: { bg: 'rgba(244,143,177,0.2)', color: '#ec407a' },
+  oud: { bg: 'rgba(62,39,35,0.2)', color: '#795548' },
+  almiscarado: { bg: 'rgba(158,158,158,0.15)', color: '#757575' },
+  musky: { bg: 'rgba(158,158,158,0.15)', color: '#757575' },
+  aquático: { bg: 'rgba(3,169,244,0.12)', color: '#039be5' },
+  aquatic: { bg: 'rgba(3,169,244,0.12)', color: '#039be5' },
+  fresco: { bg: 'rgba(0,188,212,0.12)', color: '#00acc1' },
+  fresh: { bg: 'rgba(0,188,212,0.12)', color: '#00acc1' },
+  balsâmico: { bg: 'rgba(121,85,72,0.12)', color: '#6d4c41' },
+  terroso: { bg: 'rgba(141,110,99,0.15)', color: '#8d6e63' },
+  earthy: { bg: 'rgba(141,110,99,0.15)', color: '#8d6e63' },
+  oriental: { bg: 'rgba(183,28,28,0.1)', color: '#c62828' },
+  powdery: { bg: 'rgba(206,147,216,0.2)', color: '#ab47bc' },
+  aveludado: { bg: 'rgba(206,147,216,0.2)', color: '#ab47bc' },
+  couro: { bg: 'rgba(78,52,46,0.2)', color: '#5d4037' },
+  leather: { bg: 'rgba(78,52,46,0.2)', color: '#5d4037' },
+  gourmand: { bg: 'rgba(255,111,0,0.12)', color: '#ef6c00' },
+  vanila: { bg: 'rgba(255,183,77,0.2)', color: '#fb8c00' },
+  vanilla: { bg: 'rgba(255,183,77,0.2)', color: '#fb8c00' },
+  defumado: { bg: 'rgba(69,90,100,0.15)', color: '#546e7a' },
+  smoky: { bg: 'rgba(69,90,100,0.15)', color: '#546e7a' },
+};
+const getAcordeCor = (acorde) => {
+  const key = acorde?.toLowerCase().trim();
+  return ACORDE_CORES[key] || { bg: 'var(--filter-bg)', color: 'var(--text3)' };
+};
+
 const TELAS_DISPONIVEIS = [
   { key: 'dashboard', label: 'Dashboard' },
   { key: 'pedidos', label: 'Pedidos' },
@@ -1277,7 +1319,7 @@ function PainelPerfumes({ token }) {
             <p style={{ fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 6, letterSpacing: '0.1em' }}>ACORDES</p>
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
               {[detalhe.acorde1, detalhe.acorde2, detalhe.acorde3, detalhe.acorde4, detalhe.acorde5].filter(Boolean).map(a => (
-                <span key={a} style={{ padding: '4px 12px', background: 'var(--filter-bg)', borderRadius: 20, fontSize: 12, color: 'var(--text2)' }}>{a}</span>
+                <span key={a} style={{ padding: '4px 12px', background: getAcordeCor(a).bg, borderRadius: 20, fontSize: 12, color: getAcordeCor(a).color, fontWeight: 500 }}>{a}</span>
               ))}
             </div>
           </div>
@@ -1475,7 +1517,7 @@ function PainelPerfumes({ token }) {
                 <div onClick={() => setDetalhe(p)} className="admin-card">
 
                   {/* Foto */}
-                  <div style={{ width: 70, height: 85, flexShrink: 0, borderRadius: 8, overflow: 'hidden', background: 'var(--input-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: 70, height: 85, flexShrink: 0, borderRadius: 8, overflow: 'hidden', background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {p.foto_url
                       ? <img src={p.foto_url} alt={p.nome} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                       : <span style={{ fontSize: 28, color: '#ccc' }}>🧴</span>
@@ -1504,15 +1546,14 @@ function PainelPerfumes({ token }) {
 
                     {acordes.length > 0 && (
                       <div style={{ display: 'flex', gap: 4, marginTop: 6, flexWrap: 'wrap' }}>
-                        {acordes.map(a => (
-                          <span key={a} style={{ padding: '2px 8px', background: '#f5f3ef', borderRadius: 12, fontSize: 10, color: '#777' }}>{a}</span>
-                        ))}
+                        {acordes.map(a => { const c = getAcordeCor(a); return (
+                          <span key={a} style={{ padding: '2px 8px', background: c.bg, borderRadius: 12, fontSize: 10, color: c.color, fontWeight: 500 }}>{a}</span>
+                        ); })}
                       </div>
                     )}
                   </div>
 
-                  {/* Seta */}
-                  <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0, color: '#ccc', fontSize: 18 }}>›</div>
+                  <div className="admin-card-arrow">›</div>
                 </div>
               </SwipeDelete>
             );
