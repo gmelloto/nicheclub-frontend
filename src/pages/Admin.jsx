@@ -1416,7 +1416,7 @@ function PainelReservas({ token }) {
                   cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.04)', alignItems: 'center' }}>
 
                 {r.foto_url && (
-                  <img src={r.foto_url} alt={r.perfume_nome} style={{ width: 44, height: 56, borderRadius: 6, objectFit: 'contain', flexShrink: 0, background: '#f8f7f4' }} />
+                  <img src={r.foto_url} alt={r.perfume_nome} style={{ width: 48, height: 64, borderRadius: 6, objectFit: 'contain', flexShrink: 0, background: '#fff' }} />
                 )}
 
                 <div style={{ flex: 1, minWidth: 0 }}>
@@ -1426,8 +1426,9 @@ function PainelReservas({ token }) {
                       {st.label}
                     </span>
                   </div>
-                  <p style={{ fontSize: 12, color: '#c9a84c', fontWeight: 500, margin: '2px 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.perfume_nome} — {r.marca}</p>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 6 }}>
+                  <p style={{ fontSize: 11, color: '#c9a84c', fontWeight: 600, letterSpacing: '0.05em', margin: '4px 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.marca}</p>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: '#333', margin: '1px 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.perfume_nome}</p>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 }}>
                     <span style={{ fontSize: 12, color: '#888' }}>{r.criado_em ? new Date(r.criado_em).toLocaleDateString('pt-BR') : ''} · {r.tamanho || `${r.ml_quantidade}ml`}</span>
                     <span style={{ fontSize: 15, fontWeight: 700, color: '#111' }}>R$ {Number(r.preco_total || 0).toFixed(2).replace('.', ',')}</span>
                   </div>
