@@ -833,7 +833,7 @@ function PainelEstoque({ token }) {
 
         {/* Acoes */}
         <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={() => confirmarExcluir(detalhe)} style={{ padding: '12px', background: '#fce4ec', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 13, color: '#c62828', fontWeight: 600 }}>Excluir</button>
+          <button onClick={() => confirmarExcluir(detalhe)} style={{ padding: '12px', background: 'var(--danger-bg)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 13, color: 'var(--danger-text)', fontWeight: 600 }}>Excluir</button>
           <button onClick={() => setDetalhe(null)} style={{ padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)', flex: 0.5 }}>Fechar</button>
           <button onClick={() => abrirEditar(detalhe)} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>Editar</button>
         </div>
@@ -1316,7 +1316,7 @@ function PainelPerfumes({ token }) {
           <button onClick={() => setDetalhe(null)} style={{ padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)', flex: 0.5 }}>Fechar</button>
           <button onClick={() => abrirEditar(detalhe)} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>Editar</button>
           <button onClick={() => excluir(detalhe)} disabled={excluindo === detalhe.id}
-            style={{ padding: '12px 16px', background: '#fce4ec', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#c62828' }}>
+            style={{ padding: '12px 16px', background: 'var(--danger-bg)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--danger-text)' }}>
             {excluindo === detalhe.id ? '...' : 'Excluir'}
           </button>
         </div>
@@ -1671,7 +1671,7 @@ function PainelReservas({ token }) {
         </div>
 
         <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={() => deletarReserva(detalhe.id)} style={{ padding: '12px', background: '#fce4ec', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 13, color: '#c62828', fontWeight: 600 }}>Excluir</button>
+          <button onClick={() => deletarReserva(detalhe.id)} style={{ padding: '12px', background: 'var(--danger-bg)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 13, color: 'var(--danger-text)', fontWeight: 600 }}>Excluir</button>
           <button onClick={() => setDetalhe(null)} style={{ flex: 0.5, padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)' }}>Fechar</button>
           <button onClick={salvarStatus} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>
             {salvando ? 'Salvando...' : 'Salvar'}
@@ -2014,7 +2014,7 @@ function PainelUsuarios({ token }) {
         </div>
 
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          <button onClick={() => excluir(detalhe)} style={{ padding: '12px', background: '#fce4ec', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 13, color: '#c62828', fontWeight: 600 }}>Excluir</button>
+          <button onClick={() => excluir(detalhe)} style={{ padding: '12px', background: 'var(--danger-bg)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 13, color: 'var(--danger-text)', fontWeight: 600 }}>Excluir</button>
           <button onClick={() => { setSenhaAberto(detalhe); setDetalhe(null); setNovaSenha(''); }} style={{ padding: '12px 16px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 13, color: 'var(--text2)', fontWeight: 500 }}>Alterar Senha</button>
           <button onClick={() => setDetalhe(null)} style={{ padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)' }}>Fechar</button>
           <button onClick={() => abrirEditar(detalhe)} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>Editar</button>
@@ -2068,7 +2068,7 @@ function PainelUsuarios({ token }) {
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <p style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{u.nome}</p>
-                      {!u.ativo && <span style={{ padding: '1px 8px', borderRadius: 12, fontSize: 10, fontWeight: 600, background: '#fce4ec', color: '#c62828' }}>Inativo</span>}
+                      {!u.ativo && <span style={{ padding: '1px 8px', borderRadius: 12, fontSize: 10, fontWeight: 600, background: 'var(--danger-bg)', color: 'var(--danger-text)' }}>Inativo</span>}
                     </div>
                     <p style={{ fontSize: 12, color: 'var(--text3)', margin: '2px 0 0' }}>{u.email}</p>
                   </div>
