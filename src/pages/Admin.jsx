@@ -1177,7 +1177,7 @@ function PainelPerfumes({ token }) {
   const inp = (key) => ({
     value: editForm[key] || '',
     onChange: e => setEditForm(f => ({ ...f, [key]: e.target.value })),
-    style: { width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, boxSizing: 'border-box', outline: 'none', color: '#0d0b07', background: '#fff' }
+    style: { width: '100%', padding: '8px 12px', border: '1px solid var(--input-border)', borderRadius: 4, fontSize: 13, boxSizing: 'border-box', outline: 'none', color: 'var(--input-text)', background: 'var(--input-bg)' }
   });
 
   // ── Modal Editar ──
@@ -1186,7 +1186,7 @@ function PainelPerfumes({ token }) {
       onClick={e => e.target === e.currentTarget && setEditando(null)}>
       <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '90vh', overflowY: 'auto', overflowX: 'hidden', boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
         <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 16px' }} />
-        <h3 style={{ marginBottom: 16, color: '#0d0b07', fontSize: 18, fontWeight: 700 }}>Editar Perfume</h3>
+        <h3 style={{ marginBottom: 16, color: 'var(--text)', fontSize: 18, fontWeight: 700 }}>Editar Perfume</h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, overflow: 'hidden' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
             <div style={{ gridColumn: '1/-1' }}><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>NOME</label><input {...inp('nome')} /></div>
@@ -1195,7 +1195,7 @@ function PainelPerfumes({ token }) {
             <div>
               <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>GENERO</label>
               <select value={editForm.genero || ''} onChange={e => setEditForm(f => ({ ...f, genero: e.target.value }))}
-                style={{ width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, outline: 'none', color: '#0d0b07', background: '#fff', boxSizing: 'border-box' }}>
+                style={{ width: '100%', padding: '8px 12px', border: '1px solid var(--input-border)', borderRadius: 4, fontSize: 13, outline: 'none', color: 'var(--input-text)', background: 'var(--input-bg)', boxSizing: 'border-box' }}>
                 <option value="">Selecione</option><option value="Masculino">Masculino</option><option value="Feminino">Feminino</option><option value="Compartilhável">Compartilhável</option>
               </select>
             </div>
@@ -1215,7 +1215,7 @@ function PainelPerfumes({ token }) {
           <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>URL FOTO</label><input {...inp('foto_url')} /></div>
           <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>DESCRICAO</label>
             <textarea value={editForm.descricao || ''} onChange={e => setEditForm(f => ({ ...f, descricao: e.target.value }))}
-              style={{ width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, outline: 'none', color: '#0d0b07', background: '#fff', minHeight: 60, resize: 'vertical', boxSizing: 'border-box' }} />
+              style={{ width: '100%', padding: '8px 12px', border: '1px solid var(--input-border)', borderRadius: 4, fontSize: 13, outline: 'none', color: 'var(--input-text)', background: 'var(--input-bg)', minHeight: 60, resize: 'vertical', boxSizing: 'border-box' }} />
           </div>
           <label style={{ fontSize: 11, fontWeight: 600, color: '#888' }}>PRECOS DECANT</label>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(70px, 1fr))', gap: 6 }}>
@@ -1229,8 +1229,8 @@ function PainelPerfumes({ token }) {
             Ativo no catalogo
           </label>
         </div>
-        <div style={{ display: 'flex', gap: 8, marginTop: 20, position: 'sticky', bottom: 0, background: '#fff', paddingTop: 12 }}>
-          <button onClick={() => setEditando(null)} style={{ flex: 1, padding: '12px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 8, cursor: 'pointer', fontSize: 14 }}>Cancelar</button>
+        <div style={{ display: 'flex', gap: 8, marginTop: 20, position: 'sticky', bottom: 0, background: 'var(--card-bg)', paddingTop: 12 }}>
+          <button onClick={() => setEditando(null)} style={{ flex: 1, padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)' }}>Cancelar</button>
           <button onClick={salvarEdicao} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>
             {salvando ? 'Salvando...' : 'Salvar'}
           </button>
@@ -1248,7 +1248,7 @@ function PainelPerfumes({ token }) {
 
         {/* Foto + info */}
         <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
-          <div style={{ width: 90, height: 110, flexShrink: 0, borderRadius: 8, overflow: 'hidden', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 90, height: 110, flexShrink: 0, borderRadius: 8, overflow: 'hidden', background: 'var(--input-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {detalhe.foto_url
               ? <img src={detalhe.foto_url} alt={detalhe.nome} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
               : <span style={{ fontSize: 32, color: '#ccc' }}>🧴</span>
@@ -1256,8 +1256,8 @@ function PainelPerfumes({ token }) {
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <p style={{ fontSize: 11, color: '#8a6a10', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase' }}>{detalhe.marca}</p>
-            <h3 style={{ fontSize: 18, fontWeight: 700, margin: '2px 0 6px', color: '#111' }}>{detalhe.nome}</h3>
-            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', fontSize: 12, color: '#666' }}>
+            <h3 style={{ fontSize: 18, fontWeight: 700, margin: '2px 0 6px', color: 'var(--text)' }}>{detalhe.nome}</h3>
+            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', fontSize: 12, color: 'var(--text3)' }}>
               {detalhe.genero && <span>{detalhe.genero}</span>}
               {detalhe.ano && <span>· {detalhe.ano}</span>}
               {detalhe.pais && <span>· {detalhe.pais}</span>}
@@ -1283,7 +1283,7 @@ function PainelPerfumes({ token }) {
             <p style={{ fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 6, letterSpacing: '0.1em' }}>ACORDES</p>
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
               {[detalhe.acorde1, detalhe.acorde2, detalhe.acorde3, detalhe.acorde4, detalhe.acorde5].filter(Boolean).map(a => (
-                <span key={a} style={{ padding: '4px 12px', background: '#f5f3ef', borderRadius: 20, fontSize: 12, color: '#555' }}>{a}</span>
+                <span key={a} style={{ padding: '4px 12px', background: 'var(--filter-bg)', borderRadius: 20, fontSize: 12, color: 'var(--text2)' }}>{a}</span>
               ))}
             </div>
           </div>
@@ -1293,9 +1293,9 @@ function PainelPerfumes({ token }) {
         {(detalhe.notas_topo || detalhe.notas_coracao || detalhe.notas_base) && (
           <div style={{ marginBottom: 12 }}>
             <p style={{ fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 6, letterSpacing: '0.1em' }}>NOTAS</p>
-            {detalhe.notas_topo && <p style={{ fontSize: 12, color: '#555', marginBottom: 2 }}><b style={{ color: '#8a6a10' }}>Topo:</b> {detalhe.notas_topo}</p>}
-            {detalhe.notas_coracao && <p style={{ fontSize: 12, color: '#555', marginBottom: 2 }}><b style={{ color: '#8a6a10' }}>Coracao:</b> {detalhe.notas_coracao}</p>}
-            {detalhe.notas_base && <p style={{ fontSize: 12, color: '#555' }}><b style={{ color: '#8a6a10' }}>Base:</b> {detalhe.notas_base}</p>}
+            {detalhe.notas_topo && <p style={{ fontSize: 12, color: 'var(--text2)', marginBottom: 2 }}><b style={{ color: '#c9a84c' }}>Topo:</b> {detalhe.notas_topo}</p>}
+            {detalhe.notas_coracao && <p style={{ fontSize: 12, color: 'var(--text2)', marginBottom: 2 }}><b style={{ color: '#c9a84c' }}>Coracao:</b> {detalhe.notas_coracao}</p>}
+            {detalhe.notas_base && <p style={{ fontSize: 12, color: 'var(--text2)' }}><b style={{ color: '#c9a84c' }}>Base:</b> {detalhe.notas_base}</p>}
           </div>
         )}
 
@@ -1303,7 +1303,7 @@ function PainelPerfumes({ token }) {
         {detalhe.descricao && (
           <div style={{ marginBottom: 12 }}>
             <p style={{ fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4, letterSpacing: '0.1em' }}>DESCRICAO</p>
-            <p style={{ fontSize: 12, color: '#555', lineHeight: 1.6 }}>{detalhe.descricao}</p>
+            <p style={{ fontSize: 12, color: 'var(--text2)', lineHeight: 1.6 }}>{detalhe.descricao}</p>
           </div>
         )}
 
@@ -1318,7 +1318,7 @@ function PainelPerfumes({ token }) {
         </div>
 
         {/* Acoes */}
-        <div style={{ display: 'flex', gap: 8, position: 'sticky', bottom: 0, background: '#fff', paddingTop: 12 }}>
+        <div style={{ display: 'flex', gap: 8, position: 'sticky', bottom: 0, background: 'var(--card-bg)', paddingTop: 12 }}>
           <button onClick={() => setDetalhe(null)} style={{ padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)', flex: 0.5 }}>Fechar</button>
           <button onClick={() => abrirEditar(detalhe)} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>Editar</button>
           <button onClick={() => excluir(detalhe)} disabled={excluindo === detalhe.id}
@@ -1338,7 +1338,7 @@ function PainelPerfumes({ token }) {
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap', gap: 8 }}>
-        <h2 style={{ fontSize: 22, fontWeight: 700, color: '#111' }}>Produtos</h2>
+        <h2 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.02em' }}>Produtos</h2>
         <div style={{ display: 'flex', gap: 8 }}>
           <button onClick={async () => {
             if (fixSocial) return;
@@ -1445,19 +1445,20 @@ function PainelPerfumes({ token }) {
       <div style={{ position: 'relative', marginBottom: 12 }}>
         <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#bbb', fontSize: 15 }}>&#128269;</span>
         <input value={buscaInput} onChange={e => setBuscaInput(e.target.value)} placeholder="Buscar..."
-          style={{ width: '100%', padding: '12px 16px 12px 42px', border: '1.5px solid #e0e0e0', borderRadius: 10, fontSize: 14, outline: 'none', background: '#fff', boxSizing: 'border-box' }} />
+          style={{ width: '100%', padding: '12px 16px 12px 42px', border: '1.5px solid var(--input-border)', borderRadius: 10, fontSize: 14, outline: 'none', background: 'var(--input-bg)', color: 'var(--input-text)', boxSizing: 'border-box' }} />
       </div>
 
       {/* Filtros */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 16, overflowX: 'auto' }}>
+      <div style={{ display: 'flex', gap: 6, marginBottom: 16, overflowX: 'auto', background: 'var(--filter-bg)', borderRadius: 14, padding: 6 }}>
         {[['todos', 'Todos'], ['ativos', 'Ativos'], ['inativos', 'Inativos']].map(([key, label]) => (
           <button key={key} onClick={() => setFiltro(key)}
-            style={{ padding: '8px 18px', borderRadius: 20, fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', border: filtro === key ? 'none' : '1.5px solid #ddd',
-              background: filtro === key ? '#111' : '#fff', color: filtro === key ? '#fff' : '#555', transition: 'all .2s' }}>
+            style={{ padding: '9px 16px', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', border: 'none',
+              background: filtro === key ? 'var(--filter-active)' : 'transparent', color: filtro === key ? 'var(--filter-active-text)' : 'var(--filter-text)',
+              boxShadow: filtro === key ? '0 1px 3px var(--filter-shadow)' : 'none', transition: 'all .2s' }}>
             {label}
           </button>
         ))}
-        <span style={{ display: 'flex', alignItems: 'center', fontSize: 12, color: '#999', marginLeft: 'auto', whiteSpace: 'nowrap' }}>{total} total</span>
+        <span style={{ display: 'flex', alignItems: 'center', fontSize: 12, color: 'var(--text3)', marginLeft: 'auto', whiteSpace: 'nowrap' }}>{total} total</span>
       </div>
 
       {/* Cards */}
@@ -1478,11 +1479,11 @@ function PainelPerfumes({ token }) {
             return (
               <SwipeDelete key={p.id} onDelete={() => excluir(p)}>
                 <div onClick={() => setDetalhe(p)}
-                  style={{ display: 'flex', gap: 14, padding: 14, background: '#fff', borderRadius: 12, border: '1px solid #eee',
-                    cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
+                  style={{ display: 'flex', gap: 14, padding: 14, background: 'var(--card-bg)', borderRadius: 12, border: '1px solid var(--card-border)',
+                    cursor: 'pointer', boxShadow: '0 1px 4px var(--card-shadow)' }}>
 
                   {/* Foto */}
-                  <div style={{ width: 70, height: 85, flexShrink: 0, borderRadius: 8, overflow: 'hidden', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: 70, height: 85, flexShrink: 0, borderRadius: 8, overflow: 'hidden', background: 'var(--input-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {p.foto_url
                       ? <img src={p.foto_url} alt={p.nome} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                       : <span style={{ fontSize: 28, color: '#ccc' }}>🧴</span>
@@ -1494,7 +1495,7 @@ function PainelPerfumes({ token }) {
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
                       <div style={{ minWidth: 0 }}>
                         <p style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.nome}</p>
-                        <p style={{ fontSize: 12, color: '#888' }}>{p.marca}</p>
+                        <p style={{ fontSize: 12, color: 'var(--text3)' }}>{p.marca}</p>
                       </div>
                       <span style={{ flexShrink: 0, padding: '2px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600,
                         background: p.ativo !== false ? '#e8f5e9' : '#fce4ec',
@@ -1503,7 +1504,7 @@ function PainelPerfumes({ token }) {
                       </span>
                     </div>
 
-                    <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 6, fontSize: 12, color: '#999' }}>
+                    <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 6, fontSize: 12, color: 'var(--text3)' }}>
                       {p.genero && <span>{p.genero}</span>}
                       {p.ano && <span>· {p.ano}</span>}
                       {p.rating_valor && <span>· <span style={{ color: '#c9a84c' }}>★</span> {Number(p.rating_valor).toFixed(1)}</span>}
