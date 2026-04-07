@@ -130,10 +130,10 @@ export function PainelNotas({ token: tokenProp }) {
 
   // ── Modal Adicionar (renderizado inline) ──
   const modalAdicionarJSX = modal && createPortal(
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+    <div className="admin-modal-overlay" style={{ zIndex: 9999 }}
       onClick={e => e.target === e.currentTarget && setModal(false)}>
-      <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '90vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease', fontFamily: "'Inter', sans-serif" }}>
-        <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 16px' }} />
+      <div className="admin-modal-sheet" style={{ maxHeight: '90vh' }}>
+        <div className="admin-modal-handle" />
         <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--input-text)', fontFamily: "'Inter', sans-serif", marginBottom: 12 }}>Adicionar Nota</h3>
 
         <div style={{ background: '#fffbf0', border: '1px solid #e8d840', borderRadius: 8, padding: '10px 12px', marginBottom: 16, fontSize: 12, color: '#8a6a10' }}>
@@ -192,10 +192,10 @@ export function PainelNotas({ token: tokenProp }) {
   const editPreviewUrl = editForm.fragrantica_id ? `https://fimgs.net/mdimg/sastojci/t.${editForm.fragrantica_id}.jpg` : '';
 
   const modalDetalheJSX = detalhe && createPortal(
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9998, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+    <div className="admin-modal-overlay" style={{ zIndex: 9998 }}
       onClick={e => e.target === e.currentTarget && setDetalhe(null)}>
-      <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '90vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease', fontFamily: "'Inter', sans-serif" }}>
-        <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 16px' }} />
+      <div className="admin-modal-sheet" style={{ maxHeight: '90vh' }}>
+        <div className="admin-modal-handle" />
 
         {/* Foto + status */}
         <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>

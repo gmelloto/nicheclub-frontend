@@ -492,10 +492,10 @@ function PainelPedidos({ token }) {
 
   // Modal Detalhe
   const modalDetalhe = detalhe && createPortal(
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9998, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+    <div className="admin-modal-overlay" style={{ zIndex: 9998 }}
       onClick={e => e.target === e.currentTarget && setDetalhe(null)}>
-      <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '85vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
-        <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 16px' }} />
+      <div className="admin-modal-sheet">
+        <div className="admin-modal-handle" />
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
           <div>
@@ -740,10 +740,10 @@ function PainelEstoque({ token }) {
 
   // ── Modal Novo Frasco ──
   const modalNovo = novoAberto && createPortal(
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+    <div className="admin-modal-overlay" style={{ zIndex: 9999 }}
       onClick={e => e.target === e.currentTarget && setNovoAberto(false)}>
-      <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '85vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
-        <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 16px' }} />
+      <div className="admin-modal-sheet">
+        <div className="admin-modal-handle" />
         <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 16 }}>Novo Frasco</h3>
 
         {/* Busca perfume */}
@@ -796,10 +796,10 @@ function PainelEstoque({ token }) {
 
   // ── Modal Editar ──
   const modalEditar = editando && createPortal(
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+    <div className="admin-modal-overlay" style={{ zIndex: 9999 }}
       onClick={e => e.target === e.currentTarget && setEditando(null)}>
-      <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
-        <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 16px' }} />
+      <div className="admin-modal-sheet">
+        <div className="admin-modal-handle" />
         <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>Editar Frasco</h3>
         <p style={{ color: 'var(--text3)', fontSize: 13, marginBottom: 20 }}>{editando.perfume} — {editando.marca}</p>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
@@ -827,10 +827,10 @@ function PainelEstoque({ token }) {
 
   // ── Modal Detalhe ──
   const modalDetalhe = detalhe && createPortal(
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9998, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+    <div className="admin-modal-overlay" style={{ zIndex: 9998 }}
       onClick={e => e.target === e.currentTarget && setDetalhe(null)}>
-      <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
-        <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 16px' }} />
+      <div className="admin-modal-sheet">
+        <div className="admin-modal-handle" />
 
         <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start', marginBottom: 16 }}>
           {detalhe.foto_url && (
@@ -1217,10 +1217,10 @@ function PainelPerfumes({ token }) {
 
   // ── Modal Editar ──
   const modalEditar = editando && createPortal(
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+    <div className="admin-modal-overlay" style={{ zIndex: 9999 }}
       onClick={e => e.target === e.currentTarget && setEditando(null)}>
-      <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '90vh', overflowY: 'auto', overflowX: 'hidden', boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
-        <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 16px' }} />
+      <div className="admin-modal-sheet" style={{ maxHeight: '90vh', overflowX: 'hidden' }}>
+        <div className="admin-modal-handle" />
         <h3 style={{ marginBottom: 16, color: 'var(--text)', fontSize: 18, fontWeight: 700 }}>Editar Perfume</h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, overflow: 'hidden' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
@@ -1276,10 +1276,10 @@ function PainelPerfumes({ token }) {
 
   // ── Modal Detalhe ──
   const modalDetalhe = detalhe && createPortal(
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9998, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+    <div className="admin-modal-overlay" style={{ zIndex: 9998 }}
       onClick={e => e.target === e.currentTarget && setDetalhe(null)}>
-      <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '85vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
-        <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 16px' }} />
+      <div className="admin-modal-sheet">
+        <div className="admin-modal-handle" />
 
         {/* Foto + info */}
         <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
@@ -1654,10 +1654,10 @@ function PainelReservas({ token }) {
   ];
 
   const modalDetalhe = detalhe && createPortal(
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9998, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+    <div className="admin-modal-overlay" style={{ zIndex: 9998 }}
       onClick={e => e.target === e.currentTarget && setDetalhe(null)}>
-      <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '85vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
-        <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 16px' }} />
+      <div className="admin-modal-sheet">
+        <div className="admin-modal-handle" />
 
         <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start', marginBottom: 16 }}>
           {detalhe.foto_url && (
@@ -1875,10 +1875,10 @@ function PainelUsuarios({ token }) {
 
   // ── Modal Novo ──
   const modalNovo = novoAberto && createPortal(
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+    <div className="admin-modal-overlay" style={{ zIndex: 9999 }}
       onClick={e => e.target === e.currentTarget && setNovoAberto(false)}>
-      <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
-        <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 16px' }} />
+      <div className="admin-modal-sheet">
+        <div className="admin-modal-handle" />
         <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 16 }}>Novo Usuário</h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 20 }}>
           <div>
@@ -1935,10 +1935,10 @@ function PainelUsuarios({ token }) {
 
   // ── Modal Editar ──
   const modalEditar = editando && createPortal(
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+    <div className="admin-modal-overlay" style={{ zIndex: 9999 }}
       onClick={e => e.target === e.currentTarget && setEditando(null)}>
-      <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
-        <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 16px' }} />
+      <div className="admin-modal-sheet">
+        <div className="admin-modal-handle" />
         <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 16 }}>Editar Usuário</h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 20 }}>
           <div>
@@ -1999,10 +1999,10 @@ function PainelUsuarios({ token }) {
 
   // ── Modal Senha ──
   const modalSenha = senhaAberto && createPortal(
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+    <div className="admin-modal-overlay" style={{ zIndex: 9999 }}
       onClick={e => e.target === e.currentTarget && setSenhaAberto(null)}>
-      <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
-        <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 16px' }} />
+      <div className="admin-modal-sheet">
+        <div className="admin-modal-handle" />
         <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>Alterar Senha</h3>
         <p style={{ color: 'var(--text3)', fontSize: 13, marginBottom: 16 }}>{senhaAberto.nome} — {senhaAberto.email}</p>
         <div style={{ marginBottom: 20 }}>
@@ -2022,10 +2022,10 @@ function PainelUsuarios({ token }) {
 
   // ── Modal Detalhe ──
   const modalDetalhe = detalhe && createPortal(
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9998, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+    <div className="admin-modal-overlay" style={{ zIndex: 9998 }}
       onClick={e => e.target === e.currentTarget && setDetalhe(null)}>
-      <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
-        <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 16px' }} />
+      <div className="admin-modal-sheet">
+        <div className="admin-modal-handle" />
 
         <div style={{ display: 'flex', gap: 14, alignItems: 'center', marginBottom: 16 }}>
           <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'rgba(201,169,110,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, fontWeight: 700, color: '#c9a84c', flexShrink: 0 }}>
