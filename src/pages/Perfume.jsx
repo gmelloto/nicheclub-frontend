@@ -2,6 +2,14 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
 
+function mascaraTelefone(valor) {
+  let d = valor.replace(/\D/g, '').slice(0, 11);
+  if (d.length > 6) d = `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`;
+  else if (d.length > 2) d = `(${d.slice(0,2)}) ${d.slice(2)}`;
+  else if (d.length > 0) d = `(${d}`;
+  return d;
+}
+
 const TAMANHOS = [
   { key: 'apc',  label: 'APC +50ml', ml: 50  },
   { key: '3ml',  label: '3ml',       ml: 3   },
@@ -355,7 +363,7 @@ export default function Perfume() {
             </div>
             <div>
               <label style={{ display:'block', fontSize:10, fontWeight:600, letterSpacing:'0.15em', textTransform:'uppercase', color:'#9a9080', marginBottom:4 }}>WhatsApp</label>
-              <input placeholder="(11) 99999-9999" value={telefone} onChange={e => setTelefone(e.target.value)}
+              <input placeholder="(11) 99999-9999" value={telefone} onChange={e => setTelefone(mascaraTelefone(e.target.value))}
                 style={{ width:'100%', padding:'10px 12px', background:'#fff', border:'1px solid #e8e4dc', borderRadius:4, color:'#0d0b07', fontSize:13, outline:'none' }} />
             </div>
           </div>
