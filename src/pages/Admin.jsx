@@ -9,10 +9,11 @@ import './Admin.css';
 export default function Admin() {
   const { token, usuario } = useAuth();
   const navigate = useNavigate();
-  const [aba, setAba] = useState('pedidos');
+  const [aba, setAba] = useState('dashboard');
   const [maisAberto, setMaisAberto] = useState(false);
   const [showTop, setShowTop] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [secaoAberta, setSecaoAberta] = useState({ gerenciamento: true, cadastros: true });
 
   useEffect(() => {
     document.body.setAttribute('data-admin', 'true');
@@ -51,9 +52,16 @@ export default function Admin() {
 
   const selecionarAba = (a) => { setAba(a); setMaisAberto(false); };
 
-  const abaLabels = { pedidos: 'Pedidos', estoque: 'Decants', perfumes: 'Perfumes', reservas: 'Reservas', whatsapp: 'WhatsApp' };
+  const abaLabels = { dashboard: 'Dashboard', pedidos: 'Pedidos', estoque: 'Decants', perfumes: 'Perfumes', reservas: 'Reservas', whatsapp: 'WhatsApp', cadastrar: 'Cadastrar Produto', notas: 'Notas Olfativas' };
+
+  const toggleSecao = (s) => setSecaoAberta(prev => ({ ...prev, [s]: !prev[s] }));
 
   const bottomTabs = [
+    { key: 'dashboard', label: 'Home', icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>
+      </svg>
+    )},
     { key: 'pedidos', label: 'Pedidos', icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" />
@@ -120,31 +128,93 @@ export default function Admin() {
           </button>
         </div>
 
-        {/* Nav items */}
         <nav className="admin-sidebar-nav">
-          {bottomTabs.map(tab => (
-            <button key={tab.key} className={`admin-sidebar-item ${aba === tab.key ? 'active' : ''}`} onClick={() => selecionarAba(tab.key)} title={!sidebarOpen ? tab.label : undefined}>
-              <span className="admin-sidebar-icon">{tab.icon}</span>
-              {sidebarOpen && <span className="admin-sidebar-label">{abaLabels[tab.key]}</span>}
-            </button>
-          ))}
+          {/* Dashboard */}
+          <button className={`admin-sidebar-item ${aba === 'dashboard' ? 'active' : ''}`} onClick={() => selecionarAba('dashboard')} title={!sidebarOpen ? 'Dashboard' : undefined}>
+            <span className="admin-sidebar-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>
+              </svg>
+            </span>
+            {sidebarOpen && <span className="admin-sidebar-label">Dashboard</span>}
+          </button>
+
+          {/* Gerenciamento */}
+          {sidebarOpen ? (
+            <>
+              <button className="admin-sidebar-section" onClick={() => toggleSecao('gerenciamento')}>
+                <span className="admin-sidebar-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                  </svg>
+                </span>
+                <span className="admin-sidebar-label">Gerenciamento</span>
+                <svg className={`admin-section-arrow ${secaoAberta.gerenciamento ? 'open' : ''}`} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </button>
+              {secaoAberta.gerenciamento && (
+                <div className="admin-sidebar-subitems">
+                  {[
+                    { key: 'estoque', label: 'Decants' },
+                    { key: 'pedidos', label: 'Pedidos' },
+                    { key: 'reservas', label: 'Reservas' },
+                    { key: 'whatsapp', label: 'WhatsApp' },
+                  ].map(item => (
+                    <button key={item.key} className={`admin-sidebar-subitem ${aba === item.key ? 'active' : ''}`} onClick={() => selecionarAba(item.key)}>
+                      <span className="admin-sidebar-icon">
+                        {bottomTabs.find(t => t.key === item.key)?.icon}
+                      </span>
+                      <span className="admin-sidebar-label">{item.label}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* Cadastros */}
+              <button className="admin-sidebar-section" onClick={() => toggleSecao('cadastros')}>
+                <span className="admin-sidebar-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/>
+                  </svg>
+                </span>
+                <span className="admin-sidebar-label">Cadastros</span>
+                <svg className={`admin-section-arrow ${secaoAberta.cadastros ? 'open' : ''}`} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </button>
+              {secaoAberta.cadastros && (
+                <div className="admin-sidebar-subitems">
+                  <button className={`admin-sidebar-subitem ${aba === 'perfumes' ? 'active' : ''}`} onClick={() => selecionarAba('perfumes')}>
+                    <span className="admin-sidebar-icon">
+                      {bottomTabs.find(t => t.key === 'perfumes')?.icon}
+                    </span>
+                    <span className="admin-sidebar-label">Perfumes</span>
+                  </button>
+                  <button className="admin-sidebar-subitem" onClick={() => navigate('/admin/notas')}>
+                    <span className="admin-sidebar-icon">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22c-4 0-8-2-8-6 0-6 8-14 8-14s8 8 8 14c0 4-4 6-8 6z"/></svg>
+                    </span>
+                    <span className="admin-sidebar-label">Notas Olfativas</span>
+                  </button>
+                </div>
+              )}
+            </>
+          ) : (
+            /* Collapsed mode: flat icons only */
+            <>
+              {bottomTabs.map(tab => (
+                <button key={tab.key} className={`admin-sidebar-item ${aba === tab.key ? 'active' : ''}`} onClick={() => selecionarAba(tab.key)} title={abaLabels[tab.key]}>
+                  <span className="admin-sidebar-icon">{tab.icon}</span>
+                </button>
+              ))}
+            </>
+          )}
         </nav>
 
-        {/* Separator + extra links */}
+        {/* Bottom links */}
         <div className="admin-sidebar-extra">
           <div className="admin-sidebar-divider" />
-          <button className="admin-sidebar-item" onClick={() => navigate('/admin/produtos')} title={!sidebarOpen ? 'Cadastrar Produto' : undefined}>
-            <span className="admin-sidebar-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
-            </span>
-            {sidebarOpen && <span className="admin-sidebar-label">Cadastrar Produto</span>}
-          </button>
-          <button className="admin-sidebar-item" onClick={() => navigate('/admin/notas')} title={!sidebarOpen ? 'Notas Olfativas' : undefined}>
-            <span className="admin-sidebar-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22c-4 0-8-2-8-6 0-6 8-14 8-14s8 8 8 14c0 4-4 6-8 6z"/></svg>
-            </span>
-            {sidebarOpen && <span className="admin-sidebar-label">Notas Olfativas</span>}
-          </button>
           <button className="admin-sidebar-item" onClick={() => navigate('/')} title={!sidebarOpen ? 'Ver Loja' : undefined}>
             <span className="admin-sidebar-icon">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
@@ -154,6 +224,7 @@ export default function Admin() {
         </div>
       </div>
       <div className="admin-content" style={{ paddingBottom: 80 }}>
+        {aba === 'dashboard' && <PainelDashboard />}
         {aba === 'pedidos' && <PainelPedidos token={token} />}
         {aba === 'estoque' && <PainelEstoque token={token} />}
         {aba === 'perfumes' && <PainelPerfumes token={token} />}
@@ -210,6 +281,36 @@ export default function Admin() {
           </svg>
           <span>Mais</span>
         </button>
+      </div>
+    </div>
+  );
+}
+
+function PainelDashboard() {
+  return (
+    <div className="fade-in">
+      <h2 style={{ fontSize: 22, fontWeight: 700, color: '#111', marginBottom: 24 }}>Dashboard</h2>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16, marginBottom: 24 }}>
+        {[
+          { label: 'Pedidos', valor: '—', cor: '#1565c0', bg: '#e3f2fd', icon: '📋' },
+          { label: 'Reservas', valor: '—', cor: '#e65100', bg: '#fff3e0', icon: '📅' },
+          { label: 'Perfumes', valor: '—', cor: '#2e7d32', bg: '#e8f5e9', icon: '🧴' },
+          { label: 'Faturamento', valor: '—', cor: '#4527a0', bg: '#ede7f6', icon: '💰' },
+        ].map(card => (
+          <div key={card.label} style={{ background: '#fff', borderRadius: 14, padding: 20, border: '1px solid #eee', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+              <span style={{ fontSize: 13, color: '#888', fontWeight: 500 }}>{card.label}</span>
+              <span style={{ fontSize: 20 }}>{card.icon}</span>
+            </div>
+            <p style={{ fontSize: 28, fontWeight: 800, color: card.cor, margin: 0 }}>{card.valor}</p>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ background: '#f8f7f4', borderRadius: 14, padding: 32, textAlign: 'center', color: '#999' }}>
+        <p style={{ fontSize: 16, marginBottom: 8 }}>Em breve</p>
+        <p style={{ fontSize: 13 }}>Os dashboards e gráficos serão implementados aqui.</p>
       </div>
     </div>
   );
