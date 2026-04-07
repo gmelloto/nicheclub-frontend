@@ -523,16 +523,18 @@ function PainelEstoque({ token }) {
   const [busca, setBusca] = useState('');
   const [filtro, setFiltro] = useState('todos');
   const [editando, setEditando] = useState(null);
-  const [editForm, setEditForm] = useState({ ml_total: '', ml_vendido: '' });
+  const [editForm, setEditForm] = useState({ ml_total: '', ml_vendido: '', lote: '' });
   const [salvando, setSalvando] = useState(false);
-  const [excluindo, setExcluindo] = useState(null);
   const [detalhe, setDetalhe] = useState(null);
-  const API = 'https://nicheclub-backend-production.up.railway.app';
+  const [novoAberto, setNovoAberto] = useState(false);
+  const [novoForm, setNovoForm] = useState({ perfume_id: '', ml_total: '', lote: '' });
+  const [perfumes, setPerfumes] = useState([]);
+  const [buscaPerfume, setBuscaPerfume] = useState('');
 
   const carregar = () => {
     setLoading(true);
     api.estoque(token)
-      .then(setFrascos).catch(() => setFrascos(DEMO_ESTOQUE))
+      .then(setFrascos).catch(() => setFrascos([]))
       .finally(() => setLoading(false));
   };
 
@@ -554,8 +556,9 @@ function PainelEstoque({ token }) {
     return matchBusca;
   });
 
+  // ── Editar ──
   const abrirEditar = (f) => {
-    setEditForm({ ml_total: String(f.ml_total), ml_vendido: String(f.ml_vendido) });
+    setEditForm({ ml_total: String(f.ml_total), ml_vendido: String(f.ml_vendido), lote: f.lote || '' });
     setEditando(f);
     setDetalhe(null);
   };
@@ -563,31 +566,105 @@ function PainelEstoque({ token }) {
   const salvarEdicao = async () => {
     setSalvando(true);
     try {
-      const res = await fetch(`${API}/api/admin/frascos/${editando.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ ml_total: Number(editForm.ml_total), ml_vendido: Number(editForm.ml_vendido) }),
+      await api.editarFrasco(token, editando.id, {
+        ml_total: Number(editForm.ml_total),
+        ml_vendido: Number(editForm.ml_vendido),
       });
-      if (!res.ok) throw new Error('Erro ao salvar');
       setEditando(null);
       carregar();
     } catch(e) { alert(e.message); }
     finally { setSalvando(false); }
   };
 
+  // ── Excluir ──
   const confirmarExcluir = async (f) => {
-    if (!window.confirm(`Excluir frasco de "${f.perfume}"?`)) return;
-    setExcluindo(f.id);
     try {
-      const res = await fetch(`${API}/api/admin/frascos/${f.id}`, {
-        method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` },
-      });
-      if (!res.ok) throw new Error('Erro ao excluir');
+      await api.deletarFrasco(token, f.id);
       setDetalhe(null);
       carregar();
     } catch(e) { alert(e.message); }
-    finally { setExcluindo(null); }
   };
+
+  // ── Novo Frasco ──
+  const abrirNovo = () => {
+    setNovoAberto(true);
+    setNovoForm({ perfume_id: '', ml_total: '', lote: '' });
+    setBuscaPerfume('');
+    api.listarPerfumesSimples(token).then(data => {
+      setPerfumes(data.perfumes || data || []);
+    }).catch(() => setPerfumes([]));
+  };
+
+  const salvarNovo = async () => {
+    if (!novoForm.perfume_id || !novoForm.ml_total) return alert('Selecione o perfume e informe o ML total.');
+    setSalvando(true);
+    try {
+      await api.adicionarFrasco(token, novoForm.perfume_id, Number(novoForm.ml_total), novoForm.lote || null);
+      setNovoAberto(false);
+      carregar();
+    } catch(e) { alert(e.message); }
+    finally { setSalvando(false); }
+  };
+
+  const perfumesFiltrados = perfumes.filter(p =>
+    !buscaPerfume || p.nome?.toLowerCase().includes(buscaPerfume.toLowerCase()) || p.marca?.toLowerCase().includes(buscaPerfume.toLowerCase())
+  );
+
+  // ── Modal Novo Frasco ──
+  const ModalNovo = () => novoAberto && createPortal(
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+      onClick={e => e.target === e.currentTarget && setNovoAberto(false)}>
+      <div style={{ background: '#fff', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '85vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
+        <div style={{ width: 40, height: 4, background: '#ddd', borderRadius: 2, margin: '0 auto 16px' }} />
+        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111', marginBottom: 16 }}>Novo Frasco</h3>
+
+        {/* Busca perfume */}
+        <div style={{ marginBottom: 12 }}>
+          <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>PERFUME</label>
+          <input value={buscaPerfume} onChange={e => setBuscaPerfume(e.target.value)} placeholder="Buscar perfume..."
+            style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, boxSizing: 'border-box', outline: 'none', marginBottom: 8 }} />
+          <div style={{ maxHeight: 180, overflowY: 'auto', border: '1px solid #eee', borderRadius: 8 }}>
+            {perfumesFiltrados.slice(0, 30).map(p => (
+              <div key={p.id} onClick={() => { setNovoForm(f => ({ ...f, perfume_id: p.id })); setBuscaPerfume(p.nome + ' — ' + p.marca); }}
+                style={{ padding: '10px 12px', cursor: 'pointer', fontSize: 13, borderBottom: '1px solid #f5f5f5',
+                  background: novoForm.perfume_id === p.id ? 'rgba(201,169,110,0.1)' : '#fff',
+                  display: 'flex', alignItems: 'center', gap: 10 }}
+                onMouseEnter={e => e.currentTarget.style.background = novoForm.perfume_id === p.id ? 'rgba(201,169,110,0.15)' : '#f8f7f4'}
+                onMouseLeave={e => e.currentTarget.style.background = novoForm.perfume_id === p.id ? 'rgba(201,169,110,0.1)' : '#fff'}>
+                {p.foto_url && <img src={p.foto_url} alt="" style={{ width: 32, height: 40, objectFit: 'contain', borderRadius: 4, flexShrink: 0 }} />}
+                <div>
+                  <p style={{ fontWeight: 600, color: '#111' }}>{p.nome}</p>
+                  <p style={{ fontSize: 11, color: '#888' }}>{p.marca}</p>
+                </div>
+              </div>
+            ))}
+            {perfumesFiltrados.length === 0 && <p style={{ padding: 16, textAlign: 'center', color: '#999', fontSize: 13 }}>Nenhum perfume encontrado</p>}
+          </div>
+        </div>
+
+        {/* ML Total + Lote */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 20 }}>
+          <div>
+            <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>ML TOTAL</label>
+            <input type="number" value={novoForm.ml_total} onChange={e => setNovoForm(f => ({ ...f, ml_total: e.target.value }))} placeholder="Ex: 100"
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none' }} />
+          </div>
+          <div>
+            <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>LOTE (opcional)</label>
+            <input value={novoForm.lote} onChange={e => setNovoForm(f => ({ ...f, lote: e.target.value }))} placeholder="Ex: L001"
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none' }} />
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button onClick={() => setNovoAberto(false)} style={{ flex: 0.5, padding: '12px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#666' }}>Cancelar</button>
+          <button onClick={salvarNovo} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>
+            {salvando ? 'Salvando...' : 'Adicionar Frasco'}
+          </button>
+        </div>
+      </div>
+    </div>
+  , document.body);
 
   // ── Modal Editar ──
   const ModalEditar = () => editando && createPortal(
@@ -597,19 +674,21 @@ function PainelEstoque({ token }) {
         <div style={{ width: 40, height: 4, background: '#ddd', borderRadius: 2, margin: '0 auto 16px' }} />
         <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111', marginBottom: 4 }}>Editar Frasco</h3>
         <p style={{ color: '#888', fontSize: 13, marginBottom: 20 }}>{editando.perfume} — {editando.marca}</p>
-        <div style={{ marginBottom: 14 }}>
-          <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>ML TOTAL</label>
-          <input type="number" value={editForm.ml_total} onChange={e => setEditForm(f => ({ ...f, ml_total: e.target.value }))}
-            style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none' }} />
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
+          <div>
+            <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>ML TOTAL</label>
+            <input type="number" value={editForm.ml_total} onChange={e => setEditForm(f => ({ ...f, ml_total: e.target.value }))}
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none' }} />
+          </div>
+          <div>
+            <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>ML VENDIDO</label>
+            <input type="number" value={editForm.ml_vendido} onChange={e => setEditForm(f => ({ ...f, ml_vendido: e.target.value }))}
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none' }} />
+          </div>
         </div>
-        <div style={{ marginBottom: 20 }}>
-          <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>ML VENDIDO</label>
-          <input type="number" value={editForm.ml_vendido} onChange={e => setEditForm(f => ({ ...f, ml_vendido: e.target.value }))}
-            style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none' }} />
-          <p style={{ fontSize: 12, color: '#888', marginTop: 6 }}>Disponivel: <b style={{ color: '#c9a84c' }}>{Math.max(0, Number(editForm.ml_total) - Number(editForm.ml_vendido))}ml</b></p>
-        </div>
+        <p style={{ fontSize: 12, color: '#888', marginBottom: 20 }}>Disponivel: <b style={{ color: '#c9a84c' }}>{Math.max(0, Number(editForm.ml_total) - Number(editForm.ml_vendido))}ml</b></p>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={() => setEditando(null)} style={{ flex: 1, padding: '12px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 8, cursor: 'pointer', fontSize: 14 }}>Cancelar</button>
+          <button onClick={() => setEditando(null)} style={{ flex: 0.5, padding: '12px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#666' }}>Cancelar</button>
           <button onClick={salvarEdicao} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>
             {salvando ? 'Salvando...' : 'Salvar'}
           </button>
@@ -625,8 +704,15 @@ function PainelEstoque({ token }) {
       <div style={{ background: '#fff', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
         <div style={{ width: 40, height: 4, background: '#ddd', borderRadius: 2, margin: '0 auto 16px' }} />
 
-        <p style={{ fontSize: 11, color: '#8a6a10', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase' }}>{detalhe.marca}</p>
-        <h3 style={{ fontSize: 20, fontWeight: 700, color: '#111', marginBottom: 12 }}>{detalhe.perfume}</h3>
+        <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start', marginBottom: 16 }}>
+          {detalhe.foto_url && (
+            <img src={detalhe.foto_url} alt={detalhe.perfume} style={{ width: 56, height: 70, borderRadius: 8, objectFit: 'contain', flexShrink: 0, background: '#f8f7f4' }} />
+          )}
+          <div style={{ flex: 1 }}>
+            <p style={{ fontSize: 11, color: '#8a6a10', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase' }}>{detalhe.marca}</p>
+            <h3 style={{ fontSize: 20, fontWeight: 700, color: '#111' }}>{detalhe.perfume}</h3>
+          </div>
+        </div>
 
         {/* Barra de progresso */}
         {(() => {
@@ -652,8 +738,8 @@ function PainelEstoque({ token }) {
           );
         })()}
 
-        {/* Datas */}
-        <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
+        {/* Info */}
+        <div style={{ display: 'flex', gap: 16, marginBottom: 16, flexWrap: 'wrap' }}>
           <div><p style={{ fontSize: 10, fontWeight: 600, color: '#888', letterSpacing: '0.1em' }}>CRIADO</p><p style={{ fontSize: 13, color: '#333' }}>{detalhe.criado_em ? new Date(detalhe.criado_em).toLocaleDateString('pt-BR') : '—'}</p></div>
           {detalhe.esgotado_em && <div><p style={{ fontSize: 10, fontWeight: 600, color: '#888', letterSpacing: '0.1em' }}>ESGOTADO</p><p style={{ fontSize: 13, color: '#c62828' }}>{new Date(detalhe.esgotado_em).toLocaleDateString('pt-BR')}</p></div>}
           {detalhe.lote && <div><p style={{ fontSize: 10, fontWeight: 600, color: '#888', letterSpacing: '0.1em' }}>LOTE</p><p style={{ fontSize: 13, color: '#333' }}>{detalhe.lote}</p></div>}
@@ -661,12 +747,9 @@ function PainelEstoque({ token }) {
 
         {/* Acoes */}
         <div style={{ display: 'flex', gap: 8 }}>
+          <button onClick={() => confirmarExcluir(detalhe)} style={{ padding: '12px', background: '#fce4ec', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 13, color: '#c62828', fontWeight: 600 }}>Excluir</button>
           <button onClick={() => setDetalhe(null)} style={{ padding: '12px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#666', flex: 0.5 }}>Fechar</button>
           <button onClick={() => abrirEditar(detalhe)} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>Editar</button>
-          <button onClick={() => confirmarExcluir(detalhe)} disabled={excluindo === detalhe.id}
-            style={{ padding: '12px 16px', background: '#fce4ec', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#c62828' }}>
-            {excluindo === detalhe.id ? '...' : 'Excluir'}
-          </button>
         </div>
       </div>
     </div>
@@ -675,22 +758,23 @@ function PainelEstoque({ token }) {
   return (
     <div className="fade-in">
       <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}`}</style>
+      <ModalNovo />
       <ModalEditar />
       <ModalDetalhe />
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
         <h2 style={{ fontSize: 22, fontWeight: 700, color: '#111' }}>Decants</h2>
-        <button onClick={() => window.location.href = '/admin/produtos'}
+        <button onClick={abrirNovo}
           style={{ padding: '10px 20px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: '#0d0b07', boxShadow: '0 2px 8px rgba(201,168,76,0.3)' }}>
-          + Novo Perfume
+          + Novo Frasco
         </button>
       </div>
 
       {/* Busca */}
       <div style={{ position: 'relative', marginBottom: 12 }}>
-        <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#bbb', fontSize: 15 }}>&#128269;</span>
-        <input value={busca} onChange={e => setBusca(e.target.value)} placeholder="Buscar..."
+        <svg style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#bbb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input value={busca} onChange={e => setBusca(e.target.value)} placeholder="Buscar perfume ou marca..."
           style={{ width: '100%', padding: '12px 16px 12px 42px', border: '1.5px solid #e0e0e0', borderRadius: 10, fontSize: 14, outline: 'none', background: '#fff', boxSizing: 'border-box' }} />
       </div>
 
@@ -703,7 +787,7 @@ function PainelEstoque({ token }) {
             {label}
           </button>
         ))}
-        <span style={{ display: 'flex', alignItems: 'center', fontSize: 12, color: '#999', marginLeft: 'auto', whiteSpace: 'nowrap' }}>{frascos.length} total</span>
+        <span style={{ display: 'flex', alignItems: 'center', fontSize: 12, color: '#999', marginLeft: 'auto', whiteSpace: 'nowrap' }}>{filtrados.length} de {frascos.length}</span>
       </div>
 
       {/* Cards */}
@@ -727,32 +811,30 @@ function PainelEstoque({ token }) {
             return (
               <SwipeDelete key={f.id} onDelete={() => confirmarExcluir(f)}>
                 <div onClick={() => setDetalhe(f)}
-                  style={{ display: 'flex', gap: 14, padding: 14, background: '#fff', borderRadius: 12, border: '1px solid #eee',
-                    cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
+                  style={{ display: 'flex', gap: 12, padding: 12, background: '#fff', borderRadius: 12, border: '1px solid #eee',
+                    cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.04)', alignItems: 'center' }}>
 
                   {/* Foto */}
-                  <div style={{ width: 60, height: 75, flexShrink: 0, borderRadius: 8, overflow: 'hidden', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: 48, height: 64, flexShrink: 0, borderRadius: 6, overflow: 'hidden', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {f.foto_url
                       ? <img src={f.foto_url} alt={f.perfume} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                      : <span style={{ fontSize: 24, color: '#ccc' }}>🧴</span>
+                      : <span style={{ fontSize: 20, color: '#ccc' }}>🧴</span>
                     }
                   </div>
 
                   {/* Info */}
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
-                      <div style={{ minWidth: 0 }}>
-                        <p style={{ fontSize: 15, fontWeight: 700, color: '#111', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.perfume}</p>
-                        <p style={{ fontSize: 12, color: '#888' }}>{f.marca}</p>
-                      </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+                      <p style={{ fontSize: 15, fontWeight: 700, color: '#111', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', margin: 0 }}>{f.perfume}</p>
                       <span style={{ flexShrink: 0, padding: '2px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: st.bg, color: st.color }}>
                         {st.label}
                       </span>
                     </div>
+                    <p style={{ fontSize: 12, color: '#888', margin: '2px 0 0' }}>{f.marca}{f.lote ? ` · Lote ${f.lote}` : ''}</p>
 
                     {/* Barra de progresso */}
-                    <div style={{ marginTop: 10 }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#888', marginBottom: 4 }}>
+                    <div style={{ marginTop: 8 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#888', marginBottom: 3 }}>
                         <span>{disp}ml disponivel</span>
                         <span>{total}ml total</span>
                       </div>
@@ -762,7 +844,6 @@ function PainelEstoque({ token }) {
                     </div>
                   </div>
 
-                  {/* Seta */}
                   <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0, color: '#ccc', fontSize: 18 }}>›</div>
                 </div>
               </SwipeDelete>
