@@ -7,8 +7,9 @@ import SwipeDelete from '../components/SwipeDelete.jsx';
 
 const FRAGRANTICA_BASE = 'https://www.fragrantica.com/notes/';
 
-export default function AdminNotas() {
-  const { token } = useAuth();
+export function PainelNotas({ token: tokenProp }) {
+  const { token: authToken } = useAuth();
+  const token = tokenProp || authToken;
   const navigate = useNavigate();
 
   const [notas, setNotas] = useState([]);
@@ -470,3 +471,5 @@ export default function AdminNotas() {
     </div>
   );
 }
+
+export default function AdminNotas() { return <PainelNotas />; }
