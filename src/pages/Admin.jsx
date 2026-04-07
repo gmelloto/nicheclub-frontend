@@ -4,6 +4,7 @@ import SwipeDelete from '../components/SwipeDelete.jsx';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context';
 import { api } from '../services/api';
+import { PainelNotas } from './AdminNotas.jsx';
 import './Admin.css';
 
 const TELAS_DISPONIVEIS = [
@@ -223,7 +224,7 @@ export default function Admin() {
                     </span>
                     <span className="admin-sidebar-label">Perfumes</span>
                   </button>}
-                  {temPermissao('perfumes') && <button className="admin-sidebar-subitem" onClick={() => navigate('/admin/notas')}>
+                  {temPermissao('perfumes') && <button className={`admin-sidebar-subitem ${aba === 'notas' ? 'active' : ''}`} onClick={() => selecionarAba('notas')}>
                     <span className="admin-sidebar-icon">
                       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22c-4 0-8-2-8-6 0-6 8-14 8-14s8 8 8 14c0 4-4 6-8 6z"/></svg>
                     </span>
@@ -279,6 +280,7 @@ export default function Admin() {
         {aba === 'reservas' && <PainelReservas token={token} />}
         {aba === 'whatsapp' && <PainelWhatsApp token={token} />}
         {aba === 'usuarios' && <PainelUsuarios token={token} />}
+        {aba === 'notas' && <PainelNotas token={token} />}
       </div>
 
       {/* Menu "Mais" overlay */}
