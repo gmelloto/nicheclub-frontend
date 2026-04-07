@@ -1421,14 +1421,14 @@ function PainelReservas({ token }) {
 
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
-                    <p style={{ fontSize: 11, color: '#c9a84c', fontWeight: 600, letterSpacing: '0.05em', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.marca}</p>
+                    <p style={{ fontSize: 15, fontWeight: 700, color: '#111', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.nome}</p>
                     <span style={{ flexShrink: 0, padding: '2px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: st.bg, color: st.color }}>
                       {st.label}
                     </span>
                   </div>
-                  <p style={{ fontSize: 14, fontWeight: 700, color: '#111', margin: '2px 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.perfume_nome}</p>
+                  <p style={{ fontSize: 12, color: '#c9a84c', fontWeight: 500, margin: '2px 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.perfume_nome} — {r.marca}</p>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 6 }}>
-                    <span style={{ fontSize: 12, color: '#888' }}>{r.criado_em ? new Date(r.criado_em).toLocaleDateString('pt-BR') : ''} · {r.tamanho || `${r.ml_quantidade}ml`} · {r.nome}</span>
+                    <span style={{ fontSize: 12, color: '#888' }}>{r.criado_em ? new Date(r.criado_em).toLocaleDateString('pt-BR') : ''} · {r.tamanho || `${r.ml_quantidade}ml`}</span>
                     <span style={{ fontSize: 15, fontWeight: 700, color: '#111' }}>R$ {Number(r.preco_total || 0).toFixed(2).replace('.', ',')}</span>
                   </div>
                 </div>
