@@ -61,7 +61,7 @@ export default function Admin() {
 
   const selecionarAba = (a) => { setAba(a); setMaisAberto(false); };
 
-  const abaLabels = { dashboard: 'Dashboard', pedidos: 'Pedidos', estoque: 'Decants', perfumes: 'Perfumes', reservas: 'Reservas', whatsapp: 'WhatsApp', cadastrar: 'Cadastrar Produto', notas: 'Notas Olfativas' };
+  const abaLabels = { dashboard: 'Dashboard', pedidos: 'Pedidos', estoque: 'Decants', perfumes: 'Perfumes', reservas: 'Reservas', whatsapp: 'WhatsApp', cadastrar: 'Cadastrar Produto', notas: 'Notas Olfativas', usuarios: 'Usuarios' };
 
   const toggleSecao = (s) => setSecaoAberta(prev => ({ ...prev, [s]: !prev[s] }));
 
@@ -206,6 +206,12 @@ export default function Admin() {
                     </span>
                     <span className="admin-sidebar-label">Notas Olfativas</span>
                   </button>
+                  <button className={`admin-sidebar-subitem ${aba === 'usuarios' ? 'active' : ''}`} onClick={() => selecionarAba('usuarios')}>
+                    <span className="admin-sidebar-icon">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                    </span>
+                    <span className="admin-sidebar-label">Usuarios</span>
+                  </button>
                 </div>
               )}
             </>
@@ -249,6 +255,7 @@ export default function Admin() {
         {aba === 'perfumes' && <PainelPerfumes token={token} />}
         {aba === 'reservas' && <PainelReservas token={token} />}
         {aba === 'whatsapp' && <PainelWhatsApp token={token} />}
+        {aba === 'usuarios' && <PainelUsuarios token={token} />}
       </div>
 
       {/* Menu "Mais" overlay */}
@@ -1720,6 +1727,297 @@ function PainelReservas({ token }) {
 
                 <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0, color: '#ccc', fontSize: 18 }}>›</div>
               </div>
+              </SwipeDelete>
+            );
+          })}
+        </div>
+      )}
+      </div>
+    </div>
+  );
+}
+
+function PainelUsuarios({ token }) {
+  const [usuarios, setUsuarios] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [detalhe, setDetalhe] = useState(null);
+  const [novoAberto, setNovoAberto] = useState(false);
+  const [novoForm, setNovoForm] = useState({ nome: '', email: '', senha: '', papel: 'atendente' });
+  const [editando, setEditando] = useState(null);
+  const [editForm, setEditForm] = useState({ nome: '', email: '', papel: '', ativo: true });
+  const [novaSenha, setNovaSenha] = useState('');
+  const [senhaAberto, setSenhaAberto] = useState(null);
+  const [salvando, setSalvando] = useState(false);
+
+  const carregar = () => {
+    setLoading(true);
+    api.listarUsuarios(token).then(setUsuarios).catch(() => setUsuarios([])).finally(() => setLoading(false));
+  };
+  useEffect(() => { carregar(); }, [token]);
+
+  const papelMap = {
+    admin: { label: 'Admin', bg: 'rgba(123,31,162,0.1)', color: '#7b1fa2' },
+    atendente: { label: 'Atendente', bg: 'rgba(21,101,192,0.1)', color: '#1565c0' },
+  };
+  const getPapel = (p) => papelMap[p] || { label: p, bg: 'var(--badge-bg)', color: 'var(--badge-text)' };
+
+  const salvarNovo = async () => {
+    if (!novoForm.nome || !novoForm.email || !novoForm.senha) return alert('Preencha todos os campos.');
+    if (novoForm.senha.length < 6) return alert('Senha deve ter no mínimo 6 caracteres.');
+    setSalvando(true);
+    try {
+      await api.criarUsuario(token, novoForm);
+      setNovoAberto(false);
+      setNovoForm({ nome: '', email: '', senha: '', papel: 'atendente' });
+      carregar();
+    } catch(e) { alert(e.message); }
+    finally { setSalvando(false); }
+  };
+
+  const abrirEditar = (u) => {
+    setEditForm({ nome: u.nome, email: u.email, papel: u.papel, ativo: u.ativo });
+    setEditando(u);
+    setDetalhe(null);
+  };
+
+  const salvarEdicao = async () => {
+    setSalvando(true);
+    try {
+      await api.atualizarUsuario(token, editando.id, editForm);
+      setEditando(null);
+      carregar();
+    } catch(e) { alert(e.message); }
+    finally { setSalvando(false); }
+  };
+
+  const salvarSenha = async () => {
+    if (!novaSenha || novaSenha.length < 6) return alert('Senha deve ter no mínimo 6 caracteres.');
+    setSalvando(true);
+    try {
+      await api.alterarSenhaUsuario(token, senhaAberto.id, novaSenha);
+      setSenhaAberto(null);
+      setNovaSenha('');
+      alert('Senha alterada com sucesso!');
+    } catch(e) { alert(e.message); }
+    finally { setSalvando(false); }
+  };
+
+  const excluir = async (u) => {
+    try {
+      await api.deletarUsuario(token, u.id);
+      setDetalhe(null);
+      carregar();
+    } catch(e) { alert(e.message); }
+  };
+
+  // ── Modal Novo ──
+  const ModalNovo = () => novoAberto && createPortal(
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+      onClick={e => e.target === e.currentTarget && setNovoAberto(false)}>
+      <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
+        <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 16px' }} />
+        <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 16 }}>Novo Usuário</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 20 }}>
+          <div>
+            <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>NOME</label>
+            <input value={novoForm.nome} onChange={e => setNovoForm(f => ({ ...f, nome: e.target.value }))} placeholder="Nome completo"
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none', background: 'var(--input-bg)', color: 'var(--input-text)' }} />
+          </div>
+          <div>
+            <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>EMAIL</label>
+            <input type="email" value={novoForm.email} onChange={e => setNovoForm(f => ({ ...f, email: e.target.value }))} placeholder="email@exemplo.com"
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none', background: 'var(--input-bg)', color: 'var(--input-text)' }} />
+          </div>
+          <div>
+            <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>SENHA</label>
+            <input type="password" value={novoForm.senha} onChange={e => setNovoForm(f => ({ ...f, senha: e.target.value }))} placeholder="Mínimo 6 caracteres"
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none', background: 'var(--input-bg)', color: 'var(--input-text)' }} />
+          </div>
+          <div>
+            <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>PAPEL</label>
+            <select value={novoForm.papel} onChange={e => setNovoForm(f => ({ ...f, papel: e.target.value }))}
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none', background: 'var(--input-bg)', color: 'var(--input-text)' }}>
+              <option value="atendente">Atendente</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button onClick={() => setNovoAberto(false)} style={{ flex: 0.5, padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)' }}>Cancelar</button>
+          <button onClick={salvarNovo} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>
+            {salvando ? 'Salvando...' : 'Criar Usuário'}
+          </button>
+        </div>
+      </div>
+    </div>
+  , document.body);
+
+  // ── Modal Editar ──
+  const ModalEditar = () => editando && createPortal(
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+      onClick={e => e.target === e.currentTarget && setEditando(null)}>
+      <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
+        <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 16px' }} />
+        <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 16 }}>Editar Usuário</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 20 }}>
+          <div>
+            <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>NOME</label>
+            <input value={editForm.nome} onChange={e => setEditForm(f => ({ ...f, nome: e.target.value }))}
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none', background: 'var(--input-bg)', color: 'var(--input-text)' }} />
+          </div>
+          <div>
+            <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>EMAIL</label>
+            <input type="email" value={editForm.email} onChange={e => setEditForm(f => ({ ...f, email: e.target.value }))}
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none', background: 'var(--input-bg)', color: 'var(--input-text)' }} />
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <div>
+              <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>PAPEL</label>
+              <select value={editForm.papel} onChange={e => setEditForm(f => ({ ...f, papel: e.target.value }))}
+                style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none', background: 'var(--input-bg)', color: 'var(--input-text)' }}>
+                <option value="atendente">Atendente</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+            <div>
+              <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>STATUS</label>
+              <select value={editForm.ativo ? 'true' : 'false'} onChange={e => setEditForm(f => ({ ...f, ativo: e.target.value === 'true' }))}
+                style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none', background: 'var(--input-bg)', color: 'var(--input-text)' }}>
+                <option value="true">Ativo</option>
+                <option value="false">Inativo</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button onClick={() => setEditando(null)} style={{ flex: 0.5, padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)' }}>Cancelar</button>
+          <button onClick={salvarEdicao} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>
+            {salvando ? 'Salvando...' : 'Salvar'}
+          </button>
+        </div>
+      </div>
+    </div>
+  , document.body);
+
+  // ── Modal Senha ──
+  const ModalSenha = () => senhaAberto && createPortal(
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+      onClick={e => e.target === e.currentTarget && setSenhaAberto(null)}>
+      <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
+        <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 16px' }} />
+        <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>Alterar Senha</h3>
+        <p style={{ color: 'var(--text3)', fontSize: 13, marginBottom: 16 }}>{senhaAberto.nome} — {senhaAberto.email}</p>
+        <div style={{ marginBottom: 20 }}>
+          <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>NOVA SENHA</label>
+          <input type="password" value={novaSenha} onChange={e => setNovaSenha(e.target.value)} placeholder="Mínimo 6 caracteres"
+            style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none', background: 'var(--input-bg)', color: 'var(--input-text)' }} />
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button onClick={() => { setSenhaAberto(null); setNovaSenha(''); }} style={{ flex: 0.5, padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)' }}>Cancelar</button>
+          <button onClick={salvarSenha} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>
+            {salvando ? 'Salvando...' : 'Alterar Senha'}
+          </button>
+        </div>
+      </div>
+    </div>
+  , document.body);
+
+  // ── Modal Detalhe ──
+  const ModalDetalhe = () => detalhe && createPortal(
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9998, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+      onClick={e => e.target === e.currentTarget && setDetalhe(null)}>
+      <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
+        <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 16px' }} />
+
+        <div style={{ display: 'flex', gap: 14, alignItems: 'center', marginBottom: 16 }}>
+          <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'rgba(201,169,110,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, fontWeight: 700, color: '#c9a84c', flexShrink: 0 }}>
+            {detalhe.nome?.charAt(0).toUpperCase()}
+          </div>
+          <div style={{ flex: 1 }}>
+            <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)' }}>{detalhe.nome}</h3>
+            <p style={{ fontSize: 13, color: 'var(--text3)' }}>{detalhe.email}</p>
+          </div>
+          {(() => { const p = getPapel(detalhe.papel); return (
+            <span style={{ padding: '4px 12px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: p.bg, color: p.color, flexShrink: 0 }}>{p.label}</span>
+          ); })()}
+        </div>
+
+        <div style={{ background: 'var(--filter-bg)', borderRadius: 10, padding: 16, marginBottom: 16 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+            <span style={{ fontSize: 13, color: 'var(--text3)' }}>Status</span>
+            <span style={{ fontSize: 13, fontWeight: 600, color: detalhe.ativo ? '#2e7d32' : '#c62828' }}>{detalhe.ativo ? 'Ativo' : 'Inativo'}</span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: 13, color: 'var(--text3)' }}>Criado em</span>
+            <span style={{ fontSize: 13, color: 'var(--text2)' }}>{detalhe.criado_em ? new Date(detalhe.criado_em).toLocaleDateString('pt-BR') : '—'}</span>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <button onClick={() => excluir(detalhe)} style={{ padding: '12px', background: '#fce4ec', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 13, color: '#c62828', fontWeight: 600 }}>Excluir</button>
+          <button onClick={() => { setSenhaAberto(detalhe); setDetalhe(null); setNovaSenha(''); }} style={{ padding: '12px 16px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 13, color: 'var(--text2)', fontWeight: 500 }}>Alterar Senha</button>
+          <button onClick={() => setDetalhe(null)} style={{ padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)' }}>Fechar</button>
+          <button onClick={() => abrirEditar(detalhe)} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>Editar</button>
+        </div>
+      </div>
+    </div>
+  , document.body);
+
+  return (
+    <div className="fade-in">
+      <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}`}</style>
+      <ModalNovo />
+      <ModalEditar />
+      <ModalSenha />
+      <ModalDetalhe />
+
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 20 }}>
+        <div>
+          <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.02em', margin: 0 }}>Usuarios</h1>
+          <p style={{ fontSize: 14, color: 'var(--text3)', marginTop: 6 }}>Gerencie acessos ao painel administrativo</p>
+        </div>
+        <button onClick={() => { setNovoAberto(true); setNovoForm({ nome: '', email: '', senha: '', papel: 'atendente' }); }}
+          style={{ padding: '10px 20px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: '#0d0b07', boxShadow: '0 2px 8px rgba(201,168,76,0.3)', display: 'flex', alignItems: 'center', gap: 6 }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+          Novo Usuário
+        </button>
+      </div>
+
+      <div style={{ background: 'var(--filter-bg)', borderRadius: 14, padding: 12, margin: '0 -4px' }}>
+      {loading ? (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {[1,2,3].map(i => <div key={i} style={{ height: 72, background: 'var(--bg3)', borderRadius: 12 }} />)}
+        </div>
+      ) : usuarios.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '3rem 0', color: 'var(--text3)' }}>
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: 8, opacity: 0.4 }}><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          <p>Nenhum usuário cadastrado</p>
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {usuarios.map(u => {
+            const p = getPapel(u.papel);
+            return (
+              <SwipeDelete key={u.id} onDelete={() => excluir(u)}>
+                <div onClick={() => setDetalhe(u)}
+                  style={{ display: 'flex', gap: 12, padding: 14, background: 'var(--card-bg)', borderRadius: 12, border: '1px solid var(--card-border)',
+                    cursor: 'pointer', boxShadow: '0 1px 4px var(--card-shadow)', alignItems: 'center' }}>
+
+                  <div style={{ width: 42, height: 42, borderRadius: '50%', background: 'rgba(201,169,110,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 700, color: '#c9a84c', flexShrink: 0 }}>
+                    {u.nome?.charAt(0).toUpperCase()}
+                  </div>
+
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <p style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{u.nome}</p>
+                      {!u.ativo && <span style={{ padding: '1px 8px', borderRadius: 12, fontSize: 10, fontWeight: 600, background: '#fce4ec', color: '#c62828' }}>Inativo</span>}
+                    </div>
+                    <p style={{ fontSize: 12, color: 'var(--text3)', margin: '2px 0 0' }}>{u.email}</p>
+                  </div>
+
+                  <span style={{ padding: '3px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: p.bg, color: p.color, flexShrink: 0 }}>{p.label}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0, color: 'var(--text3)', fontSize: 18 }}>›</div>
+                </div>
               </SwipeDelete>
             );
           })}

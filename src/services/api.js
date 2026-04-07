@@ -65,4 +65,10 @@ export const api = {
   editarFrasco: (token, id, data) => req('PATCH', `/admin/frascos/${id}`, data, token),
   deletarFrasco: (token, id) => req('DELETE', `/admin/frascos/${id}`, null, token),
   listarPerfumesSimples: (token) => req('GET', '/perfumes?limite=200', null, token),
+  // Admin - Usuarios
+  listarUsuarios: (token) => req('GET', '/admin/usuarios', null, token),
+  criarUsuario: (token, data) => req('POST', '/admin/usuarios', data, token),
+  atualizarUsuario: (token, id, data) => req('PATCH', `/admin/usuarios/${id}`, data, token),
+  alterarSenhaUsuario: (token, id, senha) => req('PATCH', `/admin/usuarios/${id}/senha`, { senha }, token),
+  deletarUsuario: (token, id) => req('DELETE', `/admin/usuarios/${id}`, null, token),
 };
