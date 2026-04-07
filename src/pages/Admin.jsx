@@ -330,7 +330,7 @@ export default function Admin() {
       {maisAberto && createPortal(
         <div style={{ position: 'fixed', inset: 0, zIndex: 9997 }} onClick={() => setMaisAberto(false)}>
           <div style={{ position: 'absolute', bottom: 70, left: '50%', transform: 'translateX(-50%)', width: '90%', maxWidth: 340,
-            background: '#fff', borderRadius: 14, boxShadow: '0 8px 30px rgba(0,0,0,0.18)', padding: 8, animation: 'slideUp .2s ease' }}
+            background: 'var(--card-bg)', borderRadius: 14, boxShadow: '0 8px 30px rgba(0,0,0,0.18)', padding: 8, animation: 'slideUp .2s ease' }}
             onClick={e => e.stopPropagation()}>
             {maisOpcoes.map((op, i) => (
               <button key={i} onClick={op.onClick}
@@ -392,7 +392,7 @@ function PainelDashboard() {
     <div className="fade-in">
       <div style={{ marginBottom: 28 }}>
         <h1 style={{ fontSize: 26, fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.02em', margin: 0 }}>{saudacao()}</h1>
-        <p style={{ fontSize: 14, color: '#888', marginTop: 4 }}>{new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+        <p style={{ fontSize: 14, color: 'var(--text3)', marginTop: 4 }}>{new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16, marginBottom: 24 }}>
@@ -416,7 +416,7 @@ function PainelDashboard() {
                 {card.icon}
               </div>
               <div>
-                <p style={{ fontSize: 13, color: '#888', fontWeight: 500, margin: 0 }}>{card.label}</p>
+                <p style={{ fontSize: 13, color: 'var(--text3)', fontWeight: 500, margin: 0 }}>{card.label}</p>
                 <p style={{ fontSize: 26, fontWeight: 800, color: card.cor, margin: '2px 0 0' }}>{card.valor}</p>
               </div>
             </div>
@@ -454,7 +454,7 @@ function PainelPedidos({ token }) {
   useEffect(() => { carregar(); }, [token, filtro]);
 
   const statusMap = {
-    aguardando_pagamento: { label: 'Aguardando', bg: '#f5f5f5', color: '#888' },
+    aguardando_pagamento: { label: 'Aguardando', bg: 'var(--filter-bg)', color: 'var(--text3)' },
     pagamento_aprovado: { label: 'Pago', bg: '#e8f5e9', color: '#2e7d32' },
     em_separacao: { label: 'Separando', bg: '#fff3e0', color: '#e65100' },
     enviado: { label: 'Enviado', bg: '#e3f2fd', color: '#1565c0' },
@@ -462,7 +462,7 @@ function PainelPedidos({ token }) {
     cancelado: { label: 'Cancelado', bg: '#fce4ec', color: '#c62828' },
   };
 
-  const getStatus = (s) => statusMap[s] || { label: s, bg: '#f5f5f5', color: '#888' };
+  const getStatus = (s) => statusMap[s] || { label: s, bg: 'var(--filter-bg)', color: 'var(--text3)' };
 
   const abrirDetalhe = (p) => {
     setDetalhe(p);
@@ -528,7 +528,7 @@ function PainelPedidos({ token }) {
         {/* Itens do pedido */}
         {detalhe.itens?.length > 0 && (
           <div style={{ marginBottom: 16 }}>
-            <p style={{ fontSize: 11, fontWeight: 600, color: '#888', letterSpacing: '0.1em', marginBottom: 8 }}>ITENS</p>
+            <p style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', letterSpacing: '0.1em', marginBottom: 8 }}>ITENS</p>
             {detalhe.itens.map((item, i) => (
               <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #f0f0f0', fontSize: 13 }}>
                 <span style={{ color: '#333' }}>{item.nome || item.perfume} {item.tamanho && `(${item.tamanho})`}</span>
@@ -540,9 +540,9 @@ function PainelPedidos({ token }) {
 
         {/* Alterar status */}
         <div style={{ marginBottom: 16 }}>
-          <p style={{ fontSize: 11, fontWeight: 600, color: '#888', letterSpacing: '0.1em', marginBottom: 6 }}>ALTERAR STATUS</p>
+          <p style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', letterSpacing: '0.1em', marginBottom: 6 }}>ALTERAR STATUS</p>
           <select value={statusEdit} onChange={e => setStatusEdit(e.target.value)}
-            style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 13, outline: 'none', background: '#fff', color: '#333', marginBottom: 8, boxSizing: 'border-box' }}>
+            style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 13, outline: 'none', background: 'var(--input-bg)', color: 'var(--input-text)', marginBottom: 8, boxSizing: 'border-box' }}>
             <option value="aguardando_pagamento">Aguardando pagamento</option>
             <option value="pagamento_aprovado">Pagamento aprovado</option>
             <option value="em_separacao">Em separacao</option>
@@ -603,7 +603,7 @@ function PainelPedidos({ token }) {
           {[1,2,3].map(i => <div key={i} style={{ height: 80, background: 'var(--bg3)', borderRadius: 12 }} />)}
         </div>
       ) : pedidos.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '3rem 0', color: '#999' }}>
+        <div style={{ textAlign: 'center', padding: '3rem 0', color: 'var(--text3)' }}>
           <p style={{ fontSize: 32, marginBottom: 8 }}>📋</p>
           <p>Nenhum pedido encontrado</p>
         </div>
@@ -626,7 +626,7 @@ function PainelPedidos({ token }) {
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>
                     <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)' }}>R$ {Number(p.total || 0).toFixed(2).replace('.', ',')}</span>
-                    <span style={{ fontSize: 12, color: '#999' }}>{p.criado_em ? new Date(p.criado_em).toLocaleDateString('pt-BR') : ''}</span>
+                    <span style={{ fontSize: 12, color: 'var(--text3)' }}>{p.criado_em ? new Date(p.criado_em).toLocaleDateString('pt-BR') : ''}</span>
                   </div>
                 </div>
 
@@ -748,37 +748,37 @@ function PainelEstoque({ token }) {
 
         {/* Busca perfume */}
         <div style={{ marginBottom: 12 }}>
-          <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>PERFUME</label>
+          <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>PERFUME</label>
           <input value={buscaPerfume} onChange={e => setBuscaPerfume(e.target.value)} placeholder="Buscar perfume..."
             style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 13, boxSizing: 'border-box', outline: 'none', marginBottom: 8 }} />
           <div style={{ maxHeight: 180, overflowY: 'auto', border: '1px solid #eee', borderRadius: 8 }}>
             {perfumesFiltrados.slice(0, 30).map(p => (
               <div key={p.id} onClick={() => { setNovoForm(f => ({ ...f, perfume_id: p.id })); setBuscaPerfume(p.nome + ' — ' + p.marca); }}
-                style={{ padding: '10px 12px', cursor: 'pointer', fontSize: 13, borderBottom: '1px solid #f5f5f5',
+                style={{ padding: '10px 12px', cursor: 'pointer', fontSize: 13, borderBottom: '1px solid var(--border)',
                   background: novoForm.perfume_id === p.id ? 'rgba(201,169,110,0.1)' : '#fff',
                   display: 'flex', alignItems: 'center', gap: 10 }}
                 onMouseEnter={e => e.currentTarget.style.background = novoForm.perfume_id === p.id ? 'rgba(201,169,110,0.15)' : '#f8f7f4'}
                 onMouseLeave={e => e.currentTarget.style.background = novoForm.perfume_id === p.id ? 'rgba(201,169,110,0.1)' : '#fff'}>
                 {p.foto_url && <img src={p.foto_url} alt="" style={{ width: 32, height: 40, objectFit: 'contain', borderRadius: 4, flexShrink: 0 }} />}
                 <div>
-                  <p style={{ fontWeight: 600, color: '#111' }}>{p.nome}</p>
-                  <p style={{ fontSize: 11, color: '#888' }}>{p.marca}</p>
+                  <p style={{ fontWeight: 600, color: 'var(--text)' }}>{p.nome}</p>
+                  <p style={{ fontSize: 11, color: 'var(--text3)' }}>{p.marca}</p>
                 </div>
               </div>
             ))}
-            {perfumesFiltrados.length === 0 && <p style={{ padding: 16, textAlign: 'center', color: '#999', fontSize: 13 }}>Nenhum perfume encontrado</p>}
+            {perfumesFiltrados.length === 0 && <p style={{ padding: 16, textAlign: 'center', color: 'var(--text3)', fontSize: 13 }}>Nenhum perfume encontrado</p>}
           </div>
         </div>
 
         {/* ML Total + Lote */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 20 }}>
           <div>
-            <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>ML TOTAL</label>
+            <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>ML TOTAL</label>
             <input type="number" value={novoForm.ml_total} onChange={e => setNovoForm(f => ({ ...f, ml_total: e.target.value }))} placeholder="Ex: 100"
               style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none' }} />
           </div>
           <div>
-            <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>LOTE (opcional)</label>
+            <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>LOTE (opcional)</label>
             <input value={novoForm.lote} onChange={e => setNovoForm(f => ({ ...f, lote: e.target.value }))} placeholder="Ex: L001"
               style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none' }} />
           </div>
@@ -804,17 +804,17 @@ function PainelEstoque({ token }) {
         <p style={{ color: 'var(--text3)', fontSize: 13, marginBottom: 20 }}>{editando.perfume} — {editando.marca}</p>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
           <div>
-            <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>ML TOTAL</label>
+            <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>ML TOTAL</label>
             <input type="number" value={editForm.ml_total} onChange={e => setEditForm(f => ({ ...f, ml_total: e.target.value }))}
               style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none' }} />
           </div>
           <div>
-            <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>ML VENDIDO</label>
+            <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>ML VENDIDO</label>
             <input type="number" value={editForm.ml_vendido} onChange={e => setEditForm(f => ({ ...f, ml_vendido: e.target.value }))}
               style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none' }} />
           </div>
         </div>
-        <p style={{ fontSize: 12, color: '#888', marginBottom: 20 }}>Disponivel: <b style={{ color: '#c9a84c' }}>{Math.max(0, Number(editForm.ml_total) - Number(editForm.ml_vendido))}ml</b></p>
+        <p style={{ fontSize: 12, color: 'var(--text3)', marginBottom: 20 }}>Disponivel: <b style={{ color: '#c9a84c' }}>{Math.max(0, Number(editForm.ml_total) - Number(editForm.ml_vendido))}ml</b></p>
         <div style={{ display: 'flex', gap: 8 }}>
           <button onClick={() => setEditando(null)} style={{ flex: 0.5, padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)' }}>Cancelar</button>
           <button onClick={salvarEdicao} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>
@@ -834,11 +834,11 @@ function PainelEstoque({ token }) {
 
         <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start', marginBottom: 16 }}>
           {detalhe.foto_url && (
-            <img src={detalhe.foto_url} alt={detalhe.perfume} style={{ width: 56, height: 70, borderRadius: 8, objectFit: 'contain', flexShrink: 0, background: '#f8f7f4' }} />
+            <img src={detalhe.foto_url} alt={detalhe.perfume} style={{ width: 56, height: 70, borderRadius: 8, objectFit: 'contain', flexShrink: 0, background: '#fff' }} />
           )}
           <div style={{ flex: 1 }}>
-            <p style={{ fontSize: 11, color: '#8a6a10', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase' }}>{detalhe.marca}</p>
-            <h3 style={{ fontSize: 20, fontWeight: 700, color: '#111' }}>{detalhe.perfume}</h3>
+            <p style={{ fontSize: 11, color: '#c9a84c', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase' }}>{detalhe.marca}</p>
+            <h3 style={{ fontSize: 20, fontWeight: 700, color: 'var(--text)' }}>{detalhe.perfume}</h3>
           </div>
         </div>
 
@@ -850,16 +850,16 @@ function PainelEstoque({ token }) {
           const pct = total > 0 ? Math.round((disp / total) * 100) : 0;
           const st = getStatus(detalhe);
           return (
-            <div style={{ background: 'var(--filter-bg)', borderRadius: 10, padding: 16, marginBottom: 16 }}>
+            <div className="admin-info-box">
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                <span style={{ fontSize: 13, color: 'var(--text2)' }}>Disponivel</span>
+                <span style={{ fontSize: 13, color: 'var(--text3)' }}>Disponivel</span>
                 <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text)' }}>{disp}ml / {total}ml</span>
               </div>
-              <div style={{ height: 6, background: '#e8e4dc', borderRadius: 3, marginBottom: 8 }}>
-                <div style={{ height: '100%', background: st.key === 'esgotado' ? '#c62828' : 'linear-gradient(90deg,#c9a84c,#e8c870)', borderRadius: 3, width: `${pct}%`, transition: 'width .3s' }} />
+              <div style={{ height: 6, background: 'var(--border)', borderRadius: 3, marginBottom: 8 }}>
+                <div style={{ height: '100%', background: st.key === 'esgotado' ? 'var(--danger-text)' : 'linear-gradient(90deg,#c9a84c,#e8c870)', borderRadius: 3, width: `${pct}%`, transition: 'width .3s' }} />
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
-                <span style={{ color: '#999' }}>Vendido: {vendido}ml</span>
+                <span style={{ color: 'var(--text3)' }}>Vendido: {vendido}ml</span>
                 <span style={{ padding: '2px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: st.bg, color: st.color }}>{st.label}</span>
               </div>
             </div>
@@ -868,9 +868,9 @@ function PainelEstoque({ token }) {
 
         {/* Info */}
         <div style={{ display: 'flex', gap: 16, marginBottom: 16, flexWrap: 'wrap' }}>
-          <div><p style={{ fontSize: 10, fontWeight: 600, color: '#888', letterSpacing: '0.1em' }}>CRIADO</p><p style={{ fontSize: 13, color: 'var(--text2)' }}>{detalhe.criado_em ? new Date(detalhe.criado_em).toLocaleDateString('pt-BR') : '—'}</p></div>
-          {detalhe.esgotado_em && <div><p style={{ fontSize: 10, fontWeight: 600, color: '#888', letterSpacing: '0.1em' }}>ESGOTADO</p><p style={{ fontSize: 13, color: '#c62828' }}>{new Date(detalhe.esgotado_em).toLocaleDateString('pt-BR')}</p></div>}
-          {detalhe.lote && <div><p style={{ fontSize: 10, fontWeight: 600, color: '#888', letterSpacing: '0.1em' }}>LOTE</p><p style={{ fontSize: 13, color: 'var(--text2)' }}>{detalhe.lote}</p></div>}
+          <div><p style={{ fontSize: 10, fontWeight: 600, color: 'var(--text3)', letterSpacing: '0.1em' }}>CRIADO</p><p style={{ fontSize: 13, color: 'var(--text2)' }}>{detalhe.criado_em ? new Date(detalhe.criado_em).toLocaleDateString('pt-BR') : '—'}</p></div>
+          {detalhe.esgotado_em && <div><p style={{ fontSize: 10, fontWeight: 600, color: 'var(--text3)', letterSpacing: '0.1em' }}>ESGOTADO</p><p style={{ fontSize: 13, color: 'var(--danger-text)' }}>{new Date(detalhe.esgotado_em).toLocaleDateString('pt-BR')}</p></div>}
+          {detalhe.lote && <div><p style={{ fontSize: 10, fontWeight: 600, color: 'var(--text3)', letterSpacing: '0.1em' }}>LOTE</p><p style={{ fontSize: 13, color: 'var(--text2)' }}>{detalhe.lote}</p></div>}
         </div>
 
         {/* Acoes */}
@@ -932,7 +932,7 @@ function PainelEstoque({ token }) {
           {[1,2,3,4].map(i => <div key={i} style={{ height: 90, background: 'var(--bg3)', borderRadius: 12 }} />)}
         </div>
       ) : filtrados.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '3rem 0', color: '#999' }}>
+        <div style={{ textAlign: 'center', padding: '3rem 0', color: 'var(--text3)' }}>
           <p style={{ fontSize: 32, marginBottom: 8 }}>🧴</p>
           <p>Nenhum frasco encontrado</p>
         </div>
@@ -967,11 +967,11 @@ function PainelEstoque({ token }) {
 
                     {/* Barra de progresso */}
                     <div style={{ marginTop: 8 }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#888', marginBottom: 3 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--text3)', marginBottom: 3 }}>
                         <span>{disp}ml disponivel</span>
                         <span>{total}ml total</span>
                       </div>
-                      <div style={{ height: 4, background: '#e8e4dc', borderRadius: 2 }}>
+                      <div style={{ height: 4, background: 'var(--border)', borderRadius: 2 }}>
                         <div style={{ height: '100%', background: st.key === 'esgotado' ? '#c62828' : 'linear-gradient(90deg,#c9a84c,#e8c870)', borderRadius: 2, width: `${pct}%`, transition: 'width .3s' }} />
                       </div>
                     </div>
@@ -1224,41 +1224,41 @@ function PainelPerfumes({ token }) {
         <h3 style={{ marginBottom: 16, color: 'var(--text)', fontSize: 18, fontWeight: 700 }}>Editar Perfume</h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, overflow: 'hidden' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-            <div style={{ gridColumn: '1/-1' }}><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>NOME</label><input {...inp('nome')} /></div>
-            <div style={{ gridColumn: '1/-1' }}><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>MARCA</label><input {...inp('marca')} /></div>
-            <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>ANO</label><input {...inp('ano')} type="number" /></div>
+            <div style={{ gridColumn: '1/-1' }}><label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>NOME</label><input {...inp('nome')} /></div>
+            <div style={{ gridColumn: '1/-1' }}><label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>MARCA</label><input {...inp('marca')} /></div>
+            <div><label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>ANO</label><input {...inp('ano')} type="number" /></div>
             <div>
-              <label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>GENERO</label>
+              <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>GENERO</label>
               <select value={editForm.genero || ''} onChange={e => setEditForm(f => ({ ...f, genero: e.target.value }))}
                 style={{ width: '100%', padding: '8px 12px', border: '1px solid var(--input-border)', borderRadius: 4, fontSize: 13, outline: 'none', color: 'var(--input-text)', background: 'var(--input-bg)', boxSizing: 'border-box' }}>
                 <option value="">Selecione</option><option value="Masculino">Masculino</option><option value="Feminino">Feminino</option><option value="Compartilhável">Compartilhável</option>
               </select>
             </div>
-            <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>PAIS</label><input {...inp('pais')} /></div>
-            <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>FAMILIA</label><input {...inp('familia_olfativa')} /></div>
-            <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>RATING</label><input {...inp('rating_valor')} type="number" step="0.01" /></div>
-            <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>VOTOS</label><input {...inp('rating_count')} type="number" /></div>
+            <div><label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>PAIS</label><input {...inp('pais')} /></div>
+            <div><label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>FAMILIA</label><input {...inp('familia_olfativa')} /></div>
+            <div><label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>RATING</label><input {...inp('rating_valor')} type="number" step="0.01" /></div>
+            <div><label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>VOTOS</label><input {...inp('rating_count')} type="number" /></div>
           </div>
-          <label style={{ fontSize: 11, fontWeight: 600, color: '#888' }}>ACORDES</label>
+          <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)' }}>ACORDES</label>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 6 }}>
             <input {...inp('acorde1')} placeholder="1" /><input {...inp('acorde2')} placeholder="2" /><input {...inp('acorde3')} placeholder="3" />
             <input {...inp('acorde4')} placeholder="4" /><input {...inp('acorde5')} placeholder="5" />
           </div>
-          <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>NOTAS TOPO</label><input {...inp('notas_topo')} /></div>
-          <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>NOTAS CORACAO</label><input {...inp('notas_coracao')} /></div>
-          <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>NOTAS BASE</label><input {...inp('notas_base')} /></div>
-          <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>URL FOTO</label><input {...inp('foto_url')} /></div>
-          <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>DESCRICAO</label>
+          <div><label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>NOTAS TOPO</label><input {...inp('notas_topo')} /></div>
+          <div><label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>NOTAS CORACAO</label><input {...inp('notas_coracao')} /></div>
+          <div><label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>NOTAS BASE</label><input {...inp('notas_base')} /></div>
+          <div><label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>URL FOTO</label><input {...inp('foto_url')} /></div>
+          <div><label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>DESCRICAO</label>
             <textarea value={editForm.descricao || ''} onChange={e => setEditForm(f => ({ ...f, descricao: e.target.value }))}
               style={{ width: '100%', padding: '8px 12px', border: '1px solid var(--input-border)', borderRadius: 4, fontSize: 13, outline: 'none', color: 'var(--input-text)', background: 'var(--input-bg)', minHeight: 60, resize: 'vertical', boxSizing: 'border-box' }} />
           </div>
-          <label style={{ fontSize: 11, fontWeight: 600, color: '#888' }}>PRECOS DECANT</label>
+          <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)' }}>PRECOS DECANT</label>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(70px, 1fr))', gap: 6 }}>
             {TAMANHOS.map(t => (
               <div key={t.key}><label style={{ fontSize: 10, color: '#aaa', display: 'block', marginBottom: 2 }}>{t.label}</label><input type="number" step="0.01" placeholder="R$" {...inp(`preco_${t.key}`)} /></div>
             ))}
           </div>
-          <div><label style={{ fontSize: 11, fontWeight: 600, color: '#888', display: 'block', marginBottom: 4 }}>PRECO LACRADO</label><input type="number" step="0.01" placeholder="R$" {...inp('preco_lacrado')} /></div>
+          <div><label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>PRECO LACRADO</label><input type="number" step="0.01" placeholder="R$" {...inp('preco_lacrado')} /></div>
           <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--text2)', cursor: 'pointer', flexShrink: 0 }}>
             <input type="checkbox" checked={editForm.ativo !== false} onChange={e => setEditForm(f => ({ ...f, ativo: e.target.checked }))} style={{ width: 18, height: 18, flexShrink: 0 }} />
             Ativo no catalogo
@@ -1301,7 +1301,7 @@ function PainelPerfumes({ token }) {
               <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 6 }}>
                 <span style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)' }}>{Number(detalhe.rating_valor).toFixed(1)}</span>
                 <span style={{ color: '#c9a84c', fontSize: 12 }}>★</span>
-                {detalhe.rating_count && <span style={{ fontSize: 11, color: '#999' }}>({Number(detalhe.rating_count).toLocaleString()})</span>}
+                {detalhe.rating_count && <span style={{ fontSize: 11, color: 'var(--text3)' }}>({Number(detalhe.rating_count).toLocaleString()})</span>}
               </div>
             )}
             <span style={{ display: 'inline-block', marginTop: 6, padding: '2px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600,
@@ -1315,7 +1315,7 @@ function PainelPerfumes({ token }) {
         {/* Acordes */}
         {detalhe.acorde1 && (
           <div style={{ marginBottom: 12 }}>
-            <p style={{ fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 6, letterSpacing: '0.1em' }}>ACORDES</p>
+            <p style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', marginBottom: 6, letterSpacing: '0.1em' }}>ACORDES</p>
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
               {[detalhe.acorde1, detalhe.acorde2, detalhe.acorde3, detalhe.acorde4, detalhe.acorde5].filter(Boolean).map(a => (
                 <span key={a} style={{ padding: '4px 12px', background: getAcordeCor(a).bg, borderRadius: 20, fontSize: 12, color: getAcordeCor(a).color, fontWeight: 500 }}>{a}</span>
@@ -1327,7 +1327,7 @@ function PainelPerfumes({ token }) {
         {/* Notas */}
         {(detalhe.notas_topo || detalhe.notas_coracao || detalhe.notas_base) && (
           <div style={{ marginBottom: 12 }}>
-            <p style={{ fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 6, letterSpacing: '0.1em' }}>NOTAS</p>
+            <p style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', marginBottom: 6, letterSpacing: '0.1em' }}>NOTAS</p>
             {detalhe.notas_topo && <p style={{ fontSize: 12, color: 'var(--text2)', marginBottom: 2 }}><b style={{ color: '#c9a84c' }}>Topo:</b> {detalhe.notas_topo}</p>}
             {detalhe.notas_coracao && <p style={{ fontSize: 12, color: 'var(--text2)', marginBottom: 2 }}><b style={{ color: '#c9a84c' }}>Coracao:</b> {detalhe.notas_coracao}</p>}
             {detalhe.notas_base && <p style={{ fontSize: 12, color: 'var(--text2)' }}><b style={{ color: '#c9a84c' }}>Base:</b> {detalhe.notas_base}</p>}
@@ -1337,7 +1337,7 @@ function PainelPerfumes({ token }) {
         {/* Descricao */}
         {detalhe.descricao && (
           <div style={{ marginBottom: 12 }}>
-            <p style={{ fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4, letterSpacing: '0.1em' }}>DESCRICAO</p>
+            <p style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', marginBottom: 4, letterSpacing: '0.1em' }}>DESCRICAO</p>
             <p style={{ fontSize: 12, color: 'var(--text2)', lineHeight: 1.6 }}>{detalhe.descricao}</p>
           </div>
         )}
@@ -1345,10 +1345,10 @@ function PainelPerfumes({ token }) {
         {/* Familia + Perfumistas */}
         <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 16 }}>
           {detalhe.familia_olfativa && (
-            <div><p style={{ fontSize: 10, fontWeight: 600, color: '#888' }}>FAMILIA</p><p style={{ fontSize: 13, color: 'var(--text2)' }}>{detalhe.familia_olfativa}</p></div>
+            <div><p style={{ fontSize: 10, fontWeight: 600, color: 'var(--text3)' }}>FAMILIA</p><p style={{ fontSize: 13, color: 'var(--text2)' }}>{detalhe.familia_olfativa}</p></div>
           )}
           {detalhe.perfumista1 && (
-            <div><p style={{ fontSize: 10, fontWeight: 600, color: '#888' }}>PERFUMISTA</p><p style={{ fontSize: 13, color: 'var(--text2)', fontStyle: 'italic' }}>{[detalhe.perfumista1, detalhe.perfumista2].filter(Boolean).join(', ')}</p></div>
+            <div><p style={{ fontSize: 10, fontWeight: 600, color: 'var(--text3)' }}>PERFUMISTA</p><p style={{ fontSize: 13, color: 'var(--text2)', fontStyle: 'italic' }}>{[detalhe.perfumista1, detalhe.perfumista2].filter(Boolean).join(', ')}</p></div>
           )}
         </div>
 
@@ -1440,12 +1440,12 @@ function PainelPerfumes({ token }) {
             <div>
               <span style={{ color: '#2e7d32', fontWeight: 600 }}>Concluído! {fixSocialResult.atualizados || 0} fotos sociais carregadas ({fixSocialResult.processados || 0} processados)</span>
               {fixSocialResult.erros?.length > 0 && (
-                <details style={{ marginTop: 6, fontSize: 12, color: '#888' }}>
+                <details style={{ marginTop: 6, fontSize: 12, color: 'var(--text3)' }}>
                   <summary style={{ cursor: 'pointer' }}>{fixSocialResult.erros.length} erros</summary>
                   {fixSocialResult.erros.map((e, i) => <p key={i}>{e.nome}: {e.erro}</p>)}
                 </details>
               )}
-              <button onClick={() => setFixSocialResult(null)} style={{ marginTop: 6, background: 'none', border: 'none', fontSize: 12, color: '#888', cursor: 'pointer', textDecoration: 'underline' }}>Fechar</button>
+              <button onClick={() => setFixSocialResult(null)} style={{ marginTop: 6, background: 'none', border: 'none', fontSize: 12, color: 'var(--text3)', cursor: 'pointer', textDecoration: 'underline' }}>Fechar</button>
             </div>
           )}
         </div>
@@ -1465,12 +1465,12 @@ function PainelPerfumes({ token }) {
             <div>
               <span style={{ color: '#2e7d32', fontWeight: 600 }}>Concluído! {fixDataResult.atualizados || 0} perfumes enriquecidos ({fixDataResult.processados || 0} processados)</span>
               {fixDataResult.erros?.length > 0 && (
-                <details style={{ marginTop: 6, fontSize: 12, color: '#888' }}>
+                <details style={{ marginTop: 6, fontSize: 12, color: 'var(--text3)' }}>
                   <summary style={{ cursor: 'pointer' }}>{fixDataResult.erros.length} erros</summary>
                   {fixDataResult.erros.map((e, i) => <p key={i}>{e.nome}: {e.erro}</p>)}
                 </details>
               )}
-              <button onClick={() => setFixDataResult(null)} style={{ marginTop: 6, background: 'none', border: 'none', fontSize: 12, color: '#888', cursor: 'pointer', textDecoration: 'underline' }}>Fechar</button>
+              <button onClick={() => setFixDataResult(null)} style={{ marginTop: 6, background: 'none', border: 'none', fontSize: 12, color: 'var(--text3)', cursor: 'pointer', textDecoration: 'underline' }}>Fechar</button>
             </div>
           )}
         </div>
@@ -1502,7 +1502,7 @@ function PainelPerfumes({ token }) {
           {[1,2,3,4].map(i => <div key={i} style={{ height: 100, background: 'var(--bg3)', borderRadius: 12 }} />)}
         </div>
       ) : filtrados.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '3rem 0', color: '#999' }}>
+        <div style={{ textAlign: 'center', padding: '3rem 0', color: 'var(--text3)' }}>
           <p style={{ fontSize: 32, marginBottom: 8 }}>🔍</p>
           <p>Nenhum perfume encontrado</p>
         </div>
@@ -1617,7 +1617,7 @@ function PainelReservas({ token }) {
     cancelada: { label: 'Cancelada', bg: '#fce4ec', color: '#c62828' },
   };
 
-  const getStatus = (s) => statusMap[s] || { label: s, bg: '#f5f5f5', color: '#888' };
+  const getStatus = (s) => statusMap[s] || { label: s, bg: 'var(--filter-bg)', color: 'var(--text3)' };
 
   const abrirDetalhe = (r) => {
     setDetalhe(r);
@@ -1697,9 +1697,9 @@ function PainelReservas({ token }) {
         </div>
 
         <div style={{ marginBottom: 16 }}>
-          <p style={{ fontSize: 11, fontWeight: 600, color: '#888', letterSpacing: '0.1em', marginBottom: 6 }}>ALTERAR STATUS</p>
+          <p style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', letterSpacing: '0.1em', marginBottom: 6 }}>ALTERAR STATUS</p>
           <select value={statusEdit} onChange={e => setStatusEdit(e.target.value)}
-            style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 13, outline: 'none', background: '#fff', color: '#333', boxSizing: 'border-box' }}>
+            style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 13, outline: 'none', background: 'var(--input-bg)', color: 'var(--input-text)', boxSizing: 'border-box' }}>
             <option value="pendente">Pendente</option>
             <option value="confirmada">Confirmada</option>
             <option value="separando">Separando</option>
@@ -1755,7 +1755,7 @@ function PainelReservas({ token }) {
           {[1,2,3].map(i => <div key={i} style={{ height: 80, background: 'var(--bg3)', borderRadius: 12 }} />)}
         </div>
       ) : reservas.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '3rem 0', color: '#999' }}>
+        <div style={{ textAlign: 'center', padding: '3rem 0', color: 'var(--text3)' }}>
           <p style={{ fontSize: 32, marginBottom: 8 }}>📅</p>
           <p>Nenhuma reserva encontrada</p>
         </div>
@@ -1783,7 +1783,7 @@ function PainelReservas({ token }) {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <span style={{ padding: '2px 8px', borderRadius: 12, fontSize: 11, fontWeight: 600, background: '#f0ede8', color: '#5a5550' }}>{r.tamanho || `${r.ml_quantidade}ml`}</span>
-                      <span style={{ fontSize: 12, color: '#888' }}>{r.criado_em ? new Date(r.criado_em).toLocaleDateString('pt-BR') : ''}</span>
+                      <span style={{ fontSize: 12, color: 'var(--text3)' }}>{r.criado_em ? new Date(r.criado_em).toLocaleDateString('pt-BR') : ''}</span>
                     </div>
                     <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)' }}>R$ {Number(r.preco_total || 0).toFixed(2).replace('.', ',')}</span>
                   </div>
