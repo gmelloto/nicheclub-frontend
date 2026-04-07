@@ -132,9 +132,9 @@ export function PainelNotas({ token: tokenProp }) {
   const modalAdicionarJSX = modal && createPortal(
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
       onClick={e => e.target === e.currentTarget && setModal(false)}>
-      <div style={{ background: '#fff', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '90vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease', fontFamily: "'Inter', sans-serif" }}>
-        <div style={{ width: 40, height: 4, background: '#ddd', borderRadius: 2, margin: '0 auto 16px' }} />
-        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111', fontFamily: "'Inter', sans-serif", marginBottom: 12 }}>Adicionar Nota</h3>
+      <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '90vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease', fontFamily: "'Inter', sans-serif" }}>
+        <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 16px' }} />
+        <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--input-text)', fontFamily: "'Inter', sans-serif", marginBottom: 12 }}>Adicionar Nota</h3>
 
         <div style={{ background: '#fffbf0', border: '1px solid #e8d840', borderRadius: 8, padding: '10px 12px', marginBottom: 16, fontSize: 12, color: '#8a6a10' }}>
           Acesse <a href={FRAGRANTICA_BASE} target="_blank" rel="noreferrer" style={{ color: '#8a6a10', fontWeight: 600 }}>fragrantica.com/notes</a> e copie o ID da URL.<br />
@@ -143,19 +143,19 @@ export function PainelNotas({ token: tokenProp }) {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div>
-            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4, fontFamily: "'Inter', sans-serif" }}>NOME EM INGLES *</label>
+            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: 'var(--text3)', marginBottom: 4, fontFamily: "'Inter', sans-serif" }}>NOME EM INGLES *</label>
             <input value={form.nota_en} onChange={e => setForm(f => ({ ...f, nota_en: e.target.value }))} placeholder="Ex: Bergamot"
-              style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box', color: '#111', fontFamily: "'Inter', sans-serif" }} />
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box', color: 'var(--input-text)', fontFamily: "'Inter', sans-serif" }} />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4, fontFamily: "'Inter', sans-serif" }}>NOME EM PORTUGUES</label>
+            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: 'var(--text3)', marginBottom: 4, fontFamily: "'Inter', sans-serif" }}>NOME EM PORTUGUES</label>
             <input value={form.nota_ptb} onChange={e => setForm(f => ({ ...f, nota_ptb: e.target.value }))} placeholder="Ex: Bergamota"
-              style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box', color: '#111', fontFamily: "'Inter', sans-serif" }} />
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box', color: 'var(--input-text)', fontFamily: "'Inter', sans-serif" }} />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4, fontFamily: "'Inter', sans-serif" }}>ID FRAGRANTICA *</label>
+            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: 'var(--text3)', marginBottom: 4, fontFamily: "'Inter', sans-serif" }}>ID FRAGRANTICA *</label>
             <input value={form.fragrantica_id} onChange={e => setForm(f => ({ ...f, fragrantica_id: e.target.value.replace(/\D/g, '') }))} placeholder="Ex: 75" type="number"
-              style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box', color: '#111', fontFamily: "'Inter', sans-serif" }} />
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box', color: 'var(--input-text)', fontFamily: "'Inter', sans-serif" }} />
           </div>
 
           {preview && (
@@ -179,7 +179,7 @@ export function PainelNotas({ token: tokenProp }) {
         </div>
 
         <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
-          <button onClick={() => setModal(false)} style={{ flex: 0.5, padding: '12px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#666', fontFamily: "'Inter', sans-serif" }}>Cancelar</button>
+          <button onClick={() => setModal(false)} style={{ flex: 0.5, padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#666', fontFamily: "'Inter', sans-serif" }}>Cancelar</button>
           <button onClick={importar} disabled={importando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07', fontFamily: "'Inter', sans-serif", opacity: importando ? 0.7 : 1 }}>
             {importando ? 'Importando...' : 'Importar'}
           </button>
@@ -194,8 +194,8 @@ export function PainelNotas({ token: tokenProp }) {
   const modalDetalheJSX = detalhe && createPortal(
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9998, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
       onClick={e => e.target === e.currentTarget && setDetalhe(null)}>
-      <div style={{ background: '#fff', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '90vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease', fontFamily: "'Inter', sans-serif" }}>
-        <div style={{ width: 40, height: 4, background: '#ddd', borderRadius: 2, margin: '0 auto 16px' }} />
+      <div style={{ background: 'var(--card-bg)', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '90vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease', fontFamily: "'Inter', sans-serif" }}>
+        <div style={{ width: 40, height: 4, background: 'var(--border)', borderRadius: 2, margin: '0 auto 16px' }} />
 
         {/* Foto + status */}
         <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
@@ -206,7 +206,7 @@ export function PainelNotas({ token: tokenProp }) {
             }
           </div>
           <div style={{ flex: 1 }}>
-            <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111', fontFamily: "'Inter', sans-serif", marginBottom: 2 }}>{detalhe.nota_ptb || detalhe.nota_en}</h3>
+            <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--input-text)', fontFamily: "'Inter', sans-serif", marginBottom: 2 }}>{detalhe.nota_ptb || detalhe.nota_en}</h3>
             <p style={{ fontSize: 13, color: '#888' }}>{detalhe.nota_en}</p>
             <span style={{ display: 'inline-block', marginTop: 6, padding: '2px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600,
               background: detalhe.cloudinary_url ? '#e8f5e9' : '#fce4ec',
@@ -219,24 +219,24 @@ export function PainelNotas({ token: tokenProp }) {
         {/* Campos editaveis */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 16 }}>
           <div>
-            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4, fontFamily: "'Inter', sans-serif" }}>NOME EM INGLES</label>
+            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: 'var(--text3)', marginBottom: 4, fontFamily: "'Inter', sans-serif" }}>NOME EM INGLES</label>
             <input value={editForm.nota_en} onChange={e => setEditForm(f => ({ ...f, nota_en: e.target.value }))}
-              style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box', color: '#111', fontFamily: "'Inter', sans-serif" }} />
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box', color: 'var(--input-text)', fontFamily: "'Inter', sans-serif" }} />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4, fontFamily: "'Inter', sans-serif" }}>NOME EM PORTUGUES</label>
+            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: 'var(--text3)', marginBottom: 4, fontFamily: "'Inter', sans-serif" }}>NOME EM PORTUGUES</label>
             <input value={editForm.nota_ptb} onChange={e => setEditForm(f => ({ ...f, nota_ptb: e.target.value }))}
-              style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box', color: '#111', fontFamily: "'Inter', sans-serif" }} />
+              style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box', color: 'var(--input-text)', fontFamily: "'Inter', sans-serif" }} />
           </div>
         </div>
 
         {/* Importar imagem */}
         <div style={{ background: '#f8f7f4', borderRadius: 10, padding: 14, marginBottom: 16 }}>
-          <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#888', marginBottom: 4, fontFamily: "'Inter', sans-serif" }}>ID FRAGRANTICA (para importar/atualizar imagem)</label>
+          <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: 'var(--text3)', marginBottom: 4, fontFamily: "'Inter', sans-serif" }}>ID FRAGRANTICA (para importar/atualizar imagem)</label>
           <div style={{ display: 'flex', gap: 8 }}>
             <input value={editForm.fragrantica_id} onChange={e => setEditForm(f => ({ ...f, fragrantica_id: e.target.value.replace(/\D/g, '') }))}
               placeholder="Ex: 75" type="number"
-              style={{ flex: 1, padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box', color: '#111', fontFamily: "'Inter', sans-serif" }} />
+              style={{ flex: 1, padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 13, outline: 'none', boxSizing: 'border-box', color: 'var(--input-text)', fontFamily: "'Inter', sans-serif" }} />
             <button onClick={importarImagem} disabled={importandoImg || !editForm.fragrantica_id}
               style={{ padding: '10px 16px', background: editForm.fragrantica_id ? '#111' : '#ddd', border: 'none', borderRadius: 8, cursor: editForm.fragrantica_id ? 'pointer' : 'not-allowed',
                 fontSize: 12, fontWeight: 700, color: '#fff', whiteSpace: 'nowrap', opacity: importandoImg ? 0.7 : 1, fontFamily: "'Inter', sans-serif" }}>
@@ -260,7 +260,7 @@ export function PainelNotas({ token: tokenProp }) {
         )}
 
         <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={() => setDetalhe(null)} style={{ padding: '12px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#666', flex: 0.4 }}>Fechar</button>
+          <button onClick={() => setDetalhe(null)} style={{ padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#666', flex: 0.4 }}>Fechar</button>
           <button onClick={salvarEdicao} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07', fontFamily: "'Inter', sans-serif" }}>
             {salvando ? 'Salvando...' : 'Salvar'}
           </button>
@@ -278,7 +278,7 @@ export function PainelNotas({ token: tokenProp }) {
   ];
 
   return (
-    <div style={{ minHeight: isEmbedded ? 'auto' : '100vh', background: isEmbedded ? 'transparent' : '#fff', fontFamily: "'Inter', sans-serif", paddingBottom: isEmbedded ? 0 : 70 }}>
+    <div style={{ minHeight: isEmbedded ? 'auto' : '100vh', background: isEmbedded ? 'transparent' : 'var(--card-bg, #fff)', fontFamily: "'Inter', sans-serif", paddingBottom: isEmbedded ? 0 : 70 }}>
       <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}} @keyframes spin{to{transform:rotate(360deg)}}`}</style>
       {modalAdicionarJSX}
       {modalDetalheJSX}
@@ -287,8 +287,8 @@ export function PainelNotas({ token: tokenProp }) {
       <div style={{ padding: '1rem', paddingBottom: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <h1 style={{ fontSize: 22, fontWeight: 700, color: '#111', fontFamily: "'Inter', sans-serif" }}>Notas</h1>
-            <span style={{ fontSize: 11, color: '#999', background: '#f0f0f0', padding: '2px 8px', borderRadius: 10 }}>{total}</span>
+            <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--input-text)', fontFamily: "'Inter', sans-serif" }}>Notas</h1>
+            <span style={{ fontSize: 11, color: 'var(--text3, #999)', background: 'var(--badge-bg, #f0f0f0)', padding: '2px 8px', borderRadius: 10 }}>{total}</span>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
             <button onClick={async () => {
@@ -363,7 +363,7 @@ export function PainelNotas({ token: tokenProp }) {
         <div style={{ position: 'relative', marginBottom: 12 }}>
           <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#bbb', fontSize: 15 }}>&#128269;</span>
           <input value={buscaInput} onChange={e => setBuscaInput(e.target.value)} placeholder="Buscar..."
-            style={{ width: '100%', padding: '12px 16px 12px 42px', border: '1.5px solid #e0e0e0', borderRadius: 10, fontSize: 14, outline: 'none', background: '#fff', boxSizing: 'border-box' }} />
+            style={{ width: '100%', padding: '12px 16px 12px 42px', border: '1.5px solid var(--input-border, #e0e0e0)', borderRadius: 10, fontSize: 14, outline: 'none', background: 'var(--input-bg, #fff)', color: 'var(--input-text, #333)', boxSizing: 'border-box' }} />
         </div>
       </div>
 
@@ -372,7 +372,7 @@ export function PainelNotas({ token: tokenProp }) {
         <div style={{ background: '#f5f5f3', borderRadius: 14, padding: 12, margin: '0 -4px' }}>
           {loading ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {[1,2,3,4,5,6].map(i => <div key={i} style={{ height: 64, background: '#eee', borderRadius: 12 }} />)}
+              {[1,2,3,4,5,6].map(i => <div key={i} style={{ height: 64, background: 'var(--bg3, #eee)', borderRadius: 12 }} />)}
             </div>
           ) : notas.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '3rem 0', color: '#999' }}>
@@ -388,11 +388,11 @@ export function PainelNotas({ token: tokenProp }) {
                   setTotal(t => t - 1);
                 }}>
                   <div onClick={() => { setDetalhe(nota); setEditForm({ nota_en: nota.nota_en || '', nota_ptb: nota.nota_ptb || '', fragrantica_id: '' }); }}
-                    style={{ display: 'flex', gap: 14, padding: 14, background: '#fff', borderRadius: 12, border: '1px solid #eee',
+                    style={{ display: 'flex', gap: 14, padding: 14, background: 'var(--card-bg, #fff)', borderRadius: 12, border: '1px solid var(--card-border, #eee)',
                       cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.04)', alignItems: 'center' }}>
 
                     {/* Foto */}
-                    <div style={{ width: 56, height: 56, flexShrink: 0, borderRadius: 10, overflow: 'hidden', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #eee' }}>
+                    <div style={{ width: 56, height: 56, flexShrink: 0, borderRadius: 10, overflow: 'hidden', background: 'var(--input-bg, #fff)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--card-border, #eee)' }}>
                       {nota.cloudinary_url
                         ? <img src={nota.cloudinary_url} alt={nota.nota_en} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         : <span style={{ fontSize: 22 }}>🌿</span>
@@ -401,7 +401,7 @@ export function PainelNotas({ token: tokenProp }) {
 
                     {/* Info */}
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{ fontSize: 15, fontWeight: 700, color: '#111', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nota.nota_ptb || nota.nota_en}</p>
+                      <p style={{ fontSize: 15, fontWeight: 700, color: 'var(--text, #111)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nota.nota_ptb || nota.nota_en}</p>
                       <p style={{ fontSize: 12, color: '#888' }}>{nota.nota_en}</p>
                     </div>
 
