@@ -41,11 +41,12 @@ export function PainelNotas({ token: tokenProp }) {
 
   useEffect(() => { if (!token) navigate('/admin/login', { state: { from: '/admin/notas' } }); }, [token]);
 
-  // Marcar body como admin para CSS global
+  // Marcar body como admin para CSS global (só standalone, não embutido)
   useEffect(() => {
+    if (isEmbedded) return;
     document.body.setAttribute('data-admin', 'true');
     return () => document.body.removeAttribute('data-admin');
-  }, []);
+  }, [isEmbedded]);
 
   const carregar = useCallback(async (p = 1, q = busca, append = false) => {
     if (p === 1) setLoading(true); else setLoadingMore(true);
@@ -279,7 +280,6 @@ export function PainelNotas({ token: tokenProp }) {
 
   return (
     <div style={{ minHeight: isEmbedded ? 'auto' : '100vh', background: isEmbedded ? 'transparent' : 'var(--card-bg, #fff)', fontFamily: "'Inter', sans-serif", paddingBottom: isEmbedded ? 0 : 70 }}>
-      <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}} @keyframes spin{to{transform:rotate(360deg)}}`}</style>
       {modalAdicionarJSX}
       {modalDetalheJSX}
 
