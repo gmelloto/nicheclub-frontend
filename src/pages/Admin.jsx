@@ -1230,6 +1230,22 @@ function PainelPerfumes({ token }) {
   );
 }
 
+function formatarTelefone(tel) {
+  if (!tel) return '';
+  const d = tel.replace(/\D/g, '');
+  if (d.length === 11) return `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`;
+  if (d.length === 10) return `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`;
+  return tel;
+}
+
+function mascaraTelefone(valor) {
+  let d = valor.replace(/\D/g, '').slice(0, 11);
+  if (d.length > 6) d = `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`;
+  else if (d.length > 2) d = `(${d.slice(0,2)}) ${d.slice(2)}`;
+  else if (d.length > 0) d = `(${d}`;
+  return d;
+}
+
 function PainelReservas({ token }) {
   const [reservas, setReservas] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -1275,7 +1291,6 @@ function PainelReservas({ token }) {
   };
 
   const deletarReserva = async (id) => {
-    if (!confirm('Tem certeza que deseja excluir esta reserva?')) return;
     try {
       await api.deletarReserva(token, id);
       setDetalhe(null);
@@ -1299,13 +1314,16 @@ function PainelReservas({ token }) {
       <div style={{ background: '#fff', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '85vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
         <div style={{ width: 40, height: 4, background: '#ddd', borderRadius: 2, margin: '0 auto 16px' }} />
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
-          <div>
+        <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start', marginBottom: 16 }}>
+          {detalhe.foto_url && (
+            <img src={detalhe.foto_url} alt={detalhe.perfume_nome} style={{ width: 56, height: 56, borderRadius: 8, objectFit: 'cover', flexShrink: 0 }} />
+          )}
+          <div style={{ flex: 1, minWidth: 0 }}>
             <p style={{ fontSize: 11, color: '#c9a84c', fontWeight: 600, letterSpacing: '0.1em' }}>{detalhe.marca}</p>
             <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111', marginTop: 2 }}>{detalhe.perfume_nome}</h3>
           </div>
           {(() => { const st = getStatus(detalhe.status); return (
-            <span style={{ padding: '4px 12px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: st.bg, color: st.color }}>{st.label}</span>
+            <span style={{ padding: '4px 12px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: st.bg, color: st.color, flexShrink: 0 }}>{st.label}</span>
           ); })()}
         </div>
 
@@ -1316,7 +1334,7 @@ function PainelReservas({ token }) {
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
             <span style={{ fontSize: 13, color: '#555' }}>Telefone</span>
-            <span style={{ fontSize: 13, color: '#333' }}>{detalhe.telefone}</span>
+            <span style={{ fontSize: 13, color: '#333' }}>{formatarTelefone(detalhe.telefone)}</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
             <span style={{ fontSize: 13, color: '#555' }}>Tamanho</span>
@@ -1392,11 +1410,14 @@ function PainelReservas({ token }) {
           {reservas.map(r => {
             const st = getStatus(r.status);
             return (
-              <div key={r.id} onClick={() => abrirDetalhe(r)}
+              <SwipeDelete key={r.id} onDelete={() => deletarReserva(r.id)}>
+              <div onClick={() => abrirDetalhe(r)}
                 style={{ display: 'flex', gap: 14, padding: 14, background: '#fff', borderRadius: 12, border: '1px solid #eee',
-                  cursor: 'pointer', transition: 'all .15s', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = '#c9a84c'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(201,168,76,0.15)'; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = '#eee'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.04)'; }}>
+                  cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
+
+                {r.foto_url && (
+                  <img src={r.foto_url} alt={r.perfume_nome} style={{ width: 48, height: 48, borderRadius: 8, objectFit: 'cover', flexShrink: 0, alignSelf: 'center' }} />
+                )}
 
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
@@ -1419,6 +1440,7 @@ function PainelReservas({ token }) {
 
                 <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0, color: '#ccc', fontSize: 18 }}>›</div>
               </div>
+              </SwipeDelete>
             );
           })}
         </div>
