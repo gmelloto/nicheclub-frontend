@@ -50,7 +50,7 @@ export default function Admin() {
 
   const selecionarAba = (a) => { setAba(a); setMaisAberto(false); };
 
-  const abaLabels = { pedidos: 'Pedidos', estoque: 'Decants', perfumes: 'Perfumes', whatsapp: 'WhatsApp' };
+  const abaLabels = { pedidos: 'Pedidos', estoque: 'Decants', perfumes: 'Perfumes', reservas: 'Reservas', whatsapp: 'WhatsApp' };
 
   const bottomTabs = [
     { key: 'pedidos', label: 'Pedidos', icon: (
@@ -74,6 +74,13 @@ export default function Admin() {
         <path d="M6 6h12" />
         <path d="M10 10v6" />
         <path d="M14 10v6" />
+      </svg>
+    )},
+    { key: 'reservas', label: 'Reservas', icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="4" width="18" height="18" rx="2" />
+        <path d="M16 2v4M8 2v4M3 10h18" />
+        <path d="M9 16l2 2 4-4" />
       </svg>
     )},
     { key: 'whatsapp', label: 'Chat', icon: (
@@ -103,7 +110,7 @@ export default function Admin() {
           <img src="/images/logo/logo-icon.png" alt="Niche Club" style={{ height: 48, borderRadius: 10, objectFit: 'contain' }} />
           <span style={{ fontSize: 13, fontWeight: 600, letterSpacing: '0.08em', color: 'var(--text2)', marginLeft: 8 }}>Admin</span>
         </div>
-        {['pedidos', 'estoque', 'perfumes', 'whatsapp'].map(a => (
+        {['pedidos', 'estoque', 'perfumes', 'reservas', 'whatsapp'].map(a => (
           <button key={a} className={`admin-nav-btn ${aba === a ? 'active' : ''}`} onClick={() => selecionarAba(a)}>
             {abaLabels[a] || a.charAt(0).toUpperCase() + a.slice(1)}
           </button>
@@ -119,6 +126,7 @@ export default function Admin() {
         {aba === 'pedidos' && <PainelPedidos token={token} />}
         {aba === 'estoque' && <PainelEstoque token={token} />}
         {aba === 'perfumes' && <PainelPerfumes token={token} />}
+        {aba === 'reservas' && <PainelReservas token={token} />}
         {aba === 'whatsapp' && <PainelWhatsApp token={token} />}
       </div>
 
@@ -1218,6 +1226,204 @@ function PainelPerfumes({ token }) {
       )}
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
 
+    </div>
+  );
+}
+
+function PainelReservas({ token }) {
+  const [reservas, setReservas] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filtro, setFiltro] = useState('');
+  const [detalhe, setDetalhe] = useState(null);
+  const [statusEdit, setStatusEdit] = useState('');
+  const [salvando, setSalvando] = useState(false);
+
+  const carregar = () => {
+    setLoading(true);
+    api.listarReservas(token, filtro || undefined)
+      .then(setReservas).catch(() => setReservas([]))
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => { carregar(); }, [token, filtro]);
+
+  const statusMap = {
+    pendente: { label: 'Pendente', bg: '#fff3e0', color: '#e65100' },
+    confirmada: { label: 'Confirmada', bg: '#e8f5e9', color: '#2e7d32' },
+    separando: { label: 'Separando', bg: '#e3f2fd', color: '#1565c0' },
+    pronta: { label: 'Pronta', bg: '#ede7f6', color: '#4527a0' },
+    entregue: { label: 'Entregue', bg: '#e8f5e9', color: '#1b5e20' },
+    cancelada: { label: 'Cancelada', bg: '#fce4ec', color: '#c62828' },
+  };
+
+  const getStatus = (s) => statusMap[s] || { label: s, bg: '#f5f5f5', color: '#888' };
+
+  const abrirDetalhe = (r) => {
+    setDetalhe(r);
+    setStatusEdit(r.status || '');
+  };
+
+  const salvarStatus = async () => {
+    if (!detalhe) return;
+    setSalvando(true);
+    try {
+      await api.atualizarReservaStatus(token, detalhe.id, statusEdit);
+      setDetalhe(null);
+      carregar();
+    } catch(e) { alert(e.message); }
+    finally { setSalvando(false); }
+  };
+
+  const deletarReserva = async (id) => {
+    if (!confirm('Tem certeza que deseja excluir esta reserva?')) return;
+    try {
+      await api.deletarReserva(token, id);
+      setDetalhe(null);
+      carregar();
+    } catch(e) { alert(e.message); }
+  };
+
+  const filtroTabs = [
+    ['', 'Todas'],
+    ['pendente', 'Pendentes'],
+    ['confirmada', 'Confirmadas'],
+    ['separando', 'Separando'],
+    ['pronta', 'Prontas'],
+    ['entregue', 'Entregues'],
+    ['cancelada', 'Canceladas'],
+  ];
+
+  const ModalDetalhe = () => detalhe && createPortal(
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9998, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+      onClick={e => e.target === e.currentTarget && setDetalhe(null)}>
+      <div style={{ background: '#fff', borderRadius: '16px 16px 0 0', padding: '1.25rem', width: '100%', maxWidth: 500, maxHeight: '85vh', overflowY: 'auto', boxSizing: 'border-box', animation: 'slideUp .25s ease' }}>
+        <div style={{ width: 40, height: 4, background: '#ddd', borderRadius: 2, margin: '0 auto 16px' }} />
+
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+          <div>
+            <p style={{ fontSize: 11, color: '#c9a84c', fontWeight: 600, letterSpacing: '0.1em' }}>{detalhe.marca}</p>
+            <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111', marginTop: 2 }}>{detalhe.perfume_nome}</h3>
+          </div>
+          {(() => { const st = getStatus(detalhe.status); return (
+            <span style={{ padding: '4px 12px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: st.bg, color: st.color }}>{st.label}</span>
+          ); })()}
+        </div>
+
+        <div style={{ background: '#f8f7f4', borderRadius: 10, padding: 16, marginBottom: 16 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+            <span style={{ fontSize: 13, color: '#555' }}>Cliente</span>
+            <span style={{ fontSize: 14, fontWeight: 600, color: '#111' }}>{detalhe.nome}</span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+            <span style={{ fontSize: 13, color: '#555' }}>Telefone</span>
+            <span style={{ fontSize: 13, color: '#333' }}>{detalhe.telefone}</span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+            <span style={{ fontSize: 13, color: '#555' }}>Tamanho</span>
+            <span style={{ fontSize: 13, color: '#333' }}>{detalhe.tamanho || `${detalhe.ml_quantidade}ml (avulso)`}</span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+            <span style={{ fontSize: 13, color: '#555' }}>Valor</span>
+            <span style={{ fontSize: 16, fontWeight: 700, color: '#111' }}>R$ {Number(detalhe.preco_total || 0).toFixed(2).replace('.', ',')}</span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: 13, color: '#555' }}>Data</span>
+            <span style={{ fontSize: 13, color: '#333' }}>{detalhe.criado_em ? new Date(detalhe.criado_em).toLocaleDateString('pt-BR') : '—'}</span>
+          </div>
+        </div>
+
+        <div style={{ marginBottom: 16 }}>
+          <p style={{ fontSize: 11, fontWeight: 600, color: '#888', letterSpacing: '0.1em', marginBottom: 6 }}>ALTERAR STATUS</p>
+          <select value={statusEdit} onChange={e => setStatusEdit(e.target.value)}
+            style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 8, fontSize: 13, outline: 'none', background: '#fff', color: '#333', boxSizing: 'border-box' }}>
+            <option value="pendente">Pendente</option>
+            <option value="confirmada">Confirmada</option>
+            <option value="separando">Separando</option>
+            <option value="pronta">Pronta</option>
+            <option value="entregue">Entregue</option>
+            <option value="cancelada">Cancelada</option>
+          </select>
+        </div>
+
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button onClick={() => deletarReserva(detalhe.id)} style={{ padding: '12px', background: '#fce4ec', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 13, color: '#c62828', fontWeight: 600 }}>Excluir</button>
+          <button onClick={() => setDetalhe(null)} style={{ flex: 0.5, padding: '12px', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#666' }}>Fechar</button>
+          <button onClick={salvarStatus} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>
+            {salvando ? 'Salvando...' : 'Salvar'}
+          </button>
+        </div>
+      </div>
+    </div>
+  , document.body);
+
+  return (
+    <div className="fade-in">
+      <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}`}</style>
+      <ModalDetalhe />
+
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+        <h2 style={{ fontSize: 22, fontWeight: 700, color: '#111' }}>Reservas</h2>
+        <span style={{ fontSize: 12, color: '#999' }}>{reservas.length} reservas</span>
+      </div>
+
+      <div style={{ display: 'flex', gap: 8, marginBottom: 16, overflowX: 'auto', paddingBottom: 4 }}>
+        {filtroTabs.map(([key, label]) => (
+          <button key={key} onClick={() => setFiltro(key)}
+            style={{ padding: '8px 18px', borderRadius: 20, fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap',
+              border: filtro === key ? 'none' : '1.5px solid #ddd',
+              background: filtro === key ? '#111' : '#fff', color: filtro === key ? '#fff' : '#555', transition: 'all .2s' }}>
+            {label}
+          </button>
+        ))}
+      </div>
+
+      <div style={{ background: '#f5f5f3', borderRadius: 14, padding: 12, margin: '0 -4px' }}>
+      {loading ? (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {[1,2,3].map(i => <div key={i} style={{ height: 80, background: '#eee', borderRadius: 12 }} />)}
+        </div>
+      ) : reservas.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '3rem 0', color: '#999' }}>
+          <p style={{ fontSize: 32, marginBottom: 8 }}>📅</p>
+          <p>Nenhuma reserva encontrada</p>
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {reservas.map(r => {
+            const st = getStatus(r.status);
+            return (
+              <div key={r.id} onClick={() => abrirDetalhe(r)}
+                style={{ display: 'flex', gap: 14, padding: 14, background: '#fff', borderRadius: 12, border: '1px solid #eee',
+                  cursor: 'pointer', transition: 'all .15s', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = '#c9a84c'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(201,168,76,0.15)'; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = '#eee'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.04)'; }}>
+
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
+                    <div style={{ minWidth: 0 }}>
+                      <p style={{ fontSize: 15, fontWeight: 700, color: '#111', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.nome}</p>
+                      <p style={{ fontSize: 12, color: '#c9a84c', fontWeight: 500 }}>{r.perfume_nome} — {r.marca}</p>
+                    </div>
+                    <span style={{ flexShrink: 0, padding: '2px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: st.bg, color: st.color }}>
+                      {st.label}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>
+                    <span style={{ fontSize: 13, color: '#555' }}>{r.tamanho || `${r.ml_quantidade}ml`}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <span style={{ fontSize: 15, fontWeight: 700, color: '#111' }}>R$ {Number(r.preco_total || 0).toFixed(2).replace('.', ',')}</span>
+                      <span style={{ fontSize: 12, color: '#999' }}>{r.criado_em ? new Date(r.criado_em).toLocaleDateString('pt-BR') : ''}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0, color: '#ccc', fontSize: 18 }}>›</div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+      </div>
     </div>
   );
 }

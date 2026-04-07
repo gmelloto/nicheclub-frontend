@@ -57,4 +57,8 @@ export const api = {
     req('POST', `/whatsapp/conversas/${id}/mensagens`, { texto }, token),
   broadcast: (token, mensagem, destino) =>
     req('POST', '/whatsapp/broadcast', { mensagem, destino }, token),
+  // Admin - Reservas
+  listarReservas: (token, status) => req('GET', `/admin/reservas${status ? `?status=${status}` : ''}`, null, token),
+  atualizarReservaStatus: (token, id, status) => req('PATCH', `/admin/reservas/${id}/status`, { status }, token),
+  deletarReserva: (token, id) => req('DELETE', `/admin/reservas/${id}`, null, token),
 };
