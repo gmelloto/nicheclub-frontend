@@ -14,6 +14,15 @@ export default function Admin() {
   const [showTop, setShowTop] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [secaoAberta, setSecaoAberta] = useState({ gerenciamento: true, cadastros: true });
+  const [dark, setDark] = useState(() => localStorage.getItem('nc_admin_theme') === 'dark');
+
+  const toggleTheme = () => {
+    setDark(prev => {
+      const next = !prev;
+      localStorage.setItem('nc_admin_theme', next ? 'dark' : 'light');
+      return next;
+    });
+  };
 
   useEffect(() => {
     document.body.setAttribute('data-admin', 'true');
@@ -112,7 +121,7 @@ export default function Admin() {
   ];
 
   return (
-    <div className="admin-page">
+    <div className={`admin-page ${dark ? 'dark' : ''}`}>
       {/* Sidebar desktop - dark modern */}
       <div className={`admin-sidebar ${sidebarOpen ? '' : 'collapsed'}`}>
         {/* Logo + collapse toggle */}
@@ -215,6 +224,16 @@ export default function Admin() {
         {/* Bottom links */}
         <div className="admin-sidebar-extra">
           <div className="admin-sidebar-divider" />
+          <button className="admin-sidebar-item" onClick={toggleTheme} title={!sidebarOpen ? (dark ? 'Modo claro' : 'Modo escuro') : undefined}>
+            <span className="admin-sidebar-icon">
+              {dark ? (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+              ) : (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+              )}
+            </span>
+            {sidebarOpen && <span className="admin-sidebar-label">{dark ? 'Modo Claro' : 'Modo Escuro'}</span>}
+          </button>
           <button className="admin-sidebar-item" onClick={() => navigate('/')} title={!sidebarOpen ? 'Ver Loja' : undefined}>
             <span className="admin-sidebar-icon">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
@@ -297,7 +316,7 @@ function PainelDashboard() {
   return (
     <div className="fade-in">
       <div style={{ marginBottom: 28 }}>
-        <h1 style={{ fontSize: 26, fontWeight: 700, color: '#111', letterSpacing: '-0.02em', margin: 0 }}>{saudacao()}</h1>
+        <h1 style={{ fontSize: 26, fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.02em', margin: 0 }}>{saudacao()}</h1>
         <p style={{ fontSize: 14, color: '#888', marginTop: 4 }}>{new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
       </div>
 
@@ -316,7 +335,7 @@ function PainelDashboard() {
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7b1fa2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 100 4h4a2 2 0 110 4H8"/><path d="M12 18V6"/></svg>
           )},
         ].map(card => (
-          <div key={card.label} style={{ background: '#fff', borderRadius: 16, padding: 20, border: '1px solid #f0f0f0', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
+          <div key={card.label} style={{ background: 'var(--card-bg)', borderRadius: 16, padding: 20, border: '1px solid var(--card-border)', boxShadow: '0 1px 4px var(--card-shadow)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
               <div style={{ padding: 12, background: card.iconBg, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 {card.icon}
@@ -330,7 +349,7 @@ function PainelDashboard() {
         ))}
       </div>
 
-      <div style={{ background: '#f8f7f4', borderRadius: 16, padding: 40, textAlign: 'center', color: '#999', border: '1px solid #f0f0f0' }}>
+      <div style={{ background: 'var(--filter-bg)', borderRadius: 16, padding: 40, textAlign: 'center', color: 'var(--text3)', border: '1px solid var(--card-border)' }}>
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: 12 }}>
           <path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>
         </svg>
@@ -478,22 +497,22 @@ function PainelPedidos({ token }) {
       {/* Header */}
       <div style={{ marginBottom: 20 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <h1 style={{ fontSize: 24, fontWeight: 700, color: '#111', letterSpacing: '-0.02em', margin: 0 }}>Pedidos</h1>
-          <span style={{ padding: '4px 12px', borderRadius: 20, fontSize: 12, fontWeight: 600, background: '#f0f0f0', color: '#666' }}>{pedidos.length}</span>
+          <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.02em', margin: 0 }}>Pedidos</h1>
+          <span style={{ padding: '4px 12px', borderRadius: 20, fontSize: 12, fontWeight: 600, background: 'var(--badge-bg)', color: 'var(--badge-text)' }}>{pedidos.length}</span>
         </div>
-        <p style={{ fontSize: 14, color: '#999', marginTop: 6 }}>Gerencie pedidos e atualize status de entrega</p>
+        <p style={{ fontSize: 14, color: 'var(--text3)', marginTop: 6 }}>Gerencie pedidos e atualize status de entrega</p>
       </div>
 
       {/* Filtros com contagem */}
-      <div style={{ display: 'flex', gap: 6, marginBottom: 16, overflowX: 'auto', paddingBottom: 4, background: '#f5f5f3', borderRadius: 14, padding: 6 }}>
+      <div style={{ display: 'flex', gap: 6, marginBottom: 16, overflowX: 'auto', paddingBottom: 4, background: 'var(--filter-bg)', borderRadius: 14, padding: 6 }}>
         {filtroTabs.map(([key, label]) => {
           const count = key === '' ? pedidos.length : pedidos.filter(p => p.status === key).length;
           return (
             <button key={key} onClick={() => setFiltro(key)}
               style={{ padding: '9px 16px', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap',
                 display: 'flex', alignItems: 'center', gap: 6, border: 'none',
-                background: filtro === key ? '#fff' : 'transparent', color: filtro === key ? '#111' : '#888',
-                boxShadow: filtro === key ? '0 1px 3px rgba(0,0,0,0.08)' : 'none', transition: 'all .2s' }}>
+                background: filtro === key ? 'var(--filter-active)' : 'transparent', color: filtro === key ? 'var(--filter-active-text)' : 'var(--filter-text)',
+                boxShadow: filtro === key ? '0 1px 3px var(--filter-shadow)' : 'none', transition: 'all .2s' }}>
               {label}
               <span style={{ fontSize: 11, opacity: 0.6 }}>({count})</span>
             </button>
@@ -502,10 +521,10 @@ function PainelPedidos({ token }) {
       </div>
 
       {/* Cards */}
-      <div style={{ background: '#f5f5f3', borderRadius: 14, padding: 12, margin: '0 -4px' }}>
+      <div style={{ background: 'var(--filter-bg)', borderRadius: 14, padding: 12, margin: '0 -4px' }}>
       {loading ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {[1,2,3].map(i => <div key={i} style={{ height: 80, background: '#eee', borderRadius: 12 }} />)}
+          {[1,2,3].map(i => <div key={i} style={{ height: 80, background: 'var(--bg3)', borderRadius: 12 }} />)}
         </div>
       ) : pedidos.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '3rem 0', color: '#999' }}>
@@ -526,7 +545,7 @@ function PainelPedidos({ token }) {
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
                     <div style={{ minWidth: 0 }}>
-                      <p style={{ fontSize: 15, fontWeight: 700, color: '#111', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.cliente}</p>
+                      <p style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.cliente}</p>
                       <p style={{ fontSize: 12, color: '#c9a84c', fontWeight: 500 }}>{p.numero}</p>
                     </div>
                     <span style={{ flexShrink: 0, padding: '2px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: st.bg, color: st.color }}>
@@ -534,7 +553,7 @@ function PainelPedidos({ token }) {
                     </span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>
-                    <span style={{ fontSize: 15, fontWeight: 700, color: '#111' }}>R$ {Number(p.total || 0).toFixed(2).replace('.', ',')}</span>
+                    <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)' }}>R$ {Number(p.total || 0).toFixed(2).replace('.', ',')}</span>
                     <span style={{ fontSize: 12, color: '#999' }}>{p.criado_em ? new Date(p.criado_em).toLocaleDateString('pt-BR') : ''}</span>
                   </div>
                 </div>
@@ -798,8 +817,8 @@ function PainelEstoque({ token }) {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 20 }}>
         <div>
-          <h1 style={{ fontSize: 24, fontWeight: 700, color: '#111', letterSpacing: '-0.02em', margin: 0 }}>Decants</h1>
-          <p style={{ fontSize: 14, color: '#999', marginTop: 6 }}>Controle de frascos e disponibilidade de ML</p>
+          <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.02em', margin: 0 }}>Decants</h1>
+          <p style={{ fontSize: 14, color: 'var(--text3)', marginTop: 6 }}>Controle de frascos e disponibilidade de ML</p>
         </div>
         <button onClick={abrirNovo}
           style={{ padding: '10px 20px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: '#0d0b07', boxShadow: '0 2px 8px rgba(201,168,76,0.3)' }}>
@@ -815,15 +834,15 @@ function PainelEstoque({ token }) {
       </div>
 
       {/* Filtros */}
-      <div style={{ display: 'flex', gap: 6, marginBottom: 16, overflowX: 'auto', background: '#f5f5f3', borderRadius: 14, padding: 6 }}>
+      <div style={{ display: 'flex', gap: 6, marginBottom: 16, overflowX: 'auto', background: 'var(--filter-bg)', borderRadius: 14, padding: 6 }}>
         {[['todos', 'Todos'], ['aberto', 'Ativos'], ['baixo', 'Baixo Estoque'], ['esgotado', 'Esgotados']].map(([key, label]) => {
           const count = key === 'todos' ? frascos.length : frascos.filter(f => getStatus(f).key === key).length;
           return (
             <button key={key} onClick={() => setFiltro(key)}
               style={{ padding: '9px 16px', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap',
                 display: 'flex', alignItems: 'center', gap: 6, border: 'none',
-                background: filtro === key ? '#fff' : 'transparent', color: filtro === key ? '#111' : '#888',
-                boxShadow: filtro === key ? '0 1px 3px rgba(0,0,0,0.08)' : 'none', transition: 'all .2s' }}>
+                background: filtro === key ? 'var(--filter-active)' : 'transparent', color: filtro === key ? 'var(--filter-active-text)' : 'var(--filter-text)',
+                boxShadow: filtro === key ? '0 1px 3px var(--filter-shadow)' : 'none', transition: 'all .2s' }}>
               {label}
               {count > 0 && <span style={{ fontSize: 11, opacity: 0.6 }}>({count})</span>}
             </button>
@@ -832,10 +851,10 @@ function PainelEstoque({ token }) {
       </div>
 
       {/* Cards */}
-      <div style={{ background: '#f5f5f3', borderRadius: 14, padding: 12, margin: '0 -4px' }}>
+      <div style={{ background: 'var(--filter-bg)', borderRadius: 14, padding: 12, margin: '0 -4px' }}>
       {loading ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {[1,2,3,4].map(i => <div key={i} style={{ height: 90, background: '#eee', borderRadius: 12 }} />)}
+          {[1,2,3,4].map(i => <div key={i} style={{ height: 90, background: 'var(--bg3)', borderRadius: 12 }} />)}
         </div>
       ) : filtrados.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '3rem 0', color: '#999' }}>
@@ -866,12 +885,12 @@ function PainelEstoque({ token }) {
                   {/* Info */}
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
-                      <p style={{ fontSize: 15, fontWeight: 700, color: '#111', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', margin: 0 }}>{f.perfume}</p>
+                      <p style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', margin: 0 }}>{f.perfume}</p>
                       <span style={{ flexShrink: 0, padding: '2px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: st.bg, color: st.color }}>
                         {st.label}
                       </span>
                     </div>
-                    <p style={{ fontSize: 12, color: '#888', margin: '2px 0 0' }}>{f.marca}{f.lote ? ` · Lote ${f.lote}` : ''}</p>
+                    <p style={{ fontSize: 12, color: 'var(--text3)', margin: '2px 0 0' }}>{f.marca}{f.lote ? ` · Lote ${f.lote}` : ''}</p>
 
                     {/* Barra de progresso */}
                     <div style={{ marginTop: 8 }}>
@@ -1402,10 +1421,10 @@ function PainelPerfumes({ token }) {
       </div>
 
       {/* Cards */}
-      <div style={{ background: '#f5f5f3', borderRadius: 14, padding: 12, margin: '0 -4px' }}>
+      <div style={{ background: 'var(--filter-bg)', borderRadius: 14, padding: 12, margin: '0 -4px' }}>
       {loading ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {[1,2,3,4].map(i => <div key={i} style={{ height: 100, background: '#eee', borderRadius: 12 }} />)}
+          {[1,2,3,4].map(i => <div key={i} style={{ height: 100, background: 'var(--bg3)', borderRadius: 12 }} />)}
         </div>
       ) : filtrados.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '3rem 0', color: '#999' }}>
@@ -1434,7 +1453,7 @@ function PainelPerfumes({ token }) {
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
                       <div style={{ minWidth: 0 }}>
-                        <p style={{ fontSize: 15, fontWeight: 700, color: '#111', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.nome}</p>
+                        <p style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.nome}</p>
                         <p style={{ fontSize: 12, color: '#888' }}>{p.marca}</p>
                       </div>
                       <span style={{ flexShrink: 0, padding: '2px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600,
@@ -1635,21 +1654,21 @@ function PainelReservas({ token }) {
 
       <div style={{ marginBottom: 20 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <h1 style={{ fontSize: 24, fontWeight: 700, color: '#111', letterSpacing: '-0.02em', margin: 0 }}>Reservas</h1>
-          <span style={{ padding: '4px 12px', borderRadius: 20, fontSize: 12, fontWeight: 600, background: '#f0f0f0', color: '#666' }}>{reservas.length}</span>
+          <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.02em', margin: 0 }}>Reservas</h1>
+          <span style={{ padding: '4px 12px', borderRadius: 20, fontSize: 12, fontWeight: 600, background: 'var(--badge-bg)', color: 'var(--badge-text)' }}>{reservas.length}</span>
         </div>
-        <p style={{ fontSize: 14, color: '#999', marginTop: 6 }}>Gerencie reservas de clientes e atualize status</p>
+        <p style={{ fontSize: 14, color: 'var(--text3)', marginTop: 6 }}>Gerencie reservas de clientes e atualize status</p>
       </div>
 
-      <div style={{ display: 'flex', gap: 6, marginBottom: 16, overflowX: 'auto', paddingBottom: 4, background: '#f5f5f3', borderRadius: 14, padding: 6 }}>
+      <div style={{ display: 'flex', gap: 6, marginBottom: 16, overflowX: 'auto', paddingBottom: 4, background: 'var(--filter-bg)', borderRadius: 14, padding: 6 }}>
         {filtroTabs.map(([key, label]) => {
           const count = key === '' ? reservas.length : reservas.filter(r => r.status === key).length;
           return (
             <button key={key} onClick={() => setFiltro(key)}
               style={{ padding: '9px 16px', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap',
                 display: 'flex', alignItems: 'center', gap: 6, border: 'none',
-                background: filtro === key ? '#fff' : 'transparent', color: filtro === key ? '#111' : '#888',
-                boxShadow: filtro === key ? '0 1px 3px rgba(0,0,0,0.08)' : 'none', transition: 'all .2s' }}>
+                background: filtro === key ? 'var(--filter-active)' : 'transparent', color: filtro === key ? 'var(--filter-active-text)' : 'var(--filter-text)',
+                boxShadow: filtro === key ? '0 1px 3px var(--filter-shadow)' : 'none', transition: 'all .2s' }}>
               {label}
               {count > 0 && <span style={{ fontSize: 11, opacity: 0.6 }}>({count})</span>}
             </button>
@@ -1657,10 +1676,10 @@ function PainelReservas({ token }) {
         })}
       </div>
 
-      <div style={{ background: '#f5f5f3', borderRadius: 14, padding: 12, margin: '0 -4px' }}>
+      <div style={{ background: 'var(--filter-bg)', borderRadius: 14, padding: 12, margin: '0 -4px' }}>
       {loading ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {[1,2,3].map(i => <div key={i} style={{ height: 80, background: '#eee', borderRadius: 12 }} />)}
+          {[1,2,3].map(i => <div key={i} style={{ height: 80, background: 'var(--bg3)', borderRadius: 12 }} />)}
         </div>
       ) : reservas.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '3rem 0', color: '#999' }}>
@@ -1674,8 +1693,8 @@ function PainelReservas({ token }) {
             return (
               <SwipeDelete key={r.id} onDelete={() => deletarReserva(r.id)}>
               <div onClick={() => abrirDetalhe(r)}
-                style={{ display: 'flex', gap: 12, padding: 12, background: '#fff', borderRadius: 12, border: '1px solid #eee',
-                  cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.04)', alignItems: 'center' }}>
+                style={{ display: 'flex', gap: 12, padding: 12, background: 'var(--card-bg)', borderRadius: 12, border: '1px solid var(--card-border)',
+                  cursor: 'pointer', boxShadow: '0 1px 4px var(--card-shadow)', alignItems: 'center' }}>
 
                 {r.foto_url && (
                   <img src={r.foto_url} alt={r.perfume_nome} style={{ width: 48, height: 64, borderRadius: 6, objectFit: 'contain', flexShrink: 0, background: '#fff' }} />
@@ -1683,7 +1702,7 @@ function PainelReservas({ token }) {
 
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
-                    <p style={{ fontSize: 15, fontWeight: 700, color: '#111', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.nome}</p>
+                    <p style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.nome}</p>
                     <span style={{ flexShrink: 0, padding: '2px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: st.bg, color: st.color }}>
                       {st.label}
                     </span>
@@ -1695,7 +1714,7 @@ function PainelReservas({ token }) {
                       <span style={{ padding: '2px 8px', borderRadius: 12, fontSize: 11, fontWeight: 600, background: '#f0ede8', color: '#5a5550' }}>{r.tamanho || `${r.ml_quantidade}ml`}</span>
                       <span style={{ fontSize: 12, color: '#888' }}>{r.criado_em ? new Date(r.criado_em).toLocaleDateString('pt-BR') : ''}</span>
                     </div>
-                    <span style={{ fontSize: 15, fontWeight: 700, color: '#111' }}>R$ {Number(r.preco_total || 0).toFixed(2).replace('.', ',')}</span>
+                    <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)' }}>R$ {Number(r.preco_total || 0).toFixed(2).replace('.', ',')}</span>
                   </div>
                 </div>
 
