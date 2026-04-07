@@ -555,7 +555,7 @@ function PainelPedidos({ token }) {
       </div>
 
       {/* Cards */}
-      <div style={{ background: 'var(--filter-bg)', borderRadius: 14, padding: 12, margin: '0 -4px' }}>
+      <div className="admin-card-list">
       {loading ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {[1,2,3].map(i => <div key={i} style={{ height: 80, background: 'var(--bg3)', borderRadius: 12 }} />)}
@@ -570,11 +570,7 @@ function PainelPedidos({ token }) {
           {pedidos.map(p => {
             const st = getStatus(p.status);
             return (
-              <div key={p.id} onClick={() => abrirDetalhe(p)}
-                style={{ display: 'flex', gap: 14, padding: 14, background: '#fff', borderRadius: 12, border: '1px solid #eee',
-                  cursor: 'pointer', transition: 'all .15s', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = '#c9a84c'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(201,168,76,0.15)'; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = '#eee'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.04)'; }}>
+              <div key={p.id} onClick={() => abrirDetalhe(p)} className="admin-card">
 
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
@@ -889,7 +885,7 @@ function PainelEstoque({ token }) {
       </div>
 
       {/* Cards */}
-      <div style={{ background: 'var(--filter-bg)', borderRadius: 14, padding: 12, margin: '0 -4px' }}>
+      <div className="admin-card-list">
       {loading ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {[1,2,3,4].map(i => <div key={i} style={{ height: 90, background: 'var(--bg3)', borderRadius: 12 }} />)}
@@ -908,9 +904,7 @@ function PainelEstoque({ token }) {
             const st = getStatus(f);
             return (
               <SwipeDelete key={f.id} onDelete={() => confirmarExcluir(f)}>
-                <div onClick={() => setDetalhe(f)}
-                  style={{ display: 'flex', gap: 12, padding: 12, background: '#fff', borderRadius: 12, border: '1px solid #eee',
-                    cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.04)', alignItems: 'center' }}>
+                <div onClick={() => setDetalhe(f)} className="admin-card">
 
                   {/* Foto */}
                   <div style={{ width: 48, height: 64, flexShrink: 0, borderRadius: 6, overflow: 'hidden', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -1462,7 +1456,7 @@ function PainelPerfumes({ token }) {
       </div>
 
       {/* Cards */}
-      <div style={{ background: 'var(--filter-bg)', borderRadius: 14, padding: 12, margin: '0 -4px' }}>
+      <div className="admin-card-list">
       {loading ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {[1,2,3,4].map(i => <div key={i} style={{ height: 100, background: 'var(--bg3)', borderRadius: 12 }} />)}
@@ -1478,9 +1472,7 @@ function PainelPerfumes({ token }) {
             const acordes = [p.acorde1, p.acorde2, p.acorde3].filter(Boolean);
             return (
               <SwipeDelete key={p.id} onDelete={() => excluir(p)}>
-                <div onClick={() => setDetalhe(p)}
-                  style={{ display: 'flex', gap: 14, padding: 14, background: 'var(--card-bg)', borderRadius: 12, border: '1px solid var(--card-border)',
-                    cursor: 'pointer', boxShadow: '0 1px 4px var(--card-shadow)' }}>
+                <div onClick={() => setDetalhe(p)} className="admin-card">
 
                   {/* Foto */}
                   <div style={{ width: 70, height: 85, flexShrink: 0, borderRadius: 8, overflow: 'hidden', background: 'var(--input-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -1718,7 +1710,7 @@ function PainelReservas({ token }) {
         })}
       </div>
 
-      <div style={{ background: 'var(--filter-bg)', borderRadius: 14, padding: 12, margin: '0 -4px' }}>
+      <div className="admin-card-list">
       {loading ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {[1,2,3].map(i => <div key={i} style={{ height: 80, background: 'var(--bg3)', borderRadius: 12 }} />)}
@@ -1734,9 +1726,7 @@ function PainelReservas({ token }) {
             const st = getStatus(r.status);
             return (
               <SwipeDelete key={r.id} onDelete={() => deletarReserva(r.id)}>
-              <div onClick={() => abrirDetalhe(r)}
-                style={{ display: 'flex', gap: 12, padding: 12, background: 'var(--card-bg)', borderRadius: 12, border: '1px solid var(--card-border)',
-                  cursor: 'pointer', boxShadow: '0 1px 4px var(--card-shadow)', alignItems: 'center' }}>
+              <div onClick={() => abrirDetalhe(r)} className="admin-card">
 
                 {r.foto_url && (
                   <img src={r.foto_url} alt={r.perfume_nome} style={{ width: 48, height: 64, borderRadius: 6, objectFit: 'contain', flexShrink: 0, background: '#fff' }} />
@@ -2053,7 +2043,7 @@ function PainelUsuarios({ token }) {
         </button>
       </div>
 
-      <div style={{ background: 'var(--filter-bg)', borderRadius: 14, padding: 12, margin: '0 -4px' }}>
+      <div className="admin-card-list">
       {loading ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {[1,2,3].map(i => <div key={i} style={{ height: 72, background: 'var(--bg3)', borderRadius: 12 }} />)}
@@ -2069,11 +2059,9 @@ function PainelUsuarios({ token }) {
             const p = getPapel(u.papel);
             return (
               <SwipeDelete key={u.id} onDelete={() => excluir(u)}>
-                <div onClick={() => setDetalhe(u)}
-                  style={{ display: 'flex', gap: 12, padding: 14, background: 'var(--card-bg)', borderRadius: 12, border: '1px solid var(--card-border)',
-                    cursor: 'pointer', boxShadow: '0 1px 4px var(--card-shadow)', alignItems: 'center' }}>
+                <div onClick={() => setDetalhe(u)} className="admin-card">
 
-                  <div style={{ width: 42, height: 42, borderRadius: '50%', background: 'rgba(201,169,110,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 700, color: '#c9a84c', flexShrink: 0 }}>
+                  <div className="admin-card-avatar">
                     {u.nome?.charAt(0).toUpperCase()}
                   </div>
 
