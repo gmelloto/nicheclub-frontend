@@ -497,15 +497,18 @@ function PainelPedidos({ token }) {
       <div className="admin-modal-sheet">
         <div className="admin-modal-handle" />
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+        <div className="admin-modal-header">
           <div>
             <p style={{ fontSize: 11, color: '#c9a84c', fontWeight: 600, letterSpacing: '0.1em' }}>{detalhe.numero}</p>
             <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginTop: 2 }}>{detalhe.cliente}</h3>
           </div>
-          {(() => { const st = getStatus(detalhe.status); return (
-            <span style={{ padding: '4px 12px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: st.bg, color: st.color }}>{st.label}</span>
-          ); })()}
+          <button className="admin-modal-close" onClick={() => setDetalhe(null)}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
         </div>
+        {(() => { const st = getStatus(detalhe.status); return (
+          <span style={{ padding: '4px 12px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: st.bg, color: st.color, display: 'inline-block', marginBottom: 12 }}>{st.label}</span>
+        ); })()}
 
         {/* Info */}
         <div style={{ background: 'var(--filter-bg)', borderRadius: 10, padding: 16, marginBottom: 16 }}>
@@ -555,8 +558,7 @@ function PainelPedidos({ token }) {
         </div>
 
         {/* Acoes */}
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={() => setDetalhe(null)} style={{ flex: 0.5, padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)' }}>Fechar</button>
+        <div className="admin-modal-actions">
           <button onClick={salvarStatus} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>
             {salvando ? 'Salvando...' : 'Salvar'}
           </button>
@@ -744,7 +746,12 @@ function PainelEstoque({ token }) {
       onClick={e => e.target === e.currentTarget && setNovoAberto(false)}>
       <div className="admin-modal-sheet">
         <div className="admin-modal-handle" />
-        <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 16 }}>Novo Frasco</h3>
+        <div className="admin-modal-header">
+          <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', margin: 0 }}>Novo Frasco</h3>
+          <button className="admin-modal-close" onClick={() => setNovoAberto(false)}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
 
         {/* Busca perfume */}
         <div style={{ marginBottom: 12 }}>
@@ -784,9 +791,8 @@ function PainelEstoque({ token }) {
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={() => setNovoAberto(false)} style={{ flex: 0.5, padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)' }}>Cancelar</button>
-          <button onClick={salvarNovo} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>
+        <div className="admin-modal-actions">
+          <button onClick={salvarNovo} disabled={salvando} className="admin-btn-primary" style={{ flex: 1 }}>
             {salvando ? 'Salvando...' : 'Adicionar Frasco'}
           </button>
         </div>
@@ -800,8 +806,15 @@ function PainelEstoque({ token }) {
       onClick={e => e.target === e.currentTarget && setEditando(null)}>
       <div className="admin-modal-sheet">
         <div className="admin-modal-handle" />
-        <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>Editar Frasco</h3>
-        <p style={{ color: 'var(--text3)', fontSize: 13, marginBottom: 20 }}>{editando.perfume} — {editando.marca}</p>
+        <div className="admin-modal-header">
+          <div>
+            <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', margin: 0 }}>Editar Frasco</h3>
+            <p style={{ color: 'var(--text3)', fontSize: 13, margin: '4px 0 0' }}>{editando.perfume} — {editando.marca}</p>
+          </div>
+          <button className="admin-modal-close" onClick={() => setEditando(null)}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
           <div>
             <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>ML TOTAL</label>
@@ -815,8 +828,7 @@ function PainelEstoque({ token }) {
           </div>
         </div>
         <p style={{ fontSize: 12, color: 'var(--text3)', marginBottom: 20 }}>Disponivel: <b style={{ color: '#c9a84c' }}>{Math.max(0, Number(editForm.ml_total) - Number(editForm.ml_vendido))}ml</b></p>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={() => setEditando(null)} style={{ flex: 0.5, padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)' }}>Cancelar</button>
+        <div className="admin-modal-actions">
           <button onClick={salvarEdicao} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>
             {salvando ? 'Salvando...' : 'Salvar'}
           </button>
@@ -832,14 +844,19 @@ function PainelEstoque({ token }) {
       <div className="admin-modal-sheet">
         <div className="admin-modal-handle" />
 
-        <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start', marginBottom: 16 }}>
-          {detalhe.foto_url && (
-            <img src={detalhe.foto_url} alt={detalhe.perfume} style={{ width: 56, height: 70, borderRadius: 8, objectFit: 'contain', flexShrink: 0, background: '#fff' }} />
-          )}
-          <div style={{ flex: 1 }}>
-            <p style={{ fontSize: 11, color: '#c9a84c', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase' }}>{detalhe.marca}</p>
-            <h3 style={{ fontSize: 20, fontWeight: 700, color: 'var(--text)' }}>{detalhe.perfume}</h3>
+        <div className="admin-modal-header">
+          <div style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
+            {detalhe.foto_url && (
+              <img src={detalhe.foto_url} alt={detalhe.perfume} style={{ width: 56, height: 70, borderRadius: 8, objectFit: 'contain', flexShrink: 0, background: '#fff' }} />
+            )}
+            <div>
+              <p style={{ fontSize: 11, color: '#c9a84c', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase' }}>{detalhe.marca}</p>
+              <h3 style={{ fontSize: 20, fontWeight: 700, color: 'var(--text)' }}>{detalhe.perfume}</h3>
+            </div>
           </div>
+          <button className="admin-modal-close" onClick={() => setDetalhe(null)}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
         </div>
 
         {/* Barra de progresso */}
@@ -874,10 +891,9 @@ function PainelEstoque({ token }) {
         </div>
 
         {/* Acoes */}
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={() => confirmarExcluir(detalhe)} style={{ padding: '12px', background: 'var(--danger-bg)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 13, color: 'var(--danger-text)', fontWeight: 600 }}>Excluir</button>
-          <button onClick={() => setDetalhe(null)} style={{ padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)', flex: 0.5 }}>Fechar</button>
-          <button onClick={() => abrirEditar(detalhe)} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>Editar</button>
+        <div className="admin-modal-actions">
+          <button onClick={() => confirmarExcluir(detalhe)} className="admin-btn-danger">Excluir</button>
+          <button onClick={() => abrirEditar(detalhe)} className="admin-btn-primary" style={{ flex: 1 }}>Editar</button>
         </div>
       </div>
     </div>
@@ -1221,7 +1237,12 @@ function PainelPerfumes({ token }) {
       onClick={e => e.target === e.currentTarget && setEditando(null)}>
       <div className="admin-modal-sheet" style={{ maxHeight: '90vh', overflowX: 'hidden' }}>
         <div className="admin-modal-handle" />
-        <h3 style={{ marginBottom: 16, color: 'var(--text)', fontSize: 18, fontWeight: 700 }}>Editar Perfume</h3>
+        <div className="admin-modal-header">
+          <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', margin: 0 }}>Editar Perfume</h3>
+          <button className="admin-modal-close" onClick={() => setEditando(null)}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, overflow: 'hidden' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
             <div style={{ gridColumn: '1/-1' }}><label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>NOME</label><input {...inp('nome')} /></div>
@@ -1264,8 +1285,7 @@ function PainelPerfumes({ token }) {
             Ativo no catalogo
           </label>
         </div>
-        <div style={{ display: 'flex', gap: 8, marginTop: 20, position: 'sticky', bottom: 0, background: 'var(--card-bg)', paddingTop: 12 }}>
-          <button onClick={() => setEditando(null)} style={{ flex: 1, padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)' }}>Cancelar</button>
+        <div className="admin-modal-actions" style={{ position: 'sticky', bottom: 0, background: 'var(--card-bg)', paddingTop: 12 }}>
           <button onClick={salvarEdicao} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>
             {salvando ? 'Salvando...' : 'Salvar'}
           </button>
@@ -1281,8 +1301,9 @@ function PainelPerfumes({ token }) {
       <div className="admin-modal-sheet">
         <div className="admin-modal-handle" />
 
-        {/* Foto + info */}
-        <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
+        {/* Header + close */}
+        <div className="admin-modal-header" style={{ alignItems: 'flex-start' }}>
+        <div style={{ display: 'flex', gap: 16 }}>
           <div style={{ width: 90, height: 110, flexShrink: 0, borderRadius: 8, overflow: 'hidden', background: 'var(--input-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {detalhe.foto_url
               ? <img src={detalhe.foto_url} alt={detalhe.nome} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
@@ -1310,6 +1331,10 @@ function PainelPerfumes({ token }) {
               {detalhe.ativo !== false ? 'Ativo' : 'Inativo'}
             </span>
           </div>
+        </div>
+          <button className="admin-modal-close" onClick={() => setDetalhe(null)}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
         </div>
 
         {/* Acordes */}
@@ -1353,13 +1378,11 @@ function PainelPerfumes({ token }) {
         </div>
 
         {/* Acoes */}
-        <div style={{ display: 'flex', gap: 8, position: 'sticky', bottom: 0, background: 'var(--card-bg)', paddingTop: 12 }}>
-          <button onClick={() => setDetalhe(null)} style={{ padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)', flex: 0.5 }}>Fechar</button>
-          <button onClick={() => abrirEditar(detalhe)} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>Editar</button>
-          <button onClick={() => excluir(detalhe)} disabled={excluindo === detalhe.id}
-            style={{ padding: '12px 16px', background: 'var(--danger-bg)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--danger-text)' }}>
+        <div className="admin-modal-actions" style={{ position: 'sticky', bottom: 0, background: 'var(--card-bg)', paddingTop: 12 }}>
+          <button onClick={() => excluir(detalhe)} disabled={excluindo === detalhe.id} className="admin-btn-danger">
             {excluindo === detalhe.id ? '...' : 'Excluir'}
           </button>
+          <button onClick={() => abrirEditar(detalhe)} className="admin-btn-primary" style={{ flex: 1 }}>Editar</button>
         </div>
       </div>
     </div>
@@ -1659,18 +1682,23 @@ function PainelReservas({ token }) {
       <div className="admin-modal-sheet">
         <div className="admin-modal-handle" />
 
-        <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start', marginBottom: 16 }}>
-          {detalhe.foto_url && (
-            <img src={detalhe.foto_url} alt={detalhe.perfume_nome} style={{ width: 56, height: 56, borderRadius: 8, objectFit: 'cover', flexShrink: 0 }} />
-          )}
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={{ fontSize: 11, color: '#c9a84c', fontWeight: 600, letterSpacing: '0.1em' }}>{detalhe.marca}</p>
-            <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginTop: 2 }}>{detalhe.perfume_nome}</h3>
+        <div className="admin-modal-header">
+          <div style={{ display: 'flex', gap: 14, alignItems: 'center', flex: 1 }}>
+            {detalhe.foto_url && (
+              <img src={detalhe.foto_url} alt={detalhe.perfume_nome} style={{ width: 56, height: 56, borderRadius: 8, objectFit: 'cover', flexShrink: 0 }} />
+            )}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <p style={{ fontSize: 11, color: '#c9a84c', fontWeight: 600, letterSpacing: '0.1em' }}>{detalhe.marca}</p>
+              <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginTop: 2 }}>{detalhe.perfume_nome}</h3>
+            </div>
           </div>
-          {(() => { const st = getStatus(detalhe.status); return (
-            <span style={{ padding: '4px 12px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: st.bg, color: st.color, flexShrink: 0 }}>{st.label}</span>
-          ); })()}
+          <button className="admin-modal-close" onClick={() => setDetalhe(null)}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
         </div>
+        {(() => { const st = getStatus(detalhe.status); return (
+          <span style={{ padding: '4px 12px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: st.bg, color: st.color, display: 'inline-block', marginBottom: 12 }}>{st.label}</span>
+        ); })()}
 
         <div style={{ background: 'var(--filter-bg)', borderRadius: 10, padding: 16, marginBottom: 16 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
@@ -1708,10 +1736,9 @@ function PainelReservas({ token }) {
           </select>
         </div>
 
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={() => deletarReserva(detalhe.id)} style={{ padding: '12px', background: 'var(--danger-bg)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 13, color: 'var(--danger-text)', fontWeight: 600 }}>Excluir</button>
-          <button onClick={() => setDetalhe(null)} style={{ flex: 0.5, padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)' }}>Fechar</button>
-          <button onClick={salvarStatus} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>
+        <div className="admin-modal-actions">
+          <button onClick={() => deletarReserva(detalhe.id)} className="admin-btn-danger">Excluir</button>
+          <button onClick={salvarStatus} disabled={salvando} className="admin-btn-primary" style={{ flex: 1 }}>
             {salvando ? 'Salvando...' : 'Salvar'}
           </button>
         </div>
@@ -1879,7 +1906,12 @@ function PainelUsuarios({ token }) {
       onClick={e => e.target === e.currentTarget && setNovoAberto(false)}>
       <div className="admin-modal-sheet">
         <div className="admin-modal-handle" />
-        <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 16 }}>Novo Usuário</h3>
+        <div className="admin-modal-header">
+          <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', margin: 0 }}>Novo Usuário</h3>
+          <button className="admin-modal-close" onClick={() => setNovoAberto(false)}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 20 }}>
           <div>
             <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>NOME</label>
@@ -1923,9 +1955,8 @@ function PainelUsuarios({ token }) {
             </div>
           )}
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={() => setNovoAberto(false)} style={{ flex: 0.5, padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)' }}>Cancelar</button>
-          <button onClick={salvarNovo} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>
+        <div className="admin-modal-actions">
+          <button onClick={salvarNovo} disabled={salvando} className="admin-btn-primary" style={{ flex: 1 }}>
             {salvando ? 'Salvando...' : 'Criar Usuário'}
           </button>
         </div>
@@ -1939,7 +1970,12 @@ function PainelUsuarios({ token }) {
       onClick={e => e.target === e.currentTarget && setEditando(null)}>
       <div className="admin-modal-sheet">
         <div className="admin-modal-handle" />
-        <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 16 }}>Editar Usuário</h3>
+        <div className="admin-modal-header">
+          <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', margin: 0 }}>Editar Usuário</h3>
+          <button className="admin-modal-close" onClick={() => setEditando(null)}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 20 }}>
           <div>
             <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>NOME</label>
@@ -1987,9 +2023,8 @@ function PainelUsuarios({ token }) {
             </div>
           )}
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={() => setEditando(null)} style={{ flex: 0.5, padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)' }}>Cancelar</button>
-          <button onClick={salvarEdicao} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>
+        <div className="admin-modal-actions">
+          <button onClick={salvarEdicao} disabled={salvando} className="admin-btn-primary" style={{ flex: 1 }}>
             {salvando ? 'Salvando...' : 'Salvar'}
           </button>
         </div>
@@ -2003,16 +2038,22 @@ function PainelUsuarios({ token }) {
       onClick={e => e.target === e.currentTarget && setSenhaAberto(null)}>
       <div className="admin-modal-sheet">
         <div className="admin-modal-handle" />
-        <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>Alterar Senha</h3>
-        <p style={{ color: 'var(--text3)', fontSize: 13, marginBottom: 16 }}>{senhaAberto.nome} — {senhaAberto.email}</p>
+        <div className="admin-modal-header">
+          <div>
+            <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', margin: 0 }}>Alterar Senha</h3>
+            <p style={{ color: 'var(--text3)', fontSize: 13, margin: '4px 0 0' }}>{senhaAberto.nome} — {senhaAberto.email}</p>
+          </div>
+          <button className="admin-modal-close" onClick={() => { setSenhaAberto(null); setNovaSenha(''); }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
         <div style={{ marginBottom: 20 }}>
           <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 4 }}>NOVA SENHA</label>
           <input type="password" value={novaSenha} onChange={e => setNovaSenha(e.target.value)} placeholder="Mínimo 6 caracteres"
             style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--input-border)', borderRadius: 8, fontSize: 14, boxSizing: 'border-box', outline: 'none', background: 'var(--input-bg)', color: 'var(--input-text)' }} />
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={() => { setSenhaAberto(null); setNovaSenha(''); }} style={{ flex: 0.5, padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)' }}>Cancelar</button>
-          <button onClick={salvarSenha} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>
+        <div className="admin-modal-actions">
+          <button onClick={salvarSenha} disabled={salvando} className="admin-btn-primary" style={{ flex: 1 }}>
             {salvando ? 'Salvando...' : 'Alterar Senha'}
           </button>
         </div>
@@ -2027,17 +2068,22 @@ function PainelUsuarios({ token }) {
       <div className="admin-modal-sheet">
         <div className="admin-modal-handle" />
 
-        <div style={{ display: 'flex', gap: 14, alignItems: 'center', marginBottom: 16 }}>
-          <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'rgba(201,169,110,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, fontWeight: 700, color: '#c9a84c', flexShrink: 0 }}>
-            {detalhe.nome?.charAt(0).toUpperCase()}
+        <div className="admin-modal-header">
+          <div style={{ display: 'flex', gap: 14, alignItems: 'center', flex: 1 }}>
+            <div className="admin-card-avatar" style={{ width: 48, height: 48, fontSize: 20 }}>
+              {detalhe.nome?.charAt(0).toUpperCase()}
+            </div>
+            <div style={{ flex: 1 }}>
+              <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)' }}>{detalhe.nome}</h3>
+              <p style={{ fontSize: 13, color: 'var(--text3)' }}>{detalhe.email}</p>
+            </div>
+            {(() => { const p = getPapel(detalhe.papel); return (
+              <span style={{ padding: '4px 12px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: p.bg, color: p.color, flexShrink: 0 }}>{p.label}</span>
+            ); })()}
           </div>
-          <div style={{ flex: 1 }}>
-            <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)' }}>{detalhe.nome}</h3>
-            <p style={{ fontSize: 13, color: 'var(--text3)' }}>{detalhe.email}</p>
-          </div>
-          {(() => { const p = getPapel(detalhe.papel); return (
-            <span style={{ padding: '4px 12px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: p.bg, color: p.color, flexShrink: 0 }}>{p.label}</span>
-          ); })()}
+          <button className="admin-modal-close" onClick={() => setDetalhe(null)}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
         </div>
 
         <div style={{ background: 'var(--filter-bg)', borderRadius: 10, padding: 16, marginBottom: 16 }}>
@@ -2051,11 +2097,10 @@ function PainelUsuarios({ token }) {
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          <button onClick={() => excluir(detalhe)} style={{ padding: '12px', background: 'var(--danger-bg)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 13, color: 'var(--danger-text)', fontWeight: 600 }}>Excluir</button>
-          <button onClick={() => { setSenhaAberto(detalhe); setDetalhe(null); setNovaSenha(''); }} style={{ padding: '12px 16px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 13, color: 'var(--text2)', fontWeight: 500 }}>Alterar Senha</button>
-          <button onClick={() => setDetalhe(null)} style={{ padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)' }}>Fechar</button>
-          <button onClick={() => abrirEditar(detalhe)} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07' }}>Editar</button>
+        <div className="admin-modal-actions">
+          <button onClick={() => excluir(detalhe)} className="admin-btn-danger">Excluir</button>
+          <button onClick={() => { setSenhaAberto(detalhe); setDetalhe(null); setNovaSenha(''); }} className="admin-btn-cancel" style={{ fontSize: 13 }}>Alterar Senha</button>
+          <button onClick={() => abrirEditar(detalhe)} className="admin-btn-primary" style={{ flex: 1 }}>Editar</button>
         </div>
       </div>
     </div>
