@@ -50,8 +50,9 @@ export default function Admin() {
 
   useEffect(() => {
     document.body.setAttribute('data-admin', 'true');
-    return () => document.body.removeAttribute('data-admin');
-  }, []);
+    document.body.setAttribute('data-theme', dark ? 'dark' : 'light');
+    return () => { document.body.removeAttribute('data-admin'); document.body.removeAttribute('data-theme'); };
+  }, [dark]);
 
   useEffect(() => {
     if (!token) navigate('/admin/login');
