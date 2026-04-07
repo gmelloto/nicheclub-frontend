@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 export default function SwipeDelete({ children, onDelete, label = 'Excluir' }) {
   const ref = useRef(null);
@@ -6,7 +6,15 @@ export default function SwipeDelete({ children, onDelete, label = 'Excluir' }) {
   const currentX = useRef(0);
   const [offset, setOffset] = useState(0);
   const [swiped, setSwiped] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const threshold = 80;
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 768 || 'ontouchstart' in window);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   const onTouchStart = (e) => {
     startX.current = e.touches[0].clientX;
@@ -33,18 +41,17 @@ export default function SwipeDelete({ children, onDelete, label = 'Excluir' }) {
     }
   };
 
-  const reset = () => {
+  const handleDelete = (e) => {
+    e.stopPropagation();
+    if (onDelete) onDelete();
     setOffset(0);
     setSwiped(false);
   };
 
-  const handleDelete = (e) => {
-    e.stopPropagation();
-    if (confirm && onDelete) {
-      onDelete();
-    }
-    reset();
-  };
+  // Desktop: render children directly without swipe wrapper
+  if (!isMobile) {
+    return <>{children}</>;
+  }
 
   return (
     <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 12 }}>
