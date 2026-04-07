@@ -103,7 +103,6 @@ export default function Admin() {
           <img src="/images/logo/logo-icon.png" alt="Niche Club" style={{ height: 48, borderRadius: 10, objectFit: 'contain' }} />
           <span style={{ fontSize: 13, fontWeight: 600, letterSpacing: '0.08em', color: 'var(--text2)', marginLeft: 8 }}>Admin</span>
         </div>
-        <p className="small muted" style={{ marginBottom: '2rem' }}>{usuario?.nome}</p>
         {['pedidos', 'estoque', 'perfumes', 'whatsapp'].map(a => (
           <button key={a} className={`admin-nav-btn ${aba === a ? 'active' : ''}`} onClick={() => selecionarAba(a)}>
             {abaLabels[a] || a.charAt(0).toUpperCase() + a.slice(1)}
