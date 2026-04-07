@@ -905,8 +905,7 @@ function PainelEstoque({ token }) {
       {/* Busca */}
       <div style={{ position: 'relative', marginBottom: 12 }}>
         <svg style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#bbb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input value={busca} onChange={e => setBusca(e.target.value)} placeholder="Buscar perfume ou marca..."
-          style={{ width: '100%', padding: '12px 16px 12px 42px', border: '1.5px solid #e0e0e0', borderRadius: 10, fontSize: 14, outline: 'none', background: '#fff', boxSizing: 'border-box' }} />
+        <input value={busca} onChange={e => setBusca(e.target.value)} placeholder="Buscar perfume ou marca..." className="admin-search" />
       </div>
 
       {/* Filtros */}
@@ -1480,8 +1479,7 @@ function PainelPerfumes({ token }) {
       {/* Busca */}
       <div style={{ position: 'relative', marginBottom: 12 }}>
         <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#bbb', fontSize: 15 }}>&#128269;</span>
-        <input value={buscaInput} onChange={e => setBuscaInput(e.target.value)} placeholder="Buscar..."
-          style={{ width: '100%', padding: '12px 16px 12px 42px', border: '1.5px solid var(--input-border)', borderRadius: 10, fontSize: 14, outline: 'none', background: 'var(--input-bg)', color: 'var(--input-text)', boxSizing: 'border-box' }} />
+        <input value={buscaInput} onChange={e => setBuscaInput(e.target.value)} placeholder="Buscar..." className="admin-search" />
       </div>
 
       {/* Filtros */}
