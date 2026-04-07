@@ -159,12 +159,12 @@ export function PainelNotas({ token: tokenProp }) {
           </div>
 
           {preview && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 12, background: '#f8f7f4', borderRadius: 8 }}>
-              <img src={preview} alt="preview" style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: 8, border: '1px solid #e8e4dc' }}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 12, background: 'var(--filter-bg, #f8f7f4)', borderRadius: 8 }}>
+              <img src={preview} alt="preview" style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: 8, border: '1px solid var(--border, #e8e4dc)' }}
                 onError={e => { e.target.style.display='none'; }} />
               <div>
-                <p style={{ fontSize: 12, fontWeight: 600, color: '#333' }}>Preview</p>
-                <p style={{ fontSize: 11, color: '#999' }}>ID: {form.fragrantica_id}</p>
+                <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--text2)' }}>Preview</p>
+                <p style={{ fontSize: 11, color: 'var(--text3)' }}>ID: {form.fragrantica_id}</p>
               </div>
             </div>
           )}
@@ -179,7 +179,7 @@ export function PainelNotas({ token: tokenProp }) {
         </div>
 
         <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
-          <button onClick={() => setModal(false)} style={{ flex: 0.5, padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#666', fontFamily: "'Inter', sans-serif" }}>Cancelar</button>
+          <button onClick={() => setModal(false)} style={{ flex: 0.5, padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)', fontFamily: "'Inter', sans-serif" }}>Cancelar</button>
           <button onClick={importar} disabled={importando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07', fontFamily: "'Inter', sans-serif", opacity: importando ? 0.7 : 1 }}>
             {importando ? 'Importando...' : 'Importar'}
           </button>
@@ -199,7 +199,7 @@ export function PainelNotas({ token: tokenProp }) {
 
         {/* Foto + status */}
         <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
-          <div style={{ width: 80, height: 80, flexShrink: 0, borderRadius: 12, overflow: 'hidden', background: '#f8f7f4', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #e8e4dc' }}>
+          <div style={{ width: 80, height: 80, flexShrink: 0, borderRadius: 12, overflow: 'hidden', background: 'var(--filter-bg, #f8f7f4)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border, #e8e4dc)' }}>
             {detalhe.cloudinary_url
               ? <img src={detalhe.cloudinary_url} alt={detalhe.nota_en} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               : <span style={{ fontSize: 32 }}>🌿</span>
@@ -207,7 +207,7 @@ export function PainelNotas({ token: tokenProp }) {
           </div>
           <div style={{ flex: 1 }}>
             <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--input-text)', fontFamily: "'Inter', sans-serif", marginBottom: 2 }}>{detalhe.nota_ptb || detalhe.nota_en}</h3>
-            <p style={{ fontSize: 13, color: '#888' }}>{detalhe.nota_en}</p>
+            <p style={{ fontSize: 13, color: 'var(--text3)' }}>{detalhe.nota_en}</p>
             <span style={{ display: 'inline-block', marginTop: 6, padding: '2px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600,
               background: detalhe.cloudinary_url ? '#e8f5e9' : '#fce4ec',
               color: detalhe.cloudinary_url ? '#2e7d32' : '#c62828' }}>
@@ -231,7 +231,7 @@ export function PainelNotas({ token: tokenProp }) {
         </div>
 
         {/* Importar imagem */}
-        <div style={{ background: '#f8f7f4', borderRadius: 10, padding: 14, marginBottom: 16 }}>
+        <div style={{ background: 'var(--filter-bg, #f8f7f4)', borderRadius: 10, padding: 14, marginBottom: 16 }}>
           <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: 'var(--text3)', marginBottom: 4, fontFamily: "'Inter', sans-serif" }}>ID FRAGRANTICA (para importar/atualizar imagem)</label>
           <div style={{ display: 'flex', gap: 8 }}>
             <input value={editForm.fragrantica_id} onChange={e => setEditForm(f => ({ ...f, fragrantica_id: e.target.value.replace(/\D/g, '') }))}
@@ -245,9 +245,9 @@ export function PainelNotas({ token: tokenProp }) {
           </div>
           {editPreviewUrl && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 10 }}>
-              <img src={editPreviewUrl} alt="preview" style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: 8, border: '1px solid #e8e4dc' }}
+              <img src={editPreviewUrl} alt="preview" style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: 8, border: '1px solid var(--border, #e8e4dc)' }}
                 onError={e => { e.target.style.display='none'; }} />
-              <span style={{ fontSize: 11, color: '#999' }}>Preview ID {editForm.fragrantica_id}</span>
+              <span style={{ fontSize: 11, color: 'var(--text3)' }}>Preview ID {editForm.fragrantica_id}</span>
             </div>
           )}
         </div>
@@ -260,7 +260,7 @@ export function PainelNotas({ token: tokenProp }) {
         )}
 
         <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={() => setDetalhe(null)} style={{ padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#666', flex: 0.4 }}>Fechar</button>
+          <button onClick={() => setDetalhe(null)} style={{ padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)', flex: 0.4 }}>Fechar</button>
           <button onClick={salvarEdicao} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07', fontFamily: "'Inter', sans-serif" }}>
             {salvando ? 'Salvando...' : 'Salvar'}
           </button>
@@ -287,7 +287,7 @@ export function PainelNotas({ token: tokenProp }) {
       <div style={{ padding: '1rem', paddingBottom: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--input-text)', fontFamily: "'Inter', sans-serif" }}>Notas</h1>
+            <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.02em', fontFamily: "'Inter', sans-serif" }}>Notas</h1>
             <span style={{ fontSize: 11, color: 'var(--text3, #999)', background: 'var(--badge-bg, #f0f0f0)', padding: '2px 8px', borderRadius: 10 }}>{total}</span>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
@@ -348,12 +348,12 @@ export function PainelNotas({ token: tokenProp }) {
                   Concluído! {fixResult.corrigidas || 0} corrigidas de {fixResult.quebradas || 0} quebradas ({fixResult.verificadas || 0} verificadas)
                 </span>
                 {fixResult.erros?.length > 0 && (
-                  <details style={{ marginTop: 6, fontSize: 12, color: '#888' }}>
+                  <details style={{ marginTop: 6, fontSize: 12, color: 'var(--text3)' }}>
                     <summary style={{ cursor: 'pointer' }}>{fixResult.erros.length} erros</summary>
                     {fixResult.erros.map((e, i) => <p key={i}>{e.nota}: {e.erro}</p>)}
                   </details>
                 )}
-                <button onClick={() => setFixResult(null)} style={{ marginTop: 6, background: 'none', border: 'none', fontSize: 12, color: '#888', cursor: 'pointer', textDecoration: 'underline' }}>Fechar</button>
+                <button onClick={() => setFixResult(null)} style={{ marginTop: 6, background: 'none', border: 'none', fontSize: 12, color: 'var(--text3)', cursor: 'pointer', textDecoration: 'underline' }}>Fechar</button>
               </div>
             )}
           </div>
@@ -369,13 +369,13 @@ export function PainelNotas({ token: tokenProp }) {
 
       {/* Cards */}
       <div style={{ padding: '0 1rem 2rem' }}>
-        <div style={{ background: '#f5f5f3', borderRadius: 14, padding: 12, margin: '0 -4px' }}>
+        <div style={{ background: 'var(--filter-bg, #f5f5f3)', borderRadius: 14, padding: 12, margin: '0 -4px' }}>
           {loading ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {[1,2,3,4,5,6].map(i => <div key={i} style={{ height: 64, background: 'var(--bg3, #eee)', borderRadius: 12 }} />)}
             </div>
           ) : notas.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '3rem 0', color: '#999' }}>
+            <div style={{ textAlign: 'center', padding: '3rem 0', color: 'var(--text3, #999)' }}>
               <p style={{ fontSize: 32, marginBottom: 8 }}>🌿</p>
               <p>Nenhuma nota encontrada</p>
             </div>
@@ -402,7 +402,7 @@ export function PainelNotas({ token: tokenProp }) {
                     {/* Info */}
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <p style={{ fontSize: 15, fontWeight: 700, color: 'var(--text, #111)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nota.nota_ptb || nota.nota_en}</p>
-                      <p style={{ fontSize: 12, color: '#888' }}>{nota.nota_en}</p>
+                      <p style={{ fontSize: 12, color: 'var(--text3)' }}>{nota.nota_en}</p>
                     </div>
 
                     {/* Status */}
@@ -440,7 +440,7 @@ export function PainelNotas({ token: tokenProp }) {
             ].map((op, i) => (
               <button key={i} onClick={op.onClick}
                 style={{ display: 'flex', alignItems: 'center', gap: 14, width: '100%', padding: '14px 16px', background: 'none', border: 'none',
-                  cursor: 'pointer', fontSize: 14, fontWeight: 500, color: '#333', borderRadius: 8, fontFamily: "'Inter', sans-serif" }}>
+                  cursor: 'pointer', fontSize: 14, fontWeight: 500, color: 'var(--text2)', borderRadius: 8, fontFamily: "'Inter', sans-serif" }}>
                 <span style={{ color: '#c9a84c' }}>{op.icon}</span>
                 {op.label}
               </button>
@@ -455,7 +455,7 @@ export function PainelNotas({ token: tokenProp }) {
         {bottomTabs.map(tab => (
           <button key={tab.key} onClick={() => navigate('/admin', { state: { aba: tab.key } })}
             style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, padding: '6px 12px', background: 'none', border: 'none',
-              cursor: 'pointer', fontFamily: "'Inter', sans-serif", fontSize: 10, fontWeight: 500, color: '#999', WebkitTapHighlightColor: 'transparent' }}>
+              cursor: 'pointer', fontFamily: "'Inter', sans-serif", fontSize: 10, fontWeight: 500, color: 'var(--text3)', WebkitTapHighlightColor: 'transparent' }}>
             {tab.icon}
             <span>{tab.label}</span>
           </button>
