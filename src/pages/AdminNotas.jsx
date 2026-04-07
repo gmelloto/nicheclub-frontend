@@ -135,7 +135,12 @@ export function PainelNotas({ token: tokenProp }) {
       onClick={e => e.target === e.currentTarget && setModal(false)}>
       <div className="admin-modal-sheet" style={{ maxHeight: '90vh' }}>
         <div className="admin-modal-handle" />
-        <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--input-text)', fontFamily: "'Inter', sans-serif", marginBottom: 12 }}>Adicionar Nota</h3>
+        <div className="admin-modal-header">
+          <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', margin: 0 }}>Adicionar Nota</h3>
+          <button className="admin-modal-close" onClick={() => setModal(false)}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
 
         <div style={{ background: '#fffbf0', border: '1px solid #e8d840', borderRadius: 8, padding: '10px 12px', marginBottom: 16, fontSize: 12, color: '#8a6a10' }}>
           Acesse <a href={FRAGRANTICA_BASE} target="_blank" rel="noreferrer" style={{ color: '#8a6a10', fontWeight: 600 }}>fragrantica.com/notes</a> e copie o ID da URL.<br />
@@ -179,9 +184,8 @@ export function PainelNotas({ token: tokenProp }) {
           )}
         </div>
 
-        <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
-          <button onClick={() => setModal(false)} style={{ flex: 0.5, padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)', fontFamily: "'Inter', sans-serif" }}>Cancelar</button>
-          <button onClick={importar} disabled={importando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07', fontFamily: "'Inter', sans-serif", opacity: importando ? 0.7 : 1 }}>
+        <div className="admin-modal-actions">
+          <button onClick={importar} disabled={importando} className="admin-btn-primary" style={{ flex: 1, opacity: importando ? 0.7 : 1 }}>
             {importando ? 'Importando...' : 'Importar'}
           </button>
         </div>
@@ -198,23 +202,28 @@ export function PainelNotas({ token: tokenProp }) {
       <div className="admin-modal-sheet" style={{ maxHeight: '90vh' }}>
         <div className="admin-modal-handle" />
 
-        {/* Foto + status */}
-        <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
-          <div style={{ width: 80, height: 80, flexShrink: 0, borderRadius: 12, overflow: 'hidden', background: 'var(--filter-bg, #f8f7f4)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border, #e8e4dc)' }}>
-            {detalhe.cloudinary_url
-              ? <img src={detalhe.cloudinary_url} alt={detalhe.nota_en} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              : <span style={{ fontSize: 32 }}>🌿</span>
-            }
+        {/* Header + close */}
+        <div className="admin-modal-header" style={{ alignItems: 'flex-start' }}>
+          <div style={{ display: 'flex', gap: 16, flex: 1 }}>
+            <div style={{ width: 80, height: 80, flexShrink: 0, borderRadius: 12, overflow: 'hidden', background: 'var(--filter-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border)' }}>
+              {detalhe.cloudinary_url
+                ? <img src={detalhe.cloudinary_url} alt={detalhe.nota_en} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                : <span style={{ fontSize: 32 }}>🌿</span>
+              }
+            </div>
+            <div style={{ flex: 1 }}>
+              <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', marginBottom: 2 }}>{detalhe.nota_ptb || detalhe.nota_en}</h3>
+              <p style={{ fontSize: 13, color: 'var(--text3)' }}>{detalhe.nota_en}</p>
+              <span style={{ display: 'inline-block', marginTop: 6, padding: '2px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600,
+                background: detalhe.cloudinary_url ? '#e8f5e9' : 'var(--danger-bg)',
+                color: detalhe.cloudinary_url ? '#2e7d32' : 'var(--danger-text)' }}>
+                {detalhe.cloudinary_url ? 'Com imagem' : 'Sem imagem'}
+              </span>
+            </div>
           </div>
-          <div style={{ flex: 1 }}>
-            <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--input-text)', fontFamily: "'Inter', sans-serif", marginBottom: 2 }}>{detalhe.nota_ptb || detalhe.nota_en}</h3>
-            <p style={{ fontSize: 13, color: 'var(--text3)' }}>{detalhe.nota_en}</p>
-            <span style={{ display: 'inline-block', marginTop: 6, padding: '2px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600,
-              background: detalhe.cloudinary_url ? '#e8f5e9' : '#fce4ec',
-              color: detalhe.cloudinary_url ? '#2e7d32' : '#c62828' }}>
-              {detalhe.cloudinary_url ? 'Com imagem' : 'Sem imagem'}
-            </span>
-          </div>
+          <button className="admin-modal-close" onClick={() => setDetalhe(null)}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
         </div>
 
         {/* Campos editaveis */}
@@ -260,12 +269,11 @@ export function PainelNotas({ token: tokenProp }) {
           </a>
         )}
 
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={() => setDetalhe(null)} style={{ padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)', flex: 0.4 }}>Fechar</button>
-          <button onClick={salvarEdicao} disabled={salvando} style={{ flex: 1, padding: '12px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#0d0b07', fontFamily: "'Inter', sans-serif" }}>
+        <div className="admin-modal-actions">
+          <button onClick={deletar} className="admin-btn-danger">Excluir</button>
+          <button onClick={salvarEdicao} disabled={salvando} className="admin-btn-primary" style={{ flex: 1 }}>
             {salvando ? 'Salvando...' : 'Salvar'}
           </button>
-          <button onClick={deletar} style={{ padding: '12px 16px', background: '#fce4ec', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: '#c62828', fontFamily: "'Inter', sans-serif" }}>Excluir</button>
         </div>
       </div>
     </div>
