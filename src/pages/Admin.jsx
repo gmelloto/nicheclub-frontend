@@ -188,7 +188,7 @@ export default function Admin() {
   ];
 
   return (
-    <div className={`admin-page ${dark ? 'dark' : ''}`}>
+    <div className="admin-page">
       {/* Sidebar desktop - dark modern */}
       <div className={`admin-sidebar ${sidebarOpen ? '' : 'collapsed'}`}>
         {/* Logo + collapse toggle */}
@@ -567,7 +567,7 @@ function PainelPedidos({ token }) {
 
   return (
     <div className="fade-in">
-      <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}`}</style>
+
       {modalDetalhe}
 
       {/* Header */}
@@ -885,7 +885,7 @@ function PainelEstoque({ token }) {
 
   return (
     <div className="fade-in">
-      <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}`}</style>
+
       {modalNovo}
       {modalEditar}
       {modalDetalhe}
@@ -1367,7 +1367,7 @@ function PainelPerfumes({ token }) {
 
   return (
     <div className="fade-in">
-      <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}`}</style>
+
       {modalEditar}
       {modalDetalhe}
 
@@ -1569,7 +1569,6 @@ function PainelPerfumes({ token }) {
       {perfumes.length > 0 && perfumes.length >= total && (
         <p style={{ textAlign: 'center', fontSize: 12, color: '#bbb', padding: '1rem 0' }}>{total} perfumes carregados</p>
       )}
-      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
 
     </div>
   );
@@ -1722,7 +1721,7 @@ function PainelReservas({ token }) {
 
   return (
     <div className="fade-in">
-      <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}`}</style>
+
       {modalDetalhe}
 
       <div style={{ marginBottom: 20 }}>
@@ -1910,9 +1909,9 @@ function PainelUsuarios({ token }) {
               <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 8 }}>PERMISSOES DE ACESSO</label>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                 {TELAS_DISPONIVEIS.map(t => {
-                  const ativo = novoForm.permissoes.includes(t.key);
+                  const ativo = (novoForm.permissoes || []).includes(t.key);
                   return (
-                    <button key={t.key} type="button" onClick={() => setNovoForm(f => ({ ...f, permissoes: ativo ? f.permissoes.filter(p => p !== t.key) : [...f.permissoes, t.key] }))}
+                    <button key={t.key} type="button" onClick={() => setNovoForm(f => ({ ...f, permissoes: ativo ? (f.permissoes || []).filter(p => p !== t.key) : [...(f.permissoes || []), t.key] }))}
                       style={{ padding: '6px 14px', borderRadius: 20, fontSize: 12, fontWeight: 600, cursor: 'pointer', border: 'none', transition: 'all .2s',
                         background: ativo ? 'rgba(201,169,110,0.15)' : 'var(--filter-bg)', color: ativo ? '#c9a84c' : 'var(--text3)' }}>
                       {t.label}
@@ -1975,9 +1974,9 @@ function PainelUsuarios({ token }) {
               <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 8 }}>PERMISSOES DE ACESSO</label>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                 {TELAS_DISPONIVEIS.map(t => {
-                  const ativo = editForm.permissoes.includes(t.key);
+                  const ativo = (editForm.permissoes || []).includes(t.key);
                   return (
-                    <button key={t.key} type="button" onClick={() => setEditForm(f => ({ ...f, permissoes: ativo ? f.permissoes.filter(p => p !== t.key) : [...f.permissoes, t.key] }))}
+                    <button key={t.key} type="button" onClick={() => setEditForm(f => ({ ...f, permissoes: ativo ? (f.permissoes || []).filter(p => p !== t.key) : [...(f.permissoes || []), t.key] }))}
                       style={{ padding: '6px 14px', borderRadius: 20, fontSize: 12, fontWeight: 600, cursor: 'pointer', border: 'none', transition: 'all .2s',
                         background: ativo ? 'rgba(201,169,110,0.15)' : 'var(--filter-bg)', color: ativo ? '#c9a84c' : 'var(--text3)' }}>
                       {t.label}
@@ -2064,7 +2063,7 @@ function PainelUsuarios({ token }) {
 
   return (
     <div className="fade-in">
-      <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}`}</style>
+
       {modalNovo}
       {modalEditar}
       {modalSenha}

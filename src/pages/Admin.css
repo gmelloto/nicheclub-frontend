@@ -4,6 +4,10 @@
  --sidebar-bg: #141822; --sidebar-bg2: #1c2130; --sidebar-text: #8b92a5; --sidebar-active: #c9a84c;
  background: var(--content-bg); color: var(--text); }
 .admin-page h1, .admin-page h2, .admin-page h3, .admin-page h4 { font-family: inherit; }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+.fade-in { animation: fadeIn .2s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 /* ─── Dark Sidebar ─── */
 .admin-sidebar { background: var(--sidebar-bg); display: flex; flex-direction: column; padding: 0; transition: width .3s ease; overflow-x: hidden; overflow-y: auto; height: 100vh; }
