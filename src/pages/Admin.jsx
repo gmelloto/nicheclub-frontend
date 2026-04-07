@@ -1429,7 +1429,10 @@ function PainelReservas({ token }) {
                   <p style={{ fontSize: 11, color: '#c9a84c', fontWeight: 600, letterSpacing: '0.05em', margin: '4px 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.marca}</p>
                   <p style={{ fontSize: 13, fontWeight: 600, color: '#333', margin: '1px 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.perfume_nome}</p>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 }}>
-                    <span style={{ fontSize: 12, color: '#888' }}>{r.criado_em ? new Date(r.criado_em).toLocaleDateString('pt-BR') : ''} · {r.tamanho || `${r.ml_quantidade}ml`}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{ padding: '2px 8px', borderRadius: 12, fontSize: 11, fontWeight: 600, background: '#f0ede8', color: '#5a5550' }}>{r.tamanho || `${r.ml_quantidade}ml`}</span>
+                      <span style={{ fontSize: 12, color: '#888' }}>{r.criado_em ? new Date(r.criado_em).toLocaleDateString('pt-BR') : ''}</span>
+                    </div>
                     <span style={{ fontSize: 15, fontWeight: 700, color: '#111' }}>R$ {Number(r.preco_total || 0).toFixed(2).replace('.', ',')}</span>
                   </div>
                 </div>
