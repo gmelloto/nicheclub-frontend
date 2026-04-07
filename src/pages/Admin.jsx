@@ -1412,29 +1412,24 @@ function PainelReservas({ token }) {
             return (
               <SwipeDelete key={r.id} onDelete={() => deletarReserva(r.id)}>
               <div onClick={() => abrirDetalhe(r)}
-                style={{ display: 'flex', gap: 14, padding: 14, background: '#fff', borderRadius: 12, border: '1px solid #eee',
-                  cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
+                style={{ display: 'flex', gap: 12, padding: 12, background: '#fff', borderRadius: 12, border: '1px solid #eee',
+                  cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.04)', alignItems: 'center' }}>
 
                 {r.foto_url && (
-                  <img src={r.foto_url} alt={r.perfume_nome} style={{ width: 48, height: 48, borderRadius: 8, objectFit: 'cover', flexShrink: 0, alignSelf: 'center' }} />
+                  <img src={r.foto_url} alt={r.perfume_nome} style={{ width: 44, height: 56, borderRadius: 6, objectFit: 'contain', flexShrink: 0, background: '#f8f7f4' }} />
                 )}
 
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
-                    <div style={{ minWidth: 0 }}>
-                      <p style={{ fontSize: 15, fontWeight: 700, color: '#111', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.nome}</p>
-                      <p style={{ fontSize: 12, color: '#c9a84c', fontWeight: 500 }}>{r.perfume_nome} — {r.marca}</p>
-                    </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                    <p style={{ fontSize: 15, fontWeight: 700, color: '#111', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', margin: 0 }}>{r.nome}</p>
                     <span style={{ flexShrink: 0, padding: '2px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: st.bg, color: st.color }}>
                       {st.label}
                     </span>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>
-                    <span style={{ fontSize: 13, color: '#555' }}>{r.tamanho || `${r.ml_quantidade}ml`}</span>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                      <span style={{ fontSize: 15, fontWeight: 700, color: '#111' }}>R$ {Number(r.preco_total || 0).toFixed(2).replace('.', ',')}</span>
-                      <span style={{ fontSize: 12, color: '#999' }}>{r.criado_em ? new Date(r.criado_em).toLocaleDateString('pt-BR') : ''}</span>
-                    </div>
+                  <p style={{ fontSize: 12, color: '#c9a84c', fontWeight: 500, margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.perfume_nome} — {r.marca}</p>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 6 }}>
+                    <span style={{ fontSize: 12, color: '#888' }}>{r.tamanho || `${r.ml_quantidade}ml`} · {r.criado_em ? new Date(r.criado_em).toLocaleDateString('pt-BR') : ''}</span>
+                    <span style={{ fontSize: 15, fontWeight: 700, color: '#111' }}>R$ {Number(r.preco_total || 0).toFixed(2).replace('.', ',')}</span>
                   </div>
                 </div>
 
