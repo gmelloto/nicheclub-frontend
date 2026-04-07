@@ -61,4 +61,8 @@ export const api = {
   listarReservas: (token, status) => req('GET', `/admin/reservas${status ? `?status=${status}` : ''}`, null, token),
   atualizarReservaStatus: (token, id, status) => req('PATCH', `/admin/reservas/${id}/status`, { status }, token),
   deletarReserva: (token, id) => req('DELETE', `/admin/reservas/${id}`, null, token),
+  // Admin - Frascos
+  editarFrasco: (token, id, data) => req('PATCH', `/admin/frascos/${id}`, data, token),
+  deletarFrasco: (token, id) => req('DELETE', `/admin/frascos/${id}`, null, token),
+  listarPerfumesSimples: (token) => req('GET', '/perfumes?limite=200', null, token),
 };
