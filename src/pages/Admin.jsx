@@ -6,10 +6,33 @@ import { useAuth } from '../context';
 import { api } from '../services/api';
 import './Admin.css';
 
+const TELAS_DISPONIVEIS = [
+  { key: 'dashboard', label: 'Dashboard' },
+  { key: 'pedidos', label: 'Pedidos' },
+  { key: 'estoque', label: 'Decants' },
+  { key: 'perfumes', label: 'Perfumes' },
+  { key: 'reservas', label: 'Reservas' },
+  { key: 'whatsapp', label: 'WhatsApp' },
+  { key: 'usuarios', label: 'Usuarios' },
+];
+
 export default function Admin() {
   const { token, usuario } = useAuth();
   const navigate = useNavigate();
-  const [aba, setAba] = useState('dashboard');
+
+  const temPermissao = (tela) => {
+    if (!usuario) return false;
+    if (usuario.papel === 'admin') return true;
+    if (usuario.permissoes?.includes('*')) return true;
+    return usuario.permissoes?.includes(tela) || false;
+  };
+
+  const [aba, setAba] = useState(() => {
+    if (!usuario) return 'dashboard';
+    if (usuario.papel === 'admin') return 'dashboard';
+    const primeira = TELAS_DISPONIVEIS.find(t => usuario.permissoes?.includes(t.key));
+    return primeira?.key || 'dashboard';
+  });
   const [maisAberto, setMaisAberto] = useState(false);
   const [showTop, setShowTop] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -139,14 +162,14 @@ export default function Admin() {
 
         <nav className="admin-sidebar-nav">
           {/* Dashboard */}
-          <button className={`admin-sidebar-item ${aba === 'dashboard' ? 'active' : ''}`} onClick={() => selecionarAba('dashboard')} title={!sidebarOpen ? 'Dashboard' : undefined}>
+          {temPermissao('dashboard') && <button className={`admin-sidebar-item ${aba === 'dashboard' ? 'active' : ''}`} onClick={() => selecionarAba('dashboard')} title={!sidebarOpen ? 'Dashboard' : undefined}>
             <span className="admin-sidebar-icon">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>
               </svg>
             </span>
             {sidebarOpen && <span className="admin-sidebar-label">Dashboard</span>}
-          </button>
+          </button>}
 
           {/* Gerenciamento */}
           {sidebarOpen ? (
@@ -169,7 +192,7 @@ export default function Admin() {
                     { key: 'pedidos', label: 'Pedidos' },
                     { key: 'reservas', label: 'Reservas' },
                     { key: 'whatsapp', label: 'WhatsApp' },
-                  ].map(item => (
+                  ].filter(item => temPermissao(item.key)).map(item => (
                     <button key={item.key} className={`admin-sidebar-subitem ${aba === item.key ? 'active' : ''}`} onClick={() => selecionarAba(item.key)}>
                       <span className="admin-sidebar-icon">
                         {bottomTabs.find(t => t.key === item.key)?.icon}
@@ -194,24 +217,24 @@ export default function Admin() {
               </button>
               {secaoAberta.cadastros && (
                 <div className="admin-sidebar-subitems">
-                  <button className={`admin-sidebar-subitem ${aba === 'perfumes' ? 'active' : ''}`} onClick={() => selecionarAba('perfumes')}>
+                  {temPermissao('perfumes') && <button className={`admin-sidebar-subitem ${aba === 'perfumes' ? 'active' : ''}`} onClick={() => selecionarAba('perfumes')}>
                     <span className="admin-sidebar-icon">
                       {bottomTabs.find(t => t.key === 'perfumes')?.icon}
                     </span>
                     <span className="admin-sidebar-label">Perfumes</span>
-                  </button>
-                  <button className="admin-sidebar-subitem" onClick={() => navigate('/admin/notas')}>
+                  </button>}
+                  {temPermissao('perfumes') && <button className="admin-sidebar-subitem" onClick={() => navigate('/admin/notas')}>
                     <span className="admin-sidebar-icon">
                       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22c-4 0-8-2-8-6 0-6 8-14 8-14s8 8 8 14c0 4-4 6-8 6z"/></svg>
                     </span>
                     <span className="admin-sidebar-label">Notas Olfativas</span>
-                  </button>
-                  <button className={`admin-sidebar-subitem ${aba === 'usuarios' ? 'active' : ''}`} onClick={() => selecionarAba('usuarios')}>
+                  </button>}
+                  {temPermissao('usuarios') && <button className={`admin-sidebar-subitem ${aba === 'usuarios' ? 'active' : ''}`} onClick={() => selecionarAba('usuarios')}>
                     <span className="admin-sidebar-icon">
                       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
                     </span>
                     <span className="admin-sidebar-label">Usuarios</span>
-                  </button>
+                  </button>}
                 </div>
               )}
             </>
@@ -1742,9 +1765,9 @@ function PainelUsuarios({ token }) {
   const [loading, setLoading] = useState(true);
   const [detalhe, setDetalhe] = useState(null);
   const [novoAberto, setNovoAberto] = useState(false);
-  const [novoForm, setNovoForm] = useState({ nome: '', email: '', senha: '', papel: 'atendente' });
+  const [novoForm, setNovoForm] = useState({ nome: '', email: '', senha: '', papel: 'atendente', permissoes: [] });
   const [editando, setEditando] = useState(null);
-  const [editForm, setEditForm] = useState({ nome: '', email: '', papel: '', ativo: true });
+  const [editForm, setEditForm] = useState({ nome: '', email: '', papel: '', ativo: true, permissoes: [] });
   const [novaSenha, setNovaSenha] = useState('');
   const [senhaAberto, setSenhaAberto] = useState(null);
   const [salvando, setSalvando] = useState(false);
@@ -1768,14 +1791,14 @@ function PainelUsuarios({ token }) {
     try {
       await api.criarUsuario(token, novoForm);
       setNovoAberto(false);
-      setNovoForm({ nome: '', email: '', senha: '', papel: 'atendente' });
+      setNovoForm({ nome: '', email: '', senha: '', papel: 'atendente', permissoes: [] });
       carregar();
     } catch(e) { alert(e.message); }
     finally { setSalvando(false); }
   };
 
   const abrirEditar = (u) => {
-    setEditForm({ nome: u.nome, email: u.email, papel: u.papel, ativo: u.ativo });
+    setEditForm({ nome: u.nome, email: u.email, papel: u.papel, ativo: u.ativo, permissoes: u.permissoes || [] });
     setEditando(u);
     setDetalhe(null);
   };
@@ -1841,6 +1864,24 @@ function PainelUsuarios({ token }) {
               <option value="admin">Admin</option>
             </select>
           </div>
+          {novoForm.papel === 'atendente' && (
+            <div>
+              <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 8 }}>PERMISSOES DE ACESSO</label>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                {TELAS_DISPONIVEIS.map(t => {
+                  const ativo = novoForm.permissoes.includes(t.key);
+                  return (
+                    <button key={t.key} type="button" onClick={() => setNovoForm(f => ({ ...f, permissoes: ativo ? f.permissoes.filter(p => p !== t.key) : [...f.permissoes, t.key] }))}
+                      style={{ padding: '6px 14px', borderRadius: 20, fontSize: 12, fontWeight: 600, cursor: 'pointer', border: 'none', transition: 'all .2s',
+                        background: ativo ? 'rgba(201,169,110,0.15)' : 'var(--filter-bg)', color: ativo ? '#c9a84c' : 'var(--text3)' }}>
+                      {t.label}
+                    </button>
+                  );
+                })}
+              </div>
+              <p style={{ fontSize: 11, color: 'var(--text3)', marginTop: 6 }}>Admin tem acesso total. Atendente acessa apenas as telas selecionadas.</p>
+            </div>
+          )}
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
           <button onClick={() => setNovoAberto(false)} style={{ flex: 0.5, padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)' }}>Cancelar</button>
@@ -1888,6 +1929,23 @@ function PainelUsuarios({ token }) {
               </select>
             </div>
           </div>
+          {editForm.papel === 'atendente' && (
+            <div>
+              <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)', display: 'block', marginBottom: 8 }}>PERMISSOES DE ACESSO</label>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                {TELAS_DISPONIVEIS.map(t => {
+                  const ativo = editForm.permissoes.includes(t.key);
+                  return (
+                    <button key={t.key} type="button" onClick={() => setEditForm(f => ({ ...f, permissoes: ativo ? f.permissoes.filter(p => p !== t.key) : [...f.permissoes, t.key] }))}
+                      style={{ padding: '6px 14px', borderRadius: 20, fontSize: 12, fontWeight: 600, cursor: 'pointer', border: 'none', transition: 'all .2s',
+                        background: ativo ? 'rgba(201,169,110,0.15)' : 'var(--filter-bg)', color: ativo ? '#c9a84c' : 'var(--text3)' }}>
+                      {t.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
           <button onClick={() => setEditando(null)} style={{ flex: 0.5, padding: '12px', background: 'var(--filter-bg)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text2)' }}>Cancelar</button>
@@ -1976,7 +2034,7 @@ function PainelUsuarios({ token }) {
           <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.02em', margin: 0 }}>Usuarios</h1>
           <p style={{ fontSize: 14, color: 'var(--text3)', marginTop: 6 }}>Gerencie acessos ao painel administrativo</p>
         </div>
-        <button onClick={() => { setNovoAberto(true); setNovoForm({ nome: '', email: '', senha: '', papel: 'atendente' }); }}
+        <button onClick={() => { setNovoAberto(true); setNovoForm({ nome: '', email: '', senha: '', papel: 'atendente', permissoes: [] }); }}
           style={{ padding: '10px 20px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: '#0d0b07', boxShadow: '0 2px 8px rgba(201,168,76,0.3)', display: 'flex', alignItems: 'center', gap: 6 }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
           Novo Usuário
