@@ -201,9 +201,9 @@ export default function Admin() {
               )}
             </>
           ) : (
-            /* Collapsed mode: flat icons only */
+            /* Collapsed mode: flat icons only (skip dashboard, already shown above) */
             <>
-              {bottomTabs.map(tab => (
+              {bottomTabs.filter(tab => tab.key !== 'dashboard').map(tab => (
                 <button key={tab.key} className={`admin-sidebar-item ${aba === tab.key ? 'active' : ''}`} onClick={() => selecionarAba(tab.key)} title={abaLabels[tab.key]}>
                   <span className="admin-sidebar-icon">{tab.icon}</span>
                 </button>
