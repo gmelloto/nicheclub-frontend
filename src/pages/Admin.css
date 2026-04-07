@@ -12,7 +12,7 @@
 /* ─── Dark Theme ─── */
 .admin-page.dark {
  --bg: #0f1219; --bg2: #181d28; --bg3: #1e2433; --border: #2a3040; --text: #e2e8f0; --text2: #94a3b8; --text3: #64748b;
- --card-bg: #181d28; --card-border: #2a3040; --card-shadow: rgba(0,0,0,0.2); --content-bg: #0f1219;
+ --card-bg: #1e2433; --card-border: #2f3749; --card-shadow: rgba(0,0,0,0.15); --content-bg: #0f1219;
  --filter-bg: #181d28; --filter-active: #1e2433; --filter-text: #64748b; --filter-active-text: #e2e8f0; --filter-shadow: rgba(0,0,0,0.3);
  --input-bg: #181d28; --input-border: #2a3040; --input-text: #e2e8f0;
  --badge-bg: #1e2433; --badge-text: #94a3b8;
