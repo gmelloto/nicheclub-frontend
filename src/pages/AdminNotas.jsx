@@ -10,6 +10,7 @@ const FRAGRANTICA_BASE = 'https://www.fragrantica.com/notes/';
 export function PainelNotas({ token: tokenProp }) {
   const { token: authToken } = useAuth();
   const token = tokenProp || authToken;
+  const isEmbedded = !!tokenProp;
   const navigate = useNavigate();
 
   const [notas, setNotas] = useState([]);
@@ -277,7 +278,7 @@ export function PainelNotas({ token: tokenProp }) {
   ];
 
   return (
-    <div style={{ minHeight: '100vh', background: '#fff', fontFamily: "'Inter', sans-serif", paddingBottom: 70 }}>
+    <div style={{ minHeight: isEmbedded ? 'auto' : '100vh', background: isEmbedded ? 'transparent' : '#fff', fontFamily: "'Inter', sans-serif", paddingBottom: isEmbedded ? 0 : 70 }}>
       <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}} @keyframes spin{to{transform:rotate(360deg)}}`}</style>
       {modalAdicionarJSX}
       {modalDetalheJSX}
@@ -448,8 +449,8 @@ export function PainelNotas({ token: tokenProp }) {
         </div>
       )}
 
-      {/* Bottom Nav */}
-      <div style={{ display: 'flex', position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 999, background: '#fff', borderTop: '1px solid #e8e4dc',
+      {/* Bottom Nav - only standalone */}
+      {!isEmbedded && <div style={{ display: 'flex', position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 999, background: '#fff', borderTop: '1px solid #e8e4dc',
         padding: '6px 0 max(6px, env(safe-area-inset-bottom))', justifyContent: 'space-around', boxShadow: '0 -2px 12px rgba(0,0,0,0.06)' }}>
         {bottomTabs.map(tab => (
           <button key={tab.key} onClick={() => navigate('/admin', { state: { aba: tab.key } })}
@@ -467,7 +468,7 @@ export function PainelNotas({ token: tokenProp }) {
           </svg>
           <span>Mais</span>
         </button>
-      </div>
+      </div>}
     </div>
   );
 }
