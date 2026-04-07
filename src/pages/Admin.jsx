@@ -287,29 +287,54 @@ export default function Admin() {
 }
 
 function PainelDashboard() {
+  const saudacao = () => {
+    const h = new Date().getHours();
+    if (h < 12) return 'Bom dia';
+    if (h < 18) return 'Boa tarde';
+    return 'Boa noite';
+  };
+
   return (
     <div className="fade-in">
-      <h2 style={{ fontSize: 22, fontWeight: 700, color: '#111', marginBottom: 24 }}>Dashboard</h2>
+      <div style={{ marginBottom: 28 }}>
+        <h1 style={{ fontSize: 28, fontWeight: 800, color: '#111', margin: 0 }}>{saudacao()}</h1>
+        <p style={{ fontSize: 14, color: '#888', marginTop: 4 }}>{new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+      </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16, marginBottom: 24 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16, marginBottom: 24 }}>
         {[
-          { label: 'Pedidos', valor: '—', cor: '#1565c0', bg: '#e3f2fd', icon: '📋' },
-          { label: 'Reservas', valor: '—', cor: '#e65100', bg: '#fff3e0', icon: '📅' },
-          { label: 'Perfumes', valor: '—', cor: '#2e7d32', bg: '#e8f5e9', icon: '🧴' },
-          { label: 'Faturamento', valor: '—', cor: '#4527a0', bg: '#ede7f6', icon: '💰' },
+          { label: 'Pedidos', valor: '—', cor: '#1565c0', bg: 'rgba(21,101,192,0.08)', iconBg: 'rgba(21,101,192,0.15)', icon: (
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1565c0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+          )},
+          { label: 'Reservas', valor: '—', cor: '#e65100', bg: 'rgba(230,81,0,0.06)', iconBg: 'rgba(230,81,0,0.15)', icon: (
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e65100" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          )},
+          { label: 'Perfumes', valor: '—', cor: '#2e7d32', bg: 'rgba(46,125,50,0.06)', iconBg: 'rgba(46,125,50,0.15)', icon: (
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="8" width="12" height="13" rx="2"/><path d="M10 4h4v4h-4z"/><path d="M9 8V6a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+          )},
+          { label: 'Faturamento', valor: '—', cor: '#7b1fa2', bg: 'rgba(123,31,162,0.06)', iconBg: 'rgba(123,31,162,0.15)', icon: (
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7b1fa2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 100 4h4a2 2 0 110 4H8"/><path d="M12 18V6"/></svg>
+          )},
         ].map(card => (
-          <div key={card.label} style={{ background: '#fff', borderRadius: 14, padding: 20, border: '1px solid #eee', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <span style={{ fontSize: 13, color: '#888', fontWeight: 500 }}>{card.label}</span>
-              <span style={{ fontSize: 20 }}>{card.icon}</span>
+          <div key={card.label} style={{ background: '#fff', borderRadius: 16, padding: 20, border: '1px solid #f0f0f0', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+              <div style={{ padding: 12, background: card.iconBg, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {card.icon}
+              </div>
+              <div>
+                <p style={{ fontSize: 13, color: '#888', fontWeight: 500, margin: 0 }}>{card.label}</p>
+                <p style={{ fontSize: 26, fontWeight: 800, color: card.cor, margin: '2px 0 0' }}>{card.valor}</p>
+              </div>
             </div>
-            <p style={{ fontSize: 28, fontWeight: 800, color: card.cor, margin: 0 }}>{card.valor}</p>
           </div>
         ))}
       </div>
 
-      <div style={{ background: '#f8f7f4', borderRadius: 14, padding: 32, textAlign: 'center', color: '#999' }}>
-        <p style={{ fontSize: 16, marginBottom: 8 }}>Em breve</p>
+      <div style={{ background: '#f8f7f4', borderRadius: 16, padding: 40, textAlign: 'center', color: '#999', border: '1px solid #f0f0f0' }}>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: 12 }}>
+          <path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>
+        </svg>
+        <p style={{ fontSize: 16, fontWeight: 600, color: '#666', marginBottom: 4 }}>Em breve</p>
         <p style={{ fontSize: 13 }}>Os dashboards e gráficos serão implementados aqui.</p>
       </div>
     </div>
@@ -451,21 +476,29 @@ function PainelPedidos({ token }) {
       <ModalDetalhe />
 
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-        <h2 style={{ fontSize: 22, fontWeight: 700, color: '#111' }}>Pedidos</h2>
-        <span style={{ fontSize: 12, color: '#999' }}>{pedidos.length} pedidos</span>
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <h1 style={{ fontSize: 26, fontWeight: 800, color: '#111', margin: 0 }}>Pedidos</h1>
+          <span style={{ padding: '4px 12px', borderRadius: 20, fontSize: 12, fontWeight: 600, background: '#f0f0f0', color: '#666' }}>{pedidos.length}</span>
+        </div>
+        <p style={{ fontSize: 13, color: '#888', marginTop: 4 }}>Gerencie pedidos e atualize status de entrega</p>
       </div>
 
-      {/* Filtros */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 16, overflowX: 'auto', paddingBottom: 4 }}>
-        {filtroTabs.map(([key, label]) => (
-          <button key={key} onClick={() => setFiltro(key)}
-            style={{ padding: '8px 18px', borderRadius: 20, fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap',
-              border: filtro === key ? 'none' : '1.5px solid #ddd',
-              background: filtro === key ? '#111' : '#fff', color: filtro === key ? '#fff' : '#555', transition: 'all .2s' }}>
-            {label}
-          </button>
-        ))}
+      {/* Filtros com contagem */}
+      <div style={{ display: 'flex', gap: 6, marginBottom: 16, overflowX: 'auto', paddingBottom: 4, background: '#f5f5f3', borderRadius: 14, padding: 6 }}>
+        {filtroTabs.map(([key, label]) => {
+          const count = key === '' ? pedidos.length : pedidos.filter(p => p.status === key).length;
+          return (
+            <button key={key} onClick={() => setFiltro(key)}
+              style={{ padding: '9px 16px', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap',
+                display: 'flex', alignItems: 'center', gap: 6, border: 'none',
+                background: filtro === key ? '#fff' : 'transparent', color: filtro === key ? '#111' : '#888',
+                boxShadow: filtro === key ? '0 1px 3px rgba(0,0,0,0.08)' : 'none', transition: 'all .2s' }}>
+              {label}
+              <span style={{ fontSize: 11, opacity: 0.6 }}>({count})</span>
+            </button>
+          );
+        })}
       </div>
 
       {/* Cards */}
@@ -763,8 +796,11 @@ function PainelEstoque({ token }) {
       <ModalDetalhe />
 
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-        <h2 style={{ fontSize: 22, fontWeight: 700, color: '#111' }}>Decants</h2>
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 20 }}>
+        <div>
+          <h1 style={{ fontSize: 26, fontWeight: 800, color: '#111', margin: 0 }}>Decants</h1>
+          <p style={{ fontSize: 13, color: '#888', marginTop: 4 }}>Controle de frascos e disponibilidade de ML</p>
+        </div>
         <button onClick={abrirNovo}
           style={{ padding: '10px 20px', background: 'linear-gradient(135deg,#c9a84c,#e8c870)', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer', color: '#0d0b07', boxShadow: '0 2px 8px rgba(201,168,76,0.3)' }}>
           + Novo Frasco
@@ -779,15 +815,20 @@ function PainelEstoque({ token }) {
       </div>
 
       {/* Filtros */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 16, overflowX: 'auto' }}>
-        {[['todos', 'Todos'], ['aberto', 'Ativos'], ['baixo', 'Baixo Estoque'], ['esgotado', 'Esgotados']].map(([key, label]) => (
-          <button key={key} onClick={() => setFiltro(key)}
-            style={{ padding: '8px 18px', borderRadius: 20, fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', border: filtro === key ? 'none' : '1.5px solid #ddd',
-              background: filtro === key ? '#111' : '#fff', color: filtro === key ? '#fff' : '#555', transition: 'all .2s' }}>
-            {label}
-          </button>
-        ))}
-        <span style={{ display: 'flex', alignItems: 'center', fontSize: 12, color: '#999', marginLeft: 'auto', whiteSpace: 'nowrap' }}>{filtrados.length} de {frascos.length}</span>
+      <div style={{ display: 'flex', gap: 6, marginBottom: 16, overflowX: 'auto', background: '#f5f5f3', borderRadius: 14, padding: 6 }}>
+        {[['todos', 'Todos'], ['aberto', 'Ativos'], ['baixo', 'Baixo Estoque'], ['esgotado', 'Esgotados']].map(([key, label]) => {
+          const count = key === 'todos' ? frascos.length : frascos.filter(f => getStatus(f).key === key).length;
+          return (
+            <button key={key} onClick={() => setFiltro(key)}
+              style={{ padding: '9px 16px', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap',
+                display: 'flex', alignItems: 'center', gap: 6, border: 'none',
+                background: filtro === key ? '#fff' : 'transparent', color: filtro === key ? '#111' : '#888',
+                boxShadow: filtro === key ? '0 1px 3px rgba(0,0,0,0.08)' : 'none', transition: 'all .2s' }}>
+              {label}
+              {count > 0 && <span style={{ fontSize: 11, opacity: 0.6 }}>({count})</span>}
+            </button>
+          );
+        })}
       </div>
 
       {/* Cards */}
@@ -1592,20 +1633,28 @@ function PainelReservas({ token }) {
       <style>{`@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}`}</style>
       <ModalDetalhe />
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-        <h2 style={{ fontSize: 22, fontWeight: 700, color: '#111' }}>Reservas</h2>
-        <span style={{ fontSize: 12, color: '#999' }}>{reservas.length} reservas</span>
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <h1 style={{ fontSize: 26, fontWeight: 800, color: '#111', margin: 0 }}>Reservas</h1>
+          <span style={{ padding: '4px 12px', borderRadius: 20, fontSize: 12, fontWeight: 600, background: '#f0f0f0', color: '#666' }}>{reservas.length}</span>
+        </div>
+        <p style={{ fontSize: 13, color: '#888', marginTop: 4 }}>Gerencie reservas de clientes e atualize status</p>
       </div>
 
-      <div style={{ display: 'flex', gap: 8, marginBottom: 16, overflowX: 'auto', paddingBottom: 4 }}>
-        {filtroTabs.map(([key, label]) => (
-          <button key={key} onClick={() => setFiltro(key)}
-            style={{ padding: '8px 18px', borderRadius: 20, fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap',
-              border: filtro === key ? 'none' : '1.5px solid #ddd',
-              background: filtro === key ? '#111' : '#fff', color: filtro === key ? '#fff' : '#555', transition: 'all .2s' }}>
-            {label}
-          </button>
-        ))}
+      <div style={{ display: 'flex', gap: 6, marginBottom: 16, overflowX: 'auto', paddingBottom: 4, background: '#f5f5f3', borderRadius: 14, padding: 6 }}>
+        {filtroTabs.map(([key, label]) => {
+          const count = key === '' ? reservas.length : reservas.filter(r => r.status === key).length;
+          return (
+            <button key={key} onClick={() => setFiltro(key)}
+              style={{ padding: '9px 16px', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap',
+                display: 'flex', alignItems: 'center', gap: 6, border: 'none',
+                background: filtro === key ? '#fff' : 'transparent', color: filtro === key ? '#111' : '#888',
+                boxShadow: filtro === key ? '0 1px 3px rgba(0,0,0,0.08)' : 'none', transition: 'all .2s' }}>
+              {label}
+              {count > 0 && <span style={{ fontSize: 11, opacity: 0.6 }}>({count})</span>}
+            </button>
+          );
+        })}
       </div>
 
       <div style={{ background: '#f5f5f3', borderRadius: 14, padding: 12, margin: '0 -4px' }}>

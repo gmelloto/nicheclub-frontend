@@ -51,7 +51,7 @@
 .admin-sidebar.collapsed .admin-sidebar-extra { padding: 8px; }
 .admin-sidebar.collapsed .admin-sidebar-item { justify-content: center; padding: 11px 0; }
 .admin-sidebar.collapsed .admin-sidebar-divider { margin: 8px 0 12px; }
-.admin-content { padding: 2rem; overflow: auto; }
+.admin-content { padding: 2rem 2.5rem; overflow: auto; background: #fafaf8; }
 .painel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
 .admin-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .admin-table { width: 100%; border-collapse: collapse; font-size: 13px; }
