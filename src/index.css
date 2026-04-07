@@ -62,10 +62,10 @@ body[data-admin][data-theme="dark"] {
 body[data-admin] h1, body[data-admin] h2, body[data-admin] h3, body[data-admin] h4,
 body[data-admin] p, body[data-admin] span, body[data-admin] label, body[data-admin] a,
 body[data-admin] div, body[data-admin] button {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif !important;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Segoe UI', Roboto, sans-serif !important;
 }
 body[data-admin] input, body[data-admin] select, body[data-admin] textarea {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif !important;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Segoe UI', Roboto, sans-serif !important;
   color: var(--input-text) !important;
 }
 
