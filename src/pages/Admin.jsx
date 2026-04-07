@@ -949,7 +949,7 @@ function PainelEstoque({ token }) {
                 <div onClick={() => setDetalhe(f)} className="admin-card">
 
                   {/* Foto */}
-                  <div style={{ width: 48, height: 64, flexShrink: 0, borderRadius: 6, overflow: 'hidden', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div className="admin-card-thumb">
                     {f.foto_url
                       ? <img src={f.foto_url} alt={f.perfume} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                       : <span style={{ fontSize: 20, color: '#ccc' }}>🧴</span>
@@ -1517,7 +1517,7 @@ function PainelPerfumes({ token }) {
                 <div onClick={() => setDetalhe(p)} className="admin-card">
 
                   {/* Foto */}
-                  <div style={{ width: 70, height: 85, flexShrink: 0, borderRadius: 8, overflow: 'hidden', background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div className="admin-card-thumb">
                     {p.foto_url
                       ? <img src={p.foto_url} alt={p.nome} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                       : <span style={{ fontSize: 28, color: '#ccc' }}>🧴</span>
@@ -1770,7 +1770,7 @@ function PainelReservas({ token }) {
               <div onClick={() => abrirDetalhe(r)} className="admin-card">
 
                 {r.foto_url && (
-                  <img src={r.foto_url} alt={r.perfume_nome} style={{ width: 48, height: 64, borderRadius: 6, objectFit: 'contain', flexShrink: 0, background: '#fff' }} />
+                  <div className="admin-card-thumb"><img src={r.foto_url} alt={r.perfume_nome} /></div>
                 )}
 
                 <div style={{ flex: 1, minWidth: 0 }}>
