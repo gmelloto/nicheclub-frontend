@@ -432,8 +432,9 @@ function PainelPedidos({ token }) {
     setSalvando(true);
     try {
       await api.atualizarStatus(token, detalhe.id, statusEdit, rastreio);
-      setDetalhe(null);
-      carregar();
+      const atualizado = { ...detalhe, status: statusEdit, codigo_rastreio: rastreio };
+      setPedidos(prev => prev.map(p => p.id === detalhe.id ? atualizado : p));
+      setDetalhe(atualizado);
     } catch(e) { alert(e.message); }
     finally { setSalvando(false); }
   };
@@ -654,8 +655,12 @@ function PainelEstoque({ token }) {
         ml_total: Number(editForm.ml_total),
         ml_vendido: Number(editForm.ml_vendido),
       });
+      const mlTotal = Number(editForm.ml_total);
+      const mlVendido = Number(editForm.ml_vendido);
+      const atualizado = { ...editando, ml_total: mlTotal, ml_vendido: mlVendido, ml_disponivel: mlTotal - mlVendido };
+      setFrascos(prev => prev.map(f => f.id === editando.id ? atualizado : f));
+      setDetalhe(atualizado);
       setEditando(null);
-      carregar();
     } catch(e) { alert(e.message); }
     finally { setSalvando(false); }
   };
@@ -664,8 +669,8 @@ function PainelEstoque({ token }) {
   const confirmarExcluir = async (f) => {
     try {
       await api.deletarFrasco(token, f.id);
+      setFrascos(prev => prev.filter(x => x.id !== f.id));
       setDetalhe(null);
-      carregar();
     } catch(e) { alert(e.message); }
   };
 
@@ -685,7 +690,7 @@ function PainelEstoque({ token }) {
     try {
       await api.adicionarFrasco(token, novoForm.perfume_id, Number(novoForm.ml_total), novoForm.lote || null);
       setNovoAberto(false);
-      carregar();
+      api.estoque(token).then(setFrascos).catch(() => {});
     } catch(e) { alert(e.message); }
     finally { setSalvando(false); }
   };
@@ -1589,8 +1594,9 @@ function PainelReservas({ token }) {
     setSalvando(true);
     try {
       await api.atualizarReservaStatus(token, detalhe.id, statusEdit);
-      setDetalhe(null);
-      carregar();
+      const atualizado = { ...detalhe, status: statusEdit };
+      setReservas(prev => prev.map(r => r.id === detalhe.id ? atualizado : r));
+      setDetalhe(atualizado);
     } catch(e) { alert(e.message); }
     finally { setSalvando(false); }
   };
@@ -1598,8 +1604,8 @@ function PainelReservas({ token }) {
   const deletarReserva = async (id) => {
     try {
       await api.deletarReserva(token, id);
+      setReservas(prev => prev.filter(r => r.id !== id));
       setDetalhe(null);
-      carregar();
     } catch(e) { alert(e.message); }
   };
 
@@ -1791,10 +1797,10 @@ function PainelUsuarios({ token }) {
     if (novoForm.senha.length < 6) return alert('Senha deve ter no mínimo 6 caracteres.');
     setSalvando(true);
     try {
-      await api.criarUsuario(token, novoForm);
+      const novo = await api.criarUsuario(token, novoForm);
+      setUsuarios(prev => [novo, ...prev]);
       setNovoAberto(false);
       setNovoForm({ nome: '', email: '', senha: '', papel: 'atendente', permissoes: [] });
-      carregar();
     } catch(e) { alert(e.message); }
     finally { setSalvando(false); }
   };
@@ -1808,9 +1814,10 @@ function PainelUsuarios({ token }) {
   const salvarEdicao = async () => {
     setSalvando(true);
     try {
-      await api.atualizarUsuario(token, editando.id, editForm);
+      const atualizado = await api.atualizarUsuario(token, editando.id, editForm);
+      setUsuarios(prev => prev.map(u => u.id === editando.id ? atualizado : u));
+      setDetalhe(atualizado);
       setEditando(null);
-      carregar();
     } catch(e) { alert(e.message); }
     finally { setSalvando(false); }
   };
@@ -1822,7 +1829,6 @@ function PainelUsuarios({ token }) {
       await api.alterarSenhaUsuario(token, senhaAberto.id, novaSenha);
       setSenhaAberto(null);
       setNovaSenha('');
-      alert('Senha alterada com sucesso!');
     } catch(e) { alert(e.message); }
     finally { setSalvando(false); }
   };
@@ -1830,8 +1836,8 @@ function PainelUsuarios({ token }) {
   const excluir = async (u) => {
     try {
       await api.deletarUsuario(token, u.id);
+      setUsuarios(prev => prev.filter(x => x.id !== u.id));
       setDetalhe(null);
-      carregar();
     } catch(e) { alert(e.message); }
   };
 
