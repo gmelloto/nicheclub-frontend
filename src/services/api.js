@@ -1,4 +1,4 @@
-const BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const BASE = import.meta.env.VITE_API_URL || 'https://nicheclub-backend-production.up.railway.app';
 
 async function req(method, path, body, token) {
   const headers = { 'Content-Type': 'application/json' };
