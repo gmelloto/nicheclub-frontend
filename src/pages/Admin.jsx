@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context';
 import { api } from '../services/api';
 import { PainelNotas } from './AdminNotas.jsx';
+import { AreaChart, Area, BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from 'recharts';
 import './Admin.css';
 
 const ACORDE_CORES = {
@@ -380,57 +381,338 @@ export default function Admin() {
   );
 }
 
-function PainelDashboard() {
-  const saudacao = () => {
-    const h = new Date().getHours();
-    if (h < 12) return 'Bom dia';
-    if (h < 18) return 'Boa tarde';
-    return 'Boa noite';
-  };
+/* ── Dashboard Data ── */
+const DASH_CHART_DATA = [
+  { month: 'Jan', revenue: 4200, users: 2400 },
+  { month: 'Fev', revenue: 4800, users: 2800 },
+  { month: 'Mar', revenue: 5600, users: 3200 },
+  { month: 'Abr', revenue: 5200, users: 3600 },
+  { month: 'Mai', revenue: 7200, users: 4100 },
+  { month: 'Jun', revenue: 8400, users: 4800 },
+  { month: 'Jul', revenue: 9100, users: 5300 },
+  { month: 'Ago', revenue: 10200, users: 5900 },
+];
+const DASH_BAR_DATA = [
+  { day: 'Seg', value: 68 },
+  { day: 'Ter', value: 85 },
+  { day: 'Qua', value: 72 },
+  { day: 'Qui', value: 90 },
+  { day: 'Sex', value: 78 },
+  { day: 'Sáb', value: 56 },
+  { day: 'Dom', value: 45 },
+];
+const DASH_METRICS = [
+  { label: 'Usuários Ativos', value: '48.2K', change: '+12.5%', color: '#818cf8', iconPath: 'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2h0M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75' },
+  { label: 'Receita', value: 'R$84.3K', change: '+23.1%', color: '#34d399', iconPath: 'M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6' },
+  { label: 'Conversão', value: '3.24%', change: '+0.8%', color: '#38bdf8', iconPath: 'M23 6l-9.5 9.5-5-5L1 18' },
+  { label: 'Tempo Médio', value: '4m 32s', change: '+18.2%', color: '#fbbf24', iconPath: 'M12 2a10 10 0 100 20 10 10 0 000-20zM12 6v6l4 2' },
+];
+const DASH_FEATURES = [
+  { title: 'Analytics em Tempo Real', desc: 'Monitore seus KPIs com latência inferior a 1 segundo e streams de dados ao vivo.', iconPath: 'M22 12h-4l-3 9L9 3l-3 9H2' },
+  { title: 'Dashboards Personalizados', desc: 'Monte visualizações com drag-and-drop, filtros e layouts de gráficos totalmente customizáveis.', iconPath: 'M21 7.5V6a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2h6.5' },
+  { title: 'Alertas Inteligentes', desc: 'Defina limites inteligentes e receba notificações instantâneas via Slack, e-mail ou webhook.', iconPath: 'M13 2L3 14h9l-1 8 10-12h-9l1-8' },
+  { title: 'Multi-Fonte de Dados', desc: 'Conecte 100+ fontes de dados incluindo bancos, APIs, planilhas e serviços cloud.', iconPath: 'M12 2a10 10 0 100 20 10 10 0 000-20zM2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z' },
+  { title: 'Segurança Empresarial', desc: 'Conformidade SOC 2 Tipo II com criptografia ponta a ponta, SSO, RBAC e logs de auditoria.', iconPath: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z' },
+  { title: 'Colaboração em Equipe', desc: 'Compartilhe dashboards, anote insights e colabore em tempo real com toda a equipe.', iconPath: 'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2h0M9 7a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75' },
+];
+const DASH_PLANS = [
+  { name: 'Starter', price: 97, desc: 'Para pequenas equipes iniciando em analytics.', features: ['Até 5 membros', '10 dashboards', '50K eventos/mês', 'Retenção de 7 dias', 'Suporte por e-mail', 'Integrações básicas'], popular: false },
+  { name: 'Pro', price: 247, desc: 'Para equipes em crescimento com necessidade de insights avançados.', features: ['Até 25 membros', 'Dashboards ilimitados', '1M eventos/mês', 'Retenção de 1 ano', 'Suporte prioritário', 'Integrações avançadas', 'Alertas personalizados', 'Acesso à API'], popular: true },
+  { name: 'Enterprise', price: null, desc: 'Para organizações com requisitos customizados e escala.', features: ['Membros ilimitados', 'Dashboards ilimitados', 'Eventos ilimitados', 'Retenção ilimitada', 'Suporte dedicado', 'Todas as integrações', 'SLAs customizados', 'API completa', 'SSO & SAML', 'Opção on-premise'], popular: false },
+];
+const DASH_TRUST = [
+  { label: 'SOC 2 Tipo II', iconPath: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z' },
+  { label: 'LGPD/GDPR', iconPath: 'M19 11H5a2 2 0 00-2 2v7a2 2 0 002 2h14a2 2 0 002-2v-7a2 2 0 00-2-2zM7 11V7a5 5 0 0110 0v4' },
+  { label: '99.99% Uptime', iconPath: 'M22 12h-4l-3 9L9 3l-3 9H2' },
+  { label: 'ISO 27001', iconPath: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z' },
+  { label: 'Monitoramento 24/7', iconPath: 'M12 2a10 10 0 100 20 10 10 0 000-20zM12 6v6l4 2' },
+];
 
+function DashIcon({ path, size = 22, color = 'currentColor', strokeWidth = 2 }) {
   return (
-    <div className="fade-in">
-      <div style={{ marginBottom: 28 }}>
-        <h1 style={{ fontSize: 26, fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.02em', margin: 0 }}>{saudacao()}</h1>
-        <p style={{ fontSize: 14, color: 'var(--text3)', marginTop: 4 }}>{new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
-      </div>
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+      <path d={path} />
+    </svg>
+  );
+}
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16, marginBottom: 24 }}>
-        {[
-          { label: 'Pedidos', valor: '—', cor: '#1565c0', bg: 'rgba(21,101,192,0.08)', iconBg: 'rgba(21,101,192,0.15)', icon: (
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1565c0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
-          )},
-          { label: 'Reservas', valor: '—', cor: '#e65100', bg: 'rgba(230,81,0,0.06)', iconBg: 'rgba(230,81,0,0.15)', icon: (
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e65100" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-          )},
-          { label: 'Perfumes', valor: '—', cor: '#2e7d32', bg: 'rgba(46,125,50,0.06)', iconBg: 'rgba(46,125,50,0.15)', icon: (
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="8" width="12" height="13" rx="2"/><path d="M10 4h4v4h-4z"/><path d="M9 8V6a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
-          )},
-          { label: 'Faturamento', valor: '—', cor: '#7b1fa2', bg: 'rgba(123,31,162,0.06)', iconBg: 'rgba(123,31,162,0.15)', icon: (
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7b1fa2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 100 4h4a2 2 0 110 4H8"/><path d="M12 18V6"/></svg>
-          )},
-        ].map(card => (
-          <div key={card.label} style={{ background: 'var(--card-bg)', borderRadius: 16, padding: 20, border: '1px solid var(--card-border)', boxShadow: '0 1px 4px var(--card-shadow)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-              <div style={{ padding: 12, background: card.iconBg, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                {card.icon}
+function PainelDashboard() {
+  return (
+    <div className="fade-in" style={{ margin: '-2rem -2.5rem', padding: 0, background: 'var(--content-bg)', minHeight: '100vh', overflowX: 'hidden' }}>
+
+      {/* ── HERO ── */}
+      <section className="dash-hero-gradient dash-grid-bg" style={{ padding: '60px 40px 48px', position: 'relative' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+          <div className="dash-hero-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'center' }}>
+            {/* Left */}
+            <div>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '5px 14px', borderRadius: 20, marginBottom: 20 }} className="dash-glass">
+                <span className="dash-pulse" style={{ position: 'relative', display: 'inline-block', width: 7, height: 7, borderRadius: '50%', background: '#34d399' }} />
+                <span style={{ fontSize: 12, fontWeight: 600, color: '#818cf8' }}>Live Analytics</span>
               </div>
-              <div>
-                <p style={{ fontSize: 13, color: 'var(--text3)', fontWeight: 500, margin: 0 }}>{card.label}</p>
-                <p style={{ fontSize: 26, fontWeight: 800, color: card.cor, margin: '2px 0 0' }}>{card.valor}</p>
+
+              <h1 style={{ fontSize: 42, fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.03em', color: 'var(--text)', margin: '0 0 16px' }}>
+                Visualização de Dados{' '}
+                <span className="dash-text-gradient">em Tempo Real</span>
+              </h1>
+
+              <p style={{ fontSize: 16, lineHeight: 1.7, color: 'var(--text3)', maxWidth: 460, margin: '0 0 28px' }}>
+                Transforme dados brutos em insights acionáveis com nosso poderoso dashboard analítico. Monitore KPIs, acompanhe crescimento e tome decisões orientadas por dados.
+              </p>
+
+              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 20 }}>
+                <button style={{ padding: '12px 28px', borderRadius: 10, background: '#818cf8', color: '#fff', fontWeight: 700, fontSize: 14, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 0 24px -6px rgba(129,140,248,0.4)' }}>
+                  Iniciar Trial Grátis
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+                <button className="dash-glass" style={{ padding: '12px 28px', borderRadius: 10, color: 'var(--text2)', fontWeight: 600, fontSize: 14, cursor: 'pointer' }}>
+                  Ver Demo
+                </button>
+              </div>
+
+              <div style={{ display: 'flex', gap: 20, fontSize: 13, color: 'var(--text3)' }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#34d399" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                  Sem cartão de crédito
+                </span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#34d399" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                  14 dias grátis
+                </span>
+              </div>
+            </div>
+
+            {/* Right - Chart preview */}
+            <div className="dash-hero-chart" style={{ position: 'relative' }}>
+              <div className="dash-glass-strong dash-glow" style={{ borderRadius: 20, padding: 24 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+                  <div>
+                    <p style={{ fontSize: 13, color: 'var(--text3)', margin: 0 }}>Receita Mensal</p>
+                    <p style={{ fontSize: 28, fontWeight: 800, color: 'var(--text)', margin: '2px 0 0' }}>R$84.320</p>
+                  </div>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '4px 10px', borderRadius: 8, background: 'rgba(52,211,153,0.12)', color: '#34d399', fontSize: 12, fontWeight: 700 }}>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M23 6l-9.5 9.5-5-5L1 18"/></svg>
+                    +23.1%
+                  </span>
+                </div>
+                <div style={{ height: 180 }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={DASH_CHART_DATA}>
+                      <defs>
+                        <linearGradient id="dashHeroGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#818cf8" stopOpacity={0.3} />
+                          <stop offset="95%" stopColor="#818cf8" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                      <XAxis dataKey="month" tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 11 }} axisLine={false} tickLine={false} />
+                      <YAxis hide />
+                      <Tooltip contentStyle={{ background: 'rgba(30,36,51,0.95)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 10, fontSize: 12, color: '#e2e8f0' }} />
+                      <Area type="monotone" dataKey="revenue" stroke="#818cf8" strokeWidth={2.5} fill="url(#dashHeroGrad)" />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              {/* Floating card - bar chart */}
+              <div className="dash-glass-strong dash-glow-sm" style={{ position: 'absolute', right: -12, bottom: -20, borderRadius: 14, padding: 14 }}>
+                <p style={{ fontSize: 11, color: 'var(--text3)', margin: '0 0 6px', fontWeight: 600 }}>Atividade Semanal</p>
+                <div style={{ height: 64, width: 130 }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RechartsBarChart data={DASH_BAR_DATA}>
+                      <Bar dataKey="value" fill="#818cf8" radius={[3, 3, 0, 0]} />
+                    </RechartsBarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              {/* Floating card - online users */}
+              <div className="dash-glass-strong" style={{ position: 'absolute', left: -12, top: -12, display: 'flex', alignItems: 'center', gap: 10, borderRadius: 14, padding: '10px 16px' }}>
+                <div style={{ width: 32, height: 32, borderRadius: 10, background: 'rgba(52,211,153,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34d399" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2h0M9 7a4 4 0 100-8 4 4 0 000 8z"/></svg>
+                </div>
+                <div>
+                  <p style={{ fontSize: 10, color: 'var(--text3)', margin: 0, fontWeight: 600 }}>Online Agora</p>
+                  <p style={{ fontSize: 14, fontWeight: 800, color: 'var(--text)', margin: 0 }}>2.847</p>
+                </div>
               </div>
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      </section>
 
-      <div style={{ background: 'var(--filter-bg)', borderRadius: 16, padding: 40, textAlign: 'center', color: 'var(--text3)', border: '1px solid var(--card-border)' }}>
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: 12 }}>
-          <path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>
-        </svg>
-        <p style={{ fontSize: 16, fontWeight: 600, color: '#666', marginBottom: 4 }}>Em breve</p>
-        <p style={{ fontSize: 13 }}>Os dashboards e gráficos serão implementados aqui.</p>
-      </div>
+      {/* ── METRICS ── */}
+      <section style={{ padding: '40px 40px 0', maxWidth: 1200, margin: '0 auto' }}>
+        <div className="dash-metrics-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
+          {DASH_METRICS.map(m => (
+            <div key={m.label} className="dash-glass" style={{ borderRadius: 16, padding: 22, transition: 'all .3s' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+                <div style={{ width: 40, height: 40, borderRadius: 12, background: `${m.color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <DashIcon path={m.iconPath} size={20} color={m.color} />
+                </div>
+                <span style={{ fontSize: 11, fontWeight: 700, color: '#34d399', padding: '3px 8px', borderRadius: 6, background: 'rgba(52,211,153,0.1)' }}>{m.change}</span>
+              </div>
+              <p style={{ fontSize: 26, fontWeight: 800, letterSpacing: '-0.02em', color: 'var(--text)', margin: 0 }}>{m.value}</p>
+              <p style={{ fontSize: 13, color: 'var(--text3)', marginTop: 4 }}>{m.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── FEATURES ── */}
+      <section className="dash-mesh" style={{ padding: '64px 40px', marginTop: 40 }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 48 }}>
+            <span className="dash-glass" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '5px 14px', borderRadius: 20, fontSize: 12, fontWeight: 600, color: '#818cf8', marginBottom: 14 }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#818cf8" strokeWidth="2.5"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg>
+              Funcionalidades
+            </span>
+            <h2 style={{ fontSize: 32, fontWeight: 800, letterSpacing: '-0.03em', color: 'var(--text)', margin: '0 0 12px' }}>
+              Tudo Que Você Precisa Para{' '}<br />
+              <span className="dash-text-gradient">Entender Seus Dados</span>
+            </h2>
+            <p style={{ fontSize: 16, color: 'var(--text3)', maxWidth: 520, margin: '0 auto' }}>
+              Uma plataforma completa de analytics projetada para equipes modernas.
+            </p>
+          </div>
+
+          <div className="dash-features-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
+            {DASH_FEATURES.map(f => (
+              <div key={f.title} className="dash-glass" style={{ borderRadius: 18, padding: 28, transition: 'all .3s' }}>
+                <div style={{ width: 48, height: 48, borderRadius: 14, background: 'rgba(129,140,248,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
+                  <DashIcon path={f.iconPath} size={24} color="#818cf8" />
+                </div>
+                <h3 style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)', margin: '0 0 8px' }}>{f.title}</h3>
+                <p style={{ fontSize: 13.5, lineHeight: 1.65, color: 'var(--text3)', margin: 0 }}>{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── PRICING ── */}
+      <section style={{ padding: '64px 40px' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 48 }}>
+            <span className="dash-glass" style={{ display: 'inline-flex', padding: '5px 14px', borderRadius: 20, fontSize: 12, fontWeight: 600, color: '#818cf8', marginBottom: 14 }}>
+              Preços
+            </span>
+            <h2 style={{ fontSize: 32, fontWeight: 800, letterSpacing: '-0.03em', color: 'var(--text)', margin: '0 0 12px' }}>
+              Preços Simples e{' '}<span className="dash-text-gradient">Transparentes</span>
+            </h2>
+            <p style={{ fontSize: 16, color: 'var(--text3)' }}>
+              Comece grátis. Upgrade quando precisar de mais poder. Sem taxas ocultas.
+            </p>
+          </div>
+
+          <div className="dash-pricing-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, alignItems: 'start' }}>
+            {DASH_PLANS.map(plan => (
+              <div key={plan.name} className={plan.popular ? 'dash-pricing-popular dash-glass-strong dash-glow' : 'dash-glass'} style={{ borderRadius: 20, padding: 32, position: 'relative', transform: plan.popular ? 'scale(1.03)' : 'none', transition: 'all .3s' }}>
+                {plan.popular && (
+                  <div style={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)' }}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '4px 14px', borderRadius: 20, background: '#818cf8', color: '#fff', fontSize: 11, fontWeight: 700, boxShadow: '0 4px 14px rgba(129,140,248,0.4)' }}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg>
+                      Mais Popular
+                    </span>
+                  </div>
+                )}
+                <h3 style={{ fontSize: 20, fontWeight: 700, color: 'var(--text)', margin: 0 }}>{plan.name}</h3>
+                <p style={{ fontSize: 13, color: 'var(--text3)', margin: '8px 0 0' }}>{plan.desc}</p>
+                <div style={{ margin: '24px 0', display: 'flex', alignItems: 'baseline', gap: 4 }}>
+                  {plan.price !== null ? (
+                    <>
+                      <span style={{ fontSize: 38, fontWeight: 800, color: 'var(--text)' }}>R${plan.price}</span>
+                      <span style={{ color: 'var(--text3)', fontSize: 14 }}>/mês</span>
+                    </>
+                  ) : (
+                    <span style={{ fontSize: 38, fontWeight: 800, color: 'var(--text)' }}>Sob consulta</span>
+                  )}
+                </div>
+                <button style={{
+                  width: '100%', padding: '12px 0', borderRadius: 10, fontWeight: 700, fontSize: 14, cursor: 'pointer', marginBottom: 24,
+                  background: plan.popular ? '#818cf8' : 'transparent',
+                  color: plan.popular ? '#fff' : 'var(--text2)',
+                  border: plan.popular ? 'none' : '1px solid rgba(255,255,255,0.1)',
+                  boxShadow: plan.popular ? '0 0 20px -6px rgba(129,140,248,0.35)' : 'none'
+                }}>
+                  {plan.price !== null ? 'Iniciar Trial Grátis' : 'Falar com Vendas'}
+                </button>
+                <div style={{ height: 1, background: 'rgba(255,255,255,0.08)', marginBottom: 24 }} />
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {plan.features.map(feat => (
+                    <li key={feat} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: 13.5, color: 'var(--text3)' }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#818cf8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 2 }}><path d="M20 6L9 17l-5-5"/></svg>
+                      {feat}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── TRUST ── */}
+      <section className="dash-cta-gradient" style={{ padding: '64px 40px' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 40 }}>
+            <h2 style={{ fontSize: 32, fontWeight: 800, letterSpacing: '-0.03em', color: 'var(--text)', margin: '0 0 12px' }}>
+              Confiado por <span className="dash-text-gradient">5.000+</span> Empresas
+            </h2>
+            <p style={{ fontSize: 16, color: 'var(--text3)' }}>Segurança e conformidade de nível empresarial em cada camada.</p>
+          </div>
+
+          <div className="dash-trust-badges" style={{ display: 'flex', justifyContent: 'center', gap: 14, marginBottom: 48, flexWrap: 'wrap' }}>
+            {DASH_TRUST.map(b => (
+              <div key={b.label} className="dash-glass" style={{ display: 'flex', alignItems: 'center', gap: 8, borderRadius: 12, padding: '10px 18px', transition: 'all .3s' }}>
+                <DashIcon path={b.iconPath} size={16} color="#818cf8" />
+                <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text2)' }}>{b.label}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="dash-glass-strong" style={{ borderRadius: 20, padding: '40px 32px', maxWidth: 900, margin: '0 auto' }}>
+            <div className="dash-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 24, textAlign: 'center' }}>
+              {[
+                { value: '5.200+', label: 'Empresas' },
+                { value: '12M+', label: 'Eventos / Dia' },
+                { value: '99.99%', label: 'Uptime SLA' },
+                { value: '<50ms', label: 'Latência Média' },
+              ].map(s => (
+                <div key={s.label}>
+                  <p className="dash-text-gradient" style={{ fontSize: 28, fontWeight: 800, margin: 0 }}>{s.value}</p>
+                  <p style={{ fontSize: 13, color: 'var(--text3)', marginTop: 4 }}>{s.label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── CTA ── */}
+      <section style={{ padding: '48px 40px 64px' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+          <div className="dash-glass-strong dash-hero-gradient" style={{ borderRadius: 24, padding: '64px 40px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+            <h2 style={{ fontSize: 34, fontWeight: 800, letterSpacing: '-0.03em', color: 'var(--text)', margin: '0 0 14px' }}>
+              Pronto Para Transformar{' '}<br />
+              <span className="dash-text-gradient">Seu Analytics?</span>
+            </h2>
+            <p style={{ fontSize: 16, color: 'var(--text3)', maxWidth: 420, margin: '0 auto 28px' }}>
+              Junte-se a milhares de equipes que já usam NicheMetrics para tomar decisões mais inteligentes baseadas em dados.
+            </p>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 12, flexWrap: 'wrap' }}>
+              <button style={{ padding: '13px 32px', borderRadius: 10, background: '#818cf8', color: '#fff', fontWeight: 700, fontSize: 14, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 0 24px -6px rgba(129,140,248,0.4)' }}>
+                Iniciar Trial Grátis
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+              <button className="dash-glass" style={{ padding: '13px 32px', borderRadius: 10, color: 'var(--text2)', fontWeight: 600, fontSize: 14, cursor: 'pointer' }}>
+                Agendar uma Demo
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </div>
   );
 }
